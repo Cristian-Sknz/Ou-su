@@ -131,7 +131,7 @@ public class OusuBot {
 	}
 	
 	public void osuLoader() {
-		this.osu = Osu.getAPI("63b9d13641b62567025ea396678330f639b923eb");
+		this.osu = Osu.getAPI(Token.osutoken);
 		try {
 			osu.users.query(new EndpointUsers.ArgumentsBuilder("skiincraft").setMode(GameMode.STANDARD).build());
 			System.out.println("OSUAPI: Foi estabelecida conexão com sucesso");
