@@ -50,7 +50,7 @@ public class HistoryEvent extends ReactionsManager {
 			
 		}
 		
-		//http://b.ppy.sh/preview/1120543.mp3
+		//http://b.ppy.sh/preview/music.mp3
 			
 		if (emoji.equalsIgnoreCase("◼")){
 			if (ReactionMessage.historyLastMessage.containsKey(user)) {
@@ -59,7 +59,6 @@ public class HistoryEvent extends ReactionsManager {
 				try {
 					embed = TopUserCommand.embed(new UserScores(new UserOsu(getUtils().getMsg(), GameMode.STANDARD), ScoreType.TopsScore, getUtils().getValue()));
 				} catch (MalformedURLException | OsuAPIException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				
