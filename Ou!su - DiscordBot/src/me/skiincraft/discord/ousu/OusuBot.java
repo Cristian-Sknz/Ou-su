@@ -22,6 +22,7 @@ import me.skiincraft.discord.ousu.events.ReceivedEvent;
 import me.skiincraft.discord.ousu.events.onReadyEvent;
 import me.skiincraft.discord.ousu.manager.Commands;
 import me.skiincraft.discord.ousu.mysql.MySQL;
+import me.skiincraft.discord.ousu.utils.Token;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -34,7 +35,7 @@ public class OusuBot {
 	JDABuilder build = new JDABuilder(token);
 	
 	public static OusuBot ousu;
-	private static String token = "";
+	private static String token = Token.token;
 	private static JDA jda;
 	private Osu osu;
 	private MySQL connection;
