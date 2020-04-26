@@ -34,7 +34,7 @@ public class OusuBot {
 	JDABuilder build = new JDABuilder(token);
 	
 	public static OusuBot ousu;
-	private static String token = "NzAxODI1NzI2NDQ5NTgyMTky.Xp3NjA.I4_GSUnjzqSaqJT1SCIs_scpZv0";
+	private static String token = "";
 	private static JDA jda;
 	private Osu osu;
 	private MySQL connection;
