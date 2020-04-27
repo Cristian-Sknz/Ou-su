@@ -51,7 +51,11 @@ public class HelpCommand extends Commands {
 		for (Commands com : commands) {
 			if (comando.equalsIgnoreCase(com.getCommand())) {
 				embed.setTitle("Help <" + com.getCommand() + ">");
+				if (com.helpMessage() != null) {
 				embed.setDescription(String.join("\n", com.helpMessage()));
+				} else {
+					embed.setDescription("Não foi definido nenhuma descrição para este comando :/");
+				}
 				
 				
 				if (com.hasAliases()) {

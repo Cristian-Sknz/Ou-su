@@ -43,11 +43,13 @@ public class EmbedCommand extends Commands {
 		}
 		
 		if (args.length >= 3) {
-			String bc = "";
+			StringBuffer em = new StringBuffer();
+			
 			for (int i = 2; i < args.length; i++) {
-				bc = bc + args[i] + " ";
+				em.append(args[i] + " ");
 			}
-			sendEmbedMessage(new DefaultEmbed(args[1].replaceAll("_", " "), bc)).queue();
+			
+			sendEmbedMessage(new DefaultEmbed(args[1].replaceAll("_", " "), em.toString())).queue();
 			return;
 		}
 		return;

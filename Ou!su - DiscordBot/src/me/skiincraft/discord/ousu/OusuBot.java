@@ -12,6 +12,7 @@ import com.oopsjpeg.osu4j.exception.OsuAPIException;
 import me.skiincraft.discord.ousu.commands.BeatMapCommand;
 import me.skiincraft.discord.ousu.commands.EmbedCommand;
 import me.skiincraft.discord.ousu.commands.HelpCommand;
+import me.skiincraft.discord.ousu.commands.InviteCommand;
 import me.skiincraft.discord.ousu.commands.TopUserCommand;
 import me.skiincraft.discord.ousu.commands.UserCommand;
 import me.skiincraft.discord.ousu.commands.UserImageCommand;
@@ -26,6 +27,7 @@ import me.skiincraft.discord.ousu.utils.Token;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.entities.SelfUser;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 
@@ -39,6 +41,7 @@ public class OusuBot {
 	private static JDA jda;
 	private Osu osu;
 	private MySQL connection;
+	private static SelfUser selfUser;
 	
 	private boolean DBSQL = true;
 
@@ -50,6 +53,9 @@ public class OusuBot {
 	}
 	public JDA getJda() {
 		return jda;
+	}
+	public static SelfUser getSelfUser() {
+		return selfUser;
 	}
 	public void setJda(JDA jda) {
 		OusuBot.jda = jda;
@@ -91,6 +97,7 @@ public class OusuBot {
 		try {
 			jda = build.build();
 			System.out.println("JDA: Conexão foi estabelecida com sucesso");
+			OusuBot.selfUser = jda.getSelfUser();
 		} catch (LoginException e) {
 			System.out.println("JDA: Ocorreu um erro ao logar no bot. Verifique se o Token está correto.");
 		}
@@ -112,7 +119,8 @@ public class OusuBot {
 				new UserImageCommand(),
 				new PrefixCommand(),
 				new BeatMapCommand(),
-				new VersionCommand());
+				new VersionCommand(),
+				new InviteCommand());
 	}
 	
 	private void registerEvents(ListenerAdapter...events) {

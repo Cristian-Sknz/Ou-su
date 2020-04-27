@@ -30,7 +30,7 @@ public class UserCommand extends Commands {
 	
 	@Override
 	public String[] helpMessage() {
-		return new String[] {};
+		return new String[] {"Verifique as informações de um jogador."};
 	}
 	
 	@Override

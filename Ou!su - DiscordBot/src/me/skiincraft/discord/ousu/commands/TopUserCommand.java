@@ -52,12 +52,14 @@ public class TopUserCommand extends Commands {
 			
 			UserOsu osuUser;
 			try {
-				String bc = "";
+				
+				StringBuffer stringArgs = new StringBuffer();
 				for (int i = 1; i < args.length; i++) {
-					bc = bc + args[i] + " ";
+					stringArgs.append(args[i] + " ");
 				}
-				bc = bc.substring(0, bc.length()-1);
-				osuUser = new UserOsu(bc, GameMode.STANDARD);
+				stringArgs.substring(0, stringArgs.length()-1);
+				
+				osuUser = new UserOsu(stringArgs.toString(), GameMode.STANDARD);
 			} catch (MalformedURLException | OsuAPIException e) {
 				e.printStackTrace();
 				return;
@@ -76,25 +78,11 @@ public class TopUserCommand extends Commands {
 				return;
 			}
 			
-		  /*File file = OsuBeatmapSimple.drawImage(userscore.getBeatmap());
-			EmbedBuilder e = embed(userscore);
-			 sendFileEmbeded(e, file).queue(new Consumer<Message>() {
-
-				@Override
-				public void accept(Message message) {
-					 message.addReaction("U+25C0").submit();
-					 message.addReaction("U+25FC").submit();
-					 message.addReaction("U+25B6").submit();
-					 ReactionMessage.osuHistory.add(new ReactionUtils(user, message.getId(), osuUser.getUsername(),0));
-				}
-			});
-			*/
-			
 			sendEmbedMessage(embed(new UserScores(osuUser, ScoreType.TopsScore, 0)))
 			.queue(message -> {
-				 message.addReaction("U+25C0").submit();
-				 message.addReaction("U+25FC").submit();
-				 message.addReaction("U+25B6").submit();
+				 message.addReaction("U+25C0").queue();
+				 message.addReaction("U+25FC").queue();
+				 message.addReaction("U+25B6").queue();
 				 ReactionMessage.osuHistory.add(new ReactionUtils(user, message.getId(), osuUser.getUsername(),0));
 			});
 			return;

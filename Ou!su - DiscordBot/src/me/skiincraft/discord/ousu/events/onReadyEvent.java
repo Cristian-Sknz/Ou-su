@@ -24,6 +24,8 @@ public class onReadyEvent extends ListenerAdapter {
 		System.out.println(event.getGuild().getName());
 		System.out.println("com " + event.getGuild().getMemberCount() + " membros.");
 		System.out.println();
+		int guilds = event.getJDA().getGuilds().size();
+		event.getJDA().getPresence().setPresence(OnlineStatus.ONLINE, Activity.watching(guilds + " Servidores."));
 	}
 	
 	@Override
@@ -32,18 +34,28 @@ public class onReadyEvent extends ListenerAdapter {
 		
 		guild.deletar();
 		System.out.println();
-		System.out.println("Servidor removido :(!");
+		System.out.println("Servidor removido!");
 		System.out.println(event.getGuild().getId());
 		System.out.println(event.getGuild().getName());
 		System.out.println("com " + event.getGuild().getMemberCount() + " membros.");
 		System.out.println();
+		
+		int guilds = event.getJDA().getGuilds().size();
+		event.getJDA().getPresence().setPresence(OnlineStatus.ONLINE, Activity.watching(guilds + " Servidores."));
 	}
 	
 	@Override
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
 		if (event.getChannel().isNSFW()) {
-			event.getChannel().sendMessage(event.getAuthor().getAsMention() + " Desculpe! Eu não atendo pedidos nesse tipo de canal :(");
+			event.getChannel().sendMessage(event.getAuthor().getAsMention() + " Desculpe! Eu não atendo pedidos nesse tipo de canal :(").queue();
 			return;
+		}
+		String[] args = event.getMessage().getContentRaw().split(" ");
+		if (args[0].startsWith("ou!")) {
+			String prefix = new SQLAccess(event.getGuild()).get("prefix");
+			if (!prefix.equalsIgnoreCase("ou!")) {
+				event.getChannel().sendMessage(event.getAuthor().getAsMention() + " O prefixo neste servidor é: " + prefix).queue();
+			}
 		}
 	}
 	
@@ -63,12 +75,12 @@ public class onReadyEvent extends ListenerAdapter {
 			sql.criar();
 		}
 		
-		
-		
 		if (newGuilds == 0) {
 			System.out.println("Não foi adicionado nenhum servidor novo, desde o ultimo update.");
 			return;
 		}
+		
+
 		
 		System.out.println("Foi adicionado " + newGuilds + " novo(s) servidor(es), dede o ultimo update.");
 	}

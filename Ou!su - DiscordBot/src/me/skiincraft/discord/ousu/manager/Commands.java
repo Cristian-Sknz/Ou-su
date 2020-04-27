@@ -25,6 +25,7 @@ public abstract class Commands extends ListenerAdapter {
 	private List<String> aliases;
 	private String usage;
 
+
 	private String[] args;
 	private GuildMessageReceivedEvent event;
 	
@@ -34,7 +35,6 @@ public abstract class Commands extends ListenerAdapter {
 	public Commands(String prefix, String command) {
 		this.prefix = prefix;
 		this.command = command;
-		
 		this.aliases = null;
 		this.usage = null;
 	}
@@ -56,7 +56,6 @@ public abstract class Commands extends ListenerAdapter {
 		if (e.getAuthor().isBot()) {
 			return false;
 		}
-		
 		if (e.getJDA().getSelfUser().getName() == e.getAuthor().getName()) {
 			return false;
 		}
@@ -64,7 +63,6 @@ public abstract class Commands extends ListenerAdapter {
 		if (e.getChannel().isNSFW()) {
 			return false;
 		}
-		
 		prefix = new SQLAccess(e.getGuild()).get("prefix");
 
 		if (!hasAliases()) {

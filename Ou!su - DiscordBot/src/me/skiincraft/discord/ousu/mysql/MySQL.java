@@ -51,7 +51,7 @@ public class MySQL {
 	public Statement getStatement() {
 		return statement;
 	}
-
+	// Por enquanto não há problema em deixar isso publico.
 	public MySQL(OusuBot main) {
 		this.ousu = main;
 		this.host = "localhost";//IP
@@ -142,7 +142,7 @@ public class MySQL {
 	public synchronized ResultSet resultSet(String query) {
 		if (this.connection == null || this.statement == null) {
 			ousu.logger("Dados -[Connection/Statement]- n�o est�o nulos. (resultSet())");
-			//desligar
+			System.exit(0);
 			return null;
 		}
 		try {
@@ -156,7 +156,7 @@ public class MySQL {
 	public synchronized void executeUpdateAsync(String update) {
 		if (this.connection == null || this.statement == null) {
 			ousu.logger("Dados -[Connection/Statement]- n�o est�o nulos. (executeUpdateAsync())");
-			//desligar
+			System.exit(0);
 			return;
 		}
 		try {
