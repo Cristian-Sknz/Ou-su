@@ -16,40 +16,38 @@ public class ReceivedEvent extends ListenerAdapter {
 	public MessageEmbed v() {
 		EmbedBuilder e = new EmbedBuilder();
 		User user = OusuBot.getOusu().getJda().getUserById("247096601242238991");
-		
+
 		e.setColor(Color.red);
 		e.setDescription("Esta área ainda não esta pronta, mas em breve poderá usufruir dessa estrutura!");
 		e.setFooter(user.getName() + "#" + user.getDiscriminator() + " | Yagateiro Master", user.getAvatarUrl());
 		e.setImage("https://i.imgur.com/LxG1qGl.gif");
 		e.setTitle("Olá!", "https://discord.gg/xCkzjtm");
-		
+
 		return e.build();
 	}
-	
+
 	@Override
 	public void onMessageReceived(MessageReceivedEvent event) {
 		if (!event.isFromType(ChannelType.PRIVATE)) {
 			return;
 		}
-		
+
 		if (event.getAuthor().isBot() == true) {
 			return;
 		}
-		
+
 		SelfUser a = event.getJDA().getSelfUser();
-		
+
 		if (a.getName() == event.getAuthor().getName()) {
 			return;
 		}
-		
-		System.out.printf("[PM] %s: %s\n", event.getAuthor().getName(),
-                event.getMessage().getContentDisplay());
-		
-		
+
+		System.out.printf("[PM] %s: %s\n", event.getAuthor().getName(), event.getMessage().getContentDisplay());
+
 		if (!OusuBot.listPrivated.contains(event.getAuthor().getName())) {
-			event.getAuthor().openPrivateChannel().complete().sendMessage(v()).queue();	
+			event.getAuthor().openPrivateChannel().complete().sendMessage(v()).queue();
 			OusuBot.listPrivated.add(event.getAuthor().getName());
 		}
-		
+
 	}
 }

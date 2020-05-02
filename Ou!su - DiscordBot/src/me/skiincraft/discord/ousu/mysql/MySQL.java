@@ -19,8 +19,7 @@ public class MySQL {
 	private Connection connection;
 	private Statement statement;
 	private OusuBot ousu;
-	
-	
+
 	private String host, database, user, password;
 	private int port;
 
@@ -35,7 +34,7 @@ public class MySQL {
 	public String getUser() {
 		return user;
 	}
-	
+
 	public int getPort() {
 		return port;
 	}
@@ -51,10 +50,11 @@ public class MySQL {
 	public Statement getStatement() {
 		return statement;
 	}
+
 	// Por enquanto não há problema em deixar isso publico.
 	public MySQL(OusuBot main) {
 		this.ousu = main;
-		this.host = "localhost";//IP
+		this.host = "localhost";// IP
 		this.database = "ousubot";
 		this.port = 3306;
 		this.user = "ousu";
@@ -70,19 +70,19 @@ public class MySQL {
 			ousu.setDBSQL(false);
 			return;
 		}
-		
+
 		if (isNull()) {
 			ousu.logger("Dados do MYSQL não foram preenchidos.");
 			ousu.setDBSQL(false);
 			return;
 		}
-		
+
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			this.connection = DriverManager.getConnection(
 					"jdbc:mysql://" + this.host + ":" + 3306 + "/" + this.database + "?autoReconnect=true", this.user,
 					this.password);
-			
+
 			this.statement = this.connection.createStatement();
 			ousu.logger("Conexao com o banco de dados estabelecida com sucesso.");
 			ousu.setDBSQL(true);
@@ -167,7 +167,7 @@ public class MySQL {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public synchronized void setup() {
 		if (this.connection == null || this.statement == null) {
 			ousu.logger("Dados -[Connection/Statement]- são nulos. (setup())");
@@ -175,12 +175,12 @@ public class MySQL {
 			return;
 		}
 		try {
-			this.statement.execute("CREATE TABLE IF NOT EXISTS `" + this.database + 
-					"`.`servidores` (`id` INT UNSIGNED NOT NULL AUTO_INCREMENT, `guildid` VARCHAR(64) NOT NULL, `nome` VARCHAR(64) NOT NULL, `membros` INT, `prefix` VARCHAR(24) NOT NULL, `adicionado em` VARCHAR(24) NOT NULL, PRIMARY KEY(`id`));");
-			//Tabelas(GuildID, Nome, Membros, Prefix, Adicionado em);
-			this.statement.execute("CREATE TABLE IF NOT EXISTS `" + this.database + 
-					"`.`usuarios` (`id` INT UNSIGNED NOT NULL AUTO_INCREMENT, `userid` VARCHAR(64) NOT NULL, `username` VARCHAR(64) NOT NULL, `osu_account` VARCHAR(64) NOT NULL, PRIMARY KEY(`id`));");
-			//Tabelas(UserID, Username, Osu_Account);
+			this.statement.execute("CREATE TABLE IF NOT EXISTS `" + this.database
+					+ "`.`servidores` (`id` INT UNSIGNED NOT NULL AUTO_INCREMENT, `guildid` VARCHAR(64) NOT NULL, `nome` VARCHAR(64) NOT NULL, `membros` INT, `prefix` VARCHAR(24) NOT NULL, `adicionado em` VARCHAR(24) NOT NULL, `language` VARCHAR(24) NOT NULL, PRIMARY KEY(`id`));");
+			// Tabelas(GuildID, Nome, Membros, Prefix, Adicionado em, Language);
+			this.statement.execute("CREATE TABLE IF NOT EXISTS `" + this.database
+					+ "`.`usuarios` (`id` INT UNSIGNED NOT NULL AUTO_INCREMENT, `userid` VARCHAR(64) NOT NULL, `username` VARCHAR(64) NOT NULL, `osu_account` VARCHAR(64) NOT NULL, PRIMARY KEY(`id`));");
+			// Tabelas(UserID, Username, Osu_Account);
 			ousu.setDBSQL(true);
 		} catch (SQLException exception) {
 			exception.printStackTrace();

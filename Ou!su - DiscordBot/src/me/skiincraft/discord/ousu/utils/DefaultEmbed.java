@@ -12,7 +12,7 @@ public class DefaultEmbed {
 	private String title;
 	private String description;
 	private String imageUrl;
-	
+
 	public DefaultEmbed(String title, String description) {
 		this.title = title;
 		this.description = description;
@@ -22,40 +22,40 @@ public class DefaultEmbed {
 	public DefaultEmbed(String title, String description, String imageurl) {
 		this.title = title;
 		this.description = description;
-		this.imageUrl = null;		
+		this.imageUrl = null;
 	}
-	
+
 	public MessageEmbed construir() {
 		EmbedBuilder b = new EmbedBuilder();
 		User user = OusuBot.getOusu().getJda().getUserById("247096601242238991");
-		
+
 		b.setColor(Color.PINK);
 		b.setDescription(description);
 		b.setTitle(title);
 		b.setFooter(user.getName() + "#" + user.getDiscriminator() + " | Yagateiro Master", user.getAvatarUrl());
-		
+
 		if (imageUrl == null) {
 			return b.build();
 		}
 		b.setImage(imageUrl);
-		
+
 		return b.build();
 	}
-	
+
 	public EmbedBuilder construirEmbed() {
 		EmbedBuilder b = new EmbedBuilder();
 		User user = OusuBot.getOusu().getJda().getUserById("247096601242238991");
 		b.setFooter(user.getName() + "#" + user.getDiscriminator() + " | Ou!su bot ™", user.getAvatarUrl());
-		
+
 		b.setColor(Color.PINK);
 		b.setDescription(description);
 		b.setTitle(title);
-		
+
 		if (imageUrl == null) {
 			return b;
 		}
 		b.setImage(imageUrl);
-		
+
 		return b;
 	}
 

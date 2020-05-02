@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Date;
 
 import me.skiincraft.discord.ousu.OusuBot;
+import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -22,8 +23,8 @@ public class VersionCommand extends Commands {
 	}
 
 	@Override
-	public String[] helpMessage() {
-		return null;
+	public String[] helpMessage(LanguageManager lang) {
+		return lang.translatedArrayHelp("HELPMESSAGE_VERSION");
 	}
 
 	@Override
@@ -34,29 +35,31 @@ public class VersionCommand extends Commands {
 	@Override
 	public void action(String[] args, User user, TextChannel channel) {
 		channel.sendMessage(embed(channel.getGuild()).build()).queue();
-		
+
 	}
-	
+
 	public EmbedBuilder embed(Guild guild) {
 		EmbedBuilder embed = new EmbedBuilder();
 		User user = OusuBot.getOusu().getJda().getUserById("247096601242238991");
 		SelfUser self = OusuBot.getOusu().getJda().getSelfUser();
-		embed.setAuthor(self.getName() + "#" + self.getDiscriminator(), "https://github.com/skiincraft", self.getAvatarUrl());
-		embed.setColor(Color.MAGENTA);
+		embed.setAuthor(self.getName() + "#" + self.getDiscriminator(), "https://github.com/skiincraft",
+				self.getAvatarUrl());
 		OffsetDateTime data = self.getTimeCreated();
-		embed.setDescription("Ou!su é um Discord Bot programado na linguagem de programação Java\n"
-				+ "Esta aplicação Java utiliza o OsuAPI disponibilizado oficialmente por ppy.\n\n"
-				+ "Criado em " + new SimpleDateFormat("dd/MM/yyyy").format(Date.from(data.toInstant())));
-		
+
+		embed.setDescription(getLang().translatedMessages("VERSION_COMMAND_MESSAGE") + " "
+				+ new SimpleDateFormat("dd/MM/yyyy").format(Date.from(data.toInstant())));
+
 		embed.addField("Dependencias", "OsuAPI (oopsjpeg)", true);
 		embed.addField("Versão", "1.0.1", true);
+
 		if (guild.isMember(user)) {
 			embed.addField("Author", user.getAsMention() + " - [Sknz](https://github.com/skiincraft)", true);
 		} else {
 			embed.addField("Author", "[Sknz](https://github.com/skiincraft)", true);
 		}
-		
+
+		embed.setColor(Color.MAGENTA);
 		embed.setFooter("Ou!su Bot | Todos direitos autorizados", user.getAvatarUrl());
-		return embed;	
+		return embed;
 	}
 }

@@ -1,6 +1,5 @@
 package me.skiincraft.discord.ousu.osu;
 
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -23,8 +22,8 @@ import com.oopsjpeg.osu4j.exception.OsuAPIException;
 
 import me.skiincraft.discord.ousu.utils.IntegerUtils;
 
-public class BeatmapOsu extends OsuAPI{
-	
+public class BeatmapOsu extends OsuAPI {
+
 	private String aprovação;
 	private String artista;
 	private float bpm;
@@ -34,7 +33,7 @@ public class BeatmapOsu extends OsuAPI{
 	private GameMode gamemode;
 	private String titulo;
 	private String dificuldade;
-	
+
 	private LazilyLoaded<OsuBeatmapSet> beatmapset;
 	private OsuBeatmap beatmap;
 	private String criadorname;
@@ -42,15 +41,14 @@ public class BeatmapOsu extends OsuAPI{
 	private String data;
 	private String sucessfull;
 	private Language language;
-	
+
 	public BeatmapOsu(int BeatMapID) throws MalformedURLException, OsuAPIException {
-		
-		beatmap = getOsu().beatmaps.getAsQuery(new EndpointBeatmaps.ArgumentsBuilder()
-				.setBeatmapID(BeatMapID).build())
+
+		beatmap = getOsu().beatmaps.getAsQuery(new EndpointBeatmaps.ArgumentsBuilder().setBeatmapID(BeatMapID).build())
 				.resolve().get(0);
-		
+
 		this.aprovação = beatmap.getApproved().getName();
-		this.data = new SimpleDateFormat("dd/MM/yyyy").format(convertZonedDate(beatmap.getApprovedDate())); 
+		this.data = new SimpleDateFormat("dd/MM/yyyy").format(convertZonedDate(beatmap.getApprovedDate()));
 
 		this.artista = beatmap.getArtist();
 		this.bpm = beatmap.getBPM();
@@ -60,16 +58,16 @@ public class BeatmapOsu extends OsuAPI{
 		this.gamemode = beatmap.getMode();
 		this.titulo = beatmap.getTitle();
 		this.dificuldade = beatmap.getVersion();
-		
+
 		this.language = beatmap.getLanguage();
-		
+
 		this.sucessfull = IntegerUtils.getPorcentagem(beatmap.getPlayCount(), beatmap.getPassCount());
-		
+
 		this.beatmapset = beatmap.getBeatmapSet();
 		this.criadorname = beatmap.getCreatorName();
 		this.beatMapURL = beatmap.getURL();
 	}
-	
+
 	public String getSucessfull() {
 		return sucessfull;
 	}
@@ -78,7 +76,7 @@ public class BeatmapOsu extends OsuAPI{
 		Date date = Date.from(zoned.toInstant());
 		return date;
 	}
-	
+
 	public URL getBeatMapURL() {
 		return beatMapURL;
 	}
@@ -86,11 +84,11 @@ public class BeatmapOsu extends OsuAPI{
 	public String getBeatmapCover() {
 		return "https://assets.ppy.sh/beatmaps/" + beatmap.getBeatmapSetID() + "/covers/cover.jpg";
 	}
-	
+
 	public String getBeatmapThumbnail() {
 		return "https://b.ppy.sh/thumb/" + beatmap.getBeatmapSetID() + "l.jpg";
 	}
-	
+
 	public InputStream getBeatmapPreview() {
 		URLConnection conn;
 		try {
@@ -101,23 +99,23 @@ public class BeatmapOsu extends OsuAPI{
 			e.printStackTrace();
 		}
 		return null;
-		
+
 	}
-	
+
 	public String getMapStars() {
 		DecimalFormat decimal = new DecimalFormat("#.0");
 		String result = decimal.format(beatmap.getDifficulty());
-		
-		String dif = beatmap.getDifficulty() +"";
-		int one = Integer.valueOf(dif.charAt(0)+"");
-		int two = Integer.valueOf(dif.charAt(2)+"");
-		
+
+		String dif = beatmap.getDifficulty() + "";
+		int one = Integer.valueOf(dif.charAt(0) + "");
+		int two = Integer.valueOf(dif.charAt(2) + "");
+
 		String fullstars = "";
-		for (int i = 0;i < one;i++) {
-			fullstars += "★" ;
+		for (int i = 0; i < one; i++) {
+			fullstars += "★";
 		}
 		if (two >= 5) {
-			return "**" + fullstars + "✩** (" + result + ")"; 
+			return "**" + fullstars + "✩** (" + result + ")";
 		} else {
 			return "**" + fullstars + "** (" + result + ")";
 		}
@@ -154,7 +152,7 @@ public class BeatmapOsu extends OsuAPI{
 	public String getTitulo() {
 		return titulo;
 	}
-	
+
 	public String getCriadorName() {
 		return criadorname;
 	}
@@ -174,7 +172,7 @@ public class BeatmapOsu extends OsuAPI{
 	public String getData() {
 		return data;
 	}
-	
+
 	public String getLanguageEmoji() {
 		if (language == Language.ANY) {
 			return ":flag_black:";
@@ -207,9 +205,9 @@ public class BeatmapOsu extends OsuAPI{
 			return ":flag_es:";
 		}
 		if (language == Language.SWEDISH) {
-			return ":flag_se:"; 
+			return ":flag_se:";
 		}
 		return ":flag_black:";
 	}
-	
+
 }

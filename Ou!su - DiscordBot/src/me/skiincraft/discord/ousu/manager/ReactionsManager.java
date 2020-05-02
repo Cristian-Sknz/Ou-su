@@ -26,37 +26,42 @@ public abstract class ReactionsManager extends ListenerAdapter {
 		super();
 	}
 
-	public abstract void action(User user, TextChannel channel, String emoji);		
+	public abstract void action(User user, TextChannel channel, String emoji);
 
 	public boolean check(GuildMessageReactionAddEvent event) {
 		String eventMessageID = event.getMessageId();
 		List<ReactionUtils> osuhistorys = ReactionMessage.osuHistory;
-		
+
 		if (event.getUser().isBot()) {
 			return false;
 		}
 		if (osuhistorys.isEmpty()) {
 			return false;
 		}
-		
+
 		ReactionUtils reactionUtils = null;
 		for (ReactionUtils lista : osuhistorys) {
 			if (eventMessageID.equalsIgnoreCase(lista.getMessageID())) {
 				reactionUtils = lista;
 			}
 		}
-		
+
 		if (reactionUtils == null) {
 			return false;
 		}
-		
+
 		utils = reactionUtils;
-		emoji = event.getReaction().getReactionEmote().getEmoji();
+
+		try {
+			emoji = event.getReaction().getReactionEmote().getEmoji();
+		} catch (IllegalStateException e) {
+			return false;
+		}
+
 		this.event = event;
-		
+
 		event.getChannel().removeReactionById(event.getMessageId(), emoji, event.getUser()).queue();
-		
-		
+
 		return true;
 	}
 
@@ -71,7 +76,7 @@ public abstract class ReactionsManager extends ListenerAdapter {
 		List<Role> role = getEvent().getGuild().getRolesByName(rolename, true);
 		List<Role> memberRoles = event.getGuild().getMember(user).getRoles();
 
-		if (memberRoles.contains(role.get(0))){
+		if (memberRoles.contains(role.get(0))) {
 			return true;
 		}
 		return false;
@@ -91,9 +96,11 @@ public abstract class ReactionsManager extends ListenerAdapter {
 
 	@Override
 	public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent event) {
-		if (!check(event)) return;
+		if (!check(event)) {
+			return;
+		}
 		action(event.getUser(), event.getChannel(), emoji);
-		
+
 	}
 
 	public MessageAction sendMessage(String message) {
