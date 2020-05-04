@@ -5,11 +5,8 @@ import java.util.List;
 
 import javax.security.auth.login.LoginException;
 
-import com.oopsjpeg.osu4j.GameMode;
-import com.oopsjpeg.osu4j.backend.EndpointUsers;
-import com.oopsjpeg.osu4j.backend.Osu;
-import com.oopsjpeg.osu4j.exception.OsuAPIException;
-
+import me.skiincraft.api.ousu.OusuAPI;
+import me.skiincraft.api.ousu.exceptions.InvalidTokenException;
 import me.skiincraft.discord.ousu.commands.BeatMapCommand;
 import me.skiincraft.discord.ousu.commands.EmbedCommand;
 import me.skiincraft.discord.ousu.commands.HelpCommand;
@@ -38,9 +35,9 @@ public class OusuBot {
 	JDABuilder build = new JDABuilder(token);
 
 	public static OusuBot ousu;
+	private static OusuAPI osu;
 	private static String token = Token.token; // Isso é uma String estatica com o token.
 	private static JDA jda;
-	private Osu osu;
 	private MySQL connection;
 	private static SelfUser selfUser;
 
@@ -50,7 +47,7 @@ public class OusuBot {
 		return ousu;
 	}
 
-	public Osu getOsu() {
+	public static OusuAPI getOsu() {
 		return osu;
 	}
 
@@ -97,13 +94,15 @@ public class OusuBot {
 			System.out.println("MYSQL: Falhou ao conectar ao mysql.");
 			System.exit(0);
 		}
-		osuLoader();
 		try {
 			jda = build.build();
 			System.out.println("JDA: Conexão foi estabelecida com sucesso");
 			OusuBot.selfUser = jda.getSelfUser();
+			osuLoader();
 		} catch (LoginException e) {
 			System.out.println("JDA: Ocorreu um erro ao logar no bot. Verifique se o Token está correto.");
+		} catch (InvalidTokenException e) {
+			System.out.println(e.getMessage());
 		}
 
 	}
@@ -134,15 +133,8 @@ public class OusuBot {
 		}
 	}
 
-	public void osuLoader() {
-		this.osu = Osu.getAPI(Token.osutoken); // Isso é uma String estatica com o token.
-		try {
-			osu.users.query(new EndpointUsers.ArgumentsBuilder("skiincraft").setMode(GameMode.STANDARD).build());
-			System.out.println("OSUAPI: Foi estabelecida conexão com sucesso");
-		} catch (OsuAPIException e) {
-			System.out.println("OSUAPI: Ocorreu um erro ao conectar ao OSUAPI");
-			e.printStackTrace();
-		}
+	public void osuLoader() throws InvalidTokenException {
+		OusuBot.osu = new OusuAPI(Token.osutoken);
 	}
 
 	public boolean isDBSQL() {

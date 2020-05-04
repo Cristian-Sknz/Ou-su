@@ -1,18 +1,17 @@
 package me.skiincraft.discord.ousu.commands;
 
-import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import com.oopsjpeg.osu4j.GameMode;
-import com.oopsjpeg.osu4j.exception.OsuAPIException;
-
+import me.skiincraft.api.ousu.beatmaps.Beatmap;
+import me.skiincraft.api.ousu.exceptions.InvalidBeatmapException;
+import me.skiincraft.api.ousu.modifiers.Gamemode;
+import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.embeds.BeatmapEmbed;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
-import me.skiincraft.discord.ousu.osu.BeatmapOsu;
 import me.skiincraft.discord.ousu.utils.DefaultEmbed;
 import me.skiincraft.discord.ousu.utils.StringUtils;
 import net.dv8tion.jda.api.entities.Message;
@@ -43,22 +42,15 @@ public class BeatMapCommand extends Commands {
 		}
 
 		if (args.length == 2) {
-			BeatmapOsu osuBeat = null;
+			Beatmap osuBeat;
 			try {
-				osuBeat = new BeatmapOsu(Integer.valueOf(args[1]));
-			} catch (MalformedURLException | OsuAPIException e) {
-				e.printStackTrace();
-				return;
-			} catch (IndexOutOfBoundsException e) {
+				osuBeat = OusuBot.getOsu().getBeatmap(Integer.valueOf(args[1]));
+			} catch (InvalidBeatmapException e) {
 				String[] msg = getLang().translatedArrayOsuMessages("INEXISTENT_BEATMAPID");
 				sendEmbedMessage(new DefaultEmbed(msg[0], StringUtils.arrayToString(1, msg))).queue();
 				return;
 			} catch (NumberFormatException e) {
 				String[] msg = getLang().translatedArrayOsuMessages("USE_NUMBERS");
-				sendEmbedMessage(new DefaultEmbed(msg[0], StringUtils.arrayToString(1, msg))).queue();
-				return;
-			} catch (UnsupportedOperationException e) {
-				String[] msg = getLang().translatedArrayOsuMessages("NO_HAS_HISTORY");
 				sendEmbedMessage(new DefaultEmbed(msg[0], StringUtils.arrayToString(1, msg))).queue();
 				return;
 			}
@@ -67,21 +59,21 @@ public class BeatMapCommand extends Commands {
 
 				@Override
 				public void accept(Message message) {
-					message.getChannel().sendFile(BeatmapEmbed.idb, message.getEmbeds().get(0).getTitle() + ".mp3").queue();
+					message.getChannel().sendFile(BeatmapEmbed.idb, message.getEmbeds().get(0).getTitle() + ".mp3")
+							.queue();
 				}
 			});
-			return;
 		}
 	}
 
-	public GameMode getGamemode(String gamemode) {
+	public Gamemode getGamemode(String gamemode) {
 		String gm = gamemode.toLowerCase();
-		Map<String, GameMode> map = new HashMap<>();
+		Map<String, Gamemode> map = new HashMap<>();
 
-		map.put("standard", GameMode.STANDARD);
-		map.put("catch", GameMode.CATCH_THE_BEAT);
-		map.put("mania", GameMode.MANIA);
-		map.put("taiko", GameMode.TAIKO);
+		map.put("standard", Gamemode.Standard);
+		map.put("catch", Gamemode.Catch_the_Beat);
+		map.put("mania", Gamemode.Mania);
+		map.put("taiko", Gamemode.Taiko);
 
 		if (map.containsKey(gm)) {
 			return map.get(gamemode);

@@ -1,48 +1,52 @@
 package me.skiincraft.discord.ousu.embeds;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 
-import com.oopsjpeg.osu4j.exception.OsuAPIException;
-
+import me.skiincraft.api.ousu.beatmaps.Beatmap;
 import me.skiincraft.discord.ousu.OusuBot;
-import me.skiincraft.discord.ousu.osu.BeatmapOsu;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.User;
 
 public class BeatmapEmbed {
-	
+
 	public static InputStream idb;
-	
-	public synchronized static EmbedBuilder beatmapEmbed(BeatmapOsu beatmap) {
+
+	public synchronized static EmbedBuilder beatmapEmbed(Beatmap beatmap) {
 		EmbedBuilder embed = new EmbedBuilder();
 
-		embed.setTitle(beatmap.getTitulo());
-		int id = 0;
-		try {
-			id = beatmap.getCriador().get().getID();
-		} catch (OsuAPIException e) {
-			e.printStackTrace();
-		}
-		embed.setAuthor(beatmap.getCriadorName(), "https://osu.ppy.sh/users/" + id, "https://a.ppy.sh/" + id);
-		embed.addField("Artista:", beatmap.getArtista(), true);
-		embed.addField("BPM:", "" + beatmap.getBpm(), true);
-		embed.addField("Genero:", "" + beatmap.getGenero().getName(), true);
+		embed.setTitle(beatmap.getTitle());
+		int id = beatmap.getCreatorId();
 
-		embed.addField("Modo de Jogo",
-				"[" + beatmap.getGamemode().getName() + "](osu://dl/" + beatmap.getBeatmap().getBeatmapSetID() + ")",
+		embed.setAuthor(beatmap.getCreator(), "https://osu.ppy.sh/users/" + id, "https://a.ppy.sh/" + id);
+
+		embed.addField("Artista:", beatmap.getArtistUnicode(), true);
+		embed.addField("BPM:", "" + beatmap.getBPM(), true);
+		embed.addField("Genero:", "" + beatmap.getGenre().getDisplayName(), true);
+
+		embed.addField("Modo de Jogo", beatmap.getGameMode().getDisplayName(), true);
+		embed.addField("Estrelas:", beatmap.getStarsEmoji(), true);
+		embed.addField("Dificuldade:", beatmap.getVersion(), true);
+
+		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy - HH:mm");
+
+		embed.addField("Aprovado em", format.format(beatmap.getApprovedDate()) + "\n" + beatmap.getApprovated().name(),
 				true);
-		embed.addField("Estrelas:", beatmap.getMapStars(), true);
-		embed.addField("Dificuldade:", beatmap.getDificuldade(), true);
+		embed.addField("Taxa de Sucesso:", beatmap.getSuccessRate(), true);
+		embed.addField("Combo Maximo", beatmap.getMaxCombo() + "", true);
 
-		embed.addField("Aprovado em", beatmap.getData() + "\n" + beatmap.getAprovação(), true);
-		embed.addField("Taxa de Sucesso:", beatmap.getSucessfull(), true);
-		embed.addField("Combo Maximo", beatmap.getCombo() + "", true);
-
-		embed.setImage(beatmap.getBeatmapCover());
+		embed.setImage(beatmap.getBeatmapCoverUrl());
 		User user = OusuBot.getOusu().getJda().getUserById("247096601242238991");
 		embed.setFooter(user.getName() + "#" + user.getDiscriminator() + " | Ou!su bot ™", user.getAvatarUrl());
-		idb = beatmap.getBeatmapPreview();
+
+		try {
+			idb = beatmap.getBeatmapPreview();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return embed;
+		}
 		return embed;
 	}
-	
+
 }

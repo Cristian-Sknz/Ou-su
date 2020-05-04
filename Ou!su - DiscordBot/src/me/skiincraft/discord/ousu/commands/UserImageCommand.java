@@ -1,18 +1,16 @@
 package me.skiincraft.discord.ousu.commands;
 
-import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.oopsjpeg.osu4j.GameMode;
-import com.oopsjpeg.osu4j.exception.OsuAPIException;
-
+import me.skiincraft.api.ousu.exceptions.InvalidUserException;
+import me.skiincraft.api.ousu.modifiers.Gamemode;
+import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.imagebuilders.OsuProfile;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
-import me.skiincraft.discord.ousu.osu.UserOsu;
 import me.skiincraft.discord.ousu.utils.DefaultEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -20,7 +18,7 @@ import net.dv8tion.jda.api.entities.User;
 public class UserImageCommand extends Commands {
 
 	public UserImageCommand() {
-		super("ou!", "userimage", "ou!userimage <nickname> <gamemode>", Arrays.asList("osuimage"));
+		super("ou!", "userimage", "ou!userimage <nickname> <Gamemode>", Arrays.asList("osuimage"));
 	}
 
 	@Override
@@ -42,57 +40,50 @@ public class UserImageCommand extends Commands {
 
 		if (args.length == 2) {
 
-			UserOsu osuUser;
+			me.skiincraft.api.ousu.users.User osuUser;
 			try {
-				osuUser = new UserOsu(args[1], GameMode.STANDARD);
-			} catch (MalformedURLException | OsuAPIException e) {
-				e.printStackTrace();
-				return;
-			} catch (IndexOutOfBoundsException e) {
+				osuUser = OusuBot.getOsu().getUser(args[1], Gamemode.Standard);
+			} catch (InvalidUserException e) {
 				sendEmbedMessage(new DefaultEmbed("Usuario inexistente", "Este usuario que você solicitou não existe."))
 						.queue();
 				return;
 			}
 
-			channel.sendFile(OsuProfile.drawImage(osuUser), osuUser.getUserid() + "_osu.png").queue();
+			channel.sendFile(OsuProfile.drawImage(osuUser), osuUser.getUserID() + "_osu.png").queue();
 			return;
 		}
 
 		if (args.length >= 3) {
-			GameMode gm = getGamemode(args[2]);
+			Gamemode gm = getGamemode(args[2]);
 			if (gm == null) {
-				gm = GameMode.STANDARD;
+				gm = Gamemode.Standard;
 			}
 
-			UserOsu osuUser;
+			me.skiincraft.api.ousu.users.User osuUser;
 			try {
-				osuUser = new UserOsu(args[1], gm);
-			} catch (MalformedURLException | OsuAPIException e) {
-				e.printStackTrace();
-				return;
-			} catch (IndexOutOfBoundsException e) {
+				osuUser = OusuBot.getOsu().getUser(args[1], gm);
+			} catch (InvalidUserException e) {
 				sendEmbedMessage(new DefaultEmbed("Usuario inexistente", "Este usuario que você solicitou não existe."))
 						.queue();
-				;
 				return;
 			}
 
-			channel.sendFile(OsuProfile.drawImage(osuUser), osuUser.getUserid() + "_osu.png").queue();
+			channel.sendFile(OsuProfile.drawImage(osuUser), osuUser.getUserID() + "_osu.png").queue();
 			return;
 		}
 	}
 
-	public GameMode getGamemode(String gamemode) {
-		String gm = gamemode.toLowerCase();
-		Map<String, GameMode> map = new HashMap<>();
+	public Gamemode getGamemode(String mode) {
+		String gm = mode.toLowerCase();
+		Map<String, Gamemode> map = new HashMap<>();
 
-		map.put("standard", GameMode.STANDARD);
-		map.put("catch", GameMode.CATCH_THE_BEAT);
-		map.put("mania", GameMode.MANIA);
-		map.put("taiko", GameMode.TAIKO);
+		map.put("standard", Gamemode.Standard);
+		map.put("catch", Gamemode.Catch_the_Beat);
+		map.put("mania", Gamemode.Mania);
+		map.put("taiko", Gamemode.Taiko);
 
 		if (map.containsKey(gm)) {
-			return map.get(gamemode);
+			return map.get(gm);
 		}
 
 		return null;

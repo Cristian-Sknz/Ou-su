@@ -1,19 +1,16 @@
 package me.skiincraft.discord.ousu.commands.reactions;
 
-import java.net.MalformedURLException;
+import java.util.List;
 import java.util.function.Consumer;
 
-import com.oopsjpeg.osu4j.GameMode;
-import com.oopsjpeg.osu4j.exception.OsuAPIException;
-
+import me.skiincraft.api.ousu.beatmaps.Beatmap;
+import me.skiincraft.api.ousu.modifiers.Gamemode;
+import me.skiincraft.api.ousu.scores.Score;
+import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.commands.TopUserCommand;
 import me.skiincraft.discord.ousu.embeds.BeatmapEmbed;
 import me.skiincraft.discord.ousu.events.ReactionUtils;
 import me.skiincraft.discord.ousu.manager.ReactionsManager;
-import me.skiincraft.discord.ousu.osu.BeatmapOsu;
-import me.skiincraft.discord.ousu.osu.ScoreType;
-import me.skiincraft.discord.ousu.osu.UserOsu;
-import me.skiincraft.discord.ousu.osu.UserScores;
 import me.skiincraft.discord.ousu.utils.ReactionMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
@@ -36,13 +33,8 @@ public class HistoryEvent extends ReactionsManager {
 				v = getUtils().getValue() - 1;
 			}
 
-			EmbedBuilder embed = null;
-			try {
-				embed = TopUserCommand.embed(
-						new UserScores(new UserOsu(getUtils().getMsg(), GameMode.STANDARD), ScoreType.TopsScore, v));
-			} catch (MalformedURLException | OsuAPIException e) {
-				return;
-			}
+			EmbedBuilder embed = TopUserCommand
+					.embed(OusuBot.getOsu().getTopUser(getUtils().getMsg(), Gamemode.Standard, 5), v);
 
 			ReactionMessage.osuHistory
 					.add(new ReactionUtils(getUtils().getUser(), getUtils().getMessageID(), getUtils().getMsg(), v));
@@ -55,14 +47,9 @@ public class HistoryEvent extends ReactionsManager {
 
 		if (emoji.equalsIgnoreCase("◼")) {
 			if (ReactionMessage.historyLastMessage.containsKey(user)) {
-				EmbedBuilder embed = null;
 
-				try {
-					embed = TopUserCommand.embed(new UserScores(new UserOsu(getUtils().getMsg(), GameMode.STANDARD),
-							ScoreType.TopsScore, getUtils().getValue()));
-				} catch (MalformedURLException | OsuAPIException e) {
-					e.printStackTrace();
-				}
+				EmbedBuilder embed = TopUserCommand.embed(
+						OusuBot.getOsu().getTopUser(getUtils().getMsg(), Gamemode.Standard, 5), getUtils().getValue());
 
 				channel.editMessageById(getEvent().getMessageId(), embed.build()).queue();
 				ReactionMessage.historyLastMessage.remove(user);
@@ -73,41 +60,35 @@ public class HistoryEvent extends ReactionsManager {
 				}
 
 			} else {
-				UserScores userss;
-				try {
-					userss = new UserScores(new UserOsu(getUtils().getMsg(), GameMode.STANDARD), ScoreType.TopsScore,
-							getUtils().getValue());
-					int beatmapset = userss.getBeatmap().getID();
-					BeatmapOsu osuBeat = new BeatmapOsu(beatmapset);
+				List<Score>	userss = OusuBot.getOsu().getTopUser(getUtils().getMsg(), Gamemode.Standard, getUtils().getValue());
 
-					String thismessageid = getEvent().getMessageId();
+				int beatmapset = userss.get(getUtils().getValue()).getBeatmapID();
+				Beatmap beatmap = OusuBot.getOsu().getBeatmap(beatmapset);
 
-					Message message = channel.getHistory().getMessageById(thismessageid);
+				String thismessageid = getEvent().getMessageId();
 
-					MessageBuilder sb = new MessageBuilder(message);
-					ReactionMessage.historyLastMessage.put(user, sb);
-					channel.editMessageById(getEvent().getMessageId(), BeatmapEmbed.beatmapEmbed(osuBeat).build())
-							.queue(new Consumer<Message>() {
+				Message message = channel.getHistory().getMessageById(thismessageid);
 
-								@Override
-								public void accept(Message message) {
+				MessageBuilder sb = new MessageBuilder(message);
+				ReactionMessage.historyLastMessage.put(user, sb);
+				channel.editMessageById(getEvent().getMessageId(), BeatmapEmbed.beatmapEmbed(beatmap).build())
+						.queue(new Consumer<Message>() {
 
-									message.getChannel()
-											.sendFile(BeatmapEmbed.idb,
-													message.getEmbeds().get(0).getTitle() + ".mp3")
-											.queue(new Consumer<Message>() {
+							@Override
+							public void accept(Message message) {
 
-												@Override
-												public void accept(Message t) {
-													ReactionMessage.removeAudioMessage.put(user, t.getId());
-												}
-											});
+								message.getChannel()
+										.sendFile(BeatmapEmbed.idb, message.getEmbeds().get(0).getTitle() + ".mp3")
+										.queue(new Consumer<Message>() {
 
-								}
-							});
-				} catch (MalformedURLException | OsuAPIException e) {
-					e.printStackTrace();
-				}
+											@Override
+											public void accept(Message t) {
+												ReactionMessage.removeAudioMessage.put(user, t.getId());
+											}
+										});
+
+							}
+						});
 			}
 		}
 
@@ -117,14 +98,15 @@ public class HistoryEvent extends ReactionsManager {
 			v += 1;
 
 			try {
-				EmbedBuilder embed = TopUserCommand.embed(
-						new UserScores(new UserOsu(getUtils().getMsg(), GameMode.STANDARD), ScoreType.TopsScore, v));
+				EmbedBuilder embed = TopUserCommand
+						.embed(OusuBot.getOsu().getTopUser(getUtils().getMsg(), Gamemode.Standard, 5), v);
+
 				channel.editMessageById(getEvent().getMessageId(), embed.build()).queue();
 				if (ReactionMessage.removeAudioMessage.containsKey(user)) {
 					channel.deleteMessageById(ReactionMessage.removeAudioMessage.get(user)).queue();
 				}
 				ReactionMessage.osuHistory.remove(getUtils());
-			} catch (IndexOutOfBoundsException | MalformedURLException | OsuAPIException e) {
+			} catch (IndexOutOfBoundsException e) {
 				return;
 			}
 

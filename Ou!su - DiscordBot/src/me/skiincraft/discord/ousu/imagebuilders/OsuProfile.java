@@ -9,19 +9,19 @@ import java.io.InputStream;
 import java.net.URL;
 import java.text.DecimalFormat;
 
+import me.skiincraft.api.ousu.users.User;
 import me.skiincraft.discord.ousu.api.ImageBuilder;
-import me.skiincraft.discord.ousu.osu.UserOsu;
 import me.skiincraft.discord.ousu.utils.CustomFont;
 import me.skiincraft.discord.ousu.utils.CustomFont.CustomFonts;
 
 public class OsuProfile {
 
-	public static InputStream drawImage(UserOsu osuUser) {
+	public static InputStream drawImage(User osuUser) {
 		DecimalFormat formatter = new DecimalFormat("#");
-		ImageBuilder builder = new ImageBuilder(osuUser.getUser().getID() + "_osuProfile", 1000, 750);
+		ImageBuilder builder = new ImageBuilder(osuUser.getUserID() + "_osuProfile", 1000, 750);
 		try {
 			builder.addImage(new File("resource/osu_images/Background.png"), 0, 0, builder.getSize());
-			URL url = new URL(osuUser.getAvatarURL());
+			URL url = new URL(osuUser.getUserAvatar());
 			builder.addImage(url, 5, 5, new Dimension(192, 192));
 
 			builder.addImage(new File("resource/osu_images/Overlayer.png"), 0, 0, builder.getSize());
@@ -32,26 +32,26 @@ public class OsuProfile {
 			String accuracy = "";
 			String level = "";
 			try {
-				accuracy = formatter.format(osuUser.getUser().getAccuracy());
-				level = formatter.format(osuUser.getUser().getLevel());
+				accuracy = formatter.format(osuUser.getAccuracy());
+				level = formatter.format(osuUser.getLevel());
 			} catch (Exception ex) {
 				System.err.println("Erro ao formatar numero: " + ex);
 			}
 			accuracy += "%";
 
 			builder.getGraphic().setColor(new Color(0, 137, 255));
-			builder.addCentralizedStringY(osuUser.getUsername(), 345, 85, defaultfont);
+			builder.addCentralizedStringY(osuUser.getUserName(), 345, 85, defaultfont);
 			builder.addCentralizedStringY(accuracy, 370, 120, defaultfont);
-			builder.addCentralizedStringY(osuUser.getUser().getID() + "", 448, 178, defaultfont);
-			builder.addCentralizedStringY(osuUser.getUser().getPlayCount() + "", 449, 150, defaultfont);
+			builder.addCentralizedStringY(osuUser.getUserID() + "", 448, 178, defaultfont);
+			builder.addCentralizedStringY(osuUser.getPlayCount() + "", 449, 150, defaultfont);
 
 			// MEIO
 			Font midfont = CustomFont.getFont(CustomFonts.Lane_Cane, Font.PLAIN, 78F);
 			builder.getGraphic().setColor(Color.YELLOW);
-			builder.addCentralizedString("#" + osuUser.getRank(), 775, 357, midfont);
-			builder.addCentralizedStringY("#" + osuUser.getNacionalRank(), 611, 476, midfont.deriveFont(44F));
+			builder.addCentralizedString("#" + osuUser.getRanking(), 775, 357, midfont);
+			builder.addCentralizedStringY("#" + osuUser.getNacionalRanking(), 611, 476, midfont.deriveFont(44F));
 
-			String pais = osuUser.getPais().getAlpha2();
+			String pais = osuUser.getCountryCode();
 
 			builder.addImage(new URL("https://osu.ppy.sh/images/flags/" + pais + ".png"), 852, 424,
 					new Dimension(96, 65));
@@ -59,7 +59,7 @@ public class OsuProfile {
 					CustomFont.getFont(CustomFonts.InsanityBurger, Font.PLAIN, 36F));// Bandeira
 
 			builder.getGraphic().setColor(new Color(255, 194, 60));
-			builder.addCentralizedString(osuUser.getPp() + "", 93, 270,
+			builder.addCentralizedString(osuUser.getPP() + "", 93, 270,
 					CustomFont.getFont(CustomFonts.InsanityBurger, Font.PLAIN, 56F));
 			// Level
 			builder.getGraphic().setColor(Color.YELLOW);
@@ -67,14 +67,14 @@ public class OsuProfile {
 
 			// Baixo
 			builder.getGraphic().setColor(Color.WHITE);
-			builder.addCentralizedStringY(osuUser.getTotalscore() + "", 45, 697, new Font("Arial", Font.PLAIN, 32));
+			builder.addCentralizedStringY(osuUser.getTotalScore() + "", 45, 697, new Font("Arial", Font.PLAIN, 32));
 
 			// Notas
-			scoreCalculates(builder, osuUser.getUser().getCountRankSSH(), 445);
-			scoreCalculates(builder, osuUser.getUser().getCountRankSS(), 562);
-			scoreCalculates(builder, osuUser.getUser().getCountRankSH(), 683);
-			scoreCalculates(builder, osuUser.getUser().getCountRankS(), 805);
-			scoreCalculates(builder, osuUser.getUser().getCountRankA(), 921);
+			scoreCalculates(builder, osuUser.getSSh(), 445);
+			scoreCalculates(builder, osuUser.getSS(), 562);
+			scoreCalculates(builder, osuUser.getSh(), 683);
+			scoreCalculates(builder, osuUser.getS(), 805);
+			scoreCalculates(builder, osuUser.getA(), 921);
 
 			return builder.buildInput();
 

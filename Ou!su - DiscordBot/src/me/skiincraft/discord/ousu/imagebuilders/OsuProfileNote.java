@@ -5,21 +5,21 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import me.skiincraft.api.ousu.users.User;
 import me.skiincraft.discord.ousu.api.ImageBuilder;
-import me.skiincraft.discord.ousu.osu.UserOsu;
 
 public class OsuProfileNote {
 
-	public static InputStream drawImage(UserOsu osuUser) {
-		ImageBuilder builder = new ImageBuilder(osuUser.getUser().getID() + "_osuProfileNote", 900, 250);
+	public static InputStream drawImage(User osuUser) {
+		ImageBuilder builder = new ImageBuilder(osuUser.getUserID() + "_osuProfileNote", 900, 250);
 		try {
 			builder.addImage(new File("resource/osu_images/notes/Layer.png"), 0, 0, builder.getSize());
 
-			scoreCalculates(builder, osuUser.getUser().getCountRankSSH(), 150);
-			scoreCalculates(builder, osuUser.getUser().getCountRankSS(), 294);
-			scoreCalculates(builder, osuUser.getUser().getCountRankSH(), 444);
-			scoreCalculates(builder, osuUser.getUser().getCountRankS(), 595);
-			scoreCalculates(builder, osuUser.getUser().getCountRankA(), 739);
+			scoreCalculates(builder, osuUser.getSSh(), 150);
+			scoreCalculates(builder, osuUser.getSS(), 294);
+			scoreCalculates(builder, osuUser.getSh(), 444);
+			scoreCalculates(builder, osuUser.getS(), 595);
+			scoreCalculates(builder, osuUser.getA(), 739);
 
 			return builder.buildInput();
 

@@ -1,23 +1,22 @@
 package me.skiincraft.discord.ousu.commands;
 
 import java.awt.Color;
-import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import com.oopsjpeg.osu4j.ApprovalState;
-import com.oopsjpeg.osu4j.GameMode;
-import com.oopsjpeg.osu4j.OsuBeatmap;
-import com.oopsjpeg.osu4j.exception.OsuAPIException;
-
+import me.skiincraft.api.ousu.beatmaps.Beatmap;
+import me.skiincraft.api.ousu.exceptions.InvalidUserException;
+import me.skiincraft.api.ousu.exceptions.NoHistoryException;
+import me.skiincraft.api.ousu.modifiers.Approvated;
+import me.skiincraft.api.ousu.modifiers.Gamemode;
+import me.skiincraft.api.ousu.scores.Score;
+import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.customemoji.OsuEmoji;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
-import me.skiincraft.discord.ousu.osu.ScoreType;
-import me.skiincraft.discord.ousu.osu.UserOsu;
-import me.skiincraft.discord.ousu.osu.UserScores;
 import me.skiincraft.discord.ousu.utils.DefaultEmbed;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -50,7 +49,7 @@ public class RecentUserCommand extends Commands {
 
 		if (args.length >= 2) {
 
-			UserOsu osuUser;
+			List<Score> osuUser;
 			try {
 
 				StringBuffer stringArgs = new StringBuffer();
@@ -58,34 +57,22 @@ public class RecentUserCommand extends Commands {
 					stringArgs.append(args[i] + " ");
 				}
 				int length = stringArgs.toString().length() - 1;
-				osuUser = new UserOsu(stringArgs.toString().substring(0, length), GameMode.STANDARD);
+				osuUser = OusuBot.getOsu().getRecentUser(stringArgs.toString().substring(0, length), 5);
+				@SuppressWarnings("unused")
+				Score score = osuUser.get(0);
 
-			} catch (MalformedURLException | OsuAPIException e) {
-				e.printStackTrace();
-				return;
-			} catch (IndexOutOfBoundsException e) {
+			} catch (InvalidUserException e) {
 				sendEmbedMessage(new DefaultEmbed("Usuario inexistente", "Este usuario que você solicitou não existe."))
 						.queue();
 				return;
-			} catch (UnsupportedOperationException e) {
-				sendEmbedMessage(new DefaultEmbed("OsuAPI",
-						"Não foi possivel pegar as informações deste usuario\nPois a API esta delimitando isso."))
+			} catch (NoHistoryException | NullPointerException e) {
+				sendEmbedMessage(
+						new DefaultEmbed("Não há historico", "Este usuario que você solicitou não tem historico"))
 								.queue();
-				;
 				return;
 			}
 
-			if (osuUser.getLastscore() == null) {
-				sendEmbedMessage(new DefaultEmbed("Não há historico",
-						"Este usuario que você solicitou não jogou nada nas ultimas 24h.")).queue();
-				return;
-			} else if (osuUser.getLastscore().size() == 0) {
-				sendEmbedMessage(new DefaultEmbed("Não há historico",
-						"Este usuario que você solicitou não jogou nada nas ultimas 24h.")).queue();
-				return;
-			}
-
-			sendEmbedMessage(embed(new UserScores(osuUser, ScoreType.LastScore, 0))).queue(message -> {
+			sendEmbedMessage(embed(osuUser, 0)).queue(message -> {
 				message.addReaction("U+25C0").queue();
 				message.addReaction("U+25FC").queue();
 				message.addReaction("U+25B6").queue();
@@ -96,76 +83,74 @@ public class RecentUserCommand extends Commands {
 		}
 	}
 
-	public static EmbedBuilder embed(UserScores osuUser) {
+	public static EmbedBuilder embed(List<Score> scorelist, int order) {
 		EmbedBuilder embed = new EmbedBuilder();
-
-		String inicial = getRankEmote(osuUser);
+		Score score = scorelist.get(order);
+		String inicial = getRankEmote(score);
 
 		embed.setColor(Color.gray);
-		embed.setTitle(inicial + " " + osuUser.getUsername() + " | Histórico do Jogador");
+		embed.setTitle(inicial + " " + score.getUsername() + " | Histórico do Jogador");
 
 		StringBuilder str = new StringBuilder();
 
+		me.skiincraft.api.ousu.users.User user = score.getUser();
+
 		str.append("Você esta visualizando os beatmaps jogados nas ultimas 24h ");
-		str.append("de [" + osuUser.getUsername() + "]");
-		str.append("(" + osuUser.getUserOsu().getUserUrl() + ")");
+		str.append("de [" + score.getUsername() + "]");
+		str.append("(" + user.getURL() + ")");
 
 		embed.setDescription(str.toString());
 
-		OsuBeatmap beat = osuUser.getBeatmap();
+		Beatmap beatmap = score.getBeatmap();
 
 		String title = "";
-		try {
-			StringBuilder beatmaptitle = new StringBuilder();
+		StringBuilder beatmaptitle = new StringBuilder();
 
-			beatmaptitle.append("[" + beat.getTitle() + "]");
-			beatmaptitle.append("(" + beat.getURL().toString() + ")");
-			beatmaptitle.append("por `" + beat.getArtist() + "`");
+		beatmaptitle.append("[" + beatmap.getTitle() + "]");
+		beatmaptitle.append("(" + beatmap.getURL() + ")");
+		beatmaptitle.append("por `" + beatmap.getArtist() + "`");
 
-			title = beatmaptitle.toString();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
+		title = beatmaptitle.toString();
 
 		embed.addField("Beatmap:", title, true);
-		embed.addField("Status:", "`" + getApproval(beat.getApproved()) + "`\n" + beat.getVersion(), true);
+		embed.addField("Status:", "`" + getApproval(beatmap.getApprovated()) + "`\n" + beatmap.getVersion(), true);
 
-		String h300 = OsuEmoji.Hit300.getEmojiString() + ": " + osuUser.getHit300();
-		String h100 = OsuEmoji.Hit100.getEmojiString() + ": " + osuUser.getHit100();
-		String h50 = OsuEmoji.Hit50.getEmojiString() + ": " + osuUser.getHit50();
-		String miss = OsuEmoji.Miss.getEmojiString() + ": " + osuUser.getMiss();
-		String pp = OsuEmoji.PP.getEmojiString() + ": ";
+		String h300 = OsuEmoji.Hit300.getEmojiString() + ": " + score.get300();
+		String h100 = OsuEmoji.Hit100.getEmojiString() + ": " + score.get100();
+		String h50 = OsuEmoji.Hit50.getEmojiString() + ": " + score.get50();
+		String miss = OsuEmoji.Miss.getEmojiString() + ": " + score.getMiss();
+		//String pp = OsuEmoji.PP.getEmojiString() + ": ";
 		String l = "\n";
 		String field = h300 + l + h100 + l + h50 + l + miss + l;
 
 		embed.addField("Pontuação", field, true);
-		embed.addField("Pontuação total:", osuUser.getScore() + "", true);
-		embed.addField("Combo Maximo:", osuUser.getMaxCombo() + "/" + osuUser.getBeatmap().getMaxCombo(), true);
+		embed.addField("Pontuação total:", score.getScore() + "", true);
+		embed.addField("Combo Maximo:", score.getMaxCombo() + "/" + score.getBeatmap().getMaxCombo(), true);
 
-		embed.addField("PP", pp + osuUser.getMapPP() + "", true);
+		//embed.addField("PP", pp + score.getScorePP() + "", true);
 
-		int id = osuUser.getBeatmap().getBeatmapSetID();
+		int id = score.getBeatmap().getBeatmapSetID();
 		String url = "https://assets.ppy.sh/beatmaps/" + id + "/covers/cover.jpg?";
 
 		linkcover = url;
-		embed.setThumbnail(osuUser.getAvatarURL());
+		embed.setThumbnail(user.getUserAvatar());
 		embed.setImage(url);
 
-		String author = osuUser.getBeatMapCreator();
-		embed.setFooter("[" + beat.getID() + "] " + beat.getTitle() + " por " + beat.getArtist() + " | Mapa criado por "
-				+ author);
+		String author = beatmap.getCreator();
+		embed.setFooter("[" + beatmap.getBeatmapID() + "] " + beatmap.getTitle() + " por " + beatmap.getArtist()
+				+ " | Mapa criado por " + author);
 
 		return embed;
 	}
 
-	public GameMode getGamemode(String gamemode) {
+	public Gamemode getGamemode(String gamemode) {
 		String gm = gamemode.toLowerCase();
-		Map<String, GameMode> map = new HashMap<>();
+		Map<String, Gamemode> map = new HashMap<>();
 
-		map.put("standard", GameMode.STANDARD);
-		map.put("catch", GameMode.CATCH_THE_BEAT);
-		map.put("mania", GameMode.MANIA);
-		map.put("taiko", GameMode.TAIKO);
+		map.put("standard", Gamemode.Standard);
+		map.put("catch", Gamemode.Catch_the_Beat);
+		map.put("mania", Gamemode.Mania);
+		map.put("taiko", Gamemode.Taiko);
 
 		if (map.containsKey(gm)) {
 			return map.get(gamemode);
@@ -174,16 +159,16 @@ public class RecentUserCommand extends Commands {
 		return null;
 	}
 
-	public static String getApproval(ApprovalState approval) {
-		Map<ApprovalState, String> map = new HashMap<>();
+	public static String getApproval(Approvated approval) {
+		Map<Approvated, String> map = new HashMap<>();
 
-		map.put(ApprovalState.RANKED, "Ranqueado");
-		map.put(ApprovalState.QUALIFIED, "Qualificado");
-		map.put(ApprovalState.PENDING, "Pendente");
-		map.put(ApprovalState.APPROVED, "Aprovado");
-		map.put(ApprovalState.LOVED, "Loved");
-		map.put(ApprovalState.GRAVEYARD, "Cemiterio");
-		map.put(ApprovalState.WIP, "WorkInProgress");
+		map.put(Approvated.Ranked, "Ranqueado");
+		map.put(Approvated.Qualified, "Qualificado");
+		map.put(Approvated.Pending, "Pendente");
+		map.put(Approvated.Approved, "Aprovado");
+		map.put(Approvated.Loved, "Loved");
+		map.put(Approvated.Graveyard, "Cemiterio");
+		map.put(Approvated.WIP, "WorkInProgress");
 
 		if (map.containsKey(approval)) {
 			return map.get(approval);
@@ -192,8 +177,8 @@ public class RecentUserCommand extends Commands {
 		return "Não classificado";
 	}
 
-	public static String getRankEmote(UserScores osuUser) {
-		String rank = osuUser.getBeatMapRank();
+	public static String getRankEmote(Score osuUser) {
+		String rank = osuUser.getRank();
 		if (rank.equalsIgnoreCase("SSH")) {
 			return OsuEmoji.SSPlus.getEmojiString();
 		}
