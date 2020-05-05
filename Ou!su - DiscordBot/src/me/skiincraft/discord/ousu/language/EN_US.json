@@ -1,53 +1,65 @@
 {
   "Help": {
-	"OSU_HELPMESSAGE_BEATMAP": "This command allows you to capture information from a beatmap{l}Just enter the beatmap ID.{l}Not available for Beatmaps set",
-    "OSU_HELPMESSAGE_RECENTUSER": "Este comando possibilita mostar os beatmaps jogados{l}nas ultimas 24h de um jogador{l}O maximo de estatisticas que serão mostradas são 5",
-    "OSU_HELPMESSAGE_TOPUSER": "Este comando possibilita mostar as melhores estatisticas de um jogador{l}O maximo de estatisticas que serão mostradas são 5",
-    "OSU_HELPMESSAGE_USER": "Verifique as informações de um jogador{l}Inserindo o Username ou ID",
-    "OSU_HELPMESSAGE_USERIMAGE": "Verifique as informações de um jogador{l}Inserindo o Username ou ID",        
-    "HELPMESSAGE_EMBED": "Este comando serve para criar embeds simples.",
-    "HELPMESSAGE_HELP": "Veja os comandos disponiveis, ou menus de ajuda de cada comando",
-    "HELPMESSAGE_INVITE": "Me convide para seu servidor,{l} ou me conheça mais de perto!",
-    "HELPMESSAGE_PREFIX": "Troque o prefixo do servidor",
-    "HELPMESSAGE_VERSION": "Verifique a versão do bot e mais outras coisas.",
-    "INSUFICIENT_PERMISSIONS": "Permissão Insuficiente{l}Você não tem permissão para executar este comando",
-	"NO_COMMAND_DESCRIPTION": "Não foi definido nenhuma descrição para este comando."
+	"OSU_HELPMESSAGE_BEATMAP": "This command allows you to capture information from a beatmap{l}Just enter the beatmap ID.",
+    "OSU_HELPMESSAGE_RECENTUSER": "This command allows you to show recently played beatmaps.",
+    "OSU_HELPMESSAGE_TOPUSER": "This command is possible to view the best statistics of a player.",
+    "OSU_HELPMESSAGE_USER": "Check a player's information{l}Entering username or ID.",
+    "OSU_HELPMESSAGE_USERIMAGE": "Check a player's information{l}Entering username or ID.",        
+    "HELPMESSAGE_EMBED": "This command is used to create simple embedding.",
+    "HELPMESSAGE_HELP": "See available commands or help menus for each command.",
+    "HELPMESSAGE_INVITE": "Invite me to your server{l} or get to know me more closely!",
+    "HELPMESSAGE_PREFIX": "Change the server prefix.",
+    "HELPMESSAGE_VERSION": "Check the bot version and more.",
+    "INSUFICIENT_PERMISSIONS": "Insufficient Permission{l}You are not allowed to run this command.",
+	"NO_COMMAND_DESCRIPTION": "No description has been defined for this command."
   },
   "OsuMessages": {
-    "INEXISTENT_USER": "Usuário Inexistente{l}Este usuario que você solicitou não existe.",
-    "INEXISTENT_BEATMAPID": "Beatmap Inexistente{l}Este beatmap que você solicitou não existe.",
-    "NO_HAS_HISTORY": "Não há historico{l}Este usuario que você solicitou{l}Não jogou nada nas ultimas 24h",
-    "USE_NUMBERS": "Utilize Numeros!{l}IDs são formados por numeros, por favor utilize numeros.",
-    "UNAVAILABLE_RESOURCE": "Recurso Indisponível{l}Esta parte do recurso não esta disponível."
+    "INEXISTENT_USER": "Invalid User{l}This user you requested does not exist.",
+    "INEXISTENT_BEATMAPID": "Invalid Beatmap{l}This beatmap you requested does not exist.",
+    "NO_HAS_HISTORY": "No Has History{l}This user you requested has no history.",
+    "USE_NUMBERS": "Use Numbers!{l}IDs are made up of numbers, please use numbers.",
+    "UNAVAILABLE_RESOURCE": "Unavailable Resource{l}This part of the resource is not available."
   },
   "Messages": {
-    "INVITE_COMMAND_MESSAGE": "Posso fazer parte do seu servidor discord{l}Basta [Clicar aqui]({InviteUrl}) para me convidar!{l}{l}Caso queira um suporte, ou me conhecer mais um pouco{l}Entre no meu Servidor Discord - [Ou!su Bot]({BotDiscordUrl})",
-    "VERSION_COMMAND_MESSAGE": "Ou!su é um Discord Bot programado na linguagem de programação Java{l}Esta aplicação Java utiliza o OsuAPI disponibilizado oficialmente por ppy.{l}{l}Criado em",
-	"HELP_COMMAND_MESSAGE": "Lista de Comandos{l}Todos os comandos disponiveis no bot",
-	"PREFIX_COMMAND_MESSAGE": "New Prefix!{l}The server prefix was changed successfully{l}Old prefix{l}New Prefix"
+    "INVITE_COMMAND_MESSAGE": "I can be part of your discord server{l}Just [Click here]({InviteUrl}) to Invite me!{l}{l}If you want support or know me a little more{l}Try my discord server! - [Ou!su Bot]({BotDiscordUrl})",
+    "VERSION_COMMAND_MESSAGE": "Ou!su is a Discord Bot programmed in the Java programming language{l}This Java application uses the Osu API officially available via ppy. (API in java created by me){l}{l}Created on",
+	"HELP_COMMAND_MESSAGE": "Command List{l}All commands available on the bot.",
+	"LANGUAGE_COMMAND_MESSAGE": ":earth_americas: Changed language{l}Bot language on this server has been successfully changed",
+	"AVAILABLE_LANGUAGE_MESSAGE": ":earth_americas: Available Languages{l}The available languages ​​are:{l}{l} {LANGUAGES}",
+	"PREFIX_COMMAND_MESSAGE": "New Prefix!{l}The server prefix was changed successfully{l}Old prefix{l}New Prefix",
+	"PREFIX_INCORRECT_USE": "Incorrect Use{l}it is necessary to have a special character{l}[!,@,# etc]",
+	"PREFIX_INCORRECT_USE2": "Incorrect Use{l}Only 3 characters are allowed.{l}*[ex: ou!]*"
   },
   "Embeds": {
 	"TITLE_USER_COMMAND_PLAYERSTATS": "Player Stats",
+	"TITLE_USER_COMMAND_HISTORY": "Player History",
+	"MESSAGE_USER": "You are viewing user information",
     "MESSAGE_RECENTUSER": "You are viewing the Beatmaps played in {user}'s last 24h",
     "MESSAGE_TOPUSER": "You are viewing {user}'s best rated Beatmaps ",
 	"ACCURACY": "Accuracy:",
     "ARTIST": "Artist:",
 	"AUTHOR": "Author:",
 	"APPROVATED_IN": "Approvated in:",
+	"MAP_CREATED_BY": "Mapped by ",
     "DIFFICULT": "Difficult:",
     "GENRE": "Genre:",
     "GAMEMODE": "Game mode:",
     "MAX_COMBO": "Max Combo:",
-	"MAP_STATS": "Status:",
+	"MAP_STATS": "Approval:",
     "STARS": "Stars:",
 	"PERFORMANCE": "Performance:",
 	"RANKING": "Ranking",
     "SUCCESS_RATE": "Success Rate:",
-	"SCORE": "Pontuação:",
+	"SCORE": "Score:",
 	"TOTAL_SCORE": "Total Score:",
-	"NACIONAL_RANKING": "National Rank"
+	"NATIONAL_RANKING": "National Rank",
+	"PLAYED_TIME": "Time Played"
+  },
+  "Titles": {
+	"INVITE_ME": "Convide-me!"
   },
   "Bot": {
+    "PREFIX": "O prefixo neste servidor é: ",
     "FOOTER_DEFAULT": "Ou!su Bot | Created by Sknz#4260"
   }
 }

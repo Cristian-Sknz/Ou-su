@@ -8,10 +8,11 @@ public class LanguageBase {
 	private Map<String, String> OsuMessages;
 	private Map<String, String> Messages;
 	private Map<String, String> Embeds;
+	private Map<String, String> Titles;
 	private Map<String, String> Bot;
 
 	public LanguageBase() {
-
+		super();
 	}
 
 	public Map<String, String> getHelp() {
@@ -52,5 +53,13 @@ public class LanguageBase {
 
 	public void setBot(Map<String, String> bot) {
 		Bot = bot;
+	}
+
+	public Map<String, String> getTitles() {
+		return Titles;
+	}
+
+	public void setTitles(Map<String, String> titles) {
+		Titles = titles;
 	}
 }

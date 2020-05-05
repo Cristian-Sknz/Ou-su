@@ -1,10 +1,13 @@
 package me.skiincraft.discord.ousu.events;
 
 import java.awt.Color;
+import java.util.List;
 
 import me.skiincraft.discord.ousu.OusuBot;
+import me.skiincraft.discord.ousu.mysql.SQLAccess;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.ChannelType;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.SelfUser;
 import net.dv8tion.jda.api.entities.User;
@@ -13,15 +16,28 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class ReceivedEvent extends ListenerAdapter {
 
-	public MessageEmbed v() {
+	public MessageEmbed portuguese() {
 		EmbedBuilder e = new EmbedBuilder();
 		User user = OusuBot.getOusu().getJda().getUserById("247096601242238991");
-
+		
 		e.setColor(Color.red);
+		e.setTitle("Olá!");
 		e.setDescription("Esta área ainda não esta pronta, mas em breve poderá usufruir dessa estrutura!");
 		e.setFooter(user.getName() + "#" + user.getDiscriminator() + " | Yagateiro Master", user.getAvatarUrl());
 		e.setImage("https://i.imgur.com/LxG1qGl.gif");
-		e.setTitle("Olá!", "https://discord.gg/xCkzjtm");
+
+		return e.build();
+	}
+	
+	public MessageEmbed english() {
+		EmbedBuilder e = new EmbedBuilder();
+		User user = OusuBot.getOusu().getJda().getUserById("247096601242238991");
+		
+		e.setColor(Color.red);
+		e.setTitle("Hi!");
+		e.setDescription("This area is not yet ready, but you will soon be able to enjoy this structure!");
+		e.setFooter("Ou!su Bot | Created by " + user.getName(), user.getAvatarUrl());
+		e.setImage("https://i.imgur.com/LxG1qGl.gif");
 
 		return e.build();
 	}
@@ -43,9 +59,39 @@ public class ReceivedEvent extends ListenerAdapter {
 		}
 
 		System.out.printf("[PM] %s: %s\n", event.getAuthor().getName(), event.getMessage().getContentDisplay());
+		if (event.getAuthor().getMutualGuilds().isEmpty()) {
+			return;
+		}
 
 		if (!OusuBot.listPrivated.contains(event.getAuthor().getName())) {
-			event.getAuthor().openPrivateChannel().complete().sendMessage(v()).queue();
+			List<Guild> mutualguilds = event.getAuthor().getMutualGuilds();
+			
+			int pt = 0;
+			int en = 0;
+			
+			for (Guild guild : mutualguilds) {
+				SQLAccess sql =new SQLAccess(guild);
+				if (sql.existe()) {
+					String lang = sql.get("language");
+					if (lang.equalsIgnoreCase("portuguese")) {
+						pt++;
+					}
+					if (lang.equalsIgnoreCase("english")) {
+						en++;
+					}
+				}
+			}
+			
+			if (pt > en) {
+				event.getAuthor().openPrivateChannel().complete().sendMessage(portuguese()).queue();
+			} else {
+				event.getAuthor().openPrivateChannel().complete().sendMessage(english()).queue();
+			}
+			
+			if (pt == en) {
+				event.getAuthor().openPrivateChannel().complete().sendMessage(portuguese()).queue();
+			}
+			
 			OusuBot.listPrivated.add(event.getAuthor().getName());
 		}
 

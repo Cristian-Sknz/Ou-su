@@ -2,7 +2,6 @@ package me.skiincraft.discord.ousu.manager;
 
 import java.util.List;
 
-import me.skiincraft.discord.ousu.events.ReactionUtils;
 import me.skiincraft.discord.ousu.utils.DefaultEmbed;
 import me.skiincraft.discord.ousu.utils.ReactionMessage;
 import net.dv8tion.jda.api.EmbedBuilder;

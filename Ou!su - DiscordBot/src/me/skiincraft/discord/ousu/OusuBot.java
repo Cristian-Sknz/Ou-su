@@ -11,6 +11,7 @@ import me.skiincraft.discord.ousu.commands.BeatMapCommand;
 import me.skiincraft.discord.ousu.commands.EmbedCommand;
 import me.skiincraft.discord.ousu.commands.HelpCommand;
 import me.skiincraft.discord.ousu.commands.InviteCommand;
+import me.skiincraft.discord.ousu.commands.LanguageCommand;
 import me.skiincraft.discord.ousu.commands.PrefixCommand;
 import me.skiincraft.discord.ousu.commands.RecentUserCommand;
 import me.skiincraft.discord.ousu.commands.TopUserCommand;
@@ -18,8 +19,8 @@ import me.skiincraft.discord.ousu.commands.UserCommand;
 import me.skiincraft.discord.ousu.commands.UserImageCommand;
 import me.skiincraft.discord.ousu.commands.VersionCommand;
 import me.skiincraft.discord.ousu.commands.reactions.HistoryEvent;
+import me.skiincraft.discord.ousu.events.ReadyBotEvent;
 import me.skiincraft.discord.ousu.events.ReceivedEvent;
-import me.skiincraft.discord.ousu.events.onReadyEvent;
 import me.skiincraft.discord.ousu.manager.Commands;
 import me.skiincraft.discord.ousu.mysql.MySQL;
 import me.skiincraft.discord.ousu.utils.Token;
@@ -108,14 +109,14 @@ public class OusuBot {
 	}
 
 	public void events() {
-		registerEvents(new ReceivedEvent(), new HistoryEvent(), new onReadyEvent());
+		registerEvents(new ReceivedEvent(), new HistoryEvent(), new ReadyBotEvent());
 	}
 
 	public void commands() {
 
 		registerCommands(new HelpCommand(), new EmbedCommand(), new UserCommand(), new TopUserCommand(),
 				new UserImageCommand(), new PrefixCommand(), new BeatMapCommand(), new VersionCommand(),
-				new InviteCommand(), new RecentUserCommand());
+				new InviteCommand(), new RecentUserCommand(), new LanguageCommand());
 	}
 
 	private void registerEvents(ListenerAdapter... events) {

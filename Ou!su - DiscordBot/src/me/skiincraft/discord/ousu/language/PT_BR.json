@@ -24,18 +24,25 @@
     "INVITE_COMMAND_MESSAGE": "Posso fazer parte do seu servidor discord{l}Basta [Clicar aqui]({InviteUrl}) para me convidar!{l}{l}Caso queira um suporte, ou me conhecer mais um pouco{l}Entre no meu Servidor Discord - [Ou!su Bot]({BotDiscordUrl})",
     "VERSION_COMMAND_MESSAGE": "Ou!su é um Discord Bot programado na linguagem de programação Java{l}Esta aplicação Java utiliza o OsuAPI disponibilizado oficialmente por ppy.{l}{l}Criado em",
 	"HELP_COMMAND_MESSAGE": "Lista de Comandos{l}Todos os comandos disponiveis no bot",
-	"PREFIX_COMMAND_MESSAGE": "Novo Prefix{l}Prefixo do servidor foi alterado com sucesso{l}Antigo{l}Novo"
+	"PREFIX_COMMAND_MESSAGE": "Novo Prefix{l}Prefixo do servidor foi alterado com sucesso{l}Antigo{l}Novo",
+	"LANGUAGE_COMMAND_MESSAGE": ":earth_americas: Idioma Trocado{l}O Idioma do bot neste servidor foi alterado com sucesso.",
+	"AVAILABLE_LANGUAGE_MESSAGE": ":earth_americas: Idiomas Disponiveis{l}Os idiomas disponiveis são: {l}{l} {LANGUAGES}",
+	"PREFIX_INCORRECT_USE": "Uso Incorreto{l}É necessario ter um caractere especial{l}[!,@,# etc]",
+	"PREFIX_INCORRECT_USE2": "Uso Incorreto{l}Somente 3 caracteres são permitidos.{l}*[ex: ou!]*"
   },
   "Embeds": {
 	"TITLE_USER_COMMAND_PLAYERSTATS": "Informações do Jogador",
-    "MESSAGE_RECENTUSER": "Você esta visualizando os **BEATMAPS** Jogados nas ultimas 24h{l}de:",
-    "MESSAGE_TOPUSER": "Você esta visualizando os **BEATMAPS** jogados com **MELHOR PONTUAÇÃO** de ",
+	"TITLE_USER_COMMAND_HISTORY": "Histórico do Jogador",
+	"MESSAGE_USER": "Você esta visualizando as informações do usuário",
+    "MESSAGE_RECENTUSER": "Você esta visualizando os ultimos **BEATMAPS** Jogados por ",
+    "MESSAGE_TOPUSER": "Você esta visualizando os **BEATMAPS** jogados por {USERNAME} com **MELHOR PONTUAÇÃO**",
 	"ACCURACY": "Precisão:",
     "ARTIST": "Artista:",
 	"AUTHOR": "Autor:",
 	"APPROVATED_IN": "Aprovado em:",
+	"MAP_CREATED_BY": "Mapa criado por ",
     "DIFFICULT": "Dificuldade:",
-    "GENERE": "Gênero:",
+    "GENRE": "Gênero:",
     "GAMEMODE": "Modo de Jogo:",
     "MAX_COMBO": "Combo Maximo:",
 	"MAP_STATS": "Status:",
@@ -45,9 +52,14 @@
     "SUCCESS_RATE": "Taxa de Sucesso:",
 	"SCORE": "Pontuação:",
 	"TOTAL_SCORE": "Pontuação Total:",
-	"NACIONAL_RANKING": "Ranking Nacional"
+	"NATIONAL_RANKING": "Ranking Nacional",
+	"PLAYED_TIME": "Tempo de Jogo"
+  },
+  "Titles": {
+	"INVITE_ME": "Convide-me!"
   },
   "Bot": {
+    "PREFIX": "O prefixo neste servidor é: ",
     "FOOTER_DEFAULT": "Ou!su Bot | Criado por Sknz#4260"
   }
 }

@@ -23,11 +23,17 @@ public class LanguageManager {
 		public String getFileName() {
 			return fileName;
 		}
+		
+		public String getLanguageCode() {
+			return fileName.replace(".json", "");
+		}
 	}
 
 	private LanguageBase langClass;
+	private Language lang;
 
 	public LanguageManager(Language lang) {
+		this.lang = lang;
 		Gson gson = new Gson();
 		InputStream in = OusuBot.class.getResourceAsStream("language/" + lang.getFileName());
 
@@ -37,44 +43,115 @@ public class LanguageManager {
 			e.printStackTrace();
 		}
 	}
+	
+	public String translatedTitles(String lineresult) {
+		try {
+			return langClass.getTitles().get(lineresult).replace("{l}", "\n");
+		} catch (NullPointerException e) {
+			System.out.println("Não foi possivel encontrar a tradução: \n" + lineresult + " em " + lang);
+			System.out.println("//Help");
+		}
+		return lineresult;
+	}
 
 	public String translatedHelp(String lineresult) {
-		return langClass.getHelp().get(lineresult).replace("{l}", "\n");
+		try {
+			return langClass.getHelp().get(lineresult).replace("{l}", "\n");
+		} catch (NullPointerException e) {
+			System.out.println("Não foi possivel encontrar a tradução: \n" + lineresult + " em " + lang);
+			System.out.println("//Help");
+		}
+		return lineresult;
 	}
 
 	public String translatedOsuMessages(String lineresult) {
-		return langClass.getOsuMessages().get(lineresult).replace("{l}", "\n");
+		try {
+			return langClass.getOsuMessages().get(lineresult).replace("{l}", "\n");
+		} catch (NullPointerException e) {
+			System.out.println("Não foi possivel encontrar a tradução: \n" + lineresult + " em " + lang);
+			System.out.println("//OsuMessages");
+		}
+		return lineresult;
+
 	}
 
 	public String translatedMessages(String lineresult) {
-		return langClass.getMessages().get(lineresult).replace("{l}", "\n");
+		try {
+			return langClass.getMessages().get(lineresult).replace("{l}", "\n");
+		} catch (NullPointerException e) {
+			System.out.println("Não foi possivel encontrar a tradução: \n" + lineresult + " em " + lang);
+			System.out.println("//Messages");
+		}
+		return lineresult;
 	}
 
 	public String translatedEmbeds(String lineresult) {
-		return langClass.getEmbeds().get(lineresult).replace("{l}", "\n");
+		try {
+			return langClass.getEmbeds().get(lineresult).replace("{l}", "\n");
+		} catch (NullPointerException e) {
+			System.out.println("Não foi possivel encontrar a tradução: \n" + lineresult + " em " + lang);
+			System.out.println("//Embeds");
+		}
+		return lineresult;
 	}
 
 	public String translatedBot(String lineresult) {
-		return langClass.getBot().get(lineresult).replace("{l}", "\n");
+		try {
+			return langClass.getBot().get(lineresult).replace("{l}", "\n");
+		} catch (NullPointerException e) {
+			System.out.println("Não foi possivel encontrar a tradução: \n" + lineresult + " em " + lang);
+			System.out.println("//Messages");
+		}
+		return lineresult;
 	}
 
 	public String[] translatedArrayHelp(String lineresult) {
-		return langClass.getHelp().get(lineresult).replace("{l}", "\n").split("\n");
+		try {
+			return langClass.getHelp().get(lineresult).replace("{l}", "\n").split("\n");
+		} catch (NullPointerException e) {
+			System.out.println("Não foi possivel encontrar a tradução: \n" + lineresult + " em " + lang);
+			System.out.println("//Help");
+		}
+		return new String[] { lineresult };
 	}
 
 	public String[] translatedArrayOsuMessages(String lineresult) {
-		return langClass.getOsuMessages().get(lineresult).replace("{l}", "\n").split("\n");
+		try {
+			return langClass.getOsuMessages().get(lineresult).replace("{l}", "\n").split("\n");
+		} catch (NullPointerException e) {
+			System.out.println("Não foi possivel encontrar a tradução: \n" + lineresult + " em " + lang);
+			System.out.println("//Help");
+		}
+		return new String[] { lineresult };
 	}
 
 	public String[] translatedArrayMessages(String lineresult) {
-		return langClass.getMessages().get(lineresult).replace("{l}", "\n").split("\n");
+		try {
+			return langClass.getMessages().get(lineresult).replace("{l}", "\n").split("\n");
+		} catch (NullPointerException e) {
+			System.out.println("Não foi possivel encontrar a tradução: \n" + lineresult + " em " + lang);
+			System.out.println("//Help");
+		}
+		return new String[] { lineresult };
 	}
 
 	public String[] translatedArrayEmbeds(String lineresult) {
-		return langClass.getEmbeds().get(lineresult).replace("{l}", "\n").split("\n");
+		try {
+			return langClass.getEmbeds().get(lineresult).replace("{l}", "\n").split("\n");
+		} catch (NullPointerException e) {
+			System.out.println("Não foi possivel encontrar a tradução: \n" + lineresult + " em " + lang);
+			System.out.println("//Help");
+		}
+		return new String[] { lineresult };
 	}
 
 	public String[] translatedArrayBot(String lineresult) {
-		return langClass.getBot().get(lineresult).replace("{l}", "\n").split("\n");
+		try {
+			return langClass.getBot().get(lineresult).replace("{l}", "\n").split("\n");
+		} catch (NullPointerException e) {
+			System.out.println("Não foi possivel encontrar a tradução: \n" + lineresult + " em " + lang);
+			System.out.println("//Help");
+		}
+		return new String[] { lineresult };
 	}
 }

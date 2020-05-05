@@ -32,7 +32,7 @@ public class DefaultEmbed {
 		b.setColor(Color.PINK);
 		b.setDescription(description);
 		b.setTitle(title);
-		b.setFooter(user.getName() + "#" + user.getDiscriminator() + " | Yagateiro Master", user.getAvatarUrl());
+		b.setFooter("Ou!su Bot | Created by " + user.getName() + user.getDiscriminator());
 
 		if (imageUrl == null) {
 			return b.build();

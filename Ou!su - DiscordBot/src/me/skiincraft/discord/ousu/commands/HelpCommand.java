@@ -57,7 +57,7 @@ public class HelpCommand extends Commands {
 				if (com.helpMessage(getLang()) != null) {
 					embed.setDescription(String.join("\n", com.helpMessage(getLang())));
 				} else {
-					embed.setDescription("Não foi definido nenhuma descrição para este comando :/");
+					embed.setDescription(getLang().translatedHelp("NO_COMMAND_DESCRIPTION"));
 				}
 
 				if (com.hasAliases()) {
@@ -111,15 +111,24 @@ public class HelpCommand extends Commands {
 		String[] Sobre = d.toString().split(",");
 		Arrays.sort(Sobre);
 
-		embed.setDescription("Todos os comandos disponiveis no bot.");
+		String[] str = getLang().translatedArrayMessages("HELP_COMMAND_MESSAGE");
 
-		embed.addField("**" + CommandCategory.Administração.getCategoria() + "**", "`" + String.join("\n", Adm) + "`",
+		embed.setTitle(str[0]);
+		StringBuffer buffer = new StringBuffer();
+		for (String append : str) {
+			if (append != str[0]) {
+				buffer.append(append);
+			}
+		}
+
+		embed.setDescription(buffer.toString());
+
+		embed.addField("**" + CommandCategory.Administração.getCategoria(getLanguage()) + "**", "`" + String.join("\n", Adm) + "`",
 				true);
-		embed.addField("**" + CommandCategory.Ajuda.getCategoria() + "**", "`" + String.join("\n", Ajuda) + "`", true);
-		embed.addField("**" + CommandCategory.Osu.getCategoria() + "**", "`" + String.join("\n", Osu) + "`", true);
-		embed.addField("**" + CommandCategory.Sobre.getCategoria() + "**", "`" + String.join("\n", Sobre) + "`", true);
+		embed.addField("**" + CommandCategory.Ajuda.getCategoria(getLanguage()) + "**", "`" + String.join("\n", Ajuda) + "`", true);
+		embed.addField("**" + CommandCategory.Osu.getCategoria(getLanguage()) + "**", "`" + String.join("\n", Osu) + "`", true);
+		embed.addField("**" + CommandCategory.Sobre.getCategoria(getLanguage()) + "**", "`" + String.join("\n", Sobre) + "`", true);
 
-		embed.setTitle("Lista de comandos");
 		User user = OusuBot.getOusu().getJda().getUserById("247096601242238991");
 		embed.setFooter(user.getName() + "#" + user.getDiscriminator() + " | Ou!su bot ™", user.getAvatarUrl());
 		return embed;

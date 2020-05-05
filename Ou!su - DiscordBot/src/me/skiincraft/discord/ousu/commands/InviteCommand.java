@@ -20,6 +20,7 @@ public class InviteCommand extends Commands {
 	}
 
 	private String invitelink = "https://discordapp.com/oauth2/authorize?client_id=701825726449582192&scope=bot&permissions=1678108752";
+	private String serverlink = "https://discord.gg/VtkYdBR";
 
 	@Override
 	public String[] helpMessage(LanguageManager lang) {
@@ -46,17 +47,14 @@ public class InviteCommand extends Commands {
 		embed.setColor(Color.BLUE);
 
 		embed.setTitle("Convide-me!");
-		StringBuilder str = new StringBuilder();
+		StringBuffer buffer = new StringBuffer();
 
-		str.append("Posso fazer parte do seu servidor discord\n");
-		str.append("Basta [Clicar aqui](" + invitelink + ") para me convidar!\n");
-		str.append("\n");
-		str.append("Caso queira um suporte, ou me conhecer mais um pouco\n");
-		str.append("Entre no meu Servidor Discord - [Ou!su Bot](https://discord.gg/VtkYdBR)");
+		buffer.append(getLang().translatedMessages("INVITE_COMMAND_MESSAGE"));
 
-		embed.setDescription(str.toString());
+		embed.setDescription(
+				buffer.toString().replace("{InviteUrl}", invitelink).replace("{BotDiscordUrl}", serverlink));
 
-		embed.setFooter("Ou!su Bot | Todos direitos autorizados");
+		embed.setFooter(getLang().translatedBot("FOOTER_DEFAULT"));
 		return embed;
 	}
 }

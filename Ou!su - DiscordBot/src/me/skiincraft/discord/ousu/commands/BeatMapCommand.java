@@ -55,7 +55,7 @@ public class BeatMapCommand extends Commands {
 				return;
 			}
 
-			sendEmbedMessage(BeatmapEmbed.beatmapEmbed(osuBeat)).queue(new Consumer<Message>() {
+			sendEmbedMessage(BeatmapEmbed.beatmapEmbed(osuBeat, channel.getGuild())).queue(new Consumer<Message>() {
 
 				@Override
 				public void accept(Message message) {

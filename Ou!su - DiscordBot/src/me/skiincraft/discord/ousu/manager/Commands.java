@@ -316,5 +316,10 @@ public abstract class Commands extends ListenerAdapter {
 	public LanguageManager getLang() {
 		return lang;
 	}
+	
+	public Language getLanguage() {
+		SQLAccess sql = new SQLAccess(getEvent().getGuild());
+		return Language.valueOf(sql.get("language"));
+	}
 
 }

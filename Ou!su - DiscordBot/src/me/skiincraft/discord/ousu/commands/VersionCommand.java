@@ -49,8 +49,7 @@ public class VersionCommand extends Commands {
 		embed.setDescription(getLang().translatedMessages("VERSION_COMMAND_MESSAGE") + " "
 				+ new SimpleDateFormat("dd/MM/yyyy").format(Date.from(data.toInstant())));
 
-		embed.addField("Dependencias", "OsuAPI (oopsjpeg)", true);
-		embed.addField("Versão", "1.0.1", true);
+		embed.addField("Versão", "1.1", true);
 
 		if (guild.isMember(user)) {
 			embed.addField("Author", user.getAsMention() + " - [Sknz](https://github.com/skiincraft)", true);
@@ -59,7 +58,7 @@ public class VersionCommand extends Commands {
 		}
 
 		embed.setColor(Color.MAGENTA);
-		embed.setFooter("Ou!su Bot | Todos direitos autorizados", user.getAvatarUrl());
+		embed.setFooter(getLang().translatedBot("FOOTER_DEFAULT"), user.getAvatarUrl());
 		return embed;
 	}
 }

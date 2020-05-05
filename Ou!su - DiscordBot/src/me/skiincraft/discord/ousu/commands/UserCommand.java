@@ -14,10 +14,13 @@ import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.customemoji.OsuEmoji;
 import me.skiincraft.discord.ousu.imagebuilders.OsuProfileNote;
 import me.skiincraft.discord.ousu.language.LanguageManager;
+import me.skiincraft.discord.ousu.language.LanguageManager.Language;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
+import me.skiincraft.discord.ousu.mysql.SQLAccess;
 import me.skiincraft.discord.ousu.utils.DefaultEmbed;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 
@@ -50,13 +53,21 @@ public class UserCommand extends Commands {
 			try {
 				osuUser = OusuBot.getOsu().getUser(args[1], Gamemode.Standard);
 			} catch (InvalidUserException e) {
-				sendEmbedMessage(new DefaultEmbed("Usuario inexistente", "Este usuario que você solicitou não existe."))
-						.queue();
+				String[] str = getLang().translatedArrayOsuMessages("INEXISTENT_USER");
+				StringBuffer buffer = new StringBuffer();
+				for (String append : str) {
+					if (append != str[0]) {
+						buffer.append(append);
+					}
+				}
+
+				sendEmbedMessage(new DefaultEmbed(str[0], buffer.toString())).queue();
 				return;
 			}
 			InputStream drawer = OsuProfileNote.drawImage(osuUser);
 			String aname = osuUser.getUserID() + "userOsu.png";
-			channel.sendFile(drawer, aname).embed(embed(osuUser).setImage("attachment://" + aname).build()).queue();
+			channel.sendFile(drawer, aname)
+					.embed(embed(osuUser, getEvent().getGuild()).setImage("attachment://" + aname).build()).queue();
 			return;
 		}
 
@@ -70,49 +81,49 @@ public class UserCommand extends Commands {
 			try {
 				osuUser = OusuBot.getOsu().getUser(args[1], gm);
 			} catch (InvalidUserException e) {
-				sendEmbedMessage(new DefaultEmbed("Usuario inexistente", "Este usuario que você solicitou não existe."))
-						.queue();
+				String[] str = getLang().translatedArrayOsuMessages("INEXISTENT_USER");
+				StringBuffer buffer = new StringBuffer();
+				for (String append : str) {
+					if (append != str[0]) {
+						buffer.append(append);
+					}
+				}
+
+				sendEmbedMessage(new DefaultEmbed(str[0], buffer.toString())).queue();
 				return;
 			}
 
 			InputStream drawer = OsuProfileNote.drawImage(osuUser);
 			String aname = osuUser.getUserID() + "userOsu.png";
-			channel.sendFile(drawer, aname).embed(embed(osuUser).setImage("attachment://" + aname).build()).queue();
+			channel.sendFile(drawer, aname)
+					.embed(embed(osuUser, getEvent().getGuild()).setImage("attachment://" + aname).build()).queue();
 			return;
 		}
 	}
 
-	public EmbedBuilder embed(me.skiincraft.api.ousu.users.User osuUser) {
+	public EmbedBuilder embed(me.skiincraft.api.ousu.users.User osuUser, Guild guild) {
 		EmbedBuilder embed = new EmbedBuilder();
+		SQLAccess sql = new SQLAccess(guild);
+		LanguageManager lang = new LanguageManager(Language.valueOf(sql.get("language")));
+		NumberFormat f = NumberFormat.getNumberInstance();
+		String accuracy = new DecimalFormat("#.0").format(osuUser.getAccuracy());
+		String PP = OsuEmoji.PP.getEmojiString();
 
 		embed.setAuthor(osuUser.getUserName(), osuUser.getURL(), osuUser.getUserAvatar());
+		embed.setTitle(lang.translatedEmbeds("TITLE_USER_COMMAND_PLAYERSTATS"));
+		embed.setDescription(
+				lang.translatedEmbeds("MESSAGE_USER") + "[" + osuUser.getUserName() + "](" + osuUser.getURL() + ")");
+		embed.addField(lang.translatedEmbeds("RANKING"), "#" + f.format(osuUser.getRanking()), true);
+		embed.addField(lang.translatedEmbeds("NATIONAL_RANKING"),
+				osuUser.getCountryCode() + " #" + f.format(osuUser.getNacionalRanking()), true);
+		embed.addField(lang.translatedEmbeds("PLAYED_TIME"), osuUser.getPlayedHours().toString(), true);
+		embed.addField(lang.translatedEmbeds("PERFORMANCE"), lang.translatedEmbeds("ACCURACY") + "`" + (accuracy += "%")
+				+ "`" + "\n" + PP + " " + f.format(osuUser.getPP()), true);
+		embed.addField(lang.translatedEmbeds("TOTAL_SCORE"), f.format(osuUser.getTotalScore()) + "", true);
 
-		embed.setColor(Color.gray);
-		embed.setTitle("Informações do Jogador");
-		embed.setDescription("Você esta visualizando as informações do usuario [" + osuUser.getUserName() + "]("
-				+ osuUser.getURL() + ")");
-
-		NumberFormat f = NumberFormat.getNumberInstance();
-		embed.addField("Ranking: ", "#" + f.format(osuUser.getRanking()), true);
-		embed.addField("Ranking Nacional:", osuUser.getCountryCode() + " #" + f.format(osuUser.getNacionalRanking()),
-				true);
-		embed.addField("Tempo jogado:", osuUser.getPlayedHours().toString(), true);
-		// embed.addBlankField(true);
-
-		String accuracy = new DecimalFormat("#.0").format(osuUser.getAccuracy());
-
-		accuracy += "%";
-		String PP = OsuEmoji.PP.getEmojiString();
-		embed.addField("Desempenho:",
-
-				"Precisão: `" + accuracy + "`" + "\n" + PP + " " + f.format(osuUser.getPP()), true);
-
-		embed.addField("Pontuação Total:", f.format(osuUser.getTotalScore()) + "", true);
-		// embed.addField("Link:", osuUser.getUserUrl(), true);
-
-		// embed.setThumbnail(osuUser.getAvatarURL());
-		embed.setFooter("Sknz#4260 | Yagateiro Master",
+		embed.setFooter(lang.translatedBot("FOOTER_DEFAULT"),
 				"https://osu.ppy.sh/images/flags/" + osuUser.getCountryCode() + ".png");
+		embed.setColor(Color.gray);
 		return embed;
 	}
 

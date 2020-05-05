@@ -87,16 +87,15 @@ public class RecentUserCommand extends Commands {
 		EmbedBuilder embed = new EmbedBuilder();
 		Score score = scorelist.get(order);
 		String inicial = getRankEmote(score);
+		me.skiincraft.api.ousu.users.User user = score.getUser();
 
 		embed.setColor(Color.gray);
-		embed.setTitle(inicial + " " + score.getUsername() + " | Histórico do Jogador");
+		embed.setTitle(inicial + " " + user.getUserName() + " | Histórico do Jogador");
 
 		StringBuilder str = new StringBuilder();
 
-		me.skiincraft.api.ousu.users.User user = score.getUser();
-
 		str.append("Você esta visualizando os beatmaps jogados nas ultimas 24h ");
-		str.append("de [" + score.getUsername() + "]");
+		str.append("de [" + user.getUserName() + "]");
 		str.append("(" + user.getURL() + ")");
 
 		embed.setDescription(str.toString());
@@ -119,7 +118,7 @@ public class RecentUserCommand extends Commands {
 		String h100 = OsuEmoji.Hit100.getEmojiString() + ": " + score.get100();
 		String h50 = OsuEmoji.Hit50.getEmojiString() + ": " + score.get50();
 		String miss = OsuEmoji.Miss.getEmojiString() + ": " + score.getMiss();
-		//String pp = OsuEmoji.PP.getEmojiString() + ": ";
+		// String pp = OsuEmoji.PP.getEmojiString() + ": ";
 		String l = "\n";
 		String field = h300 + l + h100 + l + h50 + l + miss + l;
 
@@ -127,7 +126,7 @@ public class RecentUserCommand extends Commands {
 		embed.addField("Pontuação total:", score.getScore() + "", true);
 		embed.addField("Combo Maximo:", score.getMaxCombo() + "/" + score.getBeatmap().getMaxCombo(), true);
 
-		//embed.addField("PP", pp + score.getScorePP() + "", true);
+		// embed.addField("PP", pp + score.getScorePP() + "", true);
 
 		int id = score.getBeatmap().getBeatmapSetID();
 		String url = "https://assets.ppy.sh/beatmaps/" + id + "/covers/cover.jpg?";

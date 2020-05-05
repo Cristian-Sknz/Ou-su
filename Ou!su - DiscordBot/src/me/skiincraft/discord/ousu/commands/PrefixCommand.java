@@ -44,15 +44,27 @@ public class PrefixCommand extends Commands {
 
 		if (args.length >= 1) {
 			if (!StringUtils.containsSpecialCharacters(args[1])) {
-				sendEmbedMessage(
-						new DefaultEmbed("'❌' Uso incorreto", "É necessario ter um caractere especial \n[!,@,# etc]")
-								.construirEmbed()).queue();
+				String[] str = getLang().translatedArrayMessages("PREFIX_INCORRECT_USE");
+				StringBuffer buffer = new StringBuffer();
+				for (String append : str) {
+					if (append != str[0]) {
+						buffer.append(append);
+					}
+				}
+
+				sendEmbedMessage(new DefaultEmbed("'❌' " + str[0], buffer.toString()).construirEmbed()).queue();
 				return;
 			}
 			if (args[1].length() > 3) {
-				sendEmbedMessage(
-						new DefaultEmbed("'❌' Uso incorreto", "Somente 3 caracteres são permitidos.").construirEmbed())
-								.queue();
+				String[] str = getLang().translatedArrayMessages("PREFIX_INCORRECT_USE2");
+				StringBuffer buffer = new StringBuffer();
+				for (String append : str) {
+					if (append != str[0]) {
+						buffer.append(append);
+					}
+				}
+
+				sendEmbedMessage(new DefaultEmbed("'❌' " + str[0], buffer.toString()).construirEmbed()).queue();
 				return;
 			}
 
@@ -63,11 +75,12 @@ public class PrefixCommand extends Commands {
 			String newPrefix = args[1];
 			sql.set("prefix", newPrefix);
 
-			EmbedBuilder defaultembed = new DefaultEmbed(":gear: Novo prefixo!",
-					"Prefixo do servidor foi alterado com sucesso").construirEmbed();
+			String[] str = getLang().translatedArrayMessages("PREFIX_COMMAND_MESSAGE");
 
-			defaultembed.addField("Anterior", oldPrefix, true);
-			defaultembed.addField("Novo", newPrefix, true);
+			EmbedBuilder defaultembed = new DefaultEmbed(":gear:" + str[0], str[1]).construirEmbed();
+
+			defaultembed.addField(str[2], oldPrefix, true);
+			defaultembed.addField(str[3], newPrefix, true);
 			defaultembed.setColor(Color.GRAY);
 
 			sendEmbedMessage(defaultembed.build()).queue();

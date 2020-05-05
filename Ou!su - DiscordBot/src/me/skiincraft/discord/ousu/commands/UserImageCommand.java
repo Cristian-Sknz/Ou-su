@@ -44,8 +44,15 @@ public class UserImageCommand extends Commands {
 			try {
 				osuUser = OusuBot.getOsu().getUser(args[1], Gamemode.Standard);
 			} catch (InvalidUserException e) {
-				sendEmbedMessage(new DefaultEmbed("Usuario inexistente", "Este usuario que você solicitou não existe."))
-						.queue();
+				String[] str = getLang().translatedArrayOsuMessages("INEXISTENT_USER");
+				StringBuffer buffer = new StringBuffer();
+				for (String append : str) {
+					if (append != str[0]) {
+						buffer.append(append);
+					}
+				}
+
+				sendEmbedMessage(new DefaultEmbed(str[0], buffer.toString())).queue();
 				return;
 			}
 
@@ -63,8 +70,15 @@ public class UserImageCommand extends Commands {
 			try {
 				osuUser = OusuBot.getOsu().getUser(args[1], gm);
 			} catch (InvalidUserException e) {
-				sendEmbedMessage(new DefaultEmbed("Usuario inexistente", "Este usuario que você solicitou não existe."))
-						.queue();
+				String[] str = getLang().translatedArrayOsuMessages("INEXISTENT_USER");
+				StringBuffer buffer = new StringBuffer();
+				for (String append : str) {
+					if (append != str[0]) {
+						buffer.append(append);
+					}
+				}
+
+				sendEmbedMessage(new DefaultEmbed(str[0], buffer.toString())).queue();
 				return;
 			}
 
