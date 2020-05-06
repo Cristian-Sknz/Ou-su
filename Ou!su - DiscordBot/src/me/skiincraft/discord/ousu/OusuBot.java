@@ -8,6 +8,7 @@ import javax.security.auth.login.LoginException;
 import me.skiincraft.api.ousu.OusuAPI;
 import me.skiincraft.api.ousu.exceptions.InvalidTokenException;
 import me.skiincraft.discord.ousu.commands.BeatMapCommand;
+import me.skiincraft.discord.ousu.commands.BeatMapSetCommand;
 import me.skiincraft.discord.ousu.commands.EmbedCommand;
 import me.skiincraft.discord.ousu.commands.HelpCommand;
 import me.skiincraft.discord.ousu.commands.InviteCommand;
@@ -18,7 +19,9 @@ import me.skiincraft.discord.ousu.commands.TopUserCommand;
 import me.skiincraft.discord.ousu.commands.UserCommand;
 import me.skiincraft.discord.ousu.commands.UserImageCommand;
 import me.skiincraft.discord.ousu.commands.VersionCommand;
+import me.skiincraft.discord.ousu.commands.reactions.BeatmapsetEvent;
 import me.skiincraft.discord.ousu.commands.reactions.HistoryEvent;
+import me.skiincraft.discord.ousu.commands.reactions.RecentuserEvent;
 import me.skiincraft.discord.ousu.events.ReadyBotEvent;
 import me.skiincraft.discord.ousu.events.ReceivedEvent;
 import me.skiincraft.discord.ousu.manager.Commands;
@@ -109,14 +112,14 @@ public class OusuBot {
 	}
 
 	public void events() {
-		registerEvents(new ReceivedEvent(), new HistoryEvent(), new ReadyBotEvent());
+		registerEvents(new ReceivedEvent(), new HistoryEvent(), new ReadyBotEvent(), new BeatmapsetEvent(), new RecentuserEvent());
 	}
 
 	public void commands() {
 
 		registerCommands(new HelpCommand(), new EmbedCommand(), new UserCommand(), new TopUserCommand(),
 				new UserImageCommand(), new PrefixCommand(), new BeatMapCommand(), new VersionCommand(),
-				new InviteCommand(), new RecentUserCommand(), new LanguageCommand());
+				new InviteCommand(), new RecentUserCommand(), new LanguageCommand(), new BeatMapSetCommand());
 	}
 
 	private void registerEvents(ListenerAdapter... events) {

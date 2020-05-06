@@ -3,7 +3,6 @@ package me.skiincraft.discord.ousu.manager;
 import java.util.List;
 
 import me.skiincraft.discord.ousu.utils.DefaultEmbed;
-import me.skiincraft.discord.ousu.utils.ReactionMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Role;
@@ -24,12 +23,14 @@ public abstract class ReactionsManager extends ListenerAdapter {
 	public ReactionsManager() {
 		super();
 	}
-
+	
+	public abstract List<ReactionUtils> listHistory();
+	
 	public abstract void action(User user, TextChannel channel, String emoji);
 
 	public boolean check(GuildMessageReactionAddEvent event) {
 		String eventMessageID = event.getMessageId();
-		List<ReactionUtils> osuhistorys = ReactionMessage.osuHistory;
+		List<ReactionUtils> osuhistorys = listHistory();
 
 		if (event.getUser().isBot()) {
 			return false;

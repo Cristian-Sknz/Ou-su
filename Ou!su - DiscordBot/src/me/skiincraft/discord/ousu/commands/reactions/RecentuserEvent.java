@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import me.skiincraft.api.ousu.scores.Score;
-import me.skiincraft.discord.ousu.commands.TopUserCommand;
+import me.skiincraft.discord.ousu.commands.RecentUserCommand;
 import me.skiincraft.discord.ousu.events.TopUserReaction;
 import me.skiincraft.discord.ousu.manager.ReactionUtils;
 import me.skiincraft.discord.ousu.manager.ReactionsManager;
@@ -13,12 +13,12 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 
-public class HistoryEvent extends ReactionsManager {
+public class RecentuserEvent extends ReactionsManager {
 
 	
 	@Override
 	public List<ReactionUtils> listHistory() {
-		return ReactionMessage.osuHistory;
+		return ReactionMessage.recentHistory;
 	}
 	
 	
@@ -26,21 +26,24 @@ public class HistoryEvent extends ReactionsManager {
 	public void action(User user, TextChannel channel, String emoji) {
 
 		if (emoji.equalsIgnoreCase("◀")) {
-			ReactionMessage.osuHistory.remove(getUtils());
+			listHistory().remove(getUtils());
 
+			Object obj = getUtils().getObject();
+			Score[] beatmap = (Score[]) obj;
+			
 			int v = getUtils().getValue();
 			if (v <= 0) {
 				v = 0;
+				listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, v));
+				return;
 			} else {
 				v = getUtils().getValue() - 1;
 			}
 
-			Object obj = getUtils().getObject();
-			Score[] score = (Score[]) obj;
-			EmbedBuilder embed = TopUserCommand.embed(Arrays.asList(score), v, channel.getGuild());
+			EmbedBuilder embed = RecentUserCommand.embed(Arrays.asList(beatmap), v, channel.getGuild());
 
 			channel.editMessageById(getEvent().getMessageId(), embed.build()).queue();
-			ReactionMessage.osuHistory.add(new TopUserReaction(user, getEvent().getMessageId(), obj, v));
+			listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, v));
 
 		}
 
@@ -52,25 +55,24 @@ public class HistoryEvent extends ReactionsManager {
 		}
 
 		if (emoji.equalsIgnoreCase("▶")) {
-			ReactionMessage.osuHistory.remove(getUtils());
+			listHistory().remove(getUtils());
 			int v = getUtils().getValue();
 			v += 1;
 
 			Object obj = getUtils().getObject();
-			Score[] score = (Score[]) obj;
+			Score[] beatmap = (Score[]) obj;
 
-			if (v >= score.length) {
-				ReactionMessage.osuHistory
-						.add(new TopUserReaction(user, getEvent().getMessageId(), obj, score.length - 1));
+			if (v >= beatmap.length) {
+				listHistory()
+						.add(new TopUserReaction(user, getEvent().getMessageId(), obj, beatmap.length - 1));
 				return;
 			}
-			EmbedBuilder embed = TopUserCommand.embed(Arrays.asList(score), v, channel.getGuild());
+
+			EmbedBuilder embed = RecentUserCommand.embed(Arrays.asList(beatmap), v, channel.getGuild());
 
 			channel.editMessageById(getEvent().getMessageId(), embed.build()).queue();
-			ReactionMessage.osuHistory.add(new TopUserReaction(user, getEvent().getMessageId(), obj, v));
+			listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, v));
 		}
-
-		System.out.println(emoji);
 	}
 
 

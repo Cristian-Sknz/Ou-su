@@ -108,11 +108,13 @@ public class UserCommand extends Commands {
 		NumberFormat f = NumberFormat.getNumberInstance();
 		String accuracy = new DecimalFormat("#.0").format(osuUser.getAccuracy());
 		String PP = OsuEmoji.PP.getEmojiString();
+		
+		embed.setThumbnail(osuUser.getUserAvatar());
 
 		embed.setAuthor(osuUser.getUserName(), osuUser.getURL(), osuUser.getUserAvatar());
 		embed.setTitle(lang.translatedEmbeds("TITLE_USER_COMMAND_PLAYERSTATS"));
 		embed.setDescription(
-				lang.translatedEmbeds("MESSAGE_USER") + "[" + osuUser.getUserName() + "](" + osuUser.getURL() + ")");
+				lang.translatedEmbeds("MESSAGE_USER").replace("{USERNAME}", "[" + osuUser.getUserName() + "](" + osuUser.getURL() + ")"));
 		embed.addField(lang.translatedEmbeds("RANKING"), "#" + f.format(osuUser.getRanking()), true);
 		embed.addField(lang.translatedEmbeds("NATIONAL_RANKING"),
 				osuUser.getCountryCode() + " #" + f.format(osuUser.getNacionalRanking()), true);

@@ -14,11 +14,16 @@ import me.skiincraft.api.ousu.modifiers.Gamemode;
 import me.skiincraft.api.ousu.scores.Score;
 import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.customemoji.OsuEmoji;
+import me.skiincraft.discord.ousu.events.TopUserReaction;
 import me.skiincraft.discord.ousu.language.LanguageManager;
+import me.skiincraft.discord.ousu.language.LanguageManager.Language;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
+import me.skiincraft.discord.ousu.mysql.SQLAccess;
 import me.skiincraft.discord.ousu.utils.DefaultEmbed;
+import me.skiincraft.discord.ousu.utils.ReactionMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 
@@ -72,73 +77,66 @@ public class RecentUserCommand extends Commands {
 				return;
 			}
 
-			sendEmbedMessage(embed(osuUser, 0)).queue(message -> {
+			sendEmbedMessage(embed(osuUser, 0, channel.getGuild())).queue(message -> {
 				message.addReaction("U+25C0").queue();
-				message.addReaction("U+25FC").queue();
+				//message.addReaction("U+25FC").queue();
 				message.addReaction("U+25B6").queue();
-				// ReactionMessage.osuHistory.add(new ReactionUtils(user, message.getId(),
-				// osuUser.getUsername(),0));
+				Score[] sc = new Score[osuUser.size()];
+				osuUser.toArray(sc);
+				
+				ReactionMessage.recentHistory.add(new TopUserReaction(user, message.getId(), sc, 0));
 			});
 			return;
 		}
 	}
 
-	public static EmbedBuilder embed(List<Score> scorelist, int order) {
+	public static EmbedBuilder embed(List<Score> scorelist, int order, Guild guild) {
+		// "Imports"
 		EmbedBuilder embed = new EmbedBuilder();
 		Score score = scorelist.get(order);
-		String inicial = getRankEmote(score);
+		SQLAccess sql = new SQLAccess(guild);
+		LanguageManager lang = new LanguageManager(Language.valueOf(sql.get("language")));
+		Beatmap beatmap = score.getBeatmap();
 		me.skiincraft.api.ousu.users.User user = score.getUser();
 
-		embed.setColor(Color.gray);
-		embed.setTitle(inicial + " " + user.getUserName() + " | Histórico do Jogador");
+		// Strings
+		String inicial = getRankEmote(score);
+		String ordem = "[" + (order + 1) + "/" + scorelist.size() + "]";
+		String u = "[" + user.getUserName() + "](" + user.getURL() + ")";
+		String title = "[" + beatmap.getTitle() + "](" + beatmap.getURL() + ") por `" + beatmap.getArtist() + "`";
 
-		StringBuilder str = new StringBuilder();
-
-		str.append("Você esta visualizando os beatmaps jogados nas ultimas 24h ");
-		str.append("de [" + user.getUserName() + "]");
-		str.append("(" + user.getURL() + ")");
-
-		embed.setDescription(str.toString());
-
-		Beatmap beatmap = score.getBeatmap();
-
-		String title = "";
-		StringBuilder beatmaptitle = new StringBuilder();
-
-		beatmaptitle.append("[" + beatmap.getTitle() + "]");
-		beatmaptitle.append("(" + beatmap.getURL() + ")");
-		beatmaptitle.append("por `" + beatmap.getArtist() + "`");
-
-		title = beatmaptitle.toString();
-
-		embed.addField("Beatmap:", title, true);
-		embed.addField("Status:", "`" + getApproval(beatmap.getApprovated()) + "`\n" + beatmap.getVersion(), true);
-
+		// String notes
 		String h300 = OsuEmoji.Hit300.getEmojiString() + ": " + score.get300();
 		String h100 = OsuEmoji.Hit100.getEmojiString() + ": " + score.get100();
 		String h50 = OsuEmoji.Hit50.getEmojiString() + ": " + score.get50();
 		String miss = OsuEmoji.Miss.getEmojiString() + ": " + score.getMiss();
-		// String pp = OsuEmoji.PP.getEmojiString() + ": ";
 		String l = "\n";
 		String field = h300 + l + h100 + l + h50 + l + miss + l;
-
-		embed.addField("Pontuação", field, true);
-		embed.addField("Pontuação total:", score.getScore() + "", true);
-		embed.addField("Combo Maximo:", score.getMaxCombo() + "/" + score.getBeatmap().getMaxCombo(), true);
-
-		// embed.addField("PP", pp + score.getScorePP() + "", true);
-
 		int id = score.getBeatmap().getBeatmapSetID();
 		String url = "https://assets.ppy.sh/beatmaps/" + id + "/covers/cover.jpg?";
+
+		// Embed
+		embed.setAuthor(user.getUserName());
+		embed.setTitle(inicial + " " + lang.translatedEmbeds("TITLE_USER_COMMAND_HISTORY") + " | " + ordem);
+		embed.setDescription(lang.translatedEmbeds("MESSAGE_RECENTUSER").replace("{USERNAME}", u));
+
+		embed.addField("Beatmap:", title, true);
+		embed.addField(lang.translatedEmbeds("MAP_STATS"),
+				"`" + getApproval(beatmap.getApprovated()) + "`\n" + beatmap.getVersion(), true);
+
+		embed.addField(lang.translatedEmbeds("SCORE"), field, true);
+		embed.addField(lang.translatedEmbeds("TOTAL_SCORE"), score.getScore() + "", true);
+		embed.addField(lang.translatedEmbeds("MAX_COMBO"), score.getMaxCombo() + "/" + score.getBeatmap().getMaxCombo(),
+				true);
 
 		linkcover = url;
 		embed.setThumbnail(user.getUserAvatar());
 		embed.setImage(url);
 
 		String author = beatmap.getCreator();
-		embed.setFooter("[" + beatmap.getBeatmapID() + "] " + beatmap.getTitle() + " por " + beatmap.getArtist()
-				+ " | Mapa criado por " + author);
-
+		embed.setFooter("[" + beatmap.getBeatmapID() + "] " + beatmap.getTitle() + " por " + beatmap.getArtist() + " | "
+				+ lang.translatedEmbeds("MAP_CREATED_BY") + author);
+		embed.setColor(Color.gray);
 		return embed;
 	}
 

@@ -3,6 +3,7 @@ package me.skiincraft.discord.ousu.embeds;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 import me.skiincraft.api.ousu.beatmaps.Beatmap;
 import me.skiincraft.discord.ousu.OusuBot;
@@ -17,12 +18,14 @@ public class BeatmapEmbed {
 
 	public static InputStream idb;
 
-	public synchronized static EmbedBuilder beatmapEmbed(Beatmap beatmap, Guild guild) {
+	public synchronized static EmbedBuilder beatmapEmbed(List<Beatmap> beat, int value, Guild guild) {
 		EmbedBuilder embed = new EmbedBuilder();
 		SQLAccess sql = new SQLAccess(guild);
 
 		LanguageManager lang = new LanguageManager(Language.valueOf(sql.get("language")));
 
+		Beatmap beatmap = beat.get(value);
+		
 		embed.setTitle(beatmap.getTitle());
 		int id = beatmap.getCreatorId();
 
