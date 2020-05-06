@@ -69,8 +69,6 @@ public class HistoryEvent extends ReactionsManager {
 			channel.editMessageById(getEvent().getMessageId(), embed.build()).queue();
 			ReactionMessage.osuHistory.add(new TopUserReaction(user, getEvent().getMessageId(), obj, v));
 		}
-
-		System.out.println(emoji);
 	}
 
 

@@ -220,11 +220,18 @@ public abstract class Commands extends ListenerAdapter {
 				new DefaultEmbed("'❌' Uso incorreto", "Tente utilizar o comando " + getUsage()).construir());
 		return a;
 	}
-
+	
 	public MessageAction noPermissionMessage(Permission permission) {
+		String[] str = lang.translatedArrayHelp("INSUFICIENT_PERMISSIONS");
+		StringBuffer buffer = new StringBuffer();
+		for (String append : str) {
+			if (append != str[0]) {
+				buffer.append(append);
+			}
+		}
+		buffer.append("\n");
 		MessageAction a = event.getChannel()
-				.sendMessage(new DefaultEmbed("'❌'Permissão insufiente!",
-						"Você não tem permissão suficiente para utilizar este comando\nAs permissões necessarias são: "
+				.sendMessage(new DefaultEmbed( str[0], buffer.toString()
 								+ permission.getName()).construir());
 		return a;
 	}

@@ -31,8 +31,8 @@ public class PrefixCommand extends Commands {
 
 	@Override
 	public void action(String[] args, User user, TextChannel channel) {
-		if (!hasPermission(user, Permission.MANAGE_SERVER)) {
-			noPermissionMessage(Permission.MANAGE_SERVER);
+		if (!hasPermission(user, Permission.MANAGE_CHANNEL)) {
+			noPermissionMessage(Permission.MANAGE_SERVER).queue();
 			return;
 		}
 

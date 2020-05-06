@@ -33,9 +33,9 @@
   "Embeds": {
 	"TITLE_USER_COMMAND_PLAYERSTATS": "Informações do Jogador",
 	"TITLE_USER_COMMAND_HISTORY": "Histórico do Jogador",
-	"MESSAGE_USER": "Você esta visualizando as informações do usuário",
-    "MESSAGE_RECENTUSER": "Você esta visualizando os ultimos **BEATMAPS** Jogados por ",
-    "MESSAGE_TOPUSER": "Você esta visualizando os **BEATMAPS** jogados por {USERNAME} com **MELHOR PONTUAÇÃO**",
+	"MESSAGE_USER": "Você esta visualizando as informações do usuário {USERNAME}",
+    "MESSAGE_RECENTUSER": "Você está visualizando os ultimos beatmpas jogados por {USERNAME}",
+    "MESSAGE_TOPUSER": "Você está visualizando os beatmaps jogados por {USERNAME} com melhor pontuação.",
 	"ACCURACY": "Precisão:",
     "ARTIST": "Artista:",
 	"AUTHOR": "Autor:",

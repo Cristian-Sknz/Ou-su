@@ -27,7 +27,7 @@ import net.dv8tion.jda.api.entities.User;
 public class UserCommand extends Commands {
 
 	public UserCommand() {
-		super("ou!", "user", "ou!user <nickname> <gamemode>", Arrays.asList("osuplayer"));
+		super("ou!", "user", "ou!user <nickname> <gamemode>", Arrays.asList("player", "profile", "usuario"));
 	}
 
 	@Override

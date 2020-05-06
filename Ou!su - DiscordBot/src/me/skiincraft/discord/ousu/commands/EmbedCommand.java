@@ -29,15 +29,8 @@ public class EmbedCommand extends Commands {
 
 	@Override
 	public void action(String[] args, User user, TextChannel channel) {
-		if (!hasPermissionorRole(user, Permission.MANAGE_CHANNEL, "mod")) {
-			String[] title = getLang().translatedArrayHelp("INSUFICIENT_PERMISSIONS");
-			StringBuffer buffer = new StringBuffer();
-			for (String rest : title) {
-				if (rest != title[0]) {
-					buffer.append(rest);
-				}
-			}
-			sendEmbedMessage(new DefaultEmbed(":gear:" + title[0], buffer.toString())).queue();
+		if (!hasPermission(user, Permission.MANAGE_CHANNEL)) {
+			noPermissionMessage(Permission.MANAGE_SERVER).queue();
 			return;
 		}
 
