@@ -1,8 +1,6 @@
 package me.skiincraft.discord.ousu.commands;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import me.skiincraft.api.ousu.exceptions.InvalidUserException;
 import me.skiincraft.api.ousu.modifiers.Gamemode;
@@ -12,6 +10,7 @@ import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
 import me.skiincraft.discord.ousu.utils.DefaultEmbed;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 
@@ -38,11 +37,27 @@ public class UserImageCommand extends Commands {
 			return;
 		}
 
-		if (args.length == 2) {
+		if (args.length >= 2) {
 
 			me.skiincraft.api.ousu.users.User osuUser;
 			try {
-				osuUser = OusuBot.getOsu().getUser(args[1], Gamemode.Standard);
+				StringBuffer stringArgs = new StringBuffer();
+				for (int i = 1; i < args.length; i++) {
+					stringArgs.append(args[i] + " ");
+				}
+				
+				int length = stringArgs.toString().length() - 1;
+				
+				String usermsg = stringArgs.toString().substring(0, length);
+				String lastmsg = args[args.length-1];
+				String name = usermsg.replace(" " + lastmsg, "");
+				
+				if (Gamemode.getGamemode(lastmsg) != null) {
+					osuUser = OusuBot.getOsu().getUser(name, Gamemode.getGamemode(lastmsg));
+				} else {
+					osuUser = OusuBot.getOsu().getUser(usermsg);
+				}
+				
 			} catch (InvalidUserException e) {
 				String[] str = getLang().translatedArrayOsuMessages("INEXISTENT_USER");
 				StringBuffer buffer = new StringBuffer();
@@ -55,52 +70,16 @@ public class UserImageCommand extends Commands {
 				sendEmbedMessage(new DefaultEmbed(str[0], buffer.toString())).queue();
 				return;
 			}
-
-			channel.sendFile(OsuProfile.drawImage(osuUser), osuUser.getUserID() + "_osu.png").queue();
-			return;
-		}
-
-		if (args.length >= 3) {
-			Gamemode gm = getGamemode(args[2]);
-			if (gm == null) {
-				gm = Gamemode.Standard;
-			}
-
-			me.skiincraft.api.ousu.users.User osuUser;
-			try {
-				osuUser = OusuBot.getOsu().getUser(args[1], gm);
-			} catch (InvalidUserException e) {
-				String[] str = getLang().translatedArrayOsuMessages("INEXISTENT_USER");
-				StringBuffer buffer = new StringBuffer();
-				for (String append : str) {
-					if (append != str[0]) {
-						buffer.append(append);
-					}
-				}
-
-				sendEmbedMessage(new DefaultEmbed(str[0], buffer.toString())).queue();
-				return;
-			}
-
-			channel.sendFile(OsuProfile.drawImage(osuUser), osuUser.getUserID() + "_osu.png").queue();
+			channel.sendFile(OsuProfile.drawImage(osuUser), osuUser.getUserID() + "_osu.png")
+			.embed(embed(osuUser).build()).queue();
 			return;
 		}
 	}
-
-	public Gamemode getGamemode(String mode) {
-		String gm = mode.toLowerCase();
-		Map<String, Gamemode> map = new HashMap<>();
-
-		map.put("standard", Gamemode.Standard);
-		map.put("catch", Gamemode.Catch_the_Beat);
-		map.put("mania", Gamemode.Mania);
-		map.put("taiko", Gamemode.Taiko);
-
-		if (map.containsKey(gm)) {
-			return map.get(gm);
-		}
-
-		return null;
+	
+	private EmbedBuilder embed(me.skiincraft.api.ousu.users.User osuUser) {
+		EmbedBuilder embed = new EmbedBuilder();
+		embed.setTitle(":frame_photo: " + osuUser.getUserName());
+		embed.setImage("attachment://" + osuUser.getUserID() + "_osu.png");
+		return embed;
 	}
-
 }

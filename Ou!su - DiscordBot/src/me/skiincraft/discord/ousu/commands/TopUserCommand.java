@@ -62,10 +62,18 @@ public class TopUserCommand extends Commands {
 				for (int i = 1; i < args.length; i++) {
 					stringArgs.append(args[i] + " ");
 				}
+				
 				int length = stringArgs.toString().length() - 1;
-				System.out.println(stringArgs.toString().substring(0, length));
-
-				osuUser = OusuBot.getOsu().getTopUser(stringArgs.toString().substring(0, length), 10);
+				
+				String usermsg = stringArgs.toString().substring(0, length);
+				String lastmsg = args[args.length-1];
+				String name = usermsg.replace(" " + lastmsg, "");
+				
+				if (Gamemode.getGamemode(lastmsg) != null) {
+					osuUser = OusuBot.getOsu().getTopUser(name, Gamemode.getGamemode(lastmsg), 10);
+				} else {
+					osuUser = OusuBot.getOsu().getTopUser(usermsg, 10);
+				}
 
 			} catch (InvalidUserException e) {
 				String[] str = getLang().translatedArrayOsuMessages("INEXISTENT_USER");
@@ -75,11 +83,10 @@ public class TopUserCommand extends Commands {
 						buffer.append(append);
 					}
 				}
-
 				sendEmbedMessage(new DefaultEmbed(str[0], buffer.toString())).queue();
 				return;
 			} catch (NoHistoryException e) {
-				String[] str = getLang().translatedArrayOsuMessages("INEXISTENT_USER");
+				String[] str = getLang().translatedArrayOsuMessages("NO_HAS_HISTORY");
 				StringBuffer buffer = new StringBuffer();
 				for (String append : str) {
 					if (append != str[0]) {
@@ -157,23 +164,6 @@ public class TopUserCommand extends Commands {
 				+ lang.translatedEmbeds("MAP_CREATED_BY") + author);
 		embed.setColor(Color.gray);
 		return embed;
-	}
-
-	public Gamemode getGamemode(String gamemode) {
-		String gm = gamemode.toLowerCase();
-		Map<String, Gamemode> map = new HashMap<>();
-
-		map.put("standard", Gamemode.Standard);
-		map.put("catch", Gamemode.Catch_the_Beat);
-		map.put("ctb", Gamemode.Catch_the_Beat);
-		map.put("mania", Gamemode.Mania);
-		map.put("taiko", Gamemode.Taiko);
-
-		if (map.containsKey(gm)) {
-			return map.get(gamemode);
-		}
-
-		return null;
 	}
 
 	public static String getApproval(Approvated approval) {

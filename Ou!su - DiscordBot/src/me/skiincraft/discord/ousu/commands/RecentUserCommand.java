@@ -62,7 +62,17 @@ public class RecentUserCommand extends Commands {
 					stringArgs.append(args[i] + " ");
 				}
 				int length = stringArgs.toString().length() - 1;
-				osuUser = OusuBot.getOsu().getRecentUser(stringArgs.toString().substring(0, length), 5);
+				
+				String usermsg = stringArgs.toString().substring(0, length);
+				String lastmsg = args[args.length-1];
+				String name = usermsg.replace(" " + lastmsg, "");
+				
+				if (Gamemode.getGamemode(lastmsg) != null) {
+					osuUser = OusuBot.getOsu().getRecentUser(name, Gamemode.getGamemode(lastmsg), 5);
+				} else {
+					osuUser = OusuBot.getOsu().getRecentUser(usermsg, 5);
+				}
+				
 				@SuppressWarnings("unused")
 				Score score = osuUser.get(0);
 
@@ -138,22 +148,6 @@ public class RecentUserCommand extends Commands {
 				+ lang.translatedEmbeds("MAP_CREATED_BY") + author);
 		embed.setColor(Color.gray);
 		return embed;
-	}
-
-	public Gamemode getGamemode(String gamemode) {
-		String gm = gamemode.toLowerCase();
-		Map<String, Gamemode> map = new HashMap<>();
-
-		map.put("standard", Gamemode.Standard);
-		map.put("catch", Gamemode.Catch_the_Beat);
-		map.put("mania", Gamemode.Mania);
-		map.put("taiko", Gamemode.Taiko);
-
-		if (map.containsKey(gm)) {
-			return map.get(gamemode);
-		}
-
-		return null;
 	}
 
 	public static String getApproval(Approvated approval) {

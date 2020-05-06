@@ -59,7 +59,7 @@
 	"INVITE_ME": "Convide-me!"
   },
   "Bot": {
-    "PREFIX": "O prefixo neste servidor é: ",
+    "PREFIX": "The prefix on this server is: ",
     "FOOTER_DEFAULT": "Ou!su Bot | Created by Sknz#4260"
   }
 }

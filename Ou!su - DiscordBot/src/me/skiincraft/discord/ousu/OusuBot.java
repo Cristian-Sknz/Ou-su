@@ -2,6 +2,7 @@ package me.skiincraft.discord.ousu;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.security.auth.login.LoginException;
 
@@ -103,6 +104,7 @@ public class OusuBot {
 			System.out.println("JDA: Conexão foi estabelecida com sucesso");
 			OusuBot.selfUser = jda.getSelfUser();
 			osuLoader();
+			Locale.setDefault(new Locale("pt", "BR"));
 		} catch (LoginException e) {
 			System.out.println("JDA: Ocorreu um erro ao logar no bot. Verifique se o Token está correto.");
 		} catch (InvalidTokenException e) {

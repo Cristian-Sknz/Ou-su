@@ -1,13 +1,10 @@
 package me.skiincraft.discord.ousu.commands;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Consumer;
 
 import me.skiincraft.api.ousu.beatmaps.Beatmap;
 import me.skiincraft.api.ousu.exceptions.InvalidBeatmapException;
-import me.skiincraft.api.ousu.modifiers.Gamemode;
 import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.embeds.BeatmapEmbed;
 import me.skiincraft.discord.ousu.language.LanguageManager;
@@ -66,21 +63,4 @@ public class BeatMapCommand extends Commands {
 			});
 		}
 	}
-
-	public Gamemode getGamemode(String gamemode) {
-		String gm = gamemode.toLowerCase();
-		Map<String, Gamemode> map = new HashMap<>();
-
-		map.put("standard", Gamemode.Standard);
-		map.put("catch", Gamemode.Catch_the_Beat);
-		map.put("mania", Gamemode.Mania);
-		map.put("taiko", Gamemode.Taiko);
-
-		if (map.containsKey(gm)) {
-			return map.get(gamemode);
-		}
-
-		return null;
-	}
-
 }

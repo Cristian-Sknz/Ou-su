@@ -5,8 +5,6 @@ import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import me.skiincraft.api.ousu.exceptions.InvalidUserException;
 import me.skiincraft.api.ousu.modifiers.Gamemode;
@@ -47,11 +45,26 @@ public class UserCommand extends Commands {
 			return;
 		}
 
-		if (args.length == 2) {
+		if (args.length >= 2) {
 
 			me.skiincraft.api.ousu.users.User osuUser;
 			try {
-				osuUser = OusuBot.getOsu().getUser(args[1], Gamemode.Standard);
+				StringBuffer stringArgs = new StringBuffer();
+				for (int i = 1; i < args.length; i++) {
+					stringArgs.append(args[i] + " ");
+				}
+				
+				int length = stringArgs.toString().length() - 1;
+				
+				String usermsg = stringArgs.toString().substring(0, length);
+				String lastmsg = args[args.length-1];
+				String name = usermsg.replace(" " + lastmsg, "");
+				
+				if (Gamemode.getGamemode(lastmsg) != null) {
+					osuUser = OusuBot.getOsu().getUser(name, Gamemode.getGamemode(lastmsg));
+				} else {
+					osuUser = OusuBot.getOsu().getUser(usermsg);
+				}
 			} catch (InvalidUserException e) {
 				String[] str = getLang().translatedArrayOsuMessages("INEXISTENT_USER");
 				StringBuffer buffer = new StringBuffer();
@@ -64,35 +77,6 @@ public class UserCommand extends Commands {
 				sendEmbedMessage(new DefaultEmbed(str[0], buffer.toString())).queue();
 				return;
 			}
-			InputStream drawer = OsuProfileNote.drawImage(osuUser);
-			String aname = osuUser.getUserID() + "userOsu.png";
-			channel.sendFile(drawer, aname)
-					.embed(embed(osuUser, getEvent().getGuild()).setImage("attachment://" + aname).build()).queue();
-			return;
-		}
-
-		if (args.length >= 3) {
-			Gamemode gm = getGamemode(args[2]);
-			if (gm == null) {
-				gm = Gamemode.Standard;
-			}
-
-			me.skiincraft.api.ousu.users.User osuUser;
-			try {
-				osuUser = OusuBot.getOsu().getUser(args[1], gm);
-			} catch (InvalidUserException e) {
-				String[] str = getLang().translatedArrayOsuMessages("INEXISTENT_USER");
-				StringBuffer buffer = new StringBuffer();
-				for (String append : str) {
-					if (append != str[0]) {
-						buffer.append(append);
-					}
-				}
-
-				sendEmbedMessage(new DefaultEmbed(str[0], buffer.toString())).queue();
-				return;
-			}
-
 			InputStream drawer = OsuProfileNote.drawImage(osuUser);
 			String aname = osuUser.getUserID() + "userOsu.png";
 			channel.sendFile(drawer, aname)
@@ -128,21 +112,4 @@ public class UserCommand extends Commands {
 		embed.setColor(Color.gray);
 		return embed;
 	}
-
-	public Gamemode getGamemode(String gamemode) {
-		String gm = gamemode.toLowerCase();
-		Map<String, Gamemode> map = new HashMap<>();
-
-		map.put("standard", Gamemode.Standard);
-		map.put("catch", Gamemode.Catch_the_Beat);
-		map.put("mania", Gamemode.Mania);
-		map.put("taiko", Gamemode.Taiko);
-
-		if (map.containsKey(gm)) {
-			return map.get(gamemode);
-		}
-
-		return null;
-	}
-
 }
