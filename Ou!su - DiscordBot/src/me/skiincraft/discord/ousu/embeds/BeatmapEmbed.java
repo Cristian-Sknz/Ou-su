@@ -6,13 +6,11 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 import me.skiincraft.api.ousu.beatmaps.Beatmap;
-import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.language.LanguageManager.Language;
 import me.skiincraft.discord.ousu.mysql.SQLAccess;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.User;
 
 public class BeatmapEmbed {
 
@@ -26,12 +24,12 @@ public class BeatmapEmbed {
 
 		Beatmap beatmap = beat.get(value);
 		
-		embed.setTitle(beatmap.getTitle());
+		embed.setTitle(beatmap.getTitle(), beatmap.getURL());
 		int id = beatmap.getCreatorId();
 
 		embed.setAuthor(beatmap.getCreator(), "https://osu.ppy.sh/users/" + id, "https://a.ppy.sh/" + id);
 
-		embed.addField(lang.translatedEmbeds("ARTIST"), beatmap.getArtistUnicode(), true);
+		embed.addField(lang.translatedEmbeds("ARTIST"), beatmap.getArtistUnicode() + " \n(" + beatmap.getArtist() + ")", true);
 		embed.addField("BPM:", "" + beatmap.getBPM(), true);
 		embed.addField(lang.translatedEmbeds("GENRE"), "" + beatmap.getGenre().getDisplayName(), true);
 
@@ -47,8 +45,12 @@ public class BeatmapEmbed {
 		embed.addField(lang.translatedEmbeds("MAX_COMBO"), beatmap.getMaxCombo() + "", true);
 
 		embed.setImage(beatmap.getBeatmapCoverUrl());
-		User user = OusuBot.getOusu().getJda().getUserById("247096601242238991");
-		embed.setFooter(lang.translatedBot("FOOTER_DEFAULT"), user.getAvatarUrl());
+		
+		//User user = OusuBot.getOusu().getJda().getUserById("247096601242238991");
+		//embed.setFooter(lang.translatedBot("FOOTER_DEFAULT"), user.getAvatarUrl());
+		
+		embed.setFooter("[BeatmapSetID] " + beatmap.getBeatmapSetID() + " | "
+				+ "[BeatmapID]" + beatmap.getBeatmapID());
 
 		try {
 			idb = beatmap.getBeatmapPreview();

@@ -110,7 +110,7 @@ public class OusuBot {
 		} catch (InvalidTokenException e) {
 			System.out.println(e.getMessage());
 		}
-
+		
 	}
 
 	public void events() {

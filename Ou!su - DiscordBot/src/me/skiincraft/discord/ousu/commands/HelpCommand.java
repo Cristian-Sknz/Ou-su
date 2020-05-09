@@ -79,6 +79,7 @@ public class HelpCommand extends Commands {
 		StringBuffer b = new StringBuffer();
 		StringBuffer c = new StringBuffer();
 		StringBuffer d = new StringBuffer();
+		StringBuffer e = new StringBuffer();
 
 		for (int i = 0; i < commands.size(); i++) {
 			Commands comando = commands.get(i);
@@ -100,6 +101,10 @@ public class HelpCommand extends Commands {
 				d.append(prefix + comando.getCommand());
 				d.append(",");
 			}
+			if (comando.getCategoria() == CommandCategory.Utilidade) {
+				e.append(prefix + comando.getCommand());
+				e.append(",");
+			}
 		}
 
 		String[] Adm = a.toString().split(",");
@@ -110,6 +115,8 @@ public class HelpCommand extends Commands {
 		Arrays.sort(Osu);
 		String[] Sobre = d.toString().split(",");
 		Arrays.sort(Sobre);
+		String[] Util = e.toString().split(",");
+		Arrays.sort(Util);
 
 		String[] str = getLang().translatedArrayMessages("HELP_COMMAND_MESSAGE");
 
@@ -127,6 +134,7 @@ public class HelpCommand extends Commands {
 				true);
 		embed.addField("**" + CommandCategory.Ajuda.getCategoria(getLanguage()) + "**", "`" + String.join("\n", Ajuda) + "`", true);
 		embed.addField("**" + CommandCategory.Osu.getCategoria(getLanguage()) + "**", "`" + String.join("\n", Osu) + "`", true);
+		embed.addField("**" + CommandCategory.Utilidade.getCategoria(getLanguage()) + "**", "`" + String.join("\n", Util) + "`", true);
 		embed.addField("**" + CommandCategory.Sobre.getCategoria(getLanguage()) + "**", "`" + String.join("\n", Sobre) + "`", true);
 
 		User user = OusuBot.getOusu().getJda().getUserById("247096601242238991");

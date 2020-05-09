@@ -4,7 +4,7 @@ import me.skiincraft.discord.ousu.language.LanguageManager.Language;
 
 public enum CommandCategory {
 
-	Administração("Administração"), Ajuda("Ajuda"), Osu("Osu!"), Sobre("Sobre");
+	Administração("Administração"), Ajuda("Ajuda"), Osu("Osu!"), Utilidade("Utilidade"), Sobre("Sobre");
 
 	private String name;
 
@@ -23,6 +23,9 @@ public enum CommandCategory {
 			}
 			if (name.equalsIgnoreCase("Ajuda")) {
 				return "Help";
+			}
+			if (name.equalsIgnoreCase("Utilidade")) {
+				return "Util";
 			}
 			if (name.equalsIgnoreCase("Sobre")) {
 				return "About";

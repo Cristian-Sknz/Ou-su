@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public class CustomFont {
 
-	private static String fontPath = "resource/fonts/";
+	private static String fontPath = "resources/fonts/";
 
 	public enum CustomFonts {
 		BebasKai("BebasKai-Regular.ttf"), ErasDemi("ERASDEMI.TTF"), InsanityBurger("Insanibu.ttf"),

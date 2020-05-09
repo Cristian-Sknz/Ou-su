@@ -70,7 +70,9 @@ public class UserImageCommand extends Commands {
 				sendEmbedMessage(new DefaultEmbed(str[0], buffer.toString())).queue();
 				return;
 			}
-			channel.sendFile(OsuProfile.drawImage(osuUser), osuUser.getUserID() + "_osu.png")
+			
+			
+			channel.sendFile(OsuProfile.drawImage(osuUser, getLanguage()), osuUser.getUserID() + "_osu.png")
 			.embed(embed(osuUser).build()).queue();
 			return;
 		}

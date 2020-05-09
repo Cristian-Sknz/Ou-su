@@ -25,7 +25,7 @@ public class LanguageManager {
 		}
 		
 		public String getLanguageCode() {
-			return fileName.replace(".json", "");
+			return fileName.replace(".json", "").replace("_", "-");
 		}
 	}
 

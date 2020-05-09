@@ -13,7 +13,7 @@ public class OsuProfileNote {
 	public static InputStream drawImage(User osuUser) {
 		ImageBuilder builder = new ImageBuilder(osuUser.getUserID() + "_osuProfileNote", 900, 250);
 		try {
-			builder.addImage(new File("resource/osu_images/notes/Layer.png"), 0, 0, builder.getSize());
+			builder.addImage(new File("resources.osu_images.notes.Layer.png"), 0, 0, builder.getSize());
 
 			scoreCalculates(builder, osuUser.getSSh(), 150);
 			scoreCalculates(builder, osuUser.getSS(), 294);
