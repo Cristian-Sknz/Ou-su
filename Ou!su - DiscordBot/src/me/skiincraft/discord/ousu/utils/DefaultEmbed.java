@@ -27,7 +27,7 @@ public class DefaultEmbed {
 
 	public MessageEmbed construir() {
 		EmbedBuilder b = new EmbedBuilder();
-		User user = OusuBot.getOusu().getJda().getUserById("247096601242238991");
+		User user = OusuBot.getJda().getUserById("247096601242238991");
 
 		b.setColor(Color.PINK);
 		b.setDescription(description);
@@ -44,7 +44,7 @@ public class DefaultEmbed {
 
 	public EmbedBuilder construirEmbed() {
 		EmbedBuilder b = new EmbedBuilder();
-		User user = OusuBot.getOusu().getJda().getUserById("247096601242238991");
+		User user = OusuBot.getJda().getUserById("247096601242238991");
 		b.setFooter(user.getName() + "#" + user.getDiscriminator() + " | Ou!su bot ™", user.getAvatarUrl());
 
 		b.setColor(Color.PINK);

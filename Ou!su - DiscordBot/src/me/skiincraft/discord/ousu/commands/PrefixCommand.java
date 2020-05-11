@@ -16,7 +16,7 @@ import net.dv8tion.jda.api.entities.User;
 public class PrefixCommand extends Commands {
 
 	public PrefixCommand() {
-		super("ou!", "prefix");
+		super("ou!", "prefix", "prefix <newprefix>", null);
 	}
 
 	@Override
@@ -30,20 +30,19 @@ public class PrefixCommand extends Commands {
 	}
 
 	@Override
-	public void action(String[] args, User user, TextChannel channel) {
+	public void action(String[] args, String label, User user, TextChannel channel) {
 		if (!hasPermission(user, Permission.MANAGE_CHANNEL)) {
 			noPermissionMessage(Permission.MANAGE_SERVER).queue();
 			return;
 		}
 
-		if (isInsuficient()) {
-			setUsage(getCommandFull() + " [args]");
+		if (args.length == 0) {
 			sendUsage().queue();
 			return;
 		}
 
 		if (args.length >= 1) {
-			if (!StringUtils.containsSpecialCharacters(args[1])) {
+			if (!StringUtils.containsSpecialCharacters(args[0])) {
 				String[] str = getLang().translatedArrayMessages("PREFIX_INCORRECT_USE");
 				StringBuffer buffer = new StringBuffer();
 				for (String append : str) {
@@ -55,7 +54,8 @@ public class PrefixCommand extends Commands {
 				sendEmbedMessage(new DefaultEmbed("'❌' " + str[0], buffer.toString()).construirEmbed()).queue();
 				return;
 			}
-			if (args[1].length() > 3) {
+			
+			if (args[0].length() > 3) {
 				String[] str = getLang().translatedArrayMessages("PREFIX_INCORRECT_USE2");
 				StringBuffer buffer = new StringBuffer();
 				for (String append : str) {
@@ -72,7 +72,7 @@ public class PrefixCommand extends Commands {
 			channel.getGuild();
 
 			String oldPrefix = sql.get("prefix");
-			String newPrefix = args[1];
+			String newPrefix = args[0];
 			sql.set("prefix", newPrefix);
 
 			String[] str = getLang().translatedArrayMessages("PREFIX_COMMAND_MESSAGE");

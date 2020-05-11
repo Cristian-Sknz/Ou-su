@@ -4,9 +4,9 @@ import java.io.File;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.function.Consumer;
 
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.language.LanguageManager.Language;
@@ -31,6 +31,7 @@ public abstract class Commands extends ListenerAdapter {
 	private String usage;
 
 	private String[] args;
+	private String label;
 	private GuildMessageReceivedEvent event;
 
 	private boolean loadmessage;
@@ -57,7 +58,7 @@ public abstract class Commands extends ListenerAdapter {
 
 	public abstract CommandCategory categoria();
 
-	public abstract void action(String[] args, User user, TextChannel channel);
+	public abstract void action(String[] args, String label, User user, TextChannel channel);
 
 	public boolean requisitos(GuildMessageReceivedEvent e) {
 		args = e.getMessage().getContentRaw().split(" ");
@@ -81,7 +82,8 @@ public abstract class Commands extends ListenerAdapter {
 				return false;
 			}
 		}
-
+		
+		this.label = prefix + command;
 		this.lang = new LanguageManager(Language.valueOf(sql.get("language")));
 
 		this.channel = e.getChannel();
@@ -155,9 +157,8 @@ public abstract class Commands extends ListenerAdapter {
 		complete.append("[" + channel.getGuild().getName());
 		complete.append(":" + channel.getName());
 		complete.append(" | " + data + "]:");
-		;
 
-		String userFull = user.getName() + user.getDiscriminator();
+		String userFull = user.getName()+ "#" + user.getDiscriminator();
 
 		System.out.println(complete.toString() + userFull + " executou o comando " + getCommandFull());
 
@@ -166,22 +167,20 @@ public abstract class Commands extends ListenerAdapter {
 			@Override
 			public void run() {
 				final long startElapsed = System.currentTimeMillis();
+				channel.sendTyping().queue();
 
-				if (loadmessage) {
-					EmbedBuilder embed = new EmbedBuilder();
-					embed.setTitle("Carregando...");
-					embed.setThumbnail("");
-
-					channel.sendMessage(embed.build()).queue(new Consumer<Message>() {
-
-						@Override
-						public void accept(Message message) {
-							mess = message;
-						}
-					});
+				List<String> slist = new ArrayList<String>();
+				String[] sarray = event.getMessage().getContentRaw().split(" ");
+				
+				for (String str : sarray) {
+					if (sarray[0] != str) {
+						slist.add(str);	
+					}
 				}
-
-				action(event.getMessage().getContentRaw().split(" "), user, channel);
+				sarray = new String[slist.size()];
+				slist.toArray(sarray);
+				
+				action(sarray, label, user, channel);
 
 				if (loadmessage) {
 					mess.delete().queue();

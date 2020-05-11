@@ -29,13 +29,13 @@ public class LanguageCommand extends Commands {
 	}
 
 	@Override
-	public void action(String[] args, User user, TextChannel channel) {
+	public void action(String[] args, String label, User user, TextChannel channel) {
 		if (!hasPermission(user, Permission.MANAGE_CHANNEL)) {
 			noPermissionMessage(Permission.MANAGE_SERVER).queue();
 			return;
 		}
 		
-		if (isInsuficient()) {
+		if (args.length == 0) {
 			String[] str = getLang().translatedArrayMessages("AVAILABLE_LANGUAGE_MESSAGE");
 			
 			StringBuffer buffer = new StringBuffer();
@@ -54,9 +54,9 @@ public class LanguageCommand extends Commands {
 			return;
 		}
 		
-		if (args.length >= 1) {
+		if (args.length == 1) {
 			for (Language lang : Language.values()) {
-				if (lang.name().equalsIgnoreCase(args[1])) {
+				if (lang.name().equalsIgnoreCase(args[0])) {
 					SQLAccess sql = new SQLAccess(channel.getGuild());
 					sql.set("language", lang.name());
 					LanguageManager m = new LanguageManager(lang);

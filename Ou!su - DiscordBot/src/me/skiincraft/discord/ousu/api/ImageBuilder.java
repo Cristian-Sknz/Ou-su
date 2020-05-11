@@ -128,7 +128,8 @@ public class ImageBuilder {
 
 	public File buildFile() throws IOException {
 		graphic.dispose();
-		File file = new File("resource/osuprofiles/" + this.imagename + ".png");
+		File file = new File("resources/osuprofiles/" + this.imagename + ".png");
+		file.mkdirs();
 		ImageIO.write(base, "png", file);
 
 		return file;

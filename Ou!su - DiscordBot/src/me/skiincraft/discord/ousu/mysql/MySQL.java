@@ -79,8 +79,9 @@ public class MySQL {
 
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			String url = "jdbc:sqlite:banco_de_dados/banco_sqlite.db";
-			this.connection = DriverManager.getConnection(url);
+			this.connection = DriverManager.getConnection(
+					"jdbc:mysql://" + this.host + ":" + 3306 + "/" + this.database + "?autoReconnect=true", this.user,
+					this.password);
 
 			this.statement = this.connection.createStatement();
 			ousu.logger("Conexao com o banco de dados estabelecida com sucesso.");
@@ -166,35 +167,6 @@ public class MySQL {
 			e.printStackTrace();
 		}
 	}
-	
-	String createtableString() {
-		StringBuffer buffer = new StringBuffer();
-		buffer.append("CREATE TABLE IF NOT EXISTS ");
-		buffer.append("`servidores` ");
-		buffer.append("(ID INTEGER PRIMARY KEY AUTOINCREMENT,");
-		buffer.append("`guildid` VARCHAR(64) NOT NULL, ");
-		buffer.append("`nome` VARCHAR(64) NOT NULL, ");
-		buffer.append("`membros` INT, ");
-		buffer.append("`prefix` VARCHAR(10) NOT NULL, ");
-		buffer.append("`adicionado em` VARCHAR(24) NOT NULL, ");
-		buffer.append("`language` VARCHAR(24) NOT NULL");
-		buffer.append(");");
-		
-		return buffer.toString();
-	}
-	
-	String createtablePlayerString() {
-		StringBuffer buffer = new StringBuffer();
-		buffer.append("CREATE TABLE IF NOT EXISTS ");
-		buffer.append("`servidores` ");
-		buffer.append("(ID INTEGER PRIMARY KEY AUTOINCREMENT,");
-		buffer.append("`userid` VARCHAR(64) NOT NULL, ");
-		buffer.append("`username` VARCHAR(64) NOT NULL, ");
-		buffer.append("`osu_account` VARCHAR(64) NOT NULL");
-		buffer.append(");");
-		
-		return buffer.toString();
-	}
 
 	public synchronized void setup() {
 		if (this.connection == null || this.statement == null) {
@@ -203,10 +175,12 @@ public class MySQL {
 			return;
 		}
 		try {
-			
-			this.statement.execute(createtableString());
-			this.statement.execute(createtablePlayerString());
-			
+			this.statement.execute("CREATE TABLE IF NOT EXISTS `" + this.database
+					+ "`.`servidores` (`id` INT UNSIGNED NOT NULL AUTO_INCREMENT, `guildid` VARCHAR(64) NOT NULL, `nome` VARCHAR(64) NOT NULL, `membros` INT, `prefix` VARCHAR(24) NOT NULL, `adicionado em` VARCHAR(24) NOT NULL, `language` VARCHAR(24) NOT NULL, PRIMARY KEY(`id`));");
+			// Tabelas(GuildID, Nome, Membros, Prefix, Adicionado em, Language);
+			this.statement.execute("CREATE TABLE IF NOT EXISTS `" + this.database
+					+ "`.`usuarios` (`id` INT UNSIGNED NOT NULL AUTO_INCREMENT, `userid` VARCHAR(64) NOT NULL, `username` VARCHAR(64) NOT NULL, `osu_account` VARCHAR(64) NOT NULL, PRIMARY KEY(`id`));");
+			// Tabelas(UserID, Username, Osu_Account);
 			ousu.setDBSQL(true);
 		} catch (SQLException exception) {
 			exception.printStackTrace();

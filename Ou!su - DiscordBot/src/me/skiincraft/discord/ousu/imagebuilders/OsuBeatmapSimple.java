@@ -19,7 +19,7 @@ import me.skiincraft.discord.ousu.utils.CustomFont.CustomFonts;
 
 public class OsuBeatmapSimple {
 
-	private static String path = "resources.osu_images.";
+	private static String path = "resources/osu_images/";
 
 	public static InputStream drawImage(Beatmap beatmap) {
 		ImageBuilder builder = new ImageBuilder(beatmap.getBeatmapSetID() + "_cover", 900, 250);

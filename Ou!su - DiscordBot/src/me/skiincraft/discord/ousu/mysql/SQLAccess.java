@@ -4,6 +4,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import me.skiincraft.discord.ousu.OusuBot;
 import net.dv8tion.jda.api.entities.Guild;
@@ -147,4 +149,31 @@ public class SQLAccess {
 			return;
 		}
 	}
+	
+	public Map<String, String> getOrderBy(String colunm, int limit, boolean desc) {
+		try {
+			String d;
+			if (desc == false) {
+				d = "` ";
+			} else {
+				d = "` DESC ";
+			}
+			// SELECT * FROM `servidores` GROUP BY `ID` ORDER BY `adicionado em` DESC LIMIT 5; esse era teste*
+			Map<String, String> map = new HashMap<String, String>();
+			ResultSet result = Ousu.getSQL().getConnection().prepareStatement(
+					"SELECT * FROM `" + databaseName + "` GROUP BY `ID` ORDER BY `" + colunm + d +"LIMIT " + limit)
+					.executeQuery();
+			do {
+				if (!result.next()) {
+					result.close();
+					return map;
+				}
+				map.put(result.getString("guildid"), result.getString(colunm));
+			} while (true);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 }

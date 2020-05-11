@@ -35,8 +35,6 @@ public class OsuProfile {
 			builder.addUserID(defaultfont, 448, 178);
 			builder.addPlayerCount(defaultfont, 449, 150);
 			
-			builder.addCentralizedStringY(osuUser.getPlayedHours().toString(), 746, 107, defaultfont.deriveFont(39F));
-			
 			// MEIO
 			Font midfont = CustomFont.getFont(CustomFonts.Lane_Cane, Font.PLAIN, 78F);
 			builder.addRanking(midfont, 768, 354);
@@ -52,6 +50,7 @@ public class OsuProfile {
 			
 			// Baixo
 			builder.getGraphic().setColor(Color.WHITE);
+			builder.addCentralizedStringY(osuUser.getPlayedHours().toString(), 746, 107, defaultfont.deriveFont(39F));
 			builder.addCentralizedStringY(f.format(osuUser.getTotalScore()) + "", 45, 697, new Font("Arial", Font.PLAIN, 32));
 			
 			// Notas
@@ -80,8 +79,6 @@ public class OsuProfile {
 			Font defaultfont = new Font("Arial", Font.PLAIN, 27);			
 			NumberFormat f = NumberFormat.getNumberInstance();
 			
-			builder.addCentralizedStringY(osuUser.getPlayedHours().toString(), 746, 107, defaultfont.deriveFont(39F));
-			
 			builder.addUsername(defaultfont, 359, 85);
 			builder.addAccuracy(defaultfont, 384, 120);
 			builder.addUserID(defaultfont, 349, 179);
@@ -102,6 +99,7 @@ public class OsuProfile {
 			
 			// Baixo
 			builder.getGraphic().setColor(Color.WHITE);
+			builder.addCentralizedStringY(osuUser.getPlayedHours().toString(), 746, 107, defaultfont.deriveFont(39F));
 			builder.addCentralizedStringY(f.format(osuUser.getTotalScore()) + "", 45, 697, new Font("Arial", Font.PLAIN, 32));
 			
 			// Notas

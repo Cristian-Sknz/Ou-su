@@ -4,7 +4,7 @@ import me.skiincraft.discord.ousu.language.LanguageManager.Language;
 
 public enum CommandCategory {
 
-	Administração("Administração"), Ajuda("Ajuda"), Osu("Osu!"), Utilidade("Utilidade"), Sobre("Sobre");
+	Administração("Administração"), Ajuda("Ajuda"), Osu("Osu!"), Utilidade("Utilidade"), Sobre("Sobre"), Owner("Dono");
 
 	private String name;
 

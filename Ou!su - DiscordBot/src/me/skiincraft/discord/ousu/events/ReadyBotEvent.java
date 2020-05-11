@@ -3,6 +3,7 @@ package me.skiincraft.discord.ousu.events;
 import java.util.Arrays;
 import java.util.List;
 
+import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.language.LanguageManager.Language;
 import me.skiincraft.discord.ousu.mysql.SQLAccess;
@@ -34,7 +35,10 @@ public class ReadyBotEvent extends ListenerAdapter {
 		int guilds = event.getJDA().getGuilds().size();
 		
 		PresenceTask.ordem = 2;
-		event.getJDA().getPresence().setPresence(OnlineStatus.ONLINE, Activity.watching((guilds) + " Servidores."));
+		String name = OusuBot.getJda().getPresence().getActivity().getName();
+		if (name.contains(" Servidores.")) {
+			event.getJDA().getPresence().setPresence(OnlineStatus.ONLINE, Activity.watching((guilds) + " Servidores."));
+		}
 	}
 
 	@Override
@@ -90,7 +94,7 @@ public class ReadyBotEvent extends ListenerAdapter {
 	public void onReady(ReadyEvent event) {
 		//int guilds = event.getGuildTotalCount();
 		//event.getJDA().getPresence().setPresence(OnlineStatus.ONLINE, Activity.watching(guilds + " Servidores."));
-		event.getJDA().getPresence().setPresence(OnlineStatus.ONLINE, Activity.listening("Type: ou!help for help."));
+		event.getJDA().getPresence().setPresence(OnlineStatus.ONLINE, Activity.listening("Type ou!help for help."));
 		List<Guild> guildas = event.getJDA().getGuilds();
 		
 		int newGuilds = 0;

@@ -35,16 +35,16 @@ public class BeatMapSetCommand extends Commands {
 	}
 
 	@Override
-	public void action(String[] args, User user, TextChannel channel) {
-		if (args.length == 1) {
+	public void action(String[] args, String label, User user, TextChannel channel) {
+		if (args.length == 0) {
 			sendUsage().queue();
 			return;
 		}
 
-		if (args.length == 2) {
+		if (args.length == 1) {
 			List<Beatmap> osuBeat;
 			try {
-				osuBeat = OusuBot.getOsu().getBeatmapSet(Integer.valueOf(args[1]));
+				osuBeat = OusuBot.getOsu().getBeatmapSet(Integer.valueOf(args[0]));
 			} catch (InvalidBeatmapException e) {
 				String[] msg = getLang().translatedArrayOsuMessages("INEXISTENT_BEATMAPID");
 				sendEmbedMessage(new DefaultEmbed(msg[0], StringUtils.arrayToString(1, msg))).queue();

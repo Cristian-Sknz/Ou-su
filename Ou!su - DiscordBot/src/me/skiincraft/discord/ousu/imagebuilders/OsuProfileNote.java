@@ -7,14 +7,18 @@ import java.io.InputStream;
 
 import me.skiincraft.api.ousu.users.User;
 import me.skiincraft.discord.ousu.api.ImageBuilder;
+import me.skiincraft.discord.ousu.language.LanguageManager.Language;
 
 public class OsuProfileNote {
 
-	public static InputStream drawImage(User osuUser) {
+	public static InputStream drawImage(User osuUser, Language lang) {
 		ImageBuilder builder = new ImageBuilder(osuUser.getUserID() + "_osuProfileNote", 900, 250);
 		try {
-			builder.addImage(new File("resources.osu_images.notes.Layer.png"), 0, 0, builder.getSize());
-
+			if (lang != Language.English) {
+				builder.addImage(new File("resources/osu_images/notes/Layer.png"), 0, 0, builder.getSize());
+			} else {
+				builder.addImage(new File("resources/osu_images/notes/LayerEN.png"), 0, 0, builder.getSize());
+			}
 			scoreCalculates(builder, osuUser.getSSh(), 150);
 			scoreCalculates(builder, osuUser.getSS(), 294);
 			scoreCalculates(builder, osuUser.getSh(), 444);

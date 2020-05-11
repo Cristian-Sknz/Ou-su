@@ -33,15 +33,15 @@ public class HelpCommand extends Commands {
 	}
 
 	@Override
-	public void action(String[] args, User user, TextChannel channel) {
-		if (isInsuficient()) {
+	public void action(String[] args, String label, User user, TextChannel channel) {
+		if (args.length == 0) {
 			sendEmbedMessage(embed(channel.getGuild())).queue();
 			return;
 		}
 
-		if (args.length == 2) {
-			System.out.println(args[1]);
-			sendEmbedMessage(emb(args[1], channel.getGuild())).queue();
+		if (args.length == 1) {
+			System.out.println(args[0]);
+			sendEmbedMessage(emb(args[0], channel.getGuild())).queue();
 			return;
 		}
 
@@ -134,10 +134,10 @@ public class HelpCommand extends Commands {
 				true);
 		embed.addField("**" + CommandCategory.Ajuda.getCategoria(getLanguage()) + "**", "`" + String.join("\n", Ajuda) + "`", true);
 		embed.addField("**" + CommandCategory.Osu.getCategoria(getLanguage()) + "**", "`" + String.join("\n", Osu) + "`", true);
-		embed.addField("**" + CommandCategory.Utilidade.getCategoria(getLanguage()) + "**", "`" + String.join("\n", Util) + "`", true);
+		//embed.addField("**" + CommandCategory.Utilidade.getCategoria(getLanguage()) + "**", "`" + String.join("\n", Util) + "`", true);
 		embed.addField("**" + CommandCategory.Sobre.getCategoria(getLanguage()) + "**", "`" + String.join("\n", Sobre) + "`", true);
 
-		User user = OusuBot.getOusu().getJda().getUserById("247096601242238991");
+		User user = OusuBot.getJda().getUserById("247096601242238991");
 		embed.setFooter(user.getName() + "#" + user.getDiscriminator() + " | Ou!su bot ™", user.getAvatarUrl());
 		return embed;
 	}

@@ -13,7 +13,7 @@ import net.dv8tion.jda.api.entities.User;
 public class EmbedCommand extends Commands {
 
 	public EmbedCommand() {
-		super("ou!", "embed", "y!embed <title> <description> (utilize _ como espaço no titulo)",
+		super("ou!", "embed", "embed <title> <description> (\"_\" for space)",
 				Arrays.asList("broadcast"));
 	}
 
@@ -28,30 +28,30 @@ public class EmbedCommand extends Commands {
 	}
 
 	@Override
-	public void action(String[] args, User user, TextChannel channel) {
+	public void action(String[] args, String label, User user, TextChannel channel) {
 		if (!hasPermission(user, Permission.MANAGE_CHANNEL)) {
 			noPermissionMessage(Permission.MANAGE_SERVER).queue();
 			return;
 		}
 
-		if (args.length == 1) {
+		if (args.length == 0) {
 			sendUsage().queue();
 			return;
 		}
 
-		if (args.length == 2) {
-			sendEmbedMessage(new DefaultEmbed(args[1].replaceAll("_", " "), "")).queue();
+		if (args.length == 1) {
+			sendEmbedMessage(new DefaultEmbed(args[0].replaceAll("_", " "), "")).queue();
 			return;
 		}
 
-		if (args.length >= 3) {
+		if (args.length >= 2) {
 			StringBuffer em = new StringBuffer();
 
-			for (int i = 2; i < args.length; i++) {
+			for (int i = 1; i < args.length; i++) {
 				em.append(args[i] + " ");
 			}
 
-			sendEmbedMessage(new DefaultEmbed(args[1].replaceAll("_", " "), em.toString())).queue();
+			sendEmbedMessage(new DefaultEmbed(args[0].replaceAll("_", " "), em.toString())).queue();
 			return;
 		}
 		return;

@@ -46,21 +46,20 @@ public class RecentUserCommand extends Commands {
 	public static String linkcover;
 
 	@Override
-	public void action(String[] args, User user, TextChannel channel) {
-		if (args.length == 1) {
+	public void action(String[] args, String label, User user, TextChannel channel) {
+		if (args.length == 0) {
 			sendUsage().queue();
 			return;
 		}
 
-		if (args.length >= 2) {
-
+		if (args.length >= 1) {
 			List<Score> osuUser;
 			try {
-
 				StringBuffer stringArgs = new StringBuffer();
-				for (int i = 1; i < args.length; i++) {
+				for (int i = 0; i < args.length; i++) {
 					stringArgs.append(args[i] + " ");
 				}
+				
 				int length = stringArgs.toString().length() - 1;
 				
 				String usermsg = stringArgs.toString().substring(0, length);

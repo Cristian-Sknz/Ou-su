@@ -33,7 +33,7 @@ public class InviteCommand extends Commands {
 	}
 
 	@Override
-	public void action(String[] args, User user, TextChannel channel) {
+	public void action(String[] args, String label, User user, TextChannel channel) {
 		channel.sendMessage(embed(channel.getGuild()).build()).queue();
 
 	}
@@ -41,7 +41,7 @@ public class InviteCommand extends Commands {
 	public EmbedBuilder embed(Guild guild) {
 		EmbedBuilder embed = new EmbedBuilder();
 
-		SelfUser self = OusuBot.getOusu().getJda().getSelfUser();
+		SelfUser self = OusuBot.getJda().getSelfUser();
 
 		embed.setAuthor(self.getName() + "#" + self.getDiscriminator(), invitelink, self.getAvatarUrl());
 		embed.setColor(Color.BLUE);

@@ -10,7 +10,7 @@ import net.dv8tion.jda.api.managers.Presence;
 public class PresenceTask extends TimerTask {
 
 	public static int ordem = 0;
-	Presence presence = OusuBot.getOusu().getJda().getPresence();
+	Presence presence = OusuBot.getJda().getPresence();
 	
 	@Override
 	public void run() {

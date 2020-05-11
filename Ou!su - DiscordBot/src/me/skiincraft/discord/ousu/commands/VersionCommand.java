@@ -33,15 +33,15 @@ public class VersionCommand extends Commands {
 	}
 
 	@Override
-	public void action(String[] args, User user, TextChannel channel) {
+	public void action(String[] args, String label, User user, TextChannel channel) {
 		channel.sendMessage(embed(channel.getGuild()).build()).queue();
 
 	}
 
 	public EmbedBuilder embed(Guild guild) {
 		EmbedBuilder embed = new EmbedBuilder();
-		User user = OusuBot.getOusu().getJda().getUserById("247096601242238991");
-		SelfUser self = OusuBot.getOusu().getJda().getSelfUser();
+		User user = OusuBot.getJda().getUserById("247096601242238991");
+		SelfUser self = OusuBot.getJda().getSelfUser();
 		embed.setAuthor(self.getName() + "#" + self.getDiscriminator(), "https://github.com/skiincraft",
 				self.getAvatarUrl());
 		OffsetDateTime data = self.getTimeCreated();

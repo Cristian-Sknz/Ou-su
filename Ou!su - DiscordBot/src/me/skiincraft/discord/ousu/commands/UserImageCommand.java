@@ -17,7 +17,7 @@ import net.dv8tion.jda.api.entities.User;
 public class UserImageCommand extends Commands {
 
 	public UserImageCommand() {
-		super("ou!", "userimage", "ou!userimage <nickname> <Gamemode>", Arrays.asList("osuimage"));
+		super("ou!", "userimage", "ou!userimage <nickname> <Gamemode>", Arrays.asList("profileimage", "playerimage"));
 	}
 
 	@Override
@@ -31,18 +31,18 @@ public class UserImageCommand extends Commands {
 	}
 
 	@Override
-	public void action(String[] args, User user, TextChannel channel) {
-		if (args.length == 1) {
+	public void action(String[] args, String label, User user, TextChannel channel) {
+		if (args.length == 0) {
 			sendUsage().queue();
 			return;
 		}
 
-		if (args.length >= 2) {
+		if (args.length >= 1) {
 
 			me.skiincraft.api.ousu.users.User osuUser;
 			try {
 				StringBuffer stringArgs = new StringBuffer();
-				for (int i = 1; i < args.length; i++) {
+				for (int i = 0; i < args.length; i++) {
 					stringArgs.append(args[i] + " ");
 				}
 				
