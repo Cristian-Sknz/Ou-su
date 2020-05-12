@@ -25,7 +25,9 @@ public class LogChannelCommand extends Commands {
 
 	@Override
 	public void action(String[] args, String label, User user, TextChannel channel) {
-
+		if (!isOwner()) {
+			return;
+		}
 		
 		new ConfigAcess(channel.getGuild()).set("Logchannel", channel.getId());
 		sendEmbedMessage(new DefaultEmbed("Configuração", "Você setou o chat de logging")).queue();

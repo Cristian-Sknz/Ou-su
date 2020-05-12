@@ -176,7 +176,7 @@ public class SQLite {
 		return buffer.toString();
 	}
 	
-	void createConfigString() throws SQLException {
+	public String createConfigString() throws SQLException {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("CREATE TABLE IF NOT EXISTS ");
 		buffer.append("`config` ");
@@ -185,7 +185,7 @@ public class SQLite {
 		buffer.append("`Logchannel` VARCHAR(64) NOT NULL, ");
 		buffer.append("`Owner` VARCHAR(64) NOT NULL");
 		buffer.append(");");
-		this.statement.execute(buffer.toString());
+		return buffer.toString();
 	}
 
 	public synchronized void setup() {
@@ -198,6 +198,8 @@ public class SQLite {
 			
 			this.statement.execute(createtableString());
 			this.statement.execute(createtablePlayerString());
+			this.statement.execute(createConfigString());
+			
 			createConfigString();
 			ousu.setDBSQL(true);
 		} catch (SQLException exception) {

@@ -4,17 +4,17 @@ import java.io.File;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.language.LanguageManager.Language;
 import me.skiincraft.discord.ousu.mysql.SQLAccess;
 import me.skiincraft.discord.ousu.utils.DefaultEmbed;
+import me.skiincraft.discord.ousu.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -34,7 +34,6 @@ public abstract class Commands extends ListenerAdapter {
 	private String label;
 	private GuildMessageReceivedEvent event;
 
-	private boolean loadmessage;
 	private TextChannel channel;
 	private User user;
 
@@ -55,12 +54,10 @@ public abstract class Commands extends ListenerAdapter {
 	}
 
 	public abstract String[] helpMessage(LanguageManager langm);
-
 	public abstract CommandCategory categoria();
-
 	public abstract void action(String[] args, String label, User user, TextChannel channel);
 
-	public boolean requisitos(GuildMessageReceivedEvent e) {
+	public boolean isValidCommand(GuildMessageReceivedEvent e) {
 		args = e.getMessage().getContentRaw().split(" ");
 		if (e.getAuthor().isBot()) {
 			return false;
@@ -108,17 +105,13 @@ public abstract class Commands extends ListenerAdapter {
 		}
 		return false;
 	}
-
-	public boolean hasPermissionorRole(User user, Permission permission, String rolename) {
-		if (hasPermission(user, permission)) {
+	
+	public boolean isOwner() {
+		if (!user.equals(OusuBot.getJda().getUserById("247096601242238991"))) {
+			return false;
+		} else {
 			return true;
 		}
-
-		if (hasRole(user, "mod")) {
-			return true;
-		}
-
-		return false;
 	}
 
 	public boolean hasAliases() {
@@ -143,11 +136,9 @@ public abstract class Commands extends ListenerAdapter {
 		return prefix + command;
 	}
 
-	private Message mess;
-
 	@Override
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-		if (requisitos(event) == false) {
+		if (isValidCommand(event) == false) {
 			return;
 		}
 
@@ -168,26 +159,18 @@ public abstract class Commands extends ListenerAdapter {
 			public void run() {
 				final long startElapsed = System.currentTimeMillis();
 				channel.sendTyping().queue();
-
-				List<String> slist = new ArrayList<String>();
 				String[] sarray = event.getMessage().getContentRaw().split(" ");
 				
-				for (String str : sarray) {
-					if (sarray[0] != str) {
-						slist.add(str);	
-					}
-				}
-				sarray = new String[slist.size()];
-				slist.toArray(sarray);
+				sarray = StringUtils.removeString(sarray, 0);
 				
 				action(sarray, label, user, channel);
 
-				if (loadmessage) {
-					mess.delete().queue();
-				}
 				final long result = startElapsed - System.currentTimeMillis();
 				String elapsedtime = new DecimalFormat("#.0").format(result / 1000) + "s";
-
+				if (elapsedtime.startsWith(",")) {
+					System.out.println("[" + getCommandFull() + " | Elapsed Time: 0s]");
+					return;
+				}
 				System.out.println("[" + getCommandFull() + " | Elapsed Time: " + elapsedtime.replace("-", "") + "]");
 			}
 		});
@@ -207,11 +190,6 @@ public abstract class Commands extends ListenerAdapter {
 
 	public void DeletarMSGReceived() {
 		event.getMessage().delete().queue();
-	}
-
-	public boolean LoadingMessage(boolean value) {
-		this.loadmessage = value;
-		return this.loadmessage;
 	}
 
 	public MessageAction sendUsage() {

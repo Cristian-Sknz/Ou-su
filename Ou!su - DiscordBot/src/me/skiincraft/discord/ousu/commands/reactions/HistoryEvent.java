@@ -26,21 +26,23 @@ public class HistoryEvent extends ReactionsManager {
 	public void action(User user, TextChannel channel, String emoji) {
 
 		if (emoji.equalsIgnoreCase("◀")) {
-			ReactionMessage.osuHistory.remove(getUtils());
+			listHistory().remove(getUtils());
 
+			Object obj = getUtils().getObject();
+			Score[] score = (Score[]) obj;
 			int v = getUtils().getValue();
 			if (v <= 0) {
 				v = 0;
+				listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, v));
+				return;
 			} else {
 				v = getUtils().getValue() - 1;
 			}
 
-			Object obj = getUtils().getObject();
-			Score[] score = (Score[]) obj;
 			EmbedBuilder embed = TopUserCommand.embed(Arrays.asList(score), v, channel.getGuild());
 
 			channel.editMessageById(getEvent().getMessageId(), embed.build()).queue();
-			ReactionMessage.osuHistory.add(new TopUserReaction(user, getEvent().getMessageId(), obj, v));
+			listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, v));
 
 		}
 
@@ -52,7 +54,7 @@ public class HistoryEvent extends ReactionsManager {
 		}
 
 		if (emoji.equalsIgnoreCase("▶")) {
-			ReactionMessage.osuHistory.remove(getUtils());
+			listHistory().remove(getUtils());
 			int v = getUtils().getValue();
 			v += 1;
 
@@ -60,14 +62,14 @@ public class HistoryEvent extends ReactionsManager {
 			Score[] score = (Score[]) obj;
 
 			if (v >= score.length) {
-				ReactionMessage.osuHistory
+				listHistory()
 						.add(new TopUserReaction(user, getEvent().getMessageId(), obj, score.length - 1));
 				return;
 			}
 			EmbedBuilder embed = TopUserCommand.embed(Arrays.asList(score), v, channel.getGuild());
 
 			channel.editMessageById(getEvent().getMessageId(), embed.build()).queue();
-			ReactionMessage.osuHistory.add(new TopUserReaction(user, getEvent().getMessageId(), obj, v));
+			listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, v));
 		}
 	}
 

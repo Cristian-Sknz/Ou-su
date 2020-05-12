@@ -28,10 +28,10 @@ public abstract class ReactionsManager extends ListenerAdapter {
 	
 	public abstract void action(User user, TextChannel channel, String emoji);
 
-	public boolean check(GuildMessageReactionAddEvent event) {
+	public boolean isValidReaction(GuildMessageReactionAddEvent event) {
 		String eventMessageID = event.getMessageId();
 		List<ReactionUtils> osuhistorys = listHistory();
-
+		
 		if (event.getUser().isBot()) {
 			return false;
 		}
@@ -82,21 +82,9 @@ public abstract class ReactionsManager extends ListenerAdapter {
 		return false;
 	}
 
-	public boolean hasPermissionorRole(User user, Permission permission, String rolename) {
-		if (hasPermission(user, permission)) {
-			return true;
-		}
-
-		if (hasRole(user, "mod")) {
-			return true;
-		}
-
-		return false;
-	}
-
 	@Override
 	public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent event) {
-		if (!check(event)) {
+		if (!isValidReaction(event)) {
 			return;
 		}
 		action(event.getUser(), event.getChannel(), emoji);

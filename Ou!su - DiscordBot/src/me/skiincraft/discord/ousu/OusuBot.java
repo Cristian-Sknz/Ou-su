@@ -3,6 +3,7 @@ package me.skiincraft.discord.ousu;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
 
 import javax.security.auth.login.LoginException;
 
@@ -14,6 +15,7 @@ import me.skiincraft.discord.ousu.commands.EmbedCommand;
 import me.skiincraft.discord.ousu.commands.HelpCommand;
 import me.skiincraft.discord.ousu.commands.InviteCommand;
 import me.skiincraft.discord.ousu.commands.LanguageCommand;
+import me.skiincraft.discord.ousu.commands.PlayersCommand;
 import me.skiincraft.discord.ousu.commands.PrefixCommand;
 import me.skiincraft.discord.ousu.commands.RecentUserCommand;
 import me.skiincraft.discord.ousu.commands.TopUserCommand;
@@ -22,7 +24,9 @@ import me.skiincraft.discord.ousu.commands.UserImageCommand;
 import me.skiincraft.discord.ousu.commands.VersionCommand;
 import me.skiincraft.discord.ousu.commands.reactions.BeatmapsetEvent;
 import me.skiincraft.discord.ousu.commands.reactions.HistoryEvent;
+import me.skiincraft.discord.ousu.commands.reactions.PlayerReactionEvent;
 import me.skiincraft.discord.ousu.commands.reactions.RecentuserEvent;
+import me.skiincraft.discord.ousu.events.PresenceTask;
 import me.skiincraft.discord.ousu.events.ReadyBotEvent;
 import me.skiincraft.discord.ousu.events.ReceivedEvent;
 import me.skiincraft.discord.ousu.manager.Commands;
@@ -107,6 +111,9 @@ public class OusuBot {
 			OusuBot.selfUser = jda.getSelfUser();
 			osuLoader();
 			Locale.setDefault(new Locale("pt", "BR"));
+			
+			Timer timer = new Timer();
+			timer.schedule(new PresenceTask(), 10, 2*(60*1000));
 		} catch (LoginException e) {
 			System.out.println("JDA: Ocorreu um erro ao logar no bot. Verifique se o Token está correto.");
 		} catch (InvalidTokenException e) {
@@ -116,7 +123,8 @@ public class OusuBot {
 	}
 
 	public void events() {
-		registerEvents(new ReceivedEvent(), new HistoryEvent(), new ReadyBotEvent(), new BeatmapsetEvent(), new RecentuserEvent());
+		registerEvents(new ReceivedEvent(), new HistoryEvent(), new ReadyBotEvent(), new BeatmapsetEvent(), new RecentuserEvent()
+				, new PlayerReactionEvent());
 	}
 
 	public void commands() {
@@ -125,7 +133,7 @@ public class OusuBot {
 				new UserImageCommand(), new PrefixCommand(), new BeatMapCommand(), new VersionCommand(),
 				new InviteCommand(), new RecentUserCommand(), new LanguageCommand(), new BeatMapSetCommand());
 		
-		registerCommands(new PresenseCommand(), new LogChannelCommand());
+		registerCommands(new PresenseCommand(), new LogChannelCommand(), new PlayersCommand());
 	}
 
 	private void registerEvents(ListenerAdapter... events) {

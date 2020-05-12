@@ -1,6 +1,5 @@
 package me.skiincraft.discord.ousu.owneraccess;
 
-import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
@@ -28,7 +27,7 @@ public class PresenseCommand extends Commands {
 
 	@Override
 	public void action(String[] args, String label, User user, TextChannel channel) {
-		if (!user.equals(OusuBot.getJda().getUserById("247096601242238991"))) {
+		if (!isOwner()) {
 			return;
 		}
 		

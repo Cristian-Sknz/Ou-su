@@ -85,7 +85,7 @@ public class UserCommand extends Commands {
 		}
 	}
 
-	public EmbedBuilder embed(me.skiincraft.api.ousu.users.User osuUser, Guild guild) {
+	public static EmbedBuilder embed(me.skiincraft.api.ousu.users.User osuUser, Guild guild) {
 		EmbedBuilder embed = new EmbedBuilder();
 		SQLAccess sql = new SQLAccess(guild);
 		LanguageManager lang = new LanguageManager(Language.valueOf(sql.get("language")));

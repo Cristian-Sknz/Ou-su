@@ -27,7 +27,7 @@ public class ConfigAcess {
 		try {
 			StringBuffer exists = new StringBuffer();
 			exists.append("SELECT * FROM" + databaseName);
-			exists.append(" WHERE `guildid` = ");
+			exists.append(" WHERE `MainServer` = ");
 			exists.append("'" + guild.getId() +"';");
 			
 			ResultSet resultSet = Ousu.getSQL().getConnection()
@@ -35,7 +35,7 @@ public class ConfigAcess {
 					.executeQuery(exists.toString());
 
 			if (resultSet.next()) {
-				return resultSet.getString("guildid") != null;
+				return resultSet.getString("MainServer") != null;
 			}
 
 			return false;
@@ -63,10 +63,10 @@ public class ConfigAcess {
 			values.append("'" + 0 + "', ");
 			values.append("'" + "247096601242238991" + "');");
 			
-			String insert = insertinto.toString();
+			String inserta = insertinto.toString();
 			String value = insertinto.toString();
 			
-			Ousu.getSQL().getConnection().createStatement().execute(insert + value);
+			Ousu.getSQL().getConnection().createStatement().execute(inserta + value);
 			return;
 		} catch (SQLException e) {
 			Ousu.logger("Ocorreu um erro ao criar uma nova tabela.");
@@ -78,7 +78,7 @@ public class ConfigAcess {
 	public void deletar() {
 		try {
 			Ousu.getSQL().getConnection().createStatement()
-					.execute("DELETE FROM " + databaseName + "WHERE `guildid` = '" + guild.getId() + "';");
+					.execute("DELETE FROM " + databaseName + "WHERE `MainServer` = '" + guild.getId() + "';");
 		} catch (SQLException e) {
 			Ousu.logger("Ocorreu um erro ao deletar uma tabela: " + guild.getId());
 		}
@@ -92,7 +92,7 @@ public class ConfigAcess {
 
 		try {
 			ResultSet resultSet = Ousu.getSQL().getConnection().createStatement()
-					.executeQuery("SELECT * FROM " + databaseName + " WHERE `guildid` = '" + guild.getId() + "';");
+					.executeQuery("SELECT * FROM " + databaseName + " WHERE `MainServer` = '" + guild.getId() + "';");
 
 			if (resultSet.next()) {
 				return resultSet.getString(coluna);
@@ -111,7 +111,7 @@ public class ConfigAcess {
 
 		try {
 			ResultSet resultSet = Ousu.getSQL().getConnection().createStatement()
-					.executeQuery("SELECT * FROM " + databaseName + " WHERE `guildid` = '" + guild.getId() + "';");
+					.executeQuery("SELECT * FROM " + databaseName + " WHERE `MainServer` = '" + guild.getId() + "';");
 
 			if (resultSet.next()) {
 				return resultSet.getInt(coluna);
@@ -130,7 +130,7 @@ public class ConfigAcess {
 
 		try {
 			Ousu.getSQL().getConnection().createStatement().execute("UPDATE " + databaseName + " SET `" + coluna
-					+ "` = '" + valor + "' WHERE `guildid` = '" + guild.getId() + "';");
+					+ "` = '" + valor + "' WHERE `MainServer` = '" + guild.getId() + "';");
 			return;
 		} catch (SQLException e) {
 			Ousu.logger("Ocorreu um erro ao setar um valor de uma tabela: " + guild.getId());
@@ -145,7 +145,7 @@ public class ConfigAcess {
 
 		try {
 			Ousu.getSQL().getConnection().createStatement().execute("UPDATE " + databaseName + " SET `" + coluna
-					+ "` = '" + valor + "' WHERE `guildid` = '" + guild.getId() + "';");
+					+ "` = '" + valor + "' WHERE `MainServer` = '" + guild.getId() + "';");
 			return;
 		} catch (SQLException e) {
 			Ousu.logger("Ocorreu um erro ao setar um valor de uma tabela: " + guild.getId());

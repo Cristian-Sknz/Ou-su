@@ -14,9 +14,8 @@ public class PresenceTask extends TimerTask {
 	
 	@Override
 	public void run() {
-		System.out.println("Trocando de Rich Presence");
 		if (ordem == 0) {
-			presence.setPresence(OnlineStatus.ONLINE, Activity.watching(presence.getJDA().getUsers().size() + " Usuarios!"));
+			presence.setPresence(OnlineStatus.ONLINE, Activity.watching(presence.getJDA().getUsers().size() + " Usuarios Online!"));
 			ordem++;
 			return;
 		}
@@ -32,7 +31,6 @@ public class PresenceTask extends TimerTask {
 			ordem++;
 			return;
 		}
-		
 		ordem = 0;
 		this.run();
 	}
