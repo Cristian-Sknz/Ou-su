@@ -16,6 +16,7 @@ import me.skiincraft.discord.ousu.language.LanguageManager.Language;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
 import me.skiincraft.discord.ousu.mysql.SQLAccess;
+import me.skiincraft.discord.ousu.mysql.SQLPlayer;
 import me.skiincraft.discord.ousu.utils.DefaultEmbed;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
@@ -59,6 +60,18 @@ public class UserCommand extends Commands {
 				String usermsg = stringArgs.toString().substring(0, length);
 				String lastmsg = args[args.length-1];
 				String name = usermsg.replace(" " + lastmsg, "");
+				
+				if (getEvent().getMessage().getMentionedUsers().size() != 0) {
+					String userid = getEvent().getMessage().getMentionedUsers().get(0)
+							.getAsMention().replaceAll("\\D+","");
+					
+					SQLPlayer sql = new SQLPlayer(OusuBot.getJda().getUserById(userid));
+					if (sql.existe()) {
+						String nic = sql.get("osu_account");
+						name = nic;
+						usermsg = nic;
+					}
+				}
 				
 				if (Gamemode.getGamemode(lastmsg) != null) {
 					osuUser = OusuBot.getOsu().getUser(name, Gamemode.getGamemode(lastmsg));

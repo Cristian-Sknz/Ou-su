@@ -15,6 +15,7 @@ import me.skiincraft.discord.ousu.commands.EmbedCommand;
 import me.skiincraft.discord.ousu.commands.HelpCommand;
 import me.skiincraft.discord.ousu.commands.InviteCommand;
 import me.skiincraft.discord.ousu.commands.LanguageCommand;
+import me.skiincraft.discord.ousu.commands.MentionCommand;
 import me.skiincraft.discord.ousu.commands.PlayersCommand;
 import me.skiincraft.discord.ousu.commands.PrefixCommand;
 import me.skiincraft.discord.ousu.commands.RecentUserCommand;
@@ -111,9 +112,15 @@ public class OusuBot {
 			OusuBot.selfUser = jda.getSelfUser();
 			osuLoader();
 			Locale.setDefault(new Locale("pt", "BR"));
-			
-			Timer timer = new Timer();
-			timer.schedule(new PresenceTask(), 10, 2*(60*1000));
+			Thread t = new Thread(new Runnable() {
+				
+				@Override
+				public void run() {
+					Timer timer = new Timer();
+					timer.schedule(new PresenceTask(), 1000, 2*(60*1000));	
+				}
+			});
+			t.start();
 		} catch (LoginException e) {
 			System.out.println("JDA: Ocorreu um erro ao logar no bot. Verifique se o Token está correto.");
 		} catch (InvalidTokenException e) {
@@ -124,7 +131,7 @@ public class OusuBot {
 
 	public void events() {
 		registerEvents(new ReceivedEvent(), new HistoryEvent(), new ReadyBotEvent(), new BeatmapsetEvent(), new RecentuserEvent()
-				, new PlayerReactionEvent());
+				, new PlayerReactionEvent(), new MentionCommand());
 	}
 
 	public void commands() {

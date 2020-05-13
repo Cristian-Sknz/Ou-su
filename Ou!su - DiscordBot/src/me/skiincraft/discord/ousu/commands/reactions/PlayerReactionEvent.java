@@ -2,6 +2,8 @@ package me.skiincraft.discord.ousu.commands.reactions;
 
 import java.util.Arrays;
 import java.util.List;
+
+import me.skiincraft.api.ousu.exceptions.InvalidUserException;
 import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.commands.PlayersCommand;
 import me.skiincraft.discord.ousu.commands.UserCommand;
@@ -53,18 +55,23 @@ public class PlayerReactionEvent extends ReactionsManager {
 			Object obj = getUtils().getObject();
 			Rich[] score = (Rich[]) obj;
 			Rich r = score[getUtils().getValue()];
-			
+
 			String[] st = r.getRich().getLargeImage().getText().split(" ");
 			String nickname = st[0];
 			if (nickname.equalsIgnoreCase("guest")) {
 				return;
 			}
-			
+
 			listHistory().remove(getUtils());
-			
-			EmbedBuilder embed = UserCommand.embed(OusuBot.getOsu().getUser(nickname), channel.getGuild());
-			channel.clearReactionsById(getUtils().getMessageID()).queue();
-			channel.editMessageById(getUtils().getMessageID(),(embed.build())).queue();
+			try {
+				EmbedBuilder embed = UserCommand.embed(OusuBot.getOsu().getUser(nickname), channel.getGuild());
+				channel.clearReactionsById(getUtils().getMessageID()).queue();
+
+				channel.editMessageById(getUtils().getMessageID(), embed.build()).queue();
+			} catch (InvalidUserException e) {
+				listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, getUtils().getValue()));
+				return;
+			}
 		}
 
 		if (emoji.equalsIgnoreCase("▶")) {

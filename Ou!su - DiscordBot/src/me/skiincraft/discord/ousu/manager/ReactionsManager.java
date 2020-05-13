@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
+import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 
@@ -59,8 +60,11 @@ public abstract class ReactionsManager extends ListenerAdapter {
 		}
 
 		this.event = event;
-
-		event.getChannel().removeReactionById(event.getMessageId(), emoji, event.getUser()).queue();
+		try {
+			event.getChannel().removeReactionById(event.getMessageId(), emoji, event.getUser()).queue();
+		} catch (InsufficientPermissionException ex) {
+			System.out.println("Sem permissão para mudar reaction em: \n" + event.getGuild().getName() + " - " + event.getGuild().getId());
+		}
 
 		return true;
 	}

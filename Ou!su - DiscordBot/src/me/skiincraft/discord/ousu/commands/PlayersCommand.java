@@ -115,31 +115,38 @@ public class PlayersCommand extends Commands {
 		User user = rich.get(value).getUser();
 		RichPresence presence = rich.get(value).getRich();
 		boolean offline = presence.getState().contains("OFFLINE");
-		
-		embed.setAuthor(user.getName() + "#" + user.getDiscriminator(), null,
+		String order = "[" + (value + 1) + "/" + rich.size() + "] ";
+		embed.setAuthor(order + user.getName() + "#" + user.getDiscriminator(), null,
 				user.getAvatarUrl());
 		
 		embed.setThumbnail(presence.getLargeImage().getUrl());
 		
 		
 		if (offline) {
-			embed.setDescription(lang.translatedOsuMessages("ONLINE_PLAYER"));
-		} else {
 			embed.setDescription(lang.translatedOsuMessages("OFFLINE_PLAYER"));
+		} else {
+			embed.setDescription(lang.translatedOsuMessages("ONLINE_PLAYER"));
 		}
 		for (Rich r : rich) {
-			String[] st = presence.getLargeImage().getText().split(" ");
+			if (r.getRich().getLargeImage().getText() == null) {
+				continue;
+			}
+			String[] st = r.getRich().getLargeImage().getText().split(" ");
 			String nickname = st[0];
 			
 			if (st.length == 0 || nickname.equalsIgnoreCase("guest")) {
-				//fazenada
+				continue;
 			} else {
 				SQLPlayer sql = new SQLPlayer(r.getUser());
 				sql.set("osu_account", nickname);
 			}
 		}
-		
-		String[] strs = presence.getLargeImage().getText().split(" ");
+		String[] strs;
+		if (presence.getLargeImage().getText() == null) {
+			strs = new String[]{"guest"};	
+		} else {
+			strs = presence.getLargeImage().getText().split(" ");
+		}
 		
 		if (strs.length == 0 || strs[0].equalsIgnoreCase("guest")) {
 			embed.addField("Nickname:", "Unregistered user", true);
@@ -147,7 +154,11 @@ public class PlayersCommand extends Commands {
 		} else {
 			embed.addField("Nickname:", strs[0], true);
 			if (!offline) {
+				if (strs.length >= 3) {
 				embed.addField("Ranking: ", strs[2].replace(")", ""), true);
+				} else {
+					embed.addField("Ranking: ", ":(", true);
+				}
 			} else {
 				embed.addField("Ranking: ", ":(", true);
 			}
@@ -157,6 +168,8 @@ public class PlayersCommand extends Commands {
 			embed.addField("State: ", "AFK", true);
 		} else if (offline) {
 			embed.addField("State: ", "Offline", true);
+		} else if (presence.getState().contains("Idle")) {
+			embed.addField("State: ", "Idle", true);
 		} else {
 			int start = 0;
 			int end = 0;

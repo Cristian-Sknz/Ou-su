@@ -21,8 +21,8 @@
     "USE_NUMBERS": "Utilize Numeros!{l}IDs são formados por numeros, por favor utilize numeros.",
     "UNAVAILABLE_RESOURCE": "Recurso Indisponível{l}Esta parte do recurso não esta disponível.",
     "NO_PLAYER_DETECTED": "Não foi detectado nenhum jogador de osu!",
-    "OFFLINE_PLAYER": "Este jogador esta atualimente offline no rich presence do osu!",
-    "ONLINE_PLAYER": "Este jogador esta atualimente online!"
+    "OFFLINE_PLAYER": "Este jogador esta atualmente offline no rich presence do osu!",
+    "ONLINE_PLAYER": "Este jogador esta atualmente online!"
   },
   "Messages": {
     "INVITE_COMMAND_MESSAGE": "Posso fazer parte do seu servidor discord{l}Basta [Clicar aqui]({InviteUrl}) para me convidar!{l}{l}Caso queira um suporte, ou me conhecer mais um pouco{l}Entre no meu Servidor Discord - [Ou!su Bot]({BotDiscordUrl})",
