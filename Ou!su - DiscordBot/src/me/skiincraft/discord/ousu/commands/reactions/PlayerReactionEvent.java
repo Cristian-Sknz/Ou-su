@@ -15,6 +15,7 @@ import me.skiincraft.discord.ousu.utils.ReactionMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 
 public class PlayerReactionEvent extends ReactionsManager {
 
@@ -65,7 +66,12 @@ public class PlayerReactionEvent extends ReactionsManager {
 			listHistory().remove(getUtils());
 			try {
 				EmbedBuilder embed = UserCommand.embed(OusuBot.getOsu().getUser(nickname), channel.getGuild());
-				channel.clearReactionsById(getUtils().getMessageID()).queue();
+				
+				try {
+					channel.clearReactionsById(getUtils().getMessageID()).queue();
+				} catch (InsufficientPermissionException e) {
+					//
+				}
 
 				channel.editMessageById(getUtils().getMessageID(), embed.build()).queue();
 			} catch (InvalidUserException e) {

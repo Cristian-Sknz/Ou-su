@@ -19,7 +19,7 @@
     "INEXISTENT_BEATMAPID": "Invalid Beatmap{l}This beatmap you requested does not exist.",
     "NO_HAS_HISTORY": "No Has History{l}This user you requested has no history.",
     "USE_NUMBERS": "Use Numbers!{l}IDs are made up of numbers, please use numbers.",
-    "UNAVAILABLE_RESOURCE": "Unavailable Resource{l}This part of the resource is not available.",
+    "UNAVAILABLE_RESOURCE": "Unavailable Resource{l}This player has a rich presence private.",
     "NO_PLAYER_DETECTED": "No osu players were detected!",
     "OFFLINE_PLAYER": "This player is currently offline in the rich presence of osu!",
     "ONLINE_PLAYER": "This player is current online!"

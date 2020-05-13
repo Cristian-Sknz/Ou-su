@@ -47,9 +47,10 @@ public class SQLPlayer {
 		}
 
 		try {
+			String name = user.getName().replace("´", "").replace("'", "");
 			Ousu.getSQL().getConnection().createStatement().execute("INSERT INTO " + databaseName
 					+ "(`userid`, `username`, `osu_account`) VALUES" + 
-					"('"+ user.getId() + "', " + "'" + user.getName()+"#"+user.getDiscriminator() + "', " + "'" + "none" + "');");
+					"('"+ user.getId() + "', " + "'" + name +"#"+user.getDiscriminator() + "', " + "'" + "none" + "');");
 			return;
 		} catch (SQLException e) {
 			Ousu.logger("Ocorreu um erro ao criar uma nova tabela.");

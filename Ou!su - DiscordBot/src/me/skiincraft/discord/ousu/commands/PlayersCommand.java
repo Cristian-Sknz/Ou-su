@@ -18,6 +18,7 @@ import me.skiincraft.discord.ousu.mysql.SQLPlayer;
 import me.skiincraft.discord.ousu.richpresence.FakeRichPresence;
 import me.skiincraft.discord.ousu.richpresence.PresenceGetter;
 import me.skiincraft.discord.ousu.richpresence.Rich;
+import me.skiincraft.discord.ousu.utils.DefaultEmbed;
 import me.skiincraft.discord.ousu.utils.ReactionMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
@@ -114,6 +115,19 @@ public class PlayersCommand extends Commands {
 		
 		User user = rich.get(value).getUser();
 		RichPresence presence = rich.get(value).getRich();
+		
+		
+		if (presence.getState() == null) {
+			do {
+				value++;
+				if (value >= rich.size()) {
+					String[] msg = lang.translatedArrayOsuMessages("UNAVAILABLE_RESOURCE");
+					return new DefaultEmbed(msg[0], msg[1]).construirEmbed();
+				}
+				user = rich.get(value).getUser();
+				presence = rich.get(value).getRich();
+			} while (presence.getState() == null);
+		}
 		boolean offline = presence.getState().contains("OFFLINE");
 		String order = "[" + (value + 1) + "/" + rich.size() + "] ";
 		embed.setAuthor(order + user.getName() + "#" + user.getDiscriminator(), null,
@@ -128,6 +142,9 @@ public class PlayersCommand extends Commands {
 			embed.setDescription(lang.translatedOsuMessages("ONLINE_PLAYER"));
 		}
 		for (Rich r : rich) {
+			if (r.getRich().getLargeImage() == null) {
+				continue;
+			}
 			if (r.getRich().getLargeImage().getText() == null) {
 				continue;
 			}

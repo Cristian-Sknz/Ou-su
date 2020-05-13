@@ -38,7 +38,8 @@ public class SQLAccess {
 
 			return false;
 		} catch (Exception e) {
-			Ousu.logger("Não foi possivel verificar se existe " + guild.getId());
+			Ousu.logger("Não foi possivel verificar se existe");
+			Ousu.logger(guild.getName() + " - " + guild.getId());
 			return true;
 		}
 	}
@@ -47,16 +48,20 @@ public class SQLAccess {
 		if (existe()) {
 			return;
 		}
-
+		String date = new SimpleDateFormat("dd/MM/yyyy - HH:mm").format(new Date());
 		try {
-			String date = new SimpleDateFormat("dd/MM/yyyy - HH:mm").format(new Date());
+			String guildname = guild.getName().replace("'", "").replace("´", "");
 			Ousu.getSQL().getConnection().createStatement().execute("INSERT INTO " + databaseName
 					+ "(`guildid`, `nome`, `membros`, `prefix`, `adicionado em`, `language`) VALUES" + "('"
-					+ guild.getId() + "', " + "'" + guild.getName() + "', " + "'" + guild.getMemberCount() + "', " + "'"
+					+ guild.getId() + "', " + "'" + guildname + "', " + "'" + guild.getMemberCount() + "', " + "'"
 					+ getDefaultPrefix() + "', " + "'" + date + "', " + "'" + generatelang() + "');");
 			return;
 		} catch (SQLException e) {
-			Ousu.logger("Ocorreu um erro ao criar uma nova tabela.");
+			Ousu.logger("");
+			Ousu.logger("Não foi possivel verificar se existe");
+			Ousu.logger(guild.getName() + " - " + guild.getId());
+			Ousu.logger("Count: " + guild.getMemberCount() + " | " + getDefaultPrefix());
+			Ousu.logger("Data: " + date + " | " + generatelang());
 			Ousu.logger(e.getMessage());
 			return;
 		}
@@ -96,7 +101,8 @@ public class SQLAccess {
 			}
 			return null;
 		} catch (Exception e) {
-			Ousu.logger("Ocorreu um erro ao pegar um valor de uma tabela: " + guild.getId());
+			Ousu.logger("Ocorreu um erro ao pegar um valor de uma tabela: ");
+			Ousu.logger(guild.getName() + " - " + guild.getId());
 			return null;
 		}
 	}
@@ -115,7 +121,8 @@ public class SQLAccess {
 			}
 			return 0;
 		} catch (Exception e) {
-			Ousu.logger("Ocorreu um erro ao pegar um valor inteiro de uma tabela: " + guild.getId());
+			Ousu.logger("Ocorreu um erro ao pegar um valor(int) de uma tabela: ");
+			Ousu.logger(guild.getName() + " - " + guild.getId());
 			return 0;
 		}
 	}
@@ -130,7 +137,8 @@ public class SQLAccess {
 					+ "` = '" + valor + "' WHERE `guildid` = '" + guild.getId() + "';");
 			return;
 		} catch (SQLException e) {
-			Ousu.logger("Ocorreu um erro ao setar um valor de uma tabela: " + guild.getId());
+			Ousu.logger("Ocorreu um erro ao setar um valor de uma tabela: ");
+			Ousu.logger(guild.getName() + " - " + guild.getId());
 			return;
 		}
 	}
@@ -145,7 +153,8 @@ public class SQLAccess {
 					+ "` = '" + valor + "' WHERE `guildid` = '" + guild.getId() + "';");
 			return;
 		} catch (SQLException e) {
-			Ousu.logger("Ocorreu um erro ao setar um valor de uma tabela: " + guild.getId());
+			Ousu.logger("Ocorreu um erro ao setar um valor(int) de uma tabela: ");
+			Ousu.logger(guild.getName() + " - " + guild.getId());
 			return;
 		}
 	}
