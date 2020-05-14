@@ -27,6 +27,7 @@ import me.skiincraft.discord.ousu.commands.reactions.BeatmapsetEvent;
 import me.skiincraft.discord.ousu.commands.reactions.HistoryEvent;
 import me.skiincraft.discord.ousu.commands.reactions.PlayerReactionEvent;
 import me.skiincraft.discord.ousu.commands.reactions.RecentuserEvent;
+import me.skiincraft.discord.ousu.commands.reactions.ServerReactionsEvent;
 import me.skiincraft.discord.ousu.events.PresenceTask;
 import me.skiincraft.discord.ousu.events.ReadyBotEvent;
 import me.skiincraft.discord.ousu.events.ReceivedEvent;
@@ -34,6 +35,7 @@ import me.skiincraft.discord.ousu.manager.Commands;
 import me.skiincraft.discord.ousu.mysql.SQLite;
 import me.skiincraft.discord.ousu.owneraccess.LogChannelCommand;
 import me.skiincraft.discord.ousu.owneraccess.PresenseCommand;
+import me.skiincraft.discord.ousu.owneraccess.ServersCommand;
 import me.skiincraft.discord.ousu.utils.Token;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -131,7 +133,7 @@ public class OusuBot {
 
 	public void events() {
 		registerEvents(new ReceivedEvent(), new HistoryEvent(), new ReadyBotEvent(), new BeatmapsetEvent(), new RecentuserEvent()
-				, new PlayerReactionEvent(), new MentionCommand());
+				, new PlayerReactionEvent(), new MentionCommand(), new ServerReactionsEvent());
 	}
 
 	public void commands() {
@@ -140,7 +142,7 @@ public class OusuBot {
 				new UserImageCommand(), new PrefixCommand(), new BeatMapCommand(), new VersionCommand(),
 				new InviteCommand(), new RecentUserCommand(), new LanguageCommand(), new BeatMapSetCommand());
 		
-		registerCommands(new PresenseCommand(), new LogChannelCommand(), new PlayersCommand());
+		registerCommands(new PresenseCommand(), new LogChannelCommand(), new PlayersCommand(), new ServersCommand());
 	}
 
 	private void registerEvents(ListenerAdapter... events) {

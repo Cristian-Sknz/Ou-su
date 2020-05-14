@@ -8,6 +8,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import me.skiincraft.discord.ousu.OusuBot;
+import me.skiincraft.discord.ousu.embedtypes.DefaultEmbed;
 import me.skiincraft.discord.ousu.events.TopUserReaction;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.language.LanguageManager.Language;
@@ -18,7 +19,6 @@ import me.skiincraft.discord.ousu.mysql.SQLPlayer;
 import me.skiincraft.discord.ousu.richpresence.FakeRichPresence;
 import me.skiincraft.discord.ousu.richpresence.PresenceGetter;
 import me.skiincraft.discord.ousu.richpresence.Rich;
-import me.skiincraft.discord.ousu.utils.DefaultEmbed;
 import me.skiincraft.discord.ousu.utils.ReactionMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;

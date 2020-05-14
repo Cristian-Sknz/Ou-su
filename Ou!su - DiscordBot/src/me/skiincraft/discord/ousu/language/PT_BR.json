@@ -27,7 +27,7 @@
   "Messages": {
     "INVITE_COMMAND_MESSAGE": "Posso fazer parte do seu servidor discord{l}Basta [Clicar aqui]({InviteUrl}) para me convidar!{l}{l}Caso queira um suporte, ou me conhecer mais um pouco{l}Entre no meu Servidor Discord - [Ou!su Bot]({BotDiscordUrl})",
     "VERSION_COMMAND_MESSAGE": "Ou!su é um Discord Bot programado na linguagem de programação Java{l}Esta aplicação Java utiliza o OsuAPI disponibilizado oficialmente por ppy.{l}{l}Criado em",
-	"HELP_COMMAND_MESSAGE": "Lista de Comandos{l}Todos os comandos disponiveis no bot",
+	"HELP_COMMAND_MESSAGE": "Lista de Comandos{l}Esses são os comandos disponiveis no Ousu Bot,{l}Caso tenha duvidas sobre como utilizar-los{l} {l} Tente usar ou!help <command> que os comandos {l}serão especificados!",
 	"PREFIX_COMMAND_MESSAGE": "Novo Prefix{l}Prefixo do servidor foi alterado com sucesso{l}Antigo{l}Novo",
 	"LANGUAGE_COMMAND_MESSAGE": ":earth_americas: Idioma Trocado{l}O Idioma do bot neste servidor foi alterado com sucesso.",
 	"AVAILABLE_LANGUAGE_MESSAGE": ":earth_americas: Idiomas Disponiveis{l}Os idiomas disponiveis são: {l}{l} {LANGUAGES}",

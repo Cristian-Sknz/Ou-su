@@ -16,6 +16,7 @@ public class ReactionMessage {
 	public static List<ReactionUtils> recentHistory = new ArrayList<ReactionUtils>();
 	
 	public static List<ReactionUtils> playersHistory = new ArrayList<ReactionUtils>();
+	public static List<ReactionUtils> serverReations = new ArrayList<ReactionUtils>();
 	
 	public static Map<User, MessageBuilder> historyLastMessage = new HashMap<>();
 	public static Map<User, String> removeAudioMessage = new HashMap<>();

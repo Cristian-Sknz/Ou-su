@@ -2,12 +2,12 @@ package me.skiincraft.discord.ousu.commands;
 
 import java.util.Arrays;
 
+import me.skiincraft.discord.ousu.embedtypes.DefaultEmbed;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.language.LanguageManager.Language;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
 import me.skiincraft.discord.ousu.mysql.SQLAccess;
-import me.skiincraft.discord.ousu.utils.DefaultEmbed;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;

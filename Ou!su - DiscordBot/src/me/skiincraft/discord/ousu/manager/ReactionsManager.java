@@ -2,7 +2,7 @@ package me.skiincraft.discord.ousu.manager;
 
 import java.util.List;
 
-import me.skiincraft.discord.ousu.utils.DefaultEmbed;
+import me.skiincraft.discord.ousu.embedtypes.DefaultEmbed;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Role;

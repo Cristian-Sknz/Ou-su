@@ -1,4 +1,4 @@
-package me.skiincraft.discord.ousu.utils;
+package me.skiincraft.discord.ousu.embedtypes;
 
 import java.awt.Color;
 

@@ -10,7 +10,7 @@ public enum OsuEmoji {
 	C("<:c:700444558403567637>"), F("<:f:700444558080737451>"),
 
 	OsuLogo("<:osulogo:700458186204905593>"), Star("<:star:702696688439001088>"),
-	HalfStar("<:halfstar:702696688355377224>");
+	HalfStar("<:halfstar:702696688355377224>"), ThinkAnime("<:thinkanime:710287212557762680>");
 
 	private String custom;
 
