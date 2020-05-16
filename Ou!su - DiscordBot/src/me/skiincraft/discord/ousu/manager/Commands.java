@@ -193,8 +193,9 @@ public abstract class Commands extends ListenerAdapter {
 	}
 
 	public MessageAction sendUsage() {
+		String[] msg = getLang().translatedArrayMessages("INCORRECT_USE");
 		MessageAction a = event.getChannel().sendMessage(
-				new DefaultEmbed("'❌' Uso incorreto", "Tente utilizar o comando " + getUsage()).construir());
+				new DefaultEmbed(msg[0], msg[1] + getUsage()).construir());
 		return a;
 	}
 	

@@ -5,6 +5,7 @@
     "OSU_HELPMESSAGE_TOPUSER": "This command is possible to view the best statistics of a player.",
     "OSU_HELPMESSAGE_USER": "Check a player's information{l}Entering username or ID.",
     "OSU_HELPMESSAGE_PLAYERS": "Check who is playing osu!{l}You can see who is playing on this server.",
+    "OSU_HELPMESSAGE_SEARCH": "Pesquise beatmaps pelo bot!{l}A pesquisa não será precisa.",
     "OSU_HELPMESSAGE_USERIMAGE": "Check a player's information{l}Entering username or ID.",        
     "HELPMESSAGE_EMBED": "This command is used to create simple embedding.",
     "HELPMESSAGE_HELP": "See available commands or help menus for each command.",
@@ -27,11 +28,12 @@
   "Messages": {
     "INVITE_COMMAND_MESSAGE": "I can be part of your discord server{l}Just [Click here]({InviteUrl}) to Invite me!{l}{l}If you want support or know me a little more{l}Try my discord server! - [Ou!su Bot]({BotDiscordUrl})",
     "VERSION_COMMAND_MESSAGE": "Ou!su is a Discord Bot programmed in the Java programming language{l}This Java application uses the Osu API officially available via ppy. (API in java created by me){l}{l}Created on",
-	"HELP_COMMAND_MESSAGE": "Command List{l}All commands available on the bot.",
+	"HELP_COMMAND_MESSAGE": "Command List{l}These are the commands available in Ousu Bot,{l}If you have questions about how to use them{l}  {l} Enter ou!help <command> for the commands {l}to be specified",
 	"LANGUAGE_COMMAND_MESSAGE": ":earth_americas: Changed language{l}Bot language on this server has been successfully changed",
 	"AVAILABLE_LANGUAGE_MESSAGE": ":earth_americas: Available Languages{l}The available languages ​​are:{l}{l} {LANGUAGES}",
 	"PREFIX_COMMAND_MESSAGE": "New Prefix!{l}The server prefix was changed successfully{l}Old prefix{l}New Prefix",
 	"PREFIX_INCORRECT_USE": "Incorrect Use{l}it is necessary to have a special character{l}[!,@,# etc]",
+	"INCORRECT_USE": "❌  Incorrect use{l}Try using the command ",
 	"PREFIX_INCORRECT_USE2": "Incorrect Use{l}Only 3 characters are allowed.{l}*[ex: ou!]*"
   },
   "Embeds": {
@@ -57,7 +59,8 @@
 	"SCORE": "Score:",
 	"TOTAL_SCORE": "Total Score:",
 	"NATIONAL_RANKING": "National Rank",
-	"PLAYED_TIME": "Time Played"
+	"PLAYED_TIME": "Time Played",
+	"SEARCH": "Search"
   },
   "Titles": {
 	"INVITE_ME": "Convide-me!"

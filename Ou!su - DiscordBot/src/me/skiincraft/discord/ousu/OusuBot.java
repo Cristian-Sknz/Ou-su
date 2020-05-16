@@ -1,12 +1,15 @@
 package me.skiincraft.discord.ousu;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 
+import javax.imageio.ImageIO;
 import javax.security.auth.login.LoginException;
-
 import me.skiincraft.api.ousu.OusuAPI;
 import me.skiincraft.api.ousu.exceptions.InvalidTokenException;
 import me.skiincraft.discord.ousu.commands.BeatMapCommand;
@@ -19,6 +22,7 @@ import me.skiincraft.discord.ousu.commands.MentionCommand;
 import me.skiincraft.discord.ousu.commands.PlayersCommand;
 import me.skiincraft.discord.ousu.commands.PrefixCommand;
 import me.skiincraft.discord.ousu.commands.RecentUserCommand;
+import me.skiincraft.discord.ousu.commands.SearchCommand;
 import me.skiincraft.discord.ousu.commands.TopUserCommand;
 import me.skiincraft.discord.ousu.commands.UserCommand;
 import me.skiincraft.discord.ousu.commands.UserImageCommand;
@@ -27,6 +31,7 @@ import me.skiincraft.discord.ousu.commands.reactions.BeatmapsetEvent;
 import me.skiincraft.discord.ousu.commands.reactions.HistoryEvent;
 import me.skiincraft.discord.ousu.commands.reactions.PlayerReactionEvent;
 import me.skiincraft.discord.ousu.commands.reactions.RecentuserEvent;
+import me.skiincraft.discord.ousu.commands.reactions.SearchReactionsEvent;
 import me.skiincraft.discord.ousu.commands.reactions.ServerReactionsEvent;
 import me.skiincraft.discord.ousu.events.PresenceTask;
 import me.skiincraft.discord.ousu.events.ReadyBotEvent;
@@ -84,12 +89,18 @@ public class OusuBot {
 	public void logger(String message) {
 		System.out.println(message);
 	}
+	
+
 
 	public static void main(String[] args) {
-		new OusuBot().loader();
+		ApplicationUtils.openconsole();
+		new OusuBot().loader(args);
 	}
 
-	private void loader() {
+	
+	public static int tempo = 6;
+	
+	private void loader(String[] args) {
 		ousu = this;
 
 		build.setStatus(OnlineStatus.DO_NOT_DISTURB);
@@ -110,37 +121,67 @@ public class OusuBot {
 		}
 		try {
 			jda = build.build();
+			jda.awaitReady();
 			System.out.println("JDA: Conexão foi estabelecida com sucesso");
-			OusuBot.selfUser = jda.getSelfUser();
 			osuLoader();
+			
+			OusuBot.selfUser = jda.getSelfUser();
+			
 			Locale.setDefault(new Locale("pt", "BR"));
-			Thread t = new Thread(new Runnable() {
+			
+			// PresenceTask;
+			Timer timer = new Timer();
+			timer.schedule(new PresenceTask(), 1000, 2*(60*1000));	
+			
+			Thread thread = new Thread(new Runnable() {
 				
 				@Override
 				public void run() {
-					Timer timer = new Timer();
-					timer.schedule(new PresenceTask(), 1000, 2*(60*1000));	
+					try {
+						int tempo = 120*(60*1000);
+						System.out.println();
+						System.out.println("Essa aplicação ira reiniciar em 2h");
+						System.out.println();Thread.sleep(tempo/2);
+						System.out.println();
+						System.out.println("Essa aplicação ira reiniciar em 1m");
+						System.out.println();Thread.sleep(tempo/2);
+						System.out.println("Reiniciando....");
+						try {
+							ApplicationUtils.restartApplication(args);
+						} catch (URISyntaxException e) {
+							e.printStackTrace();
+						}
+					} catch (IOException | InterruptedException e) {
+						e.printStackTrace();
+					}
 				}
 			});
-			t.start();
+			
+			thread.start();
+			ApplicationUtils.frame.setIconImage(ImageIO.read(new URL(jda.getSelfUser().getAvatarUrl())));
+			ApplicationUtils.frame.setTitle(ApplicationUtils.frame.getTitle().replace("[Bot]", jda.getSelfUser().getName()));
+			
 		} catch (LoginException e) {
 			System.out.println("JDA: Ocorreu um erro ao logar no bot. Verifique se o Token está correto.");
 		} catch (InvalidTokenException e) {
 			System.out.println(e.getMessage());
+		} catch (IOException  | InterruptedException  e) {
+			e.printStackTrace();
 		}
 		
 	}
 
 	public void events() {
 		registerEvents(new ReceivedEvent(), new HistoryEvent(), new ReadyBotEvent(), new BeatmapsetEvent(), new RecentuserEvent()
-				, new PlayerReactionEvent(), new MentionCommand(), new ServerReactionsEvent());
+				, new PlayerReactionEvent(), new MentionCommand(), new ServerReactionsEvent(), new SearchReactionsEvent());
 	}
 
 	public void commands() {
 
 		registerCommands(new HelpCommand(), new EmbedCommand(), new UserCommand(), new TopUserCommand(),
 				new UserImageCommand(), new PrefixCommand(), new BeatMapCommand(), new VersionCommand(),
-				new InviteCommand(), new RecentUserCommand(), new LanguageCommand(), new BeatMapSetCommand());
+				new InviteCommand(), new RecentUserCommand(), new LanguageCommand(), new BeatMapSetCommand(),
+				new SearchCommand());
 		
 		registerCommands(new PresenseCommand(), new LogChannelCommand(), new PlayersCommand(), new ServersCommand());
 	}
@@ -167,7 +208,7 @@ public class OusuBot {
 	public boolean isDBSQL() {
 		return DBSQL;
 	}
-
+	
 	public void setDBSQL(boolean dBSQL) {
 		DBSQL = dBSQL;
 	}

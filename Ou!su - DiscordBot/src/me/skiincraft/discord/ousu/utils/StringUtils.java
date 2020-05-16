@@ -27,6 +27,14 @@ public class StringUtils {
 		return buffer.toString();
 	}
 	
+	public static String arrayToString2(int num, String[] str) {
+		StringBuffer buffer = new StringBuffer();
+		for (int i = num; i < str.length; i++) {
+			buffer.append(str[i] + " ");
+		}
+		return buffer.toString();
+	}
+	
 	public static String[] removeStrings(String[] stringarray, int remove) {
 		List<String> list = Arrays.asList(stringarray);
 		list.remove(remove);

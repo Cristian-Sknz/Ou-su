@@ -12,7 +12,7 @@ import net.dv8tion.jda.api.managers.Presence;
 public class PresenseCommand extends Commands {
 
 	public PresenseCommand() {
-		super("ou!", "presense", "presense <0/2>", null);
+		super("ou!", "presence", "presence <0/2>", null);
 	}
 
 	@Override

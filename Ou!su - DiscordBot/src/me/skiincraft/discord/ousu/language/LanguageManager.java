@@ -12,7 +12,7 @@ import me.skiincraft.discord.ousu.OusuBot;
 public class LanguageManager {
 
 	public enum Language {
-		Portuguese("PT_BR.json"), English("EN_US.json"), Spanish("ES_ES.json");
+		Portuguese("PT_BR.json"), English("EN_US.json");// Spanish("ES_ES.json");
 
 		private String fileName;
 

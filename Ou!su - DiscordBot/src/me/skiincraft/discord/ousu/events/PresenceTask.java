@@ -31,8 +31,19 @@ public class PresenceTask extends TimerTask {
 			ordem++;
 			return;
 		}
+		if (ordem == 3) {
+			presence.setPresence(OnlineStatus.ONLINE, Activity.watching("🆕 ou!search to search for beatmaps"));
+			ordem++;
+			return;
+		}
+		
 		ordem = 0;
-		this.run();
+		
+		if (ordem == 0) {
+			presence.setPresence(OnlineStatus.ONLINE, Activity.watching(presence.getJDA().getUsers().size() + " Usuarios Online!"));
+			ordem++;
+			return;
+		}
 	}
 
 }

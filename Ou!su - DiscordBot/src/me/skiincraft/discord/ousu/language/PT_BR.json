@@ -5,6 +5,7 @@
     "OSU_HELPMESSAGE_TOPUSER": "Este comando possibilita mostar as melhores estatisticas de um jogador{l}O maximo de estatisticas que serão mostradas são 5",
     "OSU_HELPMESSAGE_USER": "Verifique as informações de um jogador{l}Inserindo o Username ou ID",
     "OSU_HELPMESSAGE_PLAYERS": "Verifique quem esta jogando OSU!{l}Poderá ver quem joga neste servidor.",
+    "OSU_HELPMESSAGE_SEARCH": "Pesquise beatmaps pelo bot!{l}A pesquisa não será precisa.",
     "OSU_HELPMESSAGE_USERIMAGE": "Verifique as informações de um jogador{l}Inserindo o Username ou ID",        
     "HELPMESSAGE_EMBED": "Este comando serve para criar embeds simples.",
     "HELPMESSAGE_HELP": "Veja os comandos disponiveis, ou menus de ajuda de cada comando",
@@ -32,6 +33,7 @@
 	"LANGUAGE_COMMAND_MESSAGE": ":earth_americas: Idioma Trocado{l}O Idioma do bot neste servidor foi alterado com sucesso.",
 	"AVAILABLE_LANGUAGE_MESSAGE": ":earth_americas: Idiomas Disponiveis{l}Os idiomas disponiveis são: {l}{l} {LANGUAGES}",
 	"PREFIX_INCORRECT_USE": "Uso Incorreto{l}É necessario ter um caractere especial{l}[!,@,# etc]",
+	"INCORRECT_USE": "❌  Uso incorreto{l} Tente utilizar o comando ",
 	"PREFIX_INCORRECT_USE2": "Uso Incorreto{l}Somente 3 caracteres são permitidos.{l}*[ex: ou!]*"
   },
   "Embeds": {
@@ -57,7 +59,8 @@
 	"SCORE": "Pontuação:",
 	"TOTAL_SCORE": "Pontuação Total:",
 	"NATIONAL_RANKING": "Ranking Nacional",
-	"PLAYED_TIME": "Tempo de Jogo"
+	"PLAYED_TIME": "Tempo de Jogo",
+	"SEARCH": "Pesquisa"
   },
   "Titles": {
 	"INVITE_ME": "Convide-me!"
