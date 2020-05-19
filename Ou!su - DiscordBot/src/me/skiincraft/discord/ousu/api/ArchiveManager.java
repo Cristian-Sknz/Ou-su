@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class ArchiveManager {
-	
+
 	public static void copy(InputStream in, File file) {
 		try {
 			OutputStream out = new FileOutputStream(file);
@@ -31,5 +31,5 @@ public class ArchiveManager {
 		}
 		dir.delete();
 	}
-	
+
 }

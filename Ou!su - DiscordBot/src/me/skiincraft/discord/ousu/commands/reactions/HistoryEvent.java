@@ -15,13 +15,11 @@ import net.dv8tion.jda.api.entities.User;
 
 public class HistoryEvent extends ReactionsManager {
 
-	
 	@Override
 	public List<ReactionUtils> listHistory() {
 		return ReactionMessage.osuHistory;
 	}
-	
-	
+
 	@Override
 	public void action(User user, TextChannel channel, String emoji) {
 
@@ -49,7 +47,6 @@ public class HistoryEvent extends ReactionsManager {
 		// http://b.ppy.sh/preview/music.mp3
 
 		if (emoji.equalsIgnoreCase("◼")) {
-			
 
 		}
 
@@ -62,8 +59,7 @@ public class HistoryEvent extends ReactionsManager {
 			Score[] score = (Score[]) obj;
 
 			if (v >= score.length) {
-				listHistory()
-						.add(new TopUserReaction(user, getEvent().getMessageId(), obj, score.length - 1));
+				listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, score.length - 1));
 				return;
 			}
 			EmbedBuilder embed = TopUserCommand.embed(Arrays.asList(score), v, channel.getGuild());
@@ -72,6 +68,5 @@ public class HistoryEvent extends ReactionsManager {
 			listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, v));
 		}
 	}
-
 
 }

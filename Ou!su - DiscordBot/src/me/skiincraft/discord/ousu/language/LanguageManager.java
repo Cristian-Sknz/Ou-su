@@ -23,7 +23,7 @@ public class LanguageManager {
 		public String getFileName() {
 			return fileName;
 		}
-		
+
 		public String getLanguageCode() {
 			return fileName.replace(".json", "").replace("_", "-");
 		}
@@ -43,7 +43,7 @@ public class LanguageManager {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public String translatedTitles(String lineresult) {
 		try {
 			return langClass.getTitles().get(lineresult).replace("{l}", "\n");

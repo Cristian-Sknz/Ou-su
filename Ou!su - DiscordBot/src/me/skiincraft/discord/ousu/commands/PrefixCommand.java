@@ -54,7 +54,7 @@ public class PrefixCommand extends Commands {
 				sendEmbedMessage(new DefaultEmbed("'❌' " + str[0], buffer.toString()).construirEmbed()).queue();
 				return;
 			}
-			
+
 			if (args[0].length() > 3) {
 				String[] str = getLang().translatedArrayMessages("PREFIX_INCORRECT_USE2");
 				StringBuffer buffer = new StringBuffer();

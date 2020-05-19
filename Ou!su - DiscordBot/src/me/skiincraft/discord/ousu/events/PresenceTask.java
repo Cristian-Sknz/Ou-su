@@ -11,23 +11,25 @@ public class PresenceTask extends TimerTask {
 
 	public static int ordem = 0;
 	Presence presence = OusuBot.getJda().getPresence();
-	
+
 	@Override
 	public void run() {
 		if (ordem == 0) {
-			presence.setPresence(OnlineStatus.ONLINE, Activity.watching(presence.getJDA().getUsers().size() + " Usuarios Online!"));
+			presence.setPresence(OnlineStatus.ONLINE,
+					Activity.watching(presence.getJDA().getUsers().size() + " Usuarios Online!"));
 			ordem++;
 			return;
 		}
-		
+
 		if (ordem == 1) {
 			presence.setPresence(OnlineStatus.ONLINE, Activity.listening("☕ | Ou!Help for help."));
 			ordem++;
 			return;
 		}
-		
+
 		if (ordem == 2) {
-			presence.setPresence(OnlineStatus.ONLINE, Activity.watching(presence.getJDA().getGuilds().size() + " Servidores."));
+			presence.setPresence(OnlineStatus.ONLINE,
+					Activity.watching(presence.getJDA().getGuilds().size() + " Servidores."));
 			ordem++;
 			return;
 		}
@@ -36,11 +38,12 @@ public class PresenceTask extends TimerTask {
 			ordem++;
 			return;
 		}
-		
+
 		ordem = 0;
-		
+
 		if (ordem == 0) {
-			presence.setPresence(OnlineStatus.ONLINE, Activity.watching(presence.getJDA().getUsers().size() + " Usuarios Online!"));
+			presence.setPresence(OnlineStatus.ONLINE,
+					Activity.watching(presence.getJDA().getUsers().size() + " Usuarios Online!"));
 			ordem++;
 			return;
 		}

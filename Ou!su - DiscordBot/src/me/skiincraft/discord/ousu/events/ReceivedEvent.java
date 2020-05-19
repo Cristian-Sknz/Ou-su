@@ -19,7 +19,7 @@ public class ReceivedEvent extends ListenerAdapter {
 	public MessageEmbed portuguese() {
 		EmbedBuilder e = new EmbedBuilder();
 		User user = OusuBot.getJda().getUserById("247096601242238991");
-		
+
 		e.setColor(Color.red);
 		e.setTitle("Olá!");
 		e.setDescription("Esta área ainda não esta pronta, mas em breve poderá usufruir dessa estrutura!");
@@ -28,11 +28,11 @@ public class ReceivedEvent extends ListenerAdapter {
 
 		return e.build();
 	}
-	
+
 	public MessageEmbed english() {
 		EmbedBuilder e = new EmbedBuilder();
 		User user = OusuBot.getJda().getUserById("247096601242238991");
-		
+
 		e.setColor(Color.red);
 		e.setTitle("Hi!");
 		e.setDescription("This area is not yet ready, but you will soon be able to enjoy this structure!");
@@ -65,12 +65,12 @@ public class ReceivedEvent extends ListenerAdapter {
 
 		if (!OusuBot.listPrivated.contains(event.getAuthor().getName())) {
 			List<Guild> mutualguilds = event.getAuthor().getMutualGuilds();
-			
+
 			int pt = 0;
 			int en = 0;
-			
+
 			for (Guild guild : mutualguilds) {
-				SQLAccess sql =new SQLAccess(guild);
+				SQLAccess sql = new SQLAccess(guild);
 				if (sql.existe()) {
 					String lang = sql.get("language");
 					if (lang.equalsIgnoreCase("portuguese")) {
@@ -81,17 +81,17 @@ public class ReceivedEvent extends ListenerAdapter {
 					}
 				}
 			}
-			
+
 			if (pt > en) {
 				event.getAuthor().openPrivateChannel().complete().sendMessage(portuguese()).queue();
 			} else {
 				event.getAuthor().openPrivateChannel().complete().sendMessage(english()).queue();
 			}
-			
+
 			if (pt == en) {
 				event.getAuthor().openPrivateChannel().complete().sendMessage(portuguese()).queue();
 			}
-			
+
 			OusuBot.listPrivated.add(event.getAuthor().getName());
 		}
 

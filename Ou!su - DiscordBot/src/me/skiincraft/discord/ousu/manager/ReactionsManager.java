@@ -24,15 +24,15 @@ public abstract class ReactionsManager extends ListenerAdapter {
 	public ReactionsManager() {
 		super();
 	}
-	
+
 	public abstract List<ReactionUtils> listHistory();
-	
+
 	public abstract void action(User user, TextChannel channel, String emoji);
 
 	public boolean isValidReaction(GuildMessageReactionAddEvent event) {
 		String eventMessageID = event.getMessageId();
 		List<ReactionUtils> osuhistorys = listHistory();
-		
+
 		if (event.getUser().isBot()) {
 			return false;
 		}
@@ -63,7 +63,8 @@ public abstract class ReactionsManager extends ListenerAdapter {
 		try {
 			event.getChannel().removeReactionById(event.getMessageId(), emoji, event.getUser()).queue();
 		} catch (InsufficientPermissionException ex) {
-			System.out.println("Sem permissão para mudar reaction em: \n" + event.getGuild().getName() + " - " + event.getGuild().getId());
+			System.out.println("Sem permissão para mudar reaction em: \n" + event.getGuild().getName() + " - "
+					+ event.getGuild().getId());
 		}
 
 		return true;

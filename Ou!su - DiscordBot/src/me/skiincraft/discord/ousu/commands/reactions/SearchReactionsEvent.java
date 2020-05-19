@@ -16,13 +16,11 @@ import net.dv8tion.jda.api.entities.User;
 
 public class SearchReactionsEvent extends ReactionsManager {
 
-	
 	@Override
 	public List<ReactionUtils> listHistory() {
 		return ReactionMessage.searchReactions;
 	}
-	
-	
+
 	@Override
 	public void action(User user, TextChannel channel, String emoji) {
 
@@ -33,20 +31,20 @@ public class SearchReactionsEvent extends ReactionsManager {
 			Beatmap[] score = (Beatmap[]) obj;
 
 			channel.clearReactionsById(getUtils().getMessageID()).queue();
-			channel.editMessageById(getEvent().getMessageId(), BeatmapEmbed.beatmapEmbed(Arrays.asList(score), 0, channel.getGuild()).build())
-			.queue(new Consumer<Message>() {
+			channel.editMessageById(getEvent().getMessageId(),
+					BeatmapEmbed.beatmapEmbed(Arrays.asList(score), 0, channel.getGuild()).build())
+					.queue(new Consumer<Message>() {
 
-				@Override
-				public void accept(Message message) {
-					message.addReaction("U+25C0").queue();
-					message.addReaction("U+25FC").queue();
-					message.addReaction("U+25B6").queue();
-					ReactionMessage.beatHistory.add(new TopUserReaction(user, message.getId(), obj, 0));		
-				}
-			});
+						@Override
+						public void accept(Message message) {
+							message.addReaction("U+25C0").queue();
+							message.addReaction("U+25FC").queue();
+							message.addReaction("U+25B6").queue();
+							ReactionMessage.beatHistory.add(new TopUserReaction(user, message.getId(), obj, 0));
+						}
+					});
 
 		}
 	}
-
 
 }

@@ -7,6 +7,7 @@ import java.sql.SQLClientInfoException;
 import java.sql.SQLException;
 import java.sql.SQLTimeoutException;
 import java.sql.Statement;
+import java.util.logging.Level;
 
 import me.skiincraft.discord.ousu.OusuBot;
 
@@ -63,7 +64,7 @@ public class SQLite {
 			this.connection = DriverManager.getConnection(url);
 
 			this.statement = this.connection.createStatement();
-			ousu.logger("Conexao com o banco de dados estabelecida com sucesso.");
+			ousu.logger("Conexao com o banco de dados estabelecida com sucesso.", Level.CONFIG);
 			ousu.setDBSQL(true);
 			return;
 		} catch (ClassNotFoundException exception) {
@@ -73,17 +74,17 @@ public class SQLite {
 			return;
 		} catch (SQLClientInfoException exception) {
 			exception.printStackTrace();
-			ousu.logger("Usuario e/ou senha incorreto(s).");
+			ousu.logger("Usuario e/ou senha incorreto(s).", Level.SEVERE);
 			ousu.setDBSQL(false);
 			return;
 		} catch (SQLTimeoutException exception) {
 			exception.printStackTrace();
-			ousu.logger("Tempo de conexao excedido.");
+			ousu.logger("Tempo de conexao excedido.", Level.SEVERE);
 			ousu.setDBSQL(false);
 			return;
 		} catch (SQLException exception) {
 			exception.printStackTrace();
-			ousu.logger("Não foi possivel achar a database, tente criar manualmente.");
+			ousu.logger("Não foi possivel achar a database, tente criar manualmente.", Level.SEVERE);
 			ousu.setDBSQL(false);
 			return;
 		}
@@ -107,7 +108,7 @@ public class SQLite {
 
 	public synchronized void execute(String command) {
 		if (this.connection == null || this.statement == null) {
-			ousu.logger("Dados -[Connection/Statement]- não estão nulos. (execute())");
+			ousu.logger("Dados -[Connection/Statement]- não estão nulos. (execute())", Level.SEVERE);
 			return;
 		}
 		try {
@@ -120,7 +121,7 @@ public class SQLite {
 
 	public synchronized ResultSet resultSet(String query) {
 		if (this.connection == null || this.statement == null) {
-			ousu.logger("Dados -[Connection/Statement]- n�o est�o nulos. (resultSet())");
+			ousu.logger("Dados -[Connection/Statement]- n�o est�o nulos. (resultSet())", Level.SEVERE);
 			System.exit(0);
 			return null;
 		}
@@ -134,7 +135,7 @@ public class SQLite {
 
 	public synchronized void executeUpdateAsync(String update) {
 		if (this.connection == null || this.statement == null) {
-			ousu.logger("Dados -[Connection/Statement]- n�o est�o nulos. (executeUpdateAsync())");
+			ousu.logger("Dados -[Connection/Statement]- n�o est�o nulos. (executeUpdateAsync())", Level.SEVERE);
 			System.exit(0);
 			return;
 		}
@@ -146,7 +147,7 @@ public class SQLite {
 			e.printStackTrace();
 		}
 	}
-	
+
 	String createtableString() {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("CREATE TABLE IF NOT EXISTS ");
@@ -159,10 +160,10 @@ public class SQLite {
 		buffer.append("`adicionado em` VARCHAR(24) NOT NULL, ");
 		buffer.append("`language` VARCHAR(24) NOT NULL");
 		buffer.append(");");
-		
+
 		return buffer.toString();
 	}
-	
+
 	String createtablePlayerString() {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("CREATE TABLE IF NOT EXISTS ");
@@ -172,10 +173,10 @@ public class SQLite {
 		buffer.append("`username` VARCHAR(64) NOT NULL, ");
 		buffer.append("`osu_account` VARCHAR(64) NOT NULL");
 		buffer.append(");");
-		
+
 		return buffer.toString();
 	}
-	
+
 	public String createConfigString() throws SQLException {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("CREATE TABLE IF NOT EXISTS ");
@@ -190,16 +191,16 @@ public class SQLite {
 
 	public synchronized void setup() {
 		if (this.connection == null || this.statement == null) {
-			ousu.logger("Dados -[Connection/Statement]- são nulos. (setup())");
+			ousu.logger("Dados -[Connection/Statement]- são nulos. (setup())", Level.SEVERE);
 			ousu.setDBSQL(false);
 			return;
 		}
 		try {
-			
+
 			this.statement.execute(createtableString());
 			this.statement.execute(createtablePlayerString());
 			this.statement.execute(createConfigString());
-			
+
 			createConfigString();
 			ousu.setDBSQL(true);
 		} catch (SQLException exception) {

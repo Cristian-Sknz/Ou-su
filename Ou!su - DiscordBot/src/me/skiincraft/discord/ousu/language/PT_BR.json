@@ -1,6 +1,6 @@
 {
   "Help": {
-	"OSU_HELPMESSAGE_BEATMAP": "Este comando possibilita pegar informações de um beatmap{l}basta colocar o ID do beatmap.{l}BeatmapSets ainda não estão disponiveis",
+	"OSU_HELPMESSAGE_BEATMAP": "Este comando possibilita pegar informações de um beatmap{l}Basta colocar o ID do beatmap.",
     "OSU_HELPMESSAGE_RECENTUSER": "Este comando possibilita mostar os beatmaps jogados{l}nas ultimas 24h de um jogador{l}O maximo de estatisticas que serão mostradas são 5",
     "OSU_HELPMESSAGE_TOPUSER": "Este comando possibilita mostar as melhores estatisticas de um jogador{l}O maximo de estatisticas que serão mostradas são 5",
     "OSU_HELPMESSAGE_USER": "Verifique as informações de um jogador{l}Inserindo o Username ou ID",
@@ -11,9 +11,11 @@
     "HELPMESSAGE_HELP": "Veja os comandos disponiveis, ou menus de ajuda de cada comando",
     "HELPMESSAGE_INVITE": "Me convide para seu servidor,{l} ou me conheça mais de perto!",
     "HELPMESSAGE_PREFIX": "Troque o prefixo do servidor",
+    "HELPMESSAGE_VOTE": "Vote em mim para que mais pessoas me conheçam!",
     "HELPMESSAGE_VERSION": "Verifique a versão do bot e mais outras coisas.",
     "INSUFICIENT_PERMISSIONS": "Permissão Insuficiente{l}Você não tem permissão para executar este comando",
-	"NO_COMMAND_DESCRIPTION": "Não foi definido nenhuma descrição para este comando."
+	"NO_COMMAND_DESCRIPTION": "Não foi definido nenhuma descrição para este comando.",
+	"PREFIX_HELP": "Ei, isso parece errado :p{l} Se você quiser ajuda, digite o comando ou!help"
   },
   "OsuMessages": {
     "INEXISTENT_USER": "Usuário Inexistente{l}Este usuario que você solicitou não existe.",
@@ -34,7 +36,9 @@
 	"AVAILABLE_LANGUAGE_MESSAGE": ":earth_americas: Idiomas Disponiveis{l}Os idiomas disponiveis são: {l}{l} {LANGUAGES}",
 	"PREFIX_INCORRECT_USE": "Uso Incorreto{l}É necessario ter um caractere especial{l}[!,@,# etc]",
 	"INCORRECT_USE": "❌  Uso incorreto{l} Tente utilizar o comando ",
-	"PREFIX_INCORRECT_USE2": "Uso Incorreto{l}Somente 3 caracteres são permitidos.{l}*[ex: ou!]*"
+	"PREFIX_INCORRECT_USE2": "Uso Incorreto{l}Somente 3 caracteres são permitidos.{l}*[ex: ou!]*",
+	"INEXISTENT_COMMAND_HELP": "Comando inexistente{l}Este comando em qual você solicitou ajuda não existe!",
+	"VOTE_COMMAND_MESSAGE": "Vote em mim!{l}Olá{user} eu sou Ousu um bot com varias funções legais sobre {logo}é bem dificil viver nesse mundo da internet, ainda mais quando se é um Robo!:smirk_cat: e como todo Robo quero dominar o mundo! Brincadeirinha haha!{l} {l}Caso queira me ajudar, vote em mim para que mais pessoas me conheçam.Dessa forma você não paga nada e ainda me ajuda muito :3"
   },
   "Embeds": {
 	"TITLE_USER_COMMAND_PLAYERSTATS": "Informações do Jogador",

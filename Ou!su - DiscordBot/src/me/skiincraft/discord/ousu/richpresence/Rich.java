@@ -7,7 +7,7 @@ public class Rich {
 
 	private User user;
 	private RichPresence rich;
-	
+
 	public Rich(User user, RichPresence rich) {
 		this.rich = rich;
 		this.user = user;
@@ -29,5 +29,4 @@ public class Rich {
 		this.rich = rich;
 	}
 
-	
 }

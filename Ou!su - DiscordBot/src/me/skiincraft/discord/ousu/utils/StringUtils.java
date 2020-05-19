@@ -26,7 +26,7 @@ public class StringUtils {
 		}
 		return buffer.toString();
 	}
-	
+
 	public static String arrayToString2(int num, String[] str) {
 		StringBuffer buffer = new StringBuffer();
 		for (int i = num; i < str.length; i++) {
@@ -34,7 +34,7 @@ public class StringUtils {
 		}
 		return buffer.toString();
 	}
-	
+
 	public static String[] removeStrings(String[] stringarray, int remove) {
 		List<String> list = Arrays.asList(stringarray);
 		list.remove(remove);
@@ -42,18 +42,28 @@ public class StringUtils {
 		list.toArray(str);
 		return str;
 	}
-	
-	public static String[] removeString(String[] stringarray, int remove){
+
+	public static String commandMessage(String[] stringarray) {
+		StringBuffer buffer = new StringBuffer();
+		for (String str : stringarray) {
+			if (str != stringarray[0]) {
+				buffer.append(str + "\n");
+			}
+		}
+		return buffer.toString();
+	}
+
+	public static String[] removeString(String[] stringarray, int remove) {
 		List<String> list = new ArrayList<String>();
 		for (String str : stringarray) {
 			if (stringarray[remove] != str) {
-				list.add(str);	
+				list.add(str);
 			}
 		}
-		
+
 		stringarray = new String[list.size()];
 		list.toArray(stringarray);
-		
+
 		return stringarray;
 	}
 

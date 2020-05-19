@@ -12,13 +12,11 @@ import net.dv8tion.jda.api.entities.User;
 
 public class ServerReactionsEvent extends ReactionsManager {
 
-	
 	@Override
 	public List<ReactionUtils> listHistory() {
 		return ReactionMessage.serverReations;
 	}
-	
-	
+
 	@Override
 	public void action(User user, TextChannel channel, String emoji) {
 
@@ -49,8 +47,7 @@ public class ServerReactionsEvent extends ReactionsManager {
 			Object obj = getUtils().getObject();
 			EmbedBuilder[] score = (EmbedBuilder[]) obj;
 			if (v >= score.length) {
-				listHistory()
-						.add(new TopUserReaction(user, getEvent().getMessageId(), obj, score.length - 1));
+				listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, score.length - 1));
 				return;
 			}
 			EmbedBuilder embed = score[v];
@@ -59,6 +56,5 @@ public class ServerReactionsEvent extends ReactionsManager {
 			listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, v));
 		}
 	}
-
 
 }

@@ -23,13 +23,14 @@ public class BeatmapEmbed {
 		LanguageManager lang = new LanguageManager(Language.valueOf(sql.get("language")));
 
 		Beatmap beatmap = beat.get(value);
-		
+
 		embed.setTitle(beatmap.getTitle(), beatmap.getURL());
 		int id = beatmap.getCreatorId();
 
 		embed.setAuthor(beatmap.getCreator(), "https://osu.ppy.sh/users/" + id, "https://a.ppy.sh/" + id);
 
-		embed.addField(lang.translatedEmbeds("ARTIST"), beatmap.getArtistUnicode() + " \n(" + beatmap.getArtist() + ")", true);
+		embed.addField(lang.translatedEmbeds("ARTIST"), beatmap.getArtistUnicode() + " \n(" + beatmap.getArtist() + ")",
+				true);
 		embed.addField("BPM:", "" + beatmap.getBPM(), true);
 		embed.addField(lang.translatedEmbeds("GENRE"), "" + beatmap.getGenre().getDisplayName(), true);
 
@@ -38,24 +39,22 @@ public class BeatmapEmbed {
 		embed.addField(lang.translatedEmbeds("DIFFICULT"), beatmap.getVersion(), true);
 
 		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy - HH:mm");
-		
+
 		String app = "?";
 		if (beatmap.getApprovedDate() != null) {
 			app = format.format(beatmap.getApprovedDate());
 		}
 
-		embed.addField(lang.translatedEmbeds("APPROVATED_IN"),
-				app + "\n" + beatmap.getApprovated().name(), true);
+		embed.addField(lang.translatedEmbeds("APPROVATED_IN"), app + "\n" + beatmap.getApprovated().name(), true);
 		embed.addField(lang.translatedEmbeds("SUCCESS_RATE"), beatmap.getSuccessRate(), true);
 		embed.addField(lang.translatedEmbeds("MAX_COMBO"), beatmap.getMaxCombo() + "", true);
 
 		embed.setImage(beatmap.getBeatmapCoverUrl());
-		
-		//User user = OusuBot.getOusu().getJda().getUserById("247096601242238991");
-		//embed.setFooter(lang.translatedBot("FOOTER_DEFAULT"), user.getAvatarUrl());
-		
-		embed.setFooter("[BeatmapSetID] " + beatmap.getBeatmapSetID() + " | "
-				+ "[BeatmapID]" + beatmap.getBeatmapID());
+
+		// User user = OusuBot.getOusu().getJda().getUserById("247096601242238991");
+		// embed.setFooter(lang.translatedBot("FOOTER_DEFAULT"), user.getAvatarUrl());
+
+		embed.setFooter("[BeatmapSetID] " + beatmap.getBeatmapSetID() + " | " + "[BeatmapID]" + beatmap.getBeatmapID());
 
 		try {
 			idb = beatmap.getBeatmapPreview();

@@ -13,8 +13,7 @@ import net.dv8tion.jda.api.entities.User;
 public class EmbedCommand extends Commands {
 
 	public EmbedCommand() {
-		super("ou!", "embed", "embed <title> <description> (\"_\" for space)",
-				Arrays.asList("broadcast"));
+		super("ou!", "embed", "embed <title> <description> (\"_\" for space)", Arrays.asList("broadcast"));
 	}
 
 	@Override

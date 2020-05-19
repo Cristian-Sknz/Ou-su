@@ -63,17 +63,17 @@ public class TopUserCommand extends Commands {
 				for (int i = 0; i < args.length; i++) {
 					stringArgs.append(args[i] + " ");
 				}
-				
+
 				int length = stringArgs.toString().length() - 1;
-				
+
 				String usermsg = stringArgs.toString().substring(0, length);
-				String lastmsg = args[args.length-1];
+				String lastmsg = args[args.length - 1];
 				String name = usermsg.replace(" " + lastmsg, "");
-				
+
 				if (getEvent().getMessage().getMentionedUsers().size() != 0) {
-					String userid = getEvent().getMessage().getMentionedUsers().get(0)
-							.getAsMention().replaceAll("\\D+","");
-					
+					String userid = getEvent().getMessage().getMentionedUsers().get(0).getAsMention().replaceAll("\\D+",
+							"");
+
 					SQLPlayer sql = new SQLPlayer(OusuBot.getJda().getUserById(userid));
 					if (sql.existe()) {
 						String nic = sql.get("osu_account");
@@ -81,7 +81,7 @@ public class TopUserCommand extends Commands {
 						usermsg = nic;
 					}
 				}
-				
+
 				if (Gamemode.getGamemode(lastmsg) != null) {
 					osuUser = OusuBot.getOsu().getTopUser(name, Gamemode.getGamemode(lastmsg), 10);
 				} else {

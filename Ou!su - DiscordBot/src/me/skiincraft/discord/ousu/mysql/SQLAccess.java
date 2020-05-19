@@ -51,10 +51,11 @@ public class SQLAccess {
 		String date = new SimpleDateFormat("dd/MM/yyyy - HH:mm").format(new Date());
 		try {
 			String guildname = guild.getName().replace("'", "").replace("´", "");
-			Ousu.getSQL().getConnection().createStatement().execute("INSERT INTO " + databaseName
-					+ "(`guildid`, `nome`, `membros`, `prefix`, `adicionado em`, `language`) VALUES" + "('"
-					+ guild.getId() + "', " + "'" + guildname + "', " + "'" + guild.getMemberCount() + "', " + "'"
-					+ getDefaultPrefix() + "', " + "'" + date + "', " + "'" + generatelang() + "');");
+			Ousu.getSQL().getConnection().createStatement()
+					.execute("INSERT INTO " + databaseName
+							+ "(`guildid`, `nome`, `membros`, `prefix`, `adicionado em`, `language`) VALUES" + "('"
+							+ guild.getId() + "', " + "'" + guildname + "', " + "'" + guild.getMemberCount() + "', "
+							+ "'" + getDefaultPrefix() + "', " + "'" + date + "', " + "'" + generatelang() + "');");
 			return;
 		} catch (SQLException e) {
 			Ousu.logger("");
@@ -158,7 +159,7 @@ public class SQLAccess {
 			return;
 		}
 	}
-	
+
 	public Map<String, String> getOrderBy(String colunm, int limit, boolean desc) {
 		try {
 			String d;
@@ -167,10 +168,11 @@ public class SQLAccess {
 			} else {
 				d = "` DESC ";
 			}
-			// SELECT * FROM `servidores` GROUP BY `ID` ORDER BY `adicionado em` DESC LIMIT 5; esse era teste*
+			// SELECT * FROM `servidores` GROUP BY `ID` ORDER BY `adicionado em` DESC LIMIT
+			// 5; esse era teste*
 			Map<String, String> map = new HashMap<String, String>();
 			ResultSet result = Ousu.getSQL().getConnection().prepareStatement(
-					"SELECT * FROM `" + databaseName + "` GROUP BY `ID` ORDER BY `" + colunm + d +"LIMIT " + limit)
+					"SELECT * FROM `" + databaseName + "` GROUP BY `ID` ORDER BY `" + colunm + d + "LIMIT " + limit)
 					.executeQuery();
 			do {
 				if (!result.next()) {
@@ -184,5 +186,5 @@ public class SQLAccess {
 			return null;
 		}
 	}
-	
+
 }

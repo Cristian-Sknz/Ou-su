@@ -15,13 +15,11 @@ import net.dv8tion.jda.api.entities.User;
 
 public class BeatmapsetEvent extends ReactionsManager {
 
-	
 	@Override
 	public List<ReactionUtils> listHistory() {
 		return ReactionMessage.beatHistory;
 	}
-	
-	
+
 	@Override
 	public void action(User user, TextChannel channel, String emoji) {
 
@@ -30,7 +28,7 @@ public class BeatmapsetEvent extends ReactionsManager {
 
 			Object obj = getUtils().getObject();
 			Beatmap[] beatmap = (Beatmap[]) obj;
-			
+
 			int v = getUtils().getValue();
 			if (v <= 0) {
 				v = 0;
@@ -50,7 +48,6 @@ public class BeatmapsetEvent extends ReactionsManager {
 		// http://b.ppy.sh/preview/music.mp3
 
 		if (emoji.equalsIgnoreCase("◼")) {
-			
 
 		}
 
@@ -63,8 +60,7 @@ public class BeatmapsetEvent extends ReactionsManager {
 			Beatmap[] beatmap = (Beatmap[]) obj;
 
 			if (v >= beatmap.length) {
-				listHistory()
-						.add(new TopUserReaction(user, getEvent().getMessageId(), obj, beatmap.length - 1));
+				listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, beatmap.length - 1));
 				return;
 			}
 
@@ -74,6 +70,5 @@ public class BeatmapsetEvent extends ReactionsManager {
 			listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, v));
 		}
 	}
-
 
 }

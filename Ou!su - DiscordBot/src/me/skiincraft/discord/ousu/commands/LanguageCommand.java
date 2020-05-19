@@ -15,7 +15,7 @@ import net.dv8tion.jda.api.entities.User;
 public class LanguageCommand extends Commands {
 
 	public LanguageCommand() {
-		super("ou!", "language", "language <lang>", Arrays.asList("lang","linguagem", "lingua"));
+		super("ou!", "language", "language <lang>", Arrays.asList("lang", "linguagem", "lingua"));
 	}
 
 	@Override
@@ -34,13 +34,13 @@ public class LanguageCommand extends Commands {
 			noPermissionMessage(Permission.MANAGE_SERVER).queue();
 			return;
 		}
-		
+
 		if (args.length == 0) {
 			String[] str = getLang().translatedArrayMessages("AVAILABLE_LANGUAGE_MESSAGE");
-			
+
 			StringBuffer buffer = new StringBuffer();
 			StringBuffer bufferlang = new StringBuffer();
-			
+
 			for (String append : str) {
 				if (append != str[0]) {
 					buffer.append(append);
@@ -49,18 +49,19 @@ public class LanguageCommand extends Commands {
 			for (Language lang : Language.values()) {
 				bufferlang.append("\n" + lang.name() + " - " + lang.getLanguageCode());
 			}
-			
-			sendEmbedMessage(new DefaultEmbed(str[0], buffer.toString().replace("{LANGUAGES}", bufferlang.toString()))).queue();
+
+			sendEmbedMessage(new DefaultEmbed(str[0], buffer.toString().replace("{LANGUAGES}", bufferlang.toString())))
+					.queue();
 			return;
 		}
-		
+
 		if (args.length == 1) {
 			for (Language lang : Language.values()) {
 				if (lang.name().equalsIgnoreCase(args[0])) {
 					SQLAccess sql = new SQLAccess(channel.getGuild());
 					sql.set("language", lang.name());
 					LanguageManager m = new LanguageManager(lang);
-					
+
 					String[] str = m.translatedArrayMessages("LANGUAGE_COMMAND_MESSAGE");
 					StringBuffer buffer = new StringBuffer();
 					for (String append : str) {
@@ -68,16 +69,16 @@ public class LanguageCommand extends Commands {
 							buffer.append(append);
 						}
 					}
-					
+
 					sendEmbedMessage(new DefaultEmbed(str[0], buffer.toString())).queue();
 					return;
 				}
 			}
 			String[] str = getLang().translatedArrayMessages("AVAILABLE_LANGUAGE_MESSAGE");
-			
+
 			StringBuffer buffer = new StringBuffer();
 			StringBuffer bufferlang = new StringBuffer();
-			
+
 			for (String append : str) {
 				if (append != str[0]) {
 					buffer.append(append);
@@ -86,11 +87,11 @@ public class LanguageCommand extends Commands {
 			for (Language lang : Language.values()) {
 				bufferlang.append("\n" + lang.name() + " - " + lang.getLanguageCode());
 			}
-			
-			sendEmbedMessage(new DefaultEmbed(str[0], buffer.toString().replace("{LANGUAGES}", bufferlang.toString()))).queue();
+
+			sendEmbedMessage(new DefaultEmbed(str[0], buffer.toString().replace("{LANGUAGES}", bufferlang.toString())))
+					.queue();
 		}
-		
-		
+
 	}
 
 }

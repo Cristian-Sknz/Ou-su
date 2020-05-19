@@ -25,34 +25,35 @@ public class OsuProfile {
 			builder.addBackground("resources/osu_images/Background.png");
 			builder.addAvatar(osuUser.getUserAvatar());
 			builder.addOverlayer("resources/osu_images/Overlayer.png");
-			
+
 			// CIMA
-			Font defaultfont = new Font("Arial", Font.PLAIN, 27);			
+			Font defaultfont = new Font("Arial", Font.PLAIN, 27);
 			NumberFormat f = NumberFormat.getNumberInstance();
-			
+
 			builder.addUsername(defaultfont, 345, 85);
 			builder.addAccuracy(defaultfont, 370, 120);
 			builder.addUserID(defaultfont, 448, 178);
 			builder.addPlayerCount(defaultfont, 449, 150);
-			
+
 			// MEIO
 			Font midfont = CustomFont.getFont(CustomFonts.Lane_Cane, Font.PLAIN, 78F);
 			builder.addRanking(midfont, 768, 354);
 			builder.addNationalRanking(midfont, 611, 476);
-			
+
 			builder.addCountry(900, 509);
 			builder.addPP(93, 270);
-			
+
 			// Level
 			builder.getGraphic().setColor(Color.YELLOW);
 			String level = new DecimalFormat("#").format(osuUser.getLevel());
 			levelCalculate(builder, level);
-			
+
 			// Baixo
 			builder.getGraphic().setColor(Color.WHITE);
 			builder.addCentralizedStringY(osuUser.getPlayedHours().toString(), 746, 107, defaultfont.deriveFont(39F));
-			builder.addCentralizedStringY(f.format(osuUser.getTotalScore()) + "", 45, 697, new Font("Arial", Font.PLAIN, 32));
-			
+			builder.addCentralizedStringY(f.format(osuUser.getTotalScore()) + "", 45, 697,
+					new Font("Arial", Font.PLAIN, 32));
+
 			// Notas
 			scoreCalculates(builder, f.format(osuUser.getSSh()), 445);
 			scoreCalculates(builder, f.format(osuUser.getSS()), 562);
@@ -67,41 +68,42 @@ public class OsuProfile {
 		}
 		return null;
 	}
-	
+
 	public static InputStream drawImageLanguage(User osuUser) {
 		ProfileImage builder = new ProfileImage(osuUser.getUserID() + "_osuProfile", 1000, 750, osuUser);
 		try {
 			builder.addBackground("resources/osu_images/Background.png");
 			builder.addAvatar(osuUser.getUserAvatar());
 			builder.addOverlayer("resources/osu_images/OverlayerEN.png");
-			
+
 			// CIMA
-			Font defaultfont = new Font("Arial", Font.PLAIN, 27);			
+			Font defaultfont = new Font("Arial", Font.PLAIN, 27);
 			NumberFormat f = NumberFormat.getNumberInstance();
-			
+
 			builder.addUsername(defaultfont, 359, 85);
 			builder.addAccuracy(defaultfont, 384, 120);
 			builder.addUserID(defaultfont, 349, 179);
 			builder.addPlayerCount(defaultfont, 439, 150);
-			
+
 			// MEIO
 			Font midfont = CustomFont.getFont(CustomFonts.Lane_Cane, Font.PLAIN, 78F);
 			builder.addRanking(midfont, 768, 354);
 			builder.addNationalRanking(midfont, 611, 476);
-			
+
 			builder.addCountry(900, 509);
 			builder.addPP(93, 270);
-			
+
 			// Level
 			builder.getGraphic().setColor(Color.YELLOW);
 			String level = new DecimalFormat("#").format(osuUser.getLevel());
 			levelCalculate(builder, level);
-			
+
 			// Baixo
 			builder.getGraphic().setColor(Color.WHITE);
 			builder.addCentralizedStringY(osuUser.getPlayedHours().toString(), 746, 107, defaultfont.deriveFont(39F));
-			builder.addCentralizedStringY(f.format(osuUser.getTotalScore()) + "", 45, 697, new Font("Arial", Font.PLAIN, 32));
-			
+			builder.addCentralizedStringY(f.format(osuUser.getTotalScore()) + "", 45, 697,
+					new Font("Arial", Font.PLAIN, 32));
+
 			// Notas
 			scoreCalculates(builder, f.format(osuUser.getSSh()), 445);
 			scoreCalculates(builder, f.format(osuUser.getSS()), 562);
@@ -116,7 +118,6 @@ public class OsuProfile {
 		}
 		return null;
 	}
-
 
 	public static void levelCalculate(ImageBuilder builder, String level) {
 		if (level.length() == 1) {

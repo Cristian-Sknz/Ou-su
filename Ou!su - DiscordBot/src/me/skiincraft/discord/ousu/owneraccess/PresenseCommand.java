@@ -30,41 +30,35 @@ public class PresenseCommand extends Commands {
 		if (!isOwner()) {
 			return;
 		}
-		
+
 		if (args.length == 0) {
 			sendUsage().queue();
 			return;
 		}
-		
+
 		Presence presense = channel.getJDA().getPresence();
 		String mention = "<@247096601242238991>";
 		if (args.length == 1) {
 			if (args[0].equalsIgnoreCase("0")) {
-				presense.setActivity(Activity
-						.watching(channel.getJDA()
-						.getGuilds().size() + " Servidores."));
+				presense.setActivity(Activity.watching(channel.getJDA().getGuilds().size() + " Servidores."));
 				sendMessage(mention + " Presence alterada com sucesso.").queue();
 				return;
 			}
 			if (args[0].equalsIgnoreCase("1")) {
-				presense.setActivity(Activity
-						.watching(channel.getJDA()
-						.getUsers().size() + " Usuarios Online."));
+				presense.setActivity(Activity.watching(channel.getJDA().getUsers().size() + " Usuarios Online."));
 				sendMessage(mention + " Presence alterada com sucesso.").queue();
 				return;
 			}
 			if (args[0].equalsIgnoreCase("2")) {
-				presense.setActivity(Activity
-						.listening("Type ou!help for help."));
+				presense.setActivity(Activity.listening("Type ou!help for help."));
 				sendMessage(mention + " Presence alterada com sucesso.").queue();
 				return;
 			}
-			presense.setActivity(Activity
-					.playing(args[0]));
+			presense.setActivity(Activity.playing(args[0]));
 			sendMessage(mention + " Presence alterada com sucesso.").queue();
 			return;
 		}
-		
+
 		if (args.length >= 2) {
 			presense.setActivity(Activity.playing(StringUtils.arrayToString(0, args)));
 			return;

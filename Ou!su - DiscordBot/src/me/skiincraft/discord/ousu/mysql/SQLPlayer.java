@@ -48,9 +48,10 @@ public class SQLPlayer {
 
 		try {
 			String name = user.getName().replace("´", "").replace("'", "");
-			Ousu.getSQL().getConnection().createStatement().execute("INSERT INTO " + databaseName
-					+ "(`userid`, `username`, `osu_account`) VALUES" + 
-					"('"+ user.getId() + "', " + "'" + name +"#"+user.getDiscriminator() + "', " + "'" + "none" + "');");
+			Ousu.getSQL().getConnection().createStatement()
+					.execute("INSERT INTO " + databaseName + "(`userid`, `username`, `osu_account`) VALUES" + "('"
+							+ user.getId() + "', " + "'" + name + "#" + user.getDiscriminator() + "', " + "'" + "none"
+							+ "');");
 			return;
 		} catch (SQLException e) {
 			Ousu.logger("Ocorreu um erro ao criar uma nova tabela.");
@@ -136,7 +137,7 @@ public class SQLPlayer {
 			return;
 		}
 	}
-	
+
 	public static Map<String, String> getOrderBy(String colunm, int limit, boolean desc) {
 		try {
 			String d;
@@ -145,10 +146,11 @@ public class SQLPlayer {
 			} else {
 				d = "` DESC ";
 			}
-			// SELECT * FROM `servidores` GROUP BY `ID` ORDER BY `adicionado em` DESC LIMIT 5; esse era teste*
+			// SELECT * FROM `servidores` GROUP BY `ID` ORDER BY `adicionado em` DESC LIMIT
+			// 5; esse era teste*
 			Map<String, String> map = new HashMap<String, String>();
 			ResultSet result = OusuBot.getOusu().getSQL().getConnection().prepareStatement(
-					"SELECT * FROM " + databaseName + " GROUP BY `ID` ORDER BY `" + colunm + d +"LIMIT " + limit)
+					"SELECT * FROM " + databaseName + " GROUP BY `ID` ORDER BY `" + colunm + d + "LIMIT " + limit)
 					.executeQuery();
 			do {
 				if (!result.next()) {
@@ -162,5 +164,5 @@ public class SQLPlayer {
 			return null;
 		}
 	}
-	
+
 }

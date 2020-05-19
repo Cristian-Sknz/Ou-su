@@ -54,20 +54,21 @@ public class BeatMapSetCommand extends Commands {
 				sendEmbedMessage(new DefaultEmbed(msg[0], StringUtils.arrayToString(1, msg))).queue();
 				return;
 			}
-			
-			sendEmbedMessage(BeatmapEmbed.beatmapEmbed(osuBeat, 0,channel.getGuild())).queue(new Consumer<Message>() {
+
+			sendEmbedMessage(BeatmapEmbed.beatmapEmbed(osuBeat, 0, channel.getGuild())).queue(new Consumer<Message>() {
 
 				@Override
 				public void accept(Message message) {
 					message.addReaction("U+25C0").queue();
 					message.addReaction("U+25FC").queue();
 					message.addReaction("U+25B6").queue();
-					
+
 					Beatmap[] bm = new Beatmap[osuBeat.size()];
 					osuBeat.toArray(bm);
-					
+
 					ReactionMessage.beatHistory.add(new TopUserReaction(user, message.getId(), bm, 0));
-					message.getChannel().sendFile(BeatmapEmbed.idb, message.getEmbeds().get(0).getTitle() + ".mp3").queue();
+					message.getChannel().sendFile(BeatmapEmbed.idb, message.getEmbeds().get(0).getTitle() + ".mp3")
+							.queue();
 				}
 			});
 		}

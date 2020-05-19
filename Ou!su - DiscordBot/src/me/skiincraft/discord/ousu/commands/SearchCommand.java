@@ -22,7 +22,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 
 public class SearchCommand extends Commands {
-	
+
 	public SearchCommand() {
 		super("ou!", "search", "search <beatmap>", Arrays.asList("pesquisar"));
 	}
@@ -46,9 +46,10 @@ public class SearchCommand extends Commands {
 		if (args.length >= 1) {
 			SearchBearmap searchBearmap = null;
 			List<Beatmap> beat;
+
 			try {
-			searchBearmap = new SearchBearmap(StringUtils.arrayToString2(0, args));
-			beat = OusuBot.getOsu().getBeatmapSet(searchBearmap.getBeatmapSetIDs2().get(0));
+				searchBearmap = new SearchBearmap(StringUtils.arrayToString2(0, args));
+				beat = OusuBot.getOsu().getBeatmapSet(searchBearmap.getBeatmapSetIDs2().get(0));
 			} catch (SearchNotFoundException | InvalidBeatmapException e) {
 				String[] str = getLang().translatedArrayOsuMessages("INEXISTENT_BEATMAPID");
 				StringBuffer buffer = new StringBuffer();
@@ -57,24 +58,24 @@ public class SearchCommand extends Commands {
 						buffer.append(s + "\n");
 					}
 				}
-				
+
 				sendEmbedMessage(new DefaultEmbed(str[0], buffer.toString())).queue();
 				return;
 			}
-			
+
 			sendEmbedMessage(SearchEmbed.beatmapEmbed(beat, channel.getGuild())).queue(new Consumer<Message>() {
 
 				@Override
 				public void accept(Message message) {
-					channel.sendFile(SearchEmbed.getAudioPreview(), beat.get(0).getTitle()+ ".mp3").queue();
+					channel.sendFile(SearchEmbed.getAudioPreview(), beat.get(0).getTitle() + ".mp3").queue();
 					Beatmap[] bm = new Beatmap[beat.size()];
 					beat.toArray(bm);
-					
+
 					ReactionMessage.searchReactions.add(new TopUserReaction(user, message.getId(), bm, 0));
 					message.addReaction("U+1F3AF").queue();
 				}
 			});
-			
+
 			return;
 		}
 

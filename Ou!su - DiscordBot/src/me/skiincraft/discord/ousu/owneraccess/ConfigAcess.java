@@ -28,11 +28,9 @@ public class ConfigAcess {
 			StringBuffer exists = new StringBuffer();
 			exists.append("SELECT * FROM" + databaseName);
 			exists.append(" WHERE `MainServer` = ");
-			exists.append("'" + guild.getId() +"';");
-			
-			ResultSet resultSet = Ousu.getSQL().getConnection()
-					.createStatement()
-					.executeQuery(exists.toString());
+			exists.append("'" + guild.getId() + "';");
+
+			ResultSet resultSet = Ousu.getSQL().getConnection().createStatement().executeQuery(exists.toString());
 
 			if (resultSet.next()) {
 				return resultSet.getString("MainServer") != null;
@@ -52,20 +50,20 @@ public class ConfigAcess {
 		try {
 			StringBuffer insertinto = new StringBuffer();
 			StringBuffer values = new StringBuffer();
-			
+
 			insertinto.append("INSERT INTO " + databaseName);
 			insertinto.append("(`MainServer`, ");
 			insertinto.append("`Logchannel`, ");
 			insertinto.append("`Owner`)");
-			
+
 			values.append(" VALUES");
 			values.append("('" + guild.getId() + "', ");
 			values.append("'" + 0 + "', ");
 			values.append("'" + "247096601242238991" + "');");
-			
+
 			String inserta = insertinto.toString();
 			String value = insertinto.toString();
-			
+
 			Ousu.getSQL().getConnection().createStatement().execute(inserta + value);
 			return;
 		} catch (SQLException e) {
@@ -74,7 +72,7 @@ public class ConfigAcess {
 			return;
 		}
 	}
-	
+
 	public void deletar() {
 		try {
 			Ousu.getSQL().getConnection().createStatement()

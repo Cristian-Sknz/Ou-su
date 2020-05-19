@@ -19,13 +19,11 @@ import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 
 public class PlayerReactionEvent extends ReactionsManager {
 
-	
 	@Override
 	public List<ReactionUtils> listHistory() {
 		return ReactionMessage.playersHistory;
 	}
-	
-	
+
 	@Override
 	public void action(User user, TextChannel channel, String emoji) {
 
@@ -49,9 +47,7 @@ public class PlayerReactionEvent extends ReactionsManager {
 			listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, v));
 
 		}
-
-		// http://b.ppy.sh/preview/music.mp3
-
+		
 		if (emoji.equalsIgnoreCase("💫")) {
 			Object obj = getUtils().getObject();
 			Rich[] score = (Rich[]) obj;
@@ -66,7 +62,7 @@ public class PlayerReactionEvent extends ReactionsManager {
 			listHistory().remove(getUtils());
 			try {
 				EmbedBuilder embed = UserCommand.embed(OusuBot.getOsu().getUser(nickname), channel.getGuild());
-				
+
 				try {
 					channel.clearReactionsById(getUtils().getMessageID()).queue();
 				} catch (InsufficientPermissionException e) {
@@ -89,16 +85,14 @@ public class PlayerReactionEvent extends ReactionsManager {
 			Rich[] score = (Rich[]) obj;
 
 			if (v >= score.length) {
-				listHistory()
-						.add(new TopUserReaction(user, getEvent().getMessageId(), obj, score.length - 1));
+				listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, score.length - 1));
 				return;
 			}
 			EmbedBuilder embed = PlayersCommand.richformat(Arrays.asList(score), v, channel.getGuild());
-
+			
 			channel.editMessageById(getEvent().getMessageId(), embed.build()).queue();
 			listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, v));
 		}
 	}
-
 
 }

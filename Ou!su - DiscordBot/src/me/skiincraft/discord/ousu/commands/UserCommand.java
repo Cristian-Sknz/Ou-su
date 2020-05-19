@@ -54,17 +54,17 @@ public class UserCommand extends Commands {
 				for (int i = 0; i < args.length; i++) {
 					stringArgs.append(args[i] + " ");
 				}
-				
+
 				int length = stringArgs.toString().length() - 1;
-				
+
 				String usermsg = stringArgs.toString().substring(0, length);
-				String lastmsg = args[args.length-1];
+				String lastmsg = args[args.length - 1];
 				String name = usermsg.replace(" " + lastmsg, "");
-				
+
 				if (getEvent().getMessage().getMentionedUsers().size() != 0) {
-					String userid = getEvent().getMessage().getMentionedUsers().get(0)
-							.getAsMention().replaceAll("\\D+","");
-					
+					String userid = getEvent().getMessage().getMentionedUsers().get(0).getAsMention().replaceAll("\\D+",
+							"");
+
 					SQLPlayer sql = new SQLPlayer(OusuBot.getJda().getUserById(userid));
 					if (sql.existe()) {
 						String nic = sql.get("osu_account");
@@ -72,7 +72,7 @@ public class UserCommand extends Commands {
 						usermsg = nic;
 					}
 				}
-				
+
 				if (Gamemode.getGamemode(lastmsg) != null) {
 					osuUser = OusuBot.getOsu().getUser(name, Gamemode.getGamemode(lastmsg));
 				} else {
@@ -105,13 +105,13 @@ public class UserCommand extends Commands {
 		NumberFormat f = NumberFormat.getNumberInstance();
 		String accuracy = new DecimalFormat("#.0").format(osuUser.getAccuracy());
 		String PP = OsuEmoji.PP.getEmojiString();
-		
+
 		embed.setThumbnail(osuUser.getUserAvatar());
 
 		embed.setAuthor(osuUser.getUserName(), osuUser.getURL(), osuUser.getUserAvatar());
 		embed.setTitle(lang.translatedEmbeds("TITLE_USER_COMMAND_PLAYERSTATS"));
-		embed.setDescription(
-				lang.translatedEmbeds("MESSAGE_USER").replace("{USERNAME}", "[" + osuUser.getUserName() + "](" + osuUser.getURL() + ")"));
+		embed.setDescription(lang.translatedEmbeds("MESSAGE_USER").replace("{USERNAME}",
+				"[" + osuUser.getUserName() + "](" + osuUser.getURL() + ")"));
 		embed.addField(lang.translatedEmbeds("RANKING"), "#" + f.format(osuUser.getRanking()), true);
 		embed.addField(lang.translatedEmbeds("NATIONAL_RANKING"),
 				osuUser.getCountryCode() + " #" + f.format(osuUser.getNacionalRanking()), true);

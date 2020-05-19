@@ -11,9 +11,11 @@
     "HELPMESSAGE_HELP": "See available commands or help menus for each command.",
     "HELPMESSAGE_INVITE": "Invite me to your server{l} or get to know me more closely!",
     "HELPMESSAGE_PREFIX": "Change the server prefix.",
+    "HELPMESSAGE_VOTE": "Vote for me so that more people know me!",
     "HELPMESSAGE_VERSION": "Check the bot version and more.",
     "INSUFICIENT_PERMISSIONS": "Insufficient Permission{l}You are not allowed to run this command.",
-	"NO_COMMAND_DESCRIPTION": "No description has been defined for this command."
+	"NO_COMMAND_DESCRIPTION": "No description has been defined for this command.",
+	"PREFIX_HELP": "Hey, this looks wrong :p{l} If you want help, type the command ou!help"
   },
   "OsuMessages": {
     "INEXISTENT_USER": "Invalid User{l}This user you requested does not exist.",
@@ -34,7 +36,9 @@
 	"PREFIX_COMMAND_MESSAGE": "New Prefix!{l}The server prefix was changed successfully{l}Old prefix{l}New Prefix",
 	"PREFIX_INCORRECT_USE": "Incorrect Use{l}it is necessary to have a special character{l}[!,@,# etc]",
 	"INCORRECT_USE": "❌  Incorrect use{l}Try using the command ",
-	"PREFIX_INCORRECT_USE2": "Incorrect Use{l}Only 3 characters are allowed.{l}*[ex: ou!]*"
+	"PREFIX_INCORRECT_USE2": "Incorrect Use{l}Only 3 characters are allowed.{l}*[ex: ou!]*",
+	"INEXISTENT_COMMAND_HELP": "Command doesn't exist{l}This command in which you requested help does not exist!",
+	"VOTE_COMMAND_MESSAGE": "Vote for me!{l}Hello {user} I’m Ousu, a bot with lots of cool features about {logo} it is very difficult to live in this internet world, especially when you are a robot! :smirk_cat: and like all robot I want to take over the world! Just kidding haha!{l} {l}If you want to help me, vote for me for more people to know me.That way you don't pay anything and it still helps me a lot :3"
   },
   "Embeds": {
 	"TITLE_USER_COMMAND_PLAYERSTATS": "Player Stats",

@@ -45,12 +45,12 @@ public class ServersCommand extends Commands {
 			return;
 		}
 		List<Guild> guildas = OusuBot.getJda().getGuilds();
-		
+
 		List<EmbedBuilder> build = new ArrayList<EmbedBuilder>();
 		for (int i = 0; i < guildas.size(); i++) {
 			build.add(embed(guildas, i));
 		}
-		
+
 		Collections.sort(build, new Comparator<EmbedBuilder>() {
 
 			@Override
@@ -63,10 +63,10 @@ public class ServersCommand extends Commands {
 							data1 = new SimpleDateFormat("dd/MM/yyyy - HH:mm").parse(field.getValue());
 						} catch (ParseException e) {
 							e.printStackTrace();
-						} 
+						}
 					}
 				}
-				
+
 				for (Field field : o1.getFields()) {
 					if (field.getName().contains("Adicionado em")) {
 						try {
@@ -79,38 +79,38 @@ public class ServersCommand extends Commands {
 				return data1.compareTo(data2);
 			}
 		});
-		
+
 		channel.sendMessage(build.get(0).build()).queue(new Consumer<Message>() {
 
 			@Override
 			public void accept(Message message) {
 				message.addReaction("U+25C0").queue();
 				message.addReaction("U+25B6").queue();
-				
+
 				EmbedBuilder[] bm = new EmbedBuilder[build.size()];
 				build.toArray(bm);
-				
+
 				ReactionMessage.serverReations.add(new TopUserReaction(user, message.getId(), bm, 0));
 			}
 		});
 	}
-	
+
 	public EmbedBuilder embed(List<Guild> guildas, int value) {
 		EmbedBuilder builder = new EmbedBuilder();
 		Guild guild = guildas.get(value);
 		builder.setTitle(guild.getName());
-		
+
 		builder.setThumbnail(guild.getIconUrl());
 		builder.addField("Guild ID:", guild.getId(), true);
 		builder.addField("Região:", guild.getRegion().getName(), true);
 		builder.addField("Dono:", guild.getOwner().getAsMention(), true);
 
-		builder.addField("Canais:", "Texto - "+guild.getTextChannels().size() +
-				                    "\nAudio - "+guild.getVoiceChannels().size(), true);
+		builder.addField("Canais:",
+				"Texto - " + guild.getTextChannels().size() + "\nAudio - " + guild.getVoiceChannels().size(), true);
 
-		builder.addField("Membros", ""+guild.getMemberCount(), true);
+		builder.addField("Membros", "" + guild.getMemberCount(), true);
 		builder.addField("Adicionado em:", new SQLAccess(guild).get("adicionado em"), true);
-		
+
 		return builder;
 	}
 

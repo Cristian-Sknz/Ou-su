@@ -15,7 +15,7 @@ public enum CommandCategory {
 	public String getCategoria() {
 		return name;
 	}
-	
+
 	public String getCategoria(Language lang) {
 		if (lang == Language.English) {
 			if (name.equalsIgnoreCase("Administração")) {
@@ -33,6 +33,5 @@ public enum CommandCategory {
 		}
 		return name;
 	}
-
 
 }

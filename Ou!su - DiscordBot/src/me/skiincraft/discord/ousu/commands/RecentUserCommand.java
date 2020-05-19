@@ -60,17 +60,17 @@ public class RecentUserCommand extends Commands {
 				for (int i = 0; i < args.length; i++) {
 					stringArgs.append(args[i] + " ");
 				}
-				
+
 				int length = stringArgs.toString().length() - 1;
-				
+
 				String usermsg = stringArgs.toString().substring(0, length);
-				String lastmsg = args[args.length-1];
+				String lastmsg = args[args.length - 1];
 				String name = usermsg.replace(" " + lastmsg, "");
-				
+
 				if (getEvent().getMessage().getMentionedUsers().size() != 0) {
-					String userid = getEvent().getMessage().getMentionedUsers().get(0)
-							.getAsMention().replaceAll("\\D+","");
-					
+					String userid = getEvent().getMessage().getMentionedUsers().get(0).getAsMention().replaceAll("\\D+",
+							"");
+
 					SQLPlayer sql = new SQLPlayer(OusuBot.getJda().getUserById(userid));
 					if (sql.existe()) {
 						String nic = sql.get("osu_account");
@@ -78,13 +78,13 @@ public class RecentUserCommand extends Commands {
 						usermsg = nic;
 					}
 				}
-				
+
 				if (Gamemode.getGamemode(lastmsg) != null) {
 					osuUser = OusuBot.getOsu().getRecentUser(name, Gamemode.getGamemode(lastmsg), 5);
 				} else {
 					osuUser = OusuBot.getOsu().getRecentUser(usermsg, 5);
 				}
-				
+
 				@SuppressWarnings("unused")
 				Score score = osuUser.get(0);
 
@@ -101,11 +101,11 @@ public class RecentUserCommand extends Commands {
 
 			sendEmbedMessage(embed(osuUser, 0, channel.getGuild())).queue(message -> {
 				message.addReaction("U+25C0").queue();
-				//message.addReaction("U+25FC").queue();
+				// message.addReaction("U+25FC").queue();
 				message.addReaction("U+25B6").queue();
 				Score[] sc = new Score[osuUser.size()];
 				osuUser.toArray(sc);
-				
+
 				ReactionMessage.recentHistory.add(new TopUserReaction(user, message.getId(), sc, 0));
 			});
 			return;

@@ -54,7 +54,9 @@ public abstract class Commands extends ListenerAdapter {
 	}
 
 	public abstract String[] helpMessage(LanguageManager langm);
+
 	public abstract CommandCategory categoria();
+
 	public abstract void action(String[] args, String label, User user, TextChannel channel);
 
 	public boolean isValidCommand(GuildMessageReceivedEvent e) {
@@ -79,7 +81,7 @@ public abstract class Commands extends ListenerAdapter {
 				return false;
 			}
 		}
-		
+
 		this.label = prefix + command;
 		this.lang = new LanguageManager(Language.valueOf(sql.get("language")));
 
@@ -105,7 +107,7 @@ public abstract class Commands extends ListenerAdapter {
 		}
 		return false;
 	}
-	
+
 	public boolean isOwner() {
 		if (!user.equals(OusuBot.getJda().getUserById("247096601242238991"))) {
 			return false;
@@ -149,9 +151,8 @@ public abstract class Commands extends ListenerAdapter {
 		complete.append(":" + channel.getName());
 		complete.append(" | " + data + "]:");
 
-		String userFull = user.getName()+ "#" + user.getDiscriminator();
-
-		System.out.println(complete.toString() + userFull + " executou o comando " + getCommandFull());
+		String userFull = user.getName() + "#" + user.getDiscriminator();
+		OusuBot.getOusu().logger(complete.toString() + userFull + " executou o comando " + getCommandFull());
 
 		Thread t = new Thread(new Runnable() {
 
@@ -160,18 +161,19 @@ public abstract class Commands extends ListenerAdapter {
 				final long startElapsed = System.currentTimeMillis();
 				channel.sendTyping().queue();
 				String[] sarray = event.getMessage().getContentRaw().split(" ");
-				
+
 				sarray = StringUtils.removeString(sarray, 0);
-				
+
 				action(sarray, label, user, channel);
 
 				final long result = startElapsed - System.currentTimeMillis();
 				String elapsedtime = new DecimalFormat("#.0").format(result / 1000) + "s";
 				if (elapsedtime.startsWith(",")) {
-					System.out.println("[" + getCommandFull() + " | Elapsed Time: 0s]");
+					OusuBot.getOusu().logger("[" + getCommandFull() + " | Elapsed Time: 0s]");
 					return;
 				}
-				System.out.println("[" + getCommandFull() + " | Elapsed Time: " + elapsedtime.replace("-", "") + "]");
+				OusuBot.getOusu()
+						.logger("[" + getCommandFull() + " | Elapsed Time: " + elapsedtime.replace("-", "") + "]");
 			}
 		});
 
@@ -194,11 +196,10 @@ public abstract class Commands extends ListenerAdapter {
 
 	public MessageAction sendUsage() {
 		String[] msg = getLang().translatedArrayMessages("INCORRECT_USE");
-		MessageAction a = event.getChannel().sendMessage(
-				new DefaultEmbed(msg[0], msg[1] + getUsage()).construir());
+		MessageAction a = event.getChannel().sendMessage(new DefaultEmbed(msg[0], msg[1] + getUsage()).construir());
 		return a;
 	}
-	
+
 	public MessageAction noPermissionMessage(Permission permission) {
 		String[] str = lang.translatedArrayHelp("INSUFICIENT_PERMISSIONS");
 		StringBuffer buffer = new StringBuffer();
@@ -209,8 +210,7 @@ public abstract class Commands extends ListenerAdapter {
 		}
 		buffer.append("\n");
 		MessageAction a = event.getChannel()
-				.sendMessage(new DefaultEmbed( str[0], buffer.toString()
-								+ permission.getName()).construir());
+				.sendMessage(new DefaultEmbed(str[0], buffer.toString() + permission.getName()).construir());
 		return a;
 	}
 
@@ -301,7 +301,7 @@ public abstract class Commands extends ListenerAdapter {
 	public LanguageManager getLang() {
 		return lang;
 	}
-	
+
 	public Language getLanguage() {
 		SQLAccess sql = new SQLAccess(getEvent().getGuild());
 		return Language.valueOf(sql.get("language"));

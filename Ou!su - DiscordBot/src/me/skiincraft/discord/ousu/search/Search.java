@@ -4,7 +4,7 @@ public class Search {
 
 	private String title;
 	private String link;
-	
+
 	public Search(String title, String link) {
 		this.title = title;
 		this.link = link;

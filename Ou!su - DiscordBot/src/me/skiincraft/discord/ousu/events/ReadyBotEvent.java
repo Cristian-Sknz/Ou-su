@@ -19,7 +19,6 @@ import net.dv8tion.jda.api.events.guild.member.GuildMemberLeaveEvent;
 import net.dv8tion.jda.api.events.guild.update.GuildUpdateNameEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import static java.lang.System.out;
 
 public class ReadyBotEvent extends ListenerAdapter {
 
@@ -27,13 +26,13 @@ public class ReadyBotEvent extends ListenerAdapter {
 	public void onGuildJoin(GuildJoinEvent event) {
 		SQLAccess guild = new SQLAccess(event.getGuild());
 		guild.criar();
-		out.println("\nNovo servidor adicionado!");
-		out.println(event.getGuild().getId());
-		out.println(event.getGuild().getName());
-		out.println("com " + event.getGuild().getMemberCount() + " membros.\n");
-		
+		String[] str = new String[] { "\nNovo servidor adicionado!", event.getGuild().getId(),
+				event.getGuild().getName(), "com " + event.getGuild().getMemberCount() + " membros.\n" };
+
+		OusuBot.getOusu().logger(str);
+
 		int guilds = event.getJDA().getGuilds().size();
-		
+
 		PresenceTask.ordem = 2;
 		String name = OusuBot.getJda().getPresence().getActivity().getName();
 		if (name.contains(" Servidores.")) {
@@ -46,29 +45,27 @@ public class ReadyBotEvent extends ListenerAdapter {
 		SQLAccess guild = new SQLAccess(event.getGuild());
 
 		guild.deletar();
-		out.println();
-		out.println("Servidor removido!");
-		out.println(event.getGuild().getId());
-		out.println(event.getGuild().getName());
-		out.println("com " + event.getGuild().getMemberCount() + " membros.");
-		out.println();
+		String[] str = new String[] { "\nServidor removido.", event.getGuild().getId(), event.getGuild().getName(),
+				"com " + event.getGuild().getMemberCount() + " membros.\n" };
+
+		OusuBot.getOusu().logger(str);
 	}
-	
+
 	@Override
 	public void onGuildMemberJoin(GuildMemberJoinEvent event) {
 		ReadyUtil.updateServerUsers(Arrays.asList(event.getGuild()));
 	}
-	
+
 	@Override
 	public void onGuildMemberLeave(GuildMemberLeaveEvent event) {
 		ReadyUtil.updateServerUsers(Arrays.asList(event.getGuild()));
 	}
-	
+
 	@Override
 	public void onGuildUpdateName(GuildUpdateNameEvent event) {
 		ReadyUtil.updateServerNames(Arrays.asList(event.getGuild()));
 	}
-	
+
 	@Override
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
 		if (event.getChannel().isNSFW()) {
@@ -92,13 +89,14 @@ public class ReadyBotEvent extends ListenerAdapter {
 
 	@Override
 	public void onReady(ReadyEvent event) {
-		//int guilds = event.getGuildTotalCount();
-		//event.getJDA().getPresence().setPresence(OnlineStatus.ONLINE, Activity.watching(guilds + " Servidores."));
+		// int guilds = event.getGuildTotalCount();
+		// event.getJDA().getPresence().setPresence(OnlineStatus.ONLINE,
+		// Activity.watching(guilds + " Servidores."));
 		event.getJDA().getPresence().setPresence(OnlineStatus.ONLINE, Activity.listening("Type ou!help for help."));
 		List<Guild> guildas = event.getJDA().getGuilds();
-		
+
 		int newGuilds = 0;
-		
+
 		for (Guild guild : guildas) {
 			SQLAccess sql = new SQLAccess(guild);
 			if (!sql.existe()) {
@@ -106,12 +104,12 @@ public class ReadyBotEvent extends ListenerAdapter {
 			}
 			sql.criar();
 		}
-		
-		ReadyUtil.updateServerUsers(guildas); //Atualizar numero de membros.
+
+		ReadyUtil.updateServerUsers(guildas); // Atualizar numero de membros.
 		if (newGuilds == 0) {
-			out.println("Não foi adicionado nenhum servidor novo, desde o ultimo update.");
+			OusuBot.getOusu().logger("Não foi adicionado nenhum servidor novo, desde o ultimo update.");
 			return;
 		}
-		out.println("Foi adicionado " + newGuilds + " novo(s) servidor(es), desde o ultimo update.");
+		OusuBot.getOusu().logger("Foi adicionado " + newGuilds + " novo(s) servidor(es), desde o ultimo update.");
 	}
 }
