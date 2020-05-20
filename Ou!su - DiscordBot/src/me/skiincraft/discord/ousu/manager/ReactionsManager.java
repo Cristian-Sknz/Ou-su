@@ -92,6 +92,7 @@ public abstract class ReactionsManager extends ListenerAdapter {
 		if (!isValidReaction(event)) {
 			return;
 		}
+		event.getMessageId();
 		action(event.getUser(), event.getChannel(), emoji);
 
 	}

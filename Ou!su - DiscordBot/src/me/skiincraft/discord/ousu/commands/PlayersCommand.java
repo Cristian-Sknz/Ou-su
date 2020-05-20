@@ -93,6 +93,7 @@ public class PlayersCommand extends Commands {
 			@Override
 			public void accept(Message message) {
 				message.addReaction("U+25C0").queue();
+				message.addReaction("U+1F50D").queue();
 				message.addReaction("U+1F4AB").queue();
 				message.addReaction("U+25B6").queue();
 				Rich[] g = new Rich[size];
@@ -203,7 +204,7 @@ public class PlayersCommand extends Commands {
 		} else {
 			int start = 0;
 			int end = 0;
-			String details = presence.getDetails().replace("-", "\n");
+			String details = presence.getDetails();
 
 			for (int i = 3; i < 100; i++) {
 				if (details.charAt(i) == '[') {

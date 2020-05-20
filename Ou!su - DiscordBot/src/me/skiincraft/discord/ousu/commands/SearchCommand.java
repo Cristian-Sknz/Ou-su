@@ -73,6 +73,7 @@ public class SearchCommand extends Commands {
 
 					ReactionMessage.searchReactions.add(new TopUserReaction(user, message.getId(), bm, 0));
 					message.addReaction("U+1F3AF").queue();
+					
 				}
 			});
 

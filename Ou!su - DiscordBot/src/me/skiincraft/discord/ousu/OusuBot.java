@@ -3,6 +3,7 @@ package me.skiincraft.discord.ousu;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
@@ -47,9 +48,10 @@ import me.skiincraft.discord.ousu.owneraccess.ServersCommand;
 import me.skiincraft.discord.ousu.utils.Token;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.SelfUser;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.utils.ChunkingFilter;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
 public class OusuBot {
 
@@ -117,8 +119,11 @@ public class OusuBot {
 		ousu = this;
 		log = new Logging();
 		arguments = args;
-		build.setStatus(OnlineStatus.DO_NOT_DISTURB);
 		
+		build.setDisabledCacheFlags(EnumSet.of(CacheFlag.VOICE_STATE, CacheFlag.CLIENT_STATUS));
+	    //build.setGuildSubscriptionsEnabled(false);
+	    build.setChunkingFilter(ChunkingFilter.NONE);
+	    
 		commands();
 		events();
 		System.out.println("MYSQL: Conectando ao servidor MySQL.");
@@ -133,6 +138,7 @@ public class OusuBot {
 			System.exit(0);
 		}
 		try {
+
 			jda = build.build();
 			jda.awaitReady();
 			logger("JDA: Conexão foi estabelecida com sucesso");
@@ -170,8 +176,6 @@ public class OusuBot {
 			});
 
 			thread.start();
-			// ApplicationUtils.frame.setIconImage(ImageIO.read(new
-			// URL(jda.getSelfUser().getAvatarUrl())));
 			ApplicationUtils.frame
 					.setTitle(ApplicationUtils.frame.getTitle().replace("[Bot]", jda.getSelfUser().getName()));
 		} catch (LoginException e) {
