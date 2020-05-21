@@ -48,6 +48,7 @@ import me.skiincraft.discord.ousu.owneraccess.ServersCommand;
 import me.skiincraft.discord.ousu.utils.Token;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.SelfUser;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
@@ -70,6 +71,28 @@ public class OusuBot {
 
 	public static OusuBot getOusu() {
 		return ousu;
+	}
+	
+	public static List<Emote> getEmotes() {
+		return getJda().getGuildById("680436378240286720").getEmotes();
+	}
+	
+	public static Emote getEmote(String name) {
+		for (Emote emote: getEmotes()) {
+			if (emote.getName().toLowerCase().contains(name)) {
+				return emote;
+			}
+		}
+		return getEmotes().get(0);
+	}
+	
+	public static String getEmoteAsMention(String name) {
+		for (Emote emote: getEmotes()) {
+			if (emote.getName().toLowerCase().contains(name)) {
+				return emote.getAsMention();
+			}
+		}
+		return getEmotes().get(0).getAsMention();
 	}
 
 	public static OusuAPI getOsu() {

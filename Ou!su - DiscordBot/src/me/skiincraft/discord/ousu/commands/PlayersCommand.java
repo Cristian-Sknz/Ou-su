@@ -8,6 +8,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import me.skiincraft.discord.ousu.OusuBot;
+import me.skiincraft.discord.ousu.customemoji.EmojiCustom;
 import me.skiincraft.discord.ousu.embedtypes.DefaultEmbed;
 import me.skiincraft.discord.ousu.events.TopUserReaction;
 import me.skiincraft.discord.ousu.language.LanguageManager;
@@ -134,7 +135,7 @@ public class PlayersCommand extends Commands {
 				value++;
 				if (value >= rich.size()) {
 					String[] msg = lang.translatedArrayOsuMessages("UNAVAILABLE_RESOURCE");
-					return new DefaultEmbed(msg[0], msg[1]).construirEmbed();
+					return new DefaultEmbed(msg[0],":warning: " + msg[1]).construirEmbed();
 				}
 				user = rich.get(value).getUser();
 				presence = rich.get(value).getRich();
@@ -148,9 +149,11 @@ public class PlayersCommand extends Commands {
 		embed.setThumbnail(presence.getLargeImage().getUrl());
 
 		if (offline) {
-			embed.setDescription(lang.translatedOsuMessages("OFFLINE_PLAYER"));
+			embed.setDescription(EmojiCustom.S_RDiamond.getEmoji() + lang.translatedOsuMessages("OFFLINE_PLAYER"));
+			embed.setColor(Color.RED);
 		} else {
-			embed.setDescription(lang.translatedOsuMessages("ONLINE_PLAYER"));
+			embed.setDescription(EmojiCustom.S_GDiamond.getEmoji() + lang.translatedOsuMessages("ONLINE_PLAYER"));
+			embed.setColor(Color.GREEN);
 		}
 		
 		for (Rich r : rich) {
@@ -188,10 +191,10 @@ public class PlayersCommand extends Commands {
 				if (strs.length >= 3) {
 					embed.addField("Ranking: ", strs[2].replace(")", ""), true);
 				} else {
-					embed.addField("Ranking: ", ":(", true);
+					//embed.addField("Ranking: ", ":(", true);
 				}
 			} else {
-				embed.addField("Ranking: ", ":(", true);
+				//embed.addField("Ranking: ", ":(", true);
 			}
 		}
 		embed.addBlankField(true);
@@ -220,7 +223,6 @@ public class PlayersCommand extends Commands {
 			embed.addField("Dificuldade", details.substring(start + 1, end), true);
 		}
 
-		embed.setColor(Color.MAGENTA);
 		embed.setFooter(lang.translatedBot("FOOTER_DEFAULT"), user.getAvatarUrl());
 		return embed;
 	}

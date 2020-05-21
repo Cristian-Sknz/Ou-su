@@ -54,6 +54,7 @@ public class InviteCommand extends Commands {
 		embed.setDescription(
 				buffer.toString().replace("{InviteUrl}", invitelink).replace("{BotDiscordUrl}", serverlink));
 
+		embed.setThumbnail("https://i.imgur.com/f7Qc9nA.png");
 		embed.setFooter(getLang().translatedBot("FOOTER_DEFAULT"));
 		return embed;
 	}

@@ -5,7 +5,8 @@ import java.util.Arrays;
 import me.skiincraft.api.ousu.exceptions.InvalidUserException;
 import me.skiincraft.api.ousu.modifiers.Gamemode;
 import me.skiincraft.discord.ousu.OusuBot;
-import me.skiincraft.discord.ousu.embedtypes.DefaultEmbed;
+import me.skiincraft.discord.ousu.customemoji.EmojiCustom;
+import me.skiincraft.discord.ousu.embeds.TypeEmbed;
 import me.skiincraft.discord.ousu.imagebuilders.OsuProfile;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
@@ -76,11 +77,11 @@ public class UserImageCommand extends Commands {
 				StringBuffer buffer = new StringBuffer();
 				for (String append : str) {
 					if (append != str[0]) {
-						buffer.append(append);
+						buffer.append(EmojiCustom.S_RDiamond.getEmoji() + " " +append);
 					}
 				}
 
-				sendEmbedMessage(new DefaultEmbed(str[0], buffer.toString())).queue();
+				sendEmbedMessage(TypeEmbed.WarningEmbed(str[0], buffer.toString())).queue();
 				return;
 			}
 

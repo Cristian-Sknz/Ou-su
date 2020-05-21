@@ -1,13 +1,15 @@
 package me.skiincraft.discord.ousu.commands;
 
+import java.awt.Color;
 import java.util.Arrays;
 
-import me.skiincraft.discord.ousu.embedtypes.DefaultEmbed;
+import me.skiincraft.discord.ousu.embeds.TypeEmbed;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.language.LanguageManager.Language;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
 import me.skiincraft.discord.ousu.mysql.SQLAccess;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -20,7 +22,7 @@ public class LanguageCommand extends Commands {
 
 	@Override
 	public String[] helpMessage(LanguageManager langm) {
-		return langm.translatedArrayHelp("");
+		return langm.translatedArrayHelp("OSU_HELPMESSAGE_LANGUAGE");
 	}
 
 	@Override
@@ -36,21 +38,7 @@ public class LanguageCommand extends Commands {
 		}
 
 		if (args.length == 0) {
-			String[] str = getLang().translatedArrayMessages("AVAILABLE_LANGUAGE_MESSAGE");
-
-			StringBuffer buffer = new StringBuffer();
-			StringBuffer bufferlang = new StringBuffer();
-
-			for (String append : str) {
-				if (append != str[0]) {
-					buffer.append(append);
-				}
-			}
-			for (Language lang : Language.values()) {
-				bufferlang.append("\n" + lang.name() + " - " + lang.getLanguageCode());
-			}
-
-			sendEmbedMessage(new DefaultEmbed(str[0], buffer.toString().replace("{LANGUAGES}", bufferlang.toString())))
+			sendEmbedMessage(availablelang())
 					.queue();
 			return;
 		}
@@ -66,32 +54,44 @@ public class LanguageCommand extends Commands {
 					StringBuffer buffer = new StringBuffer();
 					for (String append : str) {
 						if (append != str[0]) {
-							buffer.append(append);
+							buffer.append(":small_blue_diamond: " + append);
 						}
 					}
+					
+					EmbedBuilder variavel = TypeEmbed.ConfigEmbed(str[0], buffer.toString())
+					.setThumbnail("https://i.imgur.com/sxIERAT.png")
+					.setFooter("A multilanguage bot!", "https://i.imgur.com/wDczNj3.jpg")
+					.setColor(new Color(52, 107, 235));
 
-					sendEmbedMessage(new DefaultEmbed(str[0], buffer.toString())).queue();
+					sendEmbedMessage(variavel).queue();
 					return;
 				}
 			}
-			String[] str = getLang().translatedArrayMessages("AVAILABLE_LANGUAGE_MESSAGE");
-
-			StringBuffer buffer = new StringBuffer();
-			StringBuffer bufferlang = new StringBuffer();
-
-			for (String append : str) {
-				if (append != str[0]) {
-					buffer.append(append);
-				}
-			}
-			for (Language lang : Language.values()) {
-				bufferlang.append("\n" + lang.name() + " - " + lang.getLanguageCode());
-			}
-
-			sendEmbedMessage(new DefaultEmbed(str[0], buffer.toString().replace("{LANGUAGES}", bufferlang.toString())))
-					.queue();
+			sendEmbedMessage(availablelang())
+			.queue();
 		}
+	}
+	
+	public EmbedBuilder availablelang() {
+		String[] str = getLang().translatedArrayMessages("AVAILABLE_LANGUAGE_MESSAGE");
 
+		StringBuffer buffer = new StringBuffer();
+		StringBuffer bufferlang = new StringBuffer();
+		bufferlang.append("\n");
+
+		for (String append : str) {
+			if (append != str[0]) {
+				buffer.append(append);
+			}
+		}
+		for (Language lang : Language.values()) {
+			bufferlang.append("\n:small_blue_diamond: " + lang.name() + " - " + lang.getLanguageCode());
+		}
+		
+		return TypeEmbed.ConfigEmbed(str[0], buffer.toString().replace("{LANGUAGES}", bufferlang.toString()))
+		.setThumbnail("https://i.imgur.com/sxIERAT.png")
+		.setFooter("A multilanguage bot!", "https://i.imgur.com/wDczNj3.jpg")
+		.setColor(new Color(52, 107, 235));
 	}
 
 }

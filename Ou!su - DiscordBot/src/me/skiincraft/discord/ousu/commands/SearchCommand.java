@@ -8,7 +8,7 @@ import me.skiincraft.api.ousu.beatmaps.Beatmap;
 import me.skiincraft.api.ousu.exceptions.InvalidBeatmapException;
 import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.embeds.SearchEmbed;
-import me.skiincraft.discord.ousu.embedtypes.DefaultEmbed;
+import me.skiincraft.discord.ousu.embeds.TypeEmbed;
 import me.skiincraft.discord.ousu.events.TopUserReaction;
 import me.skiincraft.discord.ousu.exception.SearchNotFoundException;
 import me.skiincraft.discord.ousu.language.LanguageManager;
@@ -59,7 +59,7 @@ public class SearchCommand extends Commands {
 					}
 				}
 
-				sendEmbedMessage(new DefaultEmbed(str[0], buffer.toString())).queue();
+				sendEmbedMessage(TypeEmbed.WarningEmbed(str[0], buffer.toString())).queue();
 				return;
 			}
 

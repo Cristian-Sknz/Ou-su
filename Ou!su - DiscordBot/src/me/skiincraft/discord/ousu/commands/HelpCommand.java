@@ -1,12 +1,13 @@
 package me.skiincraft.discord.ousu.commands;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.customemoji.OsuEmoji;
-import me.skiincraft.discord.ousu.embedtypes.DefaultEmbed;
+import me.skiincraft.discord.ousu.embeds.TypeEmbed;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
@@ -52,31 +53,46 @@ public class HelpCommand extends Commands {
 	}
 
 	public EmbedBuilder emb(String comando, Guild guild) {
-		EmbedBuilder embed = new EmbedBuilder();
-
+		EmbedBuilder embed = TypeEmbed.HelpEmbed("help title", "help description");
+		String prefix = new SQLAccess(guild).get("prefix");
 		for (Commands com : commands) {
 			if (comando.equalsIgnoreCase(com.getCommand())) {
 				embed.setTitle("Help <" + com.getCommand() + ">");
 				if (com.helpMessage(getLang()) != null) {
-					embed.setDescription(String.join("\n", com.helpMessage(getLang())));
+					String emoji = ":small_orange_diamond:";
+					StringBuffer buffer = new StringBuffer();
+					for (String str: com.helpMessage(getLang())) {
+						buffer.append(emoji + " " + str + "\n");
+						
+					}
+					
+					embed.setDescription(buffer.toString());
 				} else {
 					embed.setDescription(getLang().translatedHelp("NO_COMMAND_DESCRIPTION"));
 				}
-
-				if (com.hasAliases()) {
-					String[] alias = com.getAliases().stream().toArray(String[]::new);
-					embed.addField("Aliases", String.join("\n", alias), true);
+				
+				if (com.getAliases() != null) {//ALIASES
+					if (com.getAliases().size() != 0) {
+						String[] alias = new String[com.getAliases().size()];
+						com.getAliases().toArray(alias);
+						StringBuffer buffer = new StringBuffer();
+						for (String str: alias) {
+							buffer.append(prefix + str + "\n");
+						}
+						
+						embed.addField(":mega: Aliases", buffer.toString(), true);
+					}
 				}
 
-				embed.addField("Usage", com.getUsage().replace("ou!", new SQLAccess(guild).get("prefix")), true);
+				embed.addField(":pencil: Usage", com.getUsage().replace("ou!", prefix), true);
+				embed.setFooter(prefix + "help to help!");
 				return embed;
 			}
 		}
 
 		String[] msg = getLang().translatedArrayMessages("INEXISTENT_COMMAND_HELP");
-
-		return new DefaultEmbed(OsuEmoji.ThinkAnime.getEmojiString() + msg[0], StringUtils.commandMessage(msg))
-				.construirEmbed();
+		return TypeEmbed.SoftWarningEmbed(OsuEmoji.ThinkAnime.getEmojiString() + msg[0],":space_invader: " + StringUtils.commandMessage(msg))
+				.setFooter(prefix + "help to help!");
 	}
 
 	public EmbedBuilder embed(Guild guild) {
@@ -154,6 +170,7 @@ public class HelpCommand extends Commands {
 				"`" + String.join("\n", Sobre) + "`", true);
 
 		User user = OusuBot.getJda().getUserById("247096601242238991");
+		embed.setColor(new Color(226, 41, 230));
 		embed.setFooter(user.getName() + "#" + user.getDiscriminator() + " | Ou!su bot ™", user.getAvatarUrl());
 		return embed;
 	}

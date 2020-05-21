@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.List;
 
 import me.skiincraft.discord.ousu.OusuBot;
+import me.skiincraft.discord.ousu.customemoji.EmojiCustom;
+import me.skiincraft.discord.ousu.embeds.TypeEmbed;
 import me.skiincraft.discord.ousu.embedtypes.DefaultEmbed;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.language.LanguageManager.Language;
@@ -163,7 +165,11 @@ public abstract class Commands extends ListenerAdapter {
 				String[] sarray = event.getMessage().getContentRaw().split(" ");
 
 				sarray = StringUtils.removeString(sarray, 0);
-
+				try {
+					Thread.sleep(200);
+				} catch (InterruptedException e) {
+					
+				}
 				action(sarray, label, user, channel);
 
 				final long result = startElapsed - System.currentTimeMillis();
@@ -196,13 +202,17 @@ public abstract class Commands extends ListenerAdapter {
 
 	public MessageAction sendUsage() {
 		String[] msg = getLang().translatedArrayMessages("INCORRECT_USE");
-		MessageAction a = event.getChannel().sendMessage(new DefaultEmbed(msg[0], msg[1] + getUsage()).construir());
+		MessageAction a = event.getChannel().sendMessage(
+				TypeEmbed.WarningEmbed(msg[0], EmojiCustom.S_RDiamond.getEmoji() + msg[1] + getUsage())
+				.setFooter("ou!help to help!")
+				.build());
 		return a;
 	}
 
 	public MessageAction noPermissionMessage(Permission permission) {
 		String[] str = lang.translatedArrayHelp("INSUFICIENT_PERMISSIONS");
 		StringBuffer buffer = new StringBuffer();
+		buffer.append(OusuBot.getEmoteAsMention("small_red_diamond") + " ");
 		for (String append : str) {
 			if (append != str[0]) {
 				buffer.append(append);
@@ -210,7 +220,7 @@ public abstract class Commands extends ListenerAdapter {
 		}
 		buffer.append("\n");
 		MessageAction a = event.getChannel()
-				.sendMessage(new DefaultEmbed(str[0], buffer.toString() + permission.getName()).construir());
+				.sendMessage(TypeEmbed.WarningEmbed(str[0], buffer.toString() + permission.getName()).build());
 		return a;
 	}
 

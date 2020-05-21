@@ -4,6 +4,7 @@
     "OSU_HELPMESSAGE_RECENTUSER": "Este comando possibilita mostar os beatmaps jogados{l}nas ultimas 24h de um jogador{l}O maximo de estatisticas que serão mostradas são 5",
     "OSU_HELPMESSAGE_TOPUSER": "Este comando possibilita mostar as melhores estatisticas de um jogador{l}O maximo de estatisticas que serão mostradas são 5",
     "OSU_HELPMESSAGE_USER": "Verifique as informações de um jogador{l}Inserindo o Username ou ID",
+    "OSU_HELPMESSAGE_LANGUAGE": "Troque a linguagem do bot!{l}Você podera trocar para outros idiomas.",
     "OSU_HELPMESSAGE_PLAYERS": "Verifique quem esta jogando OSU!{l}Poderá ver quem joga neste servidor.",
     "OSU_HELPMESSAGE_SEARCH": "Pesquise beatmaps pelo bot!{l}A pesquisa não será precisa.",
     "OSU_HELPMESSAGE_USERIMAGE": "Verifique as informações de um jogador{l}Inserindo o Username ou ID",        
@@ -29,8 +30,8 @@
   },
   "Messages": {
     "INVITE_COMMAND_MESSAGE": "Posso fazer parte do seu servidor discord{l}Basta [Clicar aqui]({InviteUrl}) para me convidar!{l}{l}Caso queira um suporte, ou me conhecer mais um pouco{l}Entre no meu Servidor Discord - [Ou!su Bot]({BotDiscordUrl})",
-    "VERSION_COMMAND_MESSAGE": "Ou!su é um Discord Bot programado na linguagem de programação Java{l}Esta aplicação Java utiliza o OsuAPI disponibilizado oficialmente por ppy.{l}{l}Criado em",
-	"HELP_COMMAND_MESSAGE": "Lista de Comandos{l}Esses são os comandos disponiveis no Ousu Bot,{l}Caso tenha duvidas sobre como utilizar-los{l} {l} Tente usar ou!help <command> que os comandos {l}serão especificados!",
+    "VERSION_COMMAND_MESSAGE": "{emoji1} Ou!su é um Discord Bot programado na linguagem de programação Java{l}Esta aplicação Java utiliza o OsuAPI disponibilizado oficialmente por ppy.{l}{l}{emoji2} Criado em",
+	"HELP_COMMAND_MESSAGE": "Lista de Comandos{l}:white_small_square:Esses são os comandos disponiveis no Ousu Bot,{l}Caso tenha duvidas sobre como utilizar-los{l} {l}:white_small_square: Tente usar ou!help <command> que os comandos {l}serão especificados!",
 	"PREFIX_COMMAND_MESSAGE": "Novo Prefix{l}Prefixo do servidor foi alterado com sucesso{l}Antigo{l}Novo",
 	"LANGUAGE_COMMAND_MESSAGE": ":earth_americas: Idioma Trocado{l}O Idioma do bot neste servidor foi alterado com sucesso.",
 	"AVAILABLE_LANGUAGE_MESSAGE": ":earth_americas: Idiomas Disponiveis{l}Os idiomas disponiveis são: {l}{l} {LANGUAGES}",

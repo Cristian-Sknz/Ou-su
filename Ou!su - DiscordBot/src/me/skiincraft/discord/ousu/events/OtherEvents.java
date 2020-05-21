@@ -1,6 +1,6 @@
 package me.skiincraft.discord.ousu.events;
 
-import me.skiincraft.discord.ousu.embedtypes.DefaultEmbed;
+import me.skiincraft.discord.ousu.embeds.TypeEmbed;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.language.LanguageManager.Language;
 import me.skiincraft.discord.ousu.mysql.SQLAccess;
@@ -35,8 +35,8 @@ public class OtherEvents extends ListenerAdapter {
 		if (arg.equalsIgnoreCase(prefix)) {
 			String[] prefixHelp = lang.translatedArrayHelp("PREFIX_HELP");
 			e.getChannel().sendMessage(
-					new DefaultEmbed(prefixHelp[0], StringUtils.arrayToString2(1, prefixHelp))
-					.construirEmbed().build()).queue();
+					TypeEmbed.InfoEmbed(prefixHelp[0], StringUtils.arrayToString2(1, prefixHelp))
+					.build()).queue();
 			return;
 		}
 		return;

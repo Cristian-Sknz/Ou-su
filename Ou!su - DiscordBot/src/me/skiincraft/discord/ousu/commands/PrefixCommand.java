@@ -1,8 +1,7 @@
 package me.skiincraft.discord.ousu.commands;
 
-import java.awt.Color;
-
-import me.skiincraft.discord.ousu.embedtypes.DefaultEmbed;
+import me.skiincraft.discord.ousu.customemoji.EmojiCustom;
+import me.skiincraft.discord.ousu.embeds.TypeEmbed;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
@@ -51,7 +50,7 @@ public class PrefixCommand extends Commands {
 					}
 				}
 
-				sendEmbedMessage(new DefaultEmbed("'❌' " + str[0], buffer.toString()).construirEmbed()).queue();
+				sendEmbedMessage(TypeEmbed.WarningEmbed("'❌' " + str[0], buffer.toString())).queue();
 				return;
 			}
 
@@ -64,7 +63,7 @@ public class PrefixCommand extends Commands {
 					}
 				}
 
-				sendEmbedMessage(new DefaultEmbed("'❌' " + str[0], buffer.toString()).construirEmbed()).queue();
+				sendEmbedMessage(TypeEmbed.WarningEmbed("'❌' " + str[0], buffer.toString())).queue();
 				return;
 			}
 
@@ -77,11 +76,10 @@ public class PrefixCommand extends Commands {
 
 			String[] str = getLang().translatedArrayMessages("PREFIX_COMMAND_MESSAGE");
 
-			EmbedBuilder defaultembed = new DefaultEmbed(":gear:" + str[0], str[1]).construirEmbed();
+			EmbedBuilder defaultembed = TypeEmbed.ConfigEmbed(":gear: " + str[0], EmojiCustom.S_GDiamond + str[1]);
 
 			defaultembed.addField(str[2], oldPrefix, true);
 			defaultembed.addField(str[3], newPrefix, true);
-			defaultembed.setColor(Color.GRAY);
 
 			sendEmbedMessage(defaultembed.build()).queue();
 

@@ -52,6 +52,16 @@ public class StringUtils {
 		}
 		return buffer.toString();
 	}
+	
+	public static String commandMessageEmoji(String[] stringarray, String emoji) {
+		StringBuffer buffer = new StringBuffer();
+		for (String str : stringarray) {
+			if (str != stringarray[0]) {
+				buffer.append(emoji + " " + str + "\n");
+			}
+		}
+		return buffer.toString();
+	}
 
 	public static String[] removeString(String[] stringarray, int remove) {
 		List<String> list = new ArrayList<String>();

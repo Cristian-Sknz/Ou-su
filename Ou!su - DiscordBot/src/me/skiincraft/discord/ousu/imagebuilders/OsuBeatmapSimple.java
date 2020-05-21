@@ -73,7 +73,7 @@ public class OsuBeatmapSimple {
 		Map<Gamemode, String> map = new HashMap<>();
 
 		map.put(Gamemode.Standard, "standard.png");
-		map.put(Gamemode.Catch_the_Beat, "catch.png");
+		map.put(Gamemode.Catch, "catch.png");
 		map.put(Gamemode.Mania, "mania.png");
 		map.put(Gamemode.Taiko, "taiko.png");
 

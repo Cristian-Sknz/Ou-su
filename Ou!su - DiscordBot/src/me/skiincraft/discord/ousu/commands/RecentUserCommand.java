@@ -1,20 +1,26 @@
 package me.skiincraft.discord.ousu.commands;
 
 import java.awt.Color;
+import java.io.IOException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.imageio.ImageIO;
 
 import me.skiincraft.api.ousu.beatmaps.Beatmap;
 import me.skiincraft.api.ousu.exceptions.InvalidUserException;
 import me.skiincraft.api.ousu.exceptions.NoHistoryException;
 import me.skiincraft.api.ousu.modifiers.Approvated;
 import me.skiincraft.api.ousu.modifiers.Gamemode;
+import me.skiincraft.api.ousu.modifiers.Mods;
 import me.skiincraft.api.ousu.scores.Score;
 import me.skiincraft.discord.ousu.OusuBot;
+import me.skiincraft.discord.ousu.customemoji.EmojiCustom;
 import me.skiincraft.discord.ousu.customemoji.OsuEmoji;
-import me.skiincraft.discord.ousu.embedtypes.DefaultEmbed;
+import me.skiincraft.discord.ousu.embeds.TypeEmbed;
 import me.skiincraft.discord.ousu.events.TopUserReaction;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.language.LanguageManager.Language;
@@ -22,8 +28,11 @@ import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
 import me.skiincraft.discord.ousu.mysql.SQLAccess;
 import me.skiincraft.discord.ousu.mysql.SQLPlayer;
+import me.skiincraft.discord.ousu.utils.Emoji;
+import me.skiincraft.discord.ousu.utils.ImageUtils;
 import me.skiincraft.discord.ousu.utils.ReactionMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -89,13 +98,25 @@ public class RecentUserCommand extends Commands {
 				Score score = osuUser.get(0);
 
 			} catch (InvalidUserException e) {
-				sendEmbedMessage(new DefaultEmbed("Usuario inexistente", "Este usuario que você solicitou não existe."))
-						.queue();
+				String[] str = getLang().translatedArrayOsuMessages("INEXISTENT_USER");
+				StringBuffer buffer = new StringBuffer();
+				for (String append : str) {
+					if (append != str[0]) {
+						buffer.append(EmojiCustom.S_RDiamond.getEmoji() + " " + append);
+					}
+				}
+
+				sendEmbedMessage(TypeEmbed.WarningEmbed(str[0], buffer.toString())).queue();
 				return;
 			} catch (NoHistoryException | NullPointerException e) {
-				sendEmbedMessage(
-						new DefaultEmbed("Não há historico", "Este usuario que você solicitou não tem historico"))
-								.queue();
+				String[] str = getLang().translatedArrayOsuMessages("NO_HAS_HISTORY");
+				StringBuffer buffer = new StringBuffer();
+				for (String append : str) {
+					if (append != str[0]) {
+						buffer.append(append);
+					}
+				}
+				sendEmbedMessage(TypeEmbed.SoftWarningEmbed(str[0], buffer.toString())).queue();
 				return;
 			}
 
@@ -137,14 +158,24 @@ public class RecentUserCommand extends Commands {
 		int id = score.getBeatmap().getBeatmapSetID();
 		String url = "https://assets.ppy.sh/beatmaps/" + id + "/covers/cover.jpg?";
 
+		String mods = "";
+		for (Mods mod : score.getEnabledMods()) {
+			for (Emote emoji : OusuBot.getEmotes()) {
+				if (mod.name().toLowerCase().replace("_", "").contains(emoji.getName().toLowerCase())) {
+					mods += emoji.getAsMention() + " ";
+				}
+			}
+		}
+		
 		// Embed
 		embed.setAuthor(user.getUserName());
 		embed.setTitle(inicial + " " + lang.translatedEmbeds("TITLE_USER_COMMAND_HISTORY") + " | " + ordem);
-		embed.setDescription(lang.translatedEmbeds("MESSAGE_RECENTUSER").replace("{USERNAME}", u));
+		embed.setDescription(OusuBot.getEmote("small_green_diamond").getAsMention() + " "+
+				lang.translatedEmbeds("MESSAGE_RECENTUSER").replace("{USERNAME}", u));
 
-		embed.addField("Beatmap:", title, true);
+		embed.addField("Beatmap:", Emoji.HEADPHONES.getAsMention() + title, true);
 		embed.addField(lang.translatedEmbeds("MAP_STATS"),
-				"`" + getApproval(beatmap.getApprovated()) + "`\n" + beatmap.getVersion(), true);
+				"`" + getApproval(beatmap.getApprovated()) + "`\n" + beatmap.getVersion() + "\n" + mods, true);
 
 		embed.addField(lang.translatedEmbeds("SCORE"), field, true);
 		embed.addField(lang.translatedEmbeds("TOTAL_SCORE"), score.getScore() + "", true);
@@ -158,20 +189,24 @@ public class RecentUserCommand extends Commands {
 		String author = beatmap.getCreator();
 		embed.setFooter("[" + beatmap.getBeatmapID() + "] " + beatmap.getTitle() + " por " + beatmap.getArtist() + " | "
 				+ lang.translatedEmbeds("MAP_CREATED_BY") + author);
-		embed.setColor(Color.gray);
+		try {
+			embed.setColor(ImageUtils.getPredominatColor(ImageIO.read(new URL(beatmap.getBeatmapThumbnailUrl()))));
+		} catch (NullPointerException | IOException e) {
+			embed.setColor(Color.BLUE);
+		}
 		return embed;
 	}
 
 	public static String getApproval(Approvated approval) {
 		Map<Approvated, String> map = new HashMap<>();
 
-		map.put(Approvated.Ranked, "Ranqueado");
-		map.put(Approvated.Qualified, "Qualificado");
-		map.put(Approvated.Pending, "Pendente");
-		map.put(Approvated.Approved, "Aprovado");
+		map.put(Approvated.Ranked, "Ranked");
+		map.put(Approvated.Qualified, "Qualify");
+		map.put(Approvated.Pending, "Pending");
+		map.put(Approvated.Approved, "Approvated");
 		map.put(Approvated.Loved, "Loved");
-		map.put(Approvated.Graveyard, "Cemiterio");
-		map.put(Approvated.WIP, "WorkInProgress");
+		map.put(Approvated.Graveyard, "Graveyard");
+		map.put(Approvated.WIP, "WiP");
 
 		if (map.containsKey(approval)) {
 			return map.get(approval);

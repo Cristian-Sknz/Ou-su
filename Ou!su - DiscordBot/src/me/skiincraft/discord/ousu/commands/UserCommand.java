@@ -1,16 +1,20 @@
 package me.skiincraft.discord.ousu.commands;
 
 import java.awt.Color;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Arrays;
+import javax.imageio.ImageIO;
 
 import me.skiincraft.api.ousu.exceptions.InvalidUserException;
 import me.skiincraft.api.ousu.modifiers.Gamemode;
 import me.skiincraft.discord.ousu.OusuBot;
+import me.skiincraft.discord.ousu.customemoji.EmojiCustom;
 import me.skiincraft.discord.ousu.customemoji.OsuEmoji;
-import me.skiincraft.discord.ousu.embedtypes.DefaultEmbed;
+import me.skiincraft.discord.ousu.embeds.TypeEmbed;
 import me.skiincraft.discord.ousu.imagebuilders.OsuProfileNote;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.language.LanguageManager.Language;
@@ -18,6 +22,8 @@ import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
 import me.skiincraft.discord.ousu.mysql.SQLAccess;
 import me.skiincraft.discord.ousu.mysql.SQLPlayer;
+import me.skiincraft.discord.ousu.utils.Emoji;
+import me.skiincraft.discord.ousu.utils.ImageUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -83,11 +89,11 @@ public class UserCommand extends Commands {
 				StringBuffer buffer = new StringBuffer();
 				for (String append : str) {
 					if (append != str[0]) {
-						buffer.append(append);
+						buffer.append(EmojiCustom.S_RDiamond.getEmoji() + " " + append);
 					}
 				}
 
-				sendEmbedMessage(new DefaultEmbed(str[0], buffer.toString())).queue();
+				sendEmbedMessage(TypeEmbed.WarningEmbed(str[0], buffer.toString())).queue();
 				return;
 			}
 			InputStream drawer = OsuProfileNote.drawImage(osuUser, getLanguage());
@@ -105,24 +111,34 @@ public class UserCommand extends Commands {
 		NumberFormat f = NumberFormat.getNumberInstance();
 		String accuracy = new DecimalFormat("#.0").format(osuUser.getAccuracy());
 		String PP = OsuEmoji.PP.getEmojiString();
-
+		String code = Emoji.getByName("flag_" + osuUser
+				.getCountryCode().toLowerCase()).getAsMention() + " "
+				+ osuUser.getCountryCode();
+		
 		embed.setThumbnail(osuUser.getUserAvatar());
 
 		embed.setAuthor(osuUser.getUserName(), osuUser.getURL(), osuUser.getUserAvatar());
 		embed.setTitle(lang.translatedEmbeds("TITLE_USER_COMMAND_PLAYERSTATS"));
-		embed.setDescription(lang.translatedEmbeds("MESSAGE_USER").replace("{USERNAME}",
+		embed.setDescription(Emoji.SMALL_BLUE_DIAMOND.getAsMention() + lang.translatedEmbeds("MESSAGE_USER").replace("{USERNAME}",
 				"[" + osuUser.getUserName() + "](" + osuUser.getURL() + ")"));
-		embed.addField(lang.translatedEmbeds("RANKING"), "#" + f.format(osuUser.getRanking()), true);
+		embed.addField(lang.translatedEmbeds("RANKING"), Emoji.MAP.getAsMention() + " #" + f.format(osuUser.getRanking()), true);
 		embed.addField(lang.translatedEmbeds("NATIONAL_RANKING"),
-				osuUser.getCountryCode() + " #" + f.format(osuUser.getNacionalRanking()), true);
-		embed.addField(lang.translatedEmbeds("PLAYED_TIME"), osuUser.getPlayedHours().toString(), true);
-		embed.addField(lang.translatedEmbeds("PERFORMANCE"), lang.translatedEmbeds("ACCURACY") + "`" + (accuracy += "%")
+				code + " #" + f.format(osuUser.getNacionalRanking()), true);
+		embed.addField(lang.translatedEmbeds("PLAYED_TIME"),"🕒 " + osuUser.getPlayedHours().toString(), true);
+		embed.addField(lang.translatedEmbeds("PERFORMANCE"), Emoji.PEN_BALLPOINT.getAsMention() +" "+
+				lang.translatedEmbeds("ACCURACY") + "`" + (accuracy += "%")
 				+ "`" + "\n" + PP + " " + f.format(osuUser.getPP()), true);
+		
 		embed.addField(lang.translatedEmbeds("TOTAL_SCORE"), f.format(osuUser.getTotalScore()) + "", true);
 
 		embed.setFooter(lang.translatedBot("FOOTER_DEFAULT"),
 				"https://osu.ppy.sh/images/flags/" + osuUser.getCountryCode() + ".png");
-		embed.setColor(Color.gray);
+		
+		try {
+			embed.setColor(ImageUtils.getPredominatColor(ImageIO.read(new URL(osuUser.getUserAvatar()))));
+		} catch (NullPointerException | IOException e) {
+			embed.setColor(Color.BLUE);
+		}
 		return embed;
 	}
 }

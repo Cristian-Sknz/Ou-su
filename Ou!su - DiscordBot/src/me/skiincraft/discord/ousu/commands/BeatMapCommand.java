@@ -8,10 +8,10 @@ import me.skiincraft.api.ousu.exceptions.InvalidBeatmapException;
 import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.embeds.BeatmapEmbed;
 import me.skiincraft.discord.ousu.embeds.TypeEmbed;
-import me.skiincraft.discord.ousu.embedtypes.DefaultEmbed;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
+import me.skiincraft.discord.ousu.utils.Emoji;
 import me.skiincraft.discord.ousu.utils.StringUtils;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -47,12 +47,15 @@ public class BeatMapCommand extends Commands {
 				osuBeat = OusuBot.getOsu().getBeatmap(Integer.valueOf(args[0]));
 			} catch (InvalidBeatmapException e) {
 				String[] msg = getLang().translatedArrayOsuMessages("INEXISTENT_BEATMAPID");
+				
 				MessageEmbed build = TypeEmbed.WarningEmbed(msg[0], StringUtils.commandMessage(msg)).build();
-				sendEmbedMessage(new DefaultEmbed(msg[0], StringUtils.arrayToString(1, msg))).queue();
+				sendEmbedMessage(build).queue();
 				return;
 			} catch (NumberFormatException e) {
 				String[] msg = getLang().translatedArrayOsuMessages("USE_NUMBERS");
-				sendEmbedMessage(new DefaultEmbed(msg[0], StringUtils.arrayToString(1, msg))).queue();
+				MessageEmbed build = TypeEmbed.WarningEmbed(msg[0], StringUtils.commandMessage(msg)).build();
+				
+				sendEmbedMessage(build).queue();
 				return;
 			}
 
@@ -62,7 +65,7 @@ public class BeatMapCommand extends Commands {
 						@Override
 						public void accept(Message message) {
 							message.getChannel()
-									.sendFile(BeatmapEmbed.idb, message.getEmbeds().get(0).getTitle() + ".mp3").queue();
+									.sendFile(BeatmapEmbed.idb, message.getEmbeds().get(0).getTitle().replace(Emoji.HEADPHONES.getAsMention(), "") + ".mp3").queue();
 						}
 					});
 		}

@@ -1,5 +1,7 @@
 package me.skiincraft.discord.ousu.commands;
 
+import java.awt.Color;
+
 import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.customemoji.OsuEmoji;
 import me.skiincraft.discord.ousu.language.LanguageManager;
@@ -35,13 +37,14 @@ public class VoteCommand extends Commands {
 		String[] str = getLang().translatedArrayMessages("VOTE_COMMAND_MESSAGE");
 		embed.setTitle(OsuEmoji.Pippi.getEmojiString() + str[0], voteurl);
 		embed.setThumbnail("https://cdn.discordapp.com/attachments/710231271623753738/712095645397418004/Pippi_Cartooni.png");
-		
+		//:small_orange_diamond:
 		embed.setDescription(StringUtils.commandMessage(str)
 				.replace("{user}", user.getAsMention())
 				.replace("{logo}", OsuEmoji.OsuLogo.getEmojiString()));
 		
 		embed.setImage("https://media.discordapp.net/attachments/710231271623753738/712106708087865354/voteimage.png");
 		embed.setFooter("Link: "+ voteurl, OusuBot.getSelfUser().getAvatarUrl());
+		embed.setColor(Color.PINK);
 		channel.sendMessage(embed.build()).queue();
 		
 	}

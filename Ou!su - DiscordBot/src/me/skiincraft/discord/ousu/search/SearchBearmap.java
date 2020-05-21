@@ -95,7 +95,11 @@ public class SearchBearmap {
 			}
 			
 			//Aqui como garantia coloquei para substituir as letras por numeros.
+			try {
 			i.add(Integer.valueOf(s.getLink().replaceAll("\\D+", "")));
+			} catch (NumberFormatException e){
+				continue;
+			}
 		}
 		return i;
 	}

@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Date;
 
 import me.skiincraft.discord.ousu.OusuBot;
+import me.skiincraft.discord.ousu.customemoji.OsuEmoji;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
@@ -47,8 +48,9 @@ public class VersionCommand extends Commands {
 				self.getAvatarUrl());
 		OffsetDateTime data = self.getTimeCreated();
 
-		embed.setDescription(getLang().translatedMessages("VERSION_COMMAND_MESSAGE") + " "
-				+ new SimpleDateFormat("dd/MM/yyyy").format(Date.from(data.toInstant())));
+		embed.setDescription(getLang().translatedMessages("VERSION_COMMAND_MESSAGE")
+				.replace("{emoji1}", OsuEmoji.OusuEmoji.getEmojiString()).replace("{emoji2}", ":stopwatch:") + " "
+			 + new SimpleDateFormat("dd/MM/yyyy").format(Date.from(data.toInstant())));
 
 		embed.addField("Versão", "1.1", true);
 
@@ -58,7 +60,9 @@ public class VersionCommand extends Commands {
 			embed.addField("Author", "[Sknz](https://github.com/skiincraft)", true);
 		}
 
-		embed.setColor(Color.MAGENTA);
+		embed.setThumbnail("https://i.imgur.com/WxEN1bw.jpg");
+		
+		embed.setColor(Color.YELLOW);
 		embed.setFooter(getLang().translatedBot("FOOTER_DEFAULT"), user.getAvatarUrl());
 		return embed;
 	}
