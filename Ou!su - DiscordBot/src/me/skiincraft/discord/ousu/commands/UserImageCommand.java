@@ -77,7 +77,7 @@ public class UserImageCommand extends Commands {
 				StringBuffer buffer = new StringBuffer();
 				for (String append : str) {
 					if (append != str[0]) {
-						buffer.append(EmojiCustom.S_RDiamond.getEmoji() + " " +append);
+						buffer.append(EmojiCustom.S_RDiamond.getEmoji() + " " + append);
 					}
 				}
 

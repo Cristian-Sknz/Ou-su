@@ -7,6 +7,7 @@ import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Arrays;
+
 import javax.imageio.ImageIO;
 
 import me.skiincraft.api.ousu.exceptions.InvalidUserException;
@@ -111,29 +112,30 @@ public class UserCommand extends Commands {
 		NumberFormat f = NumberFormat.getNumberInstance();
 		String accuracy = new DecimalFormat("#.0").format(osuUser.getAccuracy());
 		String PP = OsuEmoji.PP.getEmojiString();
-		String code = Emoji.getByName("flag_" + osuUser
-				.getCountryCode().toLowerCase()).getAsMention() + " "
+		String code = Emoji.getByName("flag_" + osuUser.getCountryCode().toLowerCase()).getAsMention() + " "
 				+ osuUser.getCountryCode();
-		
+
 		embed.setThumbnail(osuUser.getUserAvatar());
 
 		embed.setAuthor(osuUser.getUserName(), osuUser.getURL(), osuUser.getUserAvatar());
 		embed.setTitle(lang.translatedEmbeds("TITLE_USER_COMMAND_PLAYERSTATS"));
-		embed.setDescription(Emoji.SMALL_BLUE_DIAMOND.getAsMention() + lang.translatedEmbeds("MESSAGE_USER").replace("{USERNAME}",
-				"[" + osuUser.getUserName() + "](" + osuUser.getURL() + ")"));
-		embed.addField(lang.translatedEmbeds("RANKING"), Emoji.MAP.getAsMention() + " #" + f.format(osuUser.getRanking()), true);
-		embed.addField(lang.translatedEmbeds("NATIONAL_RANKING"),
-				code + " #" + f.format(osuUser.getNacionalRanking()), true);
-		embed.addField(lang.translatedEmbeds("PLAYED_TIME"),"🕒 " + osuUser.getPlayedHours().toString(), true);
-		embed.addField(lang.translatedEmbeds("PERFORMANCE"), Emoji.PEN_BALLPOINT.getAsMention() +" "+
-				lang.translatedEmbeds("ACCURACY") + "`" + (accuracy += "%")
-				+ "`" + "\n" + PP + " " + f.format(osuUser.getPP()), true);
-		
+		embed.setDescription(Emoji.SMALL_BLUE_DIAMOND.getAsMention() + lang.translatedEmbeds("MESSAGE_USER")
+				.replace("{USERNAME}", "[" + osuUser.getUserName() + "](" + osuUser.getURL() + ")"));
+		embed.addField(lang.translatedEmbeds("RANKING"),
+				Emoji.MAP.getAsMention() + " #" + f.format(osuUser.getRanking()), true);
+		embed.addField(lang.translatedEmbeds("NATIONAL_RANKING"), code + " #" + f.format(osuUser.getNacionalRanking()),
+				true);
+		embed.addField(lang.translatedEmbeds("PLAYED_TIME"), "🕒 " + osuUser.getPlayedHours().toString(), true);
+		embed.addField(lang.translatedEmbeds("PERFORMANCE"),
+				Emoji.PEN_BALLPOINT.getAsMention() + " " + lang.translatedEmbeds("ACCURACY") + "`" + (accuracy += "%")
+						+ "`" + "\n" + PP + " " + f.format(osuUser.getPP()),
+				true);
+
 		embed.addField(lang.translatedEmbeds("TOTAL_SCORE"), f.format(osuUser.getTotalScore()) + "", true);
 
 		embed.setFooter(lang.translatedBot("FOOTER_DEFAULT"),
 				"https://osu.ppy.sh/images/flags/" + osuUser.getCountryCode() + ".png");
-		
+
 		try {
 			embed.setColor(ImageUtils.getPredominatColor(ImageIO.read(new URL(osuUser.getUserAvatar()))));
 		} catch (NullPointerException | IOException e) {

@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import me.skiincraft.discord.ousu.OusuBot;
+import me.skiincraft.discord.ousu.api.DBLJavaLibrary;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.language.LanguageManager.Language;
 import me.skiincraft.discord.ousu.mysql.SQLAccess;
@@ -38,6 +39,7 @@ public class ReadyBotEvent extends ListenerAdapter {
 		if (name.contains(" Servidores.")) {
 			event.getJDA().getPresence().setPresence(OnlineStatus.ONLINE, Activity.watching((guilds) + " Servidores."));
 		}
+		new DBLJavaLibrary().connect();
 	}
 
 	@Override
@@ -49,6 +51,7 @@ public class ReadyBotEvent extends ListenerAdapter {
 				"com " + event.getGuild().getMemberCount() + " membros.\n" };
 
 		OusuBot.getOusu().logger(str);
+		new DBLJavaLibrary().connect();
 	}
 
 	@Override
@@ -68,16 +71,19 @@ public class ReadyBotEvent extends ListenerAdapter {
 
 	@Override
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-		if (event.getChannel().isNSFW()) {
-			event.getChannel().sendMessage(
-					event.getAuthor().getAsMention() + " Desculpe! Eu não atendo pedidos nesse tipo de canal :(")
-					.queue();
-			return;
-		}
 		String[] args = event.getMessage().getContentRaw().split(" ");
 		SQLAccess sql = new SQLAccess(event.getGuild());
+		String prefix = sql.get("prefix");
+		if (args[0].startsWith(prefix)) {
+			if (event.getChannel().isNSFW()) {
+				event.getChannel().sendMessage(
+						event.getAuthor().getAsMention() + " Desculpe! Eu não atendo pedidos nesse tipo de canal :(")
+						.queue();
+				return;
+			}
+		}
+
 		if (args[0].startsWith("ou!")) {
-			String prefix = sql.get("prefix");
 			if (!prefix.equalsIgnoreCase("ou!")) {
 				LanguageManager lang = new LanguageManager(Language.valueOf(sql.get("language")));
 				event.getChannel()
@@ -110,6 +116,7 @@ public class ReadyBotEvent extends ListenerAdapter {
 			OusuBot.getOusu().logger("Não foi adicionado nenhum servidor novo, desde o ultimo update.");
 			return;
 		}
+
 		OusuBot.getOusu().logger("Foi adicionado " + newGuilds + " novo(s) servidor(es), desde o ultimo update.");
 	}
 }

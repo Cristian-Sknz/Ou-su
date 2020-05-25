@@ -38,8 +38,7 @@ public class LanguageCommand extends Commands {
 		}
 
 		if (args.length == 0) {
-			sendEmbedMessage(availablelang())
-					.queue();
+			sendEmbedMessage(availablelang()).queue();
 			return;
 		}
 
@@ -57,21 +56,20 @@ public class LanguageCommand extends Commands {
 							buffer.append(":small_blue_diamond: " + append);
 						}
 					}
-					
+
 					EmbedBuilder variavel = TypeEmbed.ConfigEmbed(str[0], buffer.toString())
-					.setThumbnail("https://i.imgur.com/sxIERAT.png")
-					.setFooter("A multilanguage bot!", "https://i.imgur.com/wDczNj3.jpg")
-					.setColor(new Color(52, 107, 235));
+							.setThumbnail("https://i.imgur.com/sxIERAT.png")
+							.setFooter("A multilanguage bot!", "https://i.imgur.com/wDczNj3.jpg")
+							.setColor(new Color(52, 107, 235));
 
 					sendEmbedMessage(variavel).queue();
 					return;
 				}
 			}
-			sendEmbedMessage(availablelang())
-			.queue();
+			sendEmbedMessage(availablelang()).queue();
 		}
 	}
-	
+
 	public EmbedBuilder availablelang() {
 		String[] str = getLang().translatedArrayMessages("AVAILABLE_LANGUAGE_MESSAGE");
 
@@ -87,11 +85,10 @@ public class LanguageCommand extends Commands {
 		for (Language lang : Language.values()) {
 			bufferlang.append("\n:small_blue_diamond: " + lang.name() + " - " + lang.getLanguageCode());
 		}
-		
+
 		return TypeEmbed.ConfigEmbed(str[0], buffer.toString().replace("{LANGUAGES}", bufferlang.toString()))
-		.setThumbnail("https://i.imgur.com/sxIERAT.png")
-		.setFooter("A multilanguage bot!", "https://i.imgur.com/wDczNj3.jpg")
-		.setColor(new Color(52, 107, 235));
+				.setThumbnail("https://i.imgur.com/sxIERAT.png")
+				.setFooter("A multilanguage bot!", "https://i.imgur.com/wDczNj3.jpg").setColor(new Color(52, 107, 235));
 	}
 
 }

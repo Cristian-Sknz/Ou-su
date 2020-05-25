@@ -21,16 +21,15 @@ public class PresenceTask extends TimerTask {
 			ordem++;
 			return;
 		}
-		
+
 		if (ordem == 1) {
 			List<Guild> guild = OusuBot.getJda().getGuilds();
 			int numero = 0;
 			for (Guild guilda : guild) {
 				numero += guilda.getMemberCount();
 			}
-			
-			presence.setPresence(OnlineStatus.ONLINE,
-					Activity.watching(numero + " Usuarios Online!"));
+
+			presence.setPresence(OnlineStatus.ONLINE, Activity.watching(numero + " Usuarios Online!"));
 			ordem++;
 			return;
 		}

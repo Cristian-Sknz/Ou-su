@@ -166,12 +166,12 @@ public class RecentUserCommand extends Commands {
 				}
 			}
 		}
-		
+
 		// Embed
 		embed.setAuthor(user.getUserName());
 		embed.setTitle(inicial + " " + lang.translatedEmbeds("TITLE_USER_COMMAND_HISTORY") + " | " + ordem);
-		embed.setDescription(OusuBot.getEmote("small_green_diamond").getAsMention() + " "+
-				lang.translatedEmbeds("MESSAGE_RECENTUSER").replace("{USERNAME}", u));
+		embed.setDescription(OusuBot.getEmote("small_green_diamond").getAsMention() + " "
+				+ lang.translatedEmbeds("MESSAGE_RECENTUSER").replace("{USERNAME}", u));
 
 		embed.addField("Beatmap:", Emoji.HEADPHONES.getAsMention() + title, true);
 		embed.addField(lang.translatedEmbeds("MAP_STATS"),

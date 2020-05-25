@@ -15,6 +15,7 @@ public class ReactionMessage {
 	public static List<ReactionUtils> beatHistory = new ArrayList<ReactionUtils>();
 	public static List<ReactionUtils> recentHistory = new ArrayList<ReactionUtils>();
 
+	public static List<ReactionUtils> rankingReaction = new ArrayList<ReactionUtils>();
 	public static List<ReactionUtils> playersHistory = new ArrayList<ReactionUtils>();
 	public static List<ReactionUtils> serverReations = new ArrayList<ReactionUtils>();
 	public static List<ReactionUtils> searchReactions = new ArrayList<ReactionUtils>();

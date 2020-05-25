@@ -47,18 +47,18 @@ public class SearchEmbed {
 						+ b.getGameMode().getDisplayName() + "\n");
 			}
 			if (versions.length() == 0) {
-				versions.append(OusuBot.getEmoteAsMention("rainbowcircle")+" "+ b.getVersion());	
+				versions.append(OusuBot.getEmoteAsMention("rainbowcircle") + " " + b.getVersion());
 			} else {
-			versions.append("\n"+ OusuBot.getEmoteAsMention("rainbowcircle")+" "+ b.getVersion());
+				versions.append("\n" + OusuBot.getEmoteAsMention("rainbowcircle") + " " + b.getVersion());
 			}
 			i++;
 		}
-		
+
 		String artist = beatmap.getArtist();
 		if (!beatmap.getArtistUnicode().equalsIgnoreCase(beatmap.getArtist())) {
 			artist = beatmap.getArtistUnicode() + " \n(" + beatmap.getArtist() + ")";
 		}
-		
+
 		String video = Emoji.WHITE_CHECK_MARK.getAsMention() + " | Video";
 		String storyboard = Emoji.WHITE_CHECK_MARK.getAsMention() + " | Storyboard";
 		if (beatmap.hasVideo() == false) {
@@ -67,22 +67,20 @@ public class SearchEmbed {
 		if (beatmap.hasStoryboard() == false) {
 			storyboard = Emoji.X.getAsMention() + " | Storyboard";
 		}
-		
+
 		String approvated = OusuBot.getEmoteAsMention("arrow_pause") + " " + beatmap.getApprovated().name();
 		embed.setTitle(beatmap.getTitle(), beatmap.getURL());
 		int id = beatmap.getCreatorId();
-		
+
 		embed.setThumbnail("https://i.imgur.com/v8iU2Js.jpg");
 		embed.setAuthor(lang.translatedEmbeds("SEARCH") + " | " + beatmap.getCreator(),
 				"https://osu.ppy.sh/users/" + id, "https://a.ppy.sh/" + id);
 
-		embed.addField(lang.translatedEmbeds("ARTIST"), artist,
-				true);
+		embed.addField(lang.translatedEmbeds("ARTIST"), artist, true);
 		embed.addField("BPM:", OusuBot.getEmoteAsMention("reversearrow") + beatmap.getBPM(), true);
 		embed.addField(lang.translatedEmbeds("GENRE"), "" + beatmap.getGenre().getDisplayName(), true);
-		embed.addField("Link", OusuBot.getEmoteAsMention("download") + "__[Download]" + "(" + beatmap.getURL() + ")__\n\n" +
-				storyboard + "\n" + video + "\n" + approvated
-				, true);
+		embed.addField("Link", OusuBot.getEmoteAsMention("download") + "__[Download]" + "(" + beatmap.getURL()
+				+ ")__\n\n" + storyboard + "\n" + video + "\n" + approvated, true);
 
 		embed.addField(lang.translatedEmbeds("GAMEMODE"), gamemodes.toString(), true);
 		embed.addField(lang.translatedEmbeds("DIFFICULT"), versions.toString(), true);

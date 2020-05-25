@@ -14,19 +14,19 @@ public class ImageUtils {
 
 	public static Color getPredominatColor(BufferedImage image) {
 		try {
-		BufferedImage img = new BufferedImage(200, 200, 2);
-		Graphics2D graph = img.createGraphics();
-		graph.drawImage(image, 0, 0, 200, 200, null);
-		graph.dispose();
-		
-		CMap result;
+			BufferedImage img = new BufferedImage(200, 200, 2);
+			Graphics2D graph = img.createGraphics();
+			graph.drawImage(image, 0, 0, 200, 200, null);
+			graph.dispose();
+
+			CMap result;
 
 			result = ColorThiefMMCQ.computeMap(img, 3);
 
-		Iterator<DenormalizedVBox> boxes = result.getBoxes().iterator();
-		
-		int[] cor = boxes.next().getColor();
-		return new Color(cor[0], cor[1], cor[2]);
+			Iterator<DenormalizedVBox> boxes = result.getBoxes().iterator();
+
+			int[] cor = boxes.next().getColor();
+			return new Color(cor[0], cor[1], cor[2]);
 		} catch (IOException | NullPointerException e) {
 			e.printStackTrace();
 		}

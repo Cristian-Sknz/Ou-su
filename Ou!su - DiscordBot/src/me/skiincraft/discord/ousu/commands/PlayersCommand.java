@@ -49,35 +49,35 @@ public class PlayersCommand extends Commands {
 	public void action(String[] args, String label, User user, TextChannel channel) {
 		// Pegar todos os presences de osu online no servidor discord.
 		List<Rich> getter = new PresenceGetter(channel.getGuild(), "367827983903490050", true).getRichPresences();
-		
+
 		// Caso não exista nenhum, verificar os offlines.
 		if (getter == null || getter.isEmpty() || getter.size() == 0) {
 			Map<String, String> map = SQLPlayer.getOrderBy("osu_account", 150, true);
-			
+
 			if (map.isEmpty() || map.size() == 0) {
 				sendEmbedMessage(embed(channel.getGuild())).queue();
 				return;
 			}
-			
-			//Transformando Map<String, String> em List<String>
+
+			// Transformando Map<String, String> em List<String>
 			List<String> keys = map.keySet().stream().collect(Collectors.toList());
 			List<String> values = map.values().stream().collect(Collectors.toList());
-			
+
 			for (int i = 0; i < map.size(); i++) {
 				User u = OusuBot.getJda().getUserById(keys.get(i));
-				
-				//Criando uma ArrayList caso a variavel "getter" esteja nula.
+
+				// Criando uma ArrayList caso a variavel "getter" esteja nula.
 				if (getter == null) {
 					getter = new ArrayList<Rich>();
 				}
-				
-				//Pegando todos os usuarios do banco de dados e verificando se existem na guild
+
+				// Pegando todos os usuarios do banco de dados e verificando se existem na guild
 				if (channel.getGuild().isMember(u)) {
 					getter.add(new Rich(u, new FakeRichPresence(values.get(i)).build()));
 					// Caso existam transformar em Rich para encaixar no embed.
 				}
 			}
-			
+
 			// Caso não existam players no banco de dados verificados no servidor
 			// Envia mensagem no chat, e retorna.
 			if (getter.size() == 0) {
@@ -85,9 +85,9 @@ public class PlayersCommand extends Commands {
 				return;
 			}
 		}
-		
+
 		int size = getter.size();// quantidade dentro da List<Rich>.
-		
+
 		final List<Rich> finalrich = getter; // declarar parametro final porque pode ter 2 variaveis diferentes.
 		sendEmbedMessage(richformat(getter, 0, channel.getGuild())).queue(new Consumer<Message>() {
 
@@ -112,7 +112,7 @@ public class PlayersCommand extends Commands {
 
 		User user = OusuBot.getJda().getUserById("247096601242238991");
 		SelfUser self = OusuBot.getJda().getSelfUser();
-		
+
 		embed.setAuthor(self.getName() + "#" + self.getDiscriminator(), null, self.getAvatarUrl());
 		embed.setDescription(lang.translatedOsuMessages("NO_PLAYER_DETECTED"));
 		embed.setFooter(lang.translatedBot("FOOTER_DEFAULT"), user.getAvatarUrl());
@@ -128,23 +128,23 @@ public class PlayersCommand extends Commands {
 		User user = rich.get(value).getUser();
 		RichPresence presence = rich.get(value).getRich();
 
-		//Caso o presence state for nulo....
+		// Caso o presence state for nulo....
 		if (presence.getState() == null) {
-			//Faça uma mensagem de aviso dizendo que não esta disponível....
+			// Faça uma mensagem de aviso dizendo que não esta disponível....
 			do {
 				value++;
 				if (value >= rich.size()) {
 					String[] msg = lang.translatedArrayOsuMessages("UNAVAILABLE_RESOURCE");
-					return new DefaultEmbed(msg[0],":warning: " + msg[1]).construirEmbed();
+					return new DefaultEmbed(msg[0], ":warning: " + msg[1]).construirEmbed();
 				}
 				user = rich.get(value).getUser();
 				presence = rich.get(value).getRich();
-			//Enquanto permanecer nulo.
+				// Enquanto permanecer nulo.
 			} while (presence.getState() == null);
 		}
 		String order = "[" + (value + 1) + "/" + rich.size() + "] ";
 		boolean offline = presence.getState().contains("OFFLINE");
-		
+
 		embed.setAuthor(order + user.getName() + "#" + user.getDiscriminator(), null, user.getAvatarUrl());
 		embed.setThumbnail(presence.getLargeImage().getUrl());
 
@@ -155,22 +155,24 @@ public class PlayersCommand extends Commands {
 			embed.setDescription(EmojiCustom.S_GDiamond.getEmoji() + lang.translatedOsuMessages("ONLINE_PLAYER"));
 			embed.setColor(Color.GREEN);
 		}
-		
+
 		for (Rich r : rich) {
 			if (r.getRich().getLargeImage() == null) {
-				continue; //Caso imagem esteja nula ignora (quase nunca ira acontecer, mas caso aconteça...)
+				continue; // Caso imagem esteja nula ignora (quase nunca ira acontecer, mas caso
+							// aconteça...)
 			}
 			if (r.getRich().getLargeImage().getText() == null) {
-				continue; // Caso o texto da imagem esteja nulo (Isso pode ocorrer por conta de um usuario não registrado)
+				continue; // Caso o texto da imagem esteja nulo (Isso pode ocorrer por conta de um usuario
+							// não registrado)
 			}
-			
+
 			String[] st = r.getRich().getLargeImage().getText().split(" ");
 			String nickname = st[0];
 
 			if (st.length == 0 || nickname.equalsIgnoreCase("guest")) {
-				continue; //Caso o nickname do cara seja guest (equivalente a um usuario não registrado).
+				continue; // Caso o nickname do cara seja guest (equivalente a um usuario não registrado).
 			} else {
-				//Armazenar o jogador no banco de dados.
+				// Armazenar o jogador no banco de dados.
 				SQLPlayer sql = new SQLPlayer(r.getUser());
 				sql.set("osu_account", nickname);
 			}
@@ -191,10 +193,10 @@ public class PlayersCommand extends Commands {
 				if (strs.length >= 3) {
 					embed.addField("Ranking: ", strs[2].replace(")", ""), true);
 				} else {
-					//embed.addField("Ranking: ", ":(", true);
+					// embed.addField("Ranking: ", ":(", true);
 				}
 			} else {
-				//embed.addField("Ranking: ", ":(", true);
+				// embed.addField("Ranking: ", ":(", true);
 			}
 		}
 		embed.addBlankField(true);

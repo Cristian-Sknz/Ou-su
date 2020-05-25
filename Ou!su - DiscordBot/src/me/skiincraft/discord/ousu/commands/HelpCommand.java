@@ -61,25 +61,25 @@ public class HelpCommand extends Commands {
 				if (com.helpMessage(getLang()) != null) {
 					String emoji = ":small_orange_diamond:";
 					StringBuffer buffer = new StringBuffer();
-					for (String str: com.helpMessage(getLang())) {
+					for (String str : com.helpMessage(getLang())) {
 						buffer.append(emoji + " " + str + "\n");
-						
+
 					}
-					
+
 					embed.setDescription(buffer.toString());
 				} else {
 					embed.setDescription(getLang().translatedHelp("NO_COMMAND_DESCRIPTION"));
 				}
-				
-				if (com.getAliases() != null) {//ALIASES
+
+				if (com.getAliases() != null) {// ALIASES
 					if (com.getAliases().size() != 0) {
 						String[] alias = new String[com.getAliases().size()];
 						com.getAliases().toArray(alias);
 						StringBuffer buffer = new StringBuffer();
-						for (String str: alias) {
+						for (String str : alias) {
 							buffer.append(prefix + str + "\n");
 						}
-						
+
 						embed.addField(":mega: Aliases", buffer.toString(), true);
 					}
 				}
@@ -91,8 +91,8 @@ public class HelpCommand extends Commands {
 		}
 
 		String[] msg = getLang().translatedArrayMessages("INEXISTENT_COMMAND_HELP");
-		return TypeEmbed.SoftWarningEmbed(OsuEmoji.ThinkAnime.getEmojiString() + msg[0],":space_invader: " + StringUtils.commandMessage(msg))
-				.setFooter(prefix + "help to help!");
+		return TypeEmbed.SoftWarningEmbed(OsuEmoji.ThinkAnime.getEmojiString() + msg[0],
+				":space_invader: " + StringUtils.commandMessage(msg)).setFooter(prefix + "help to help!");
 	}
 
 	public EmbedBuilder embed(Guild guild) {

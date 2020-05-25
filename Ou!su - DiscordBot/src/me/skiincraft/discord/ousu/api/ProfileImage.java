@@ -35,7 +35,12 @@ public class ProfileImage extends ImageBuilder {
 		try {
 			addImage(new URL(osuUser.getUserAvatar()), 5, 5, new Dimension(192, 192));
 		} catch (IOException e) {
-			e.printStackTrace();
+			try {
+				addImage(new File("resources/osu_images/nonexistentuser.png"), 5, 5, new Dimension(192, 192));
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+
 		}
 	}
 

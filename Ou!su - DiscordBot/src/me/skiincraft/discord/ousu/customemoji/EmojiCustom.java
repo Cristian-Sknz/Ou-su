@@ -1,10 +1,8 @@
 package me.skiincraft.discord.ousu.customemoji;
 
 public enum EmojiCustom {
-	
-	S_RDiamond("<:small_red_diamond:712782771701153804>"),
-	S_GDiamond("<:small_green_diamond:712782771658948729>");
-	
+
+	S_RDiamond("<:small_red_diamond:712782771701153804>"), S_GDiamond("<:small_green_diamond:712782771658948729>");
 
 	private String custom;
 

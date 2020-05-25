@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 public class JsonReceiver {
-	
+
 	// Coloquei em objetos porque oque me interessa é somente a variavel items
 	private Object kind;
 	private Object url;

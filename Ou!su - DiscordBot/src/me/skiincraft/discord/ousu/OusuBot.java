@@ -13,6 +13,7 @@ import javax.security.auth.login.LoginException;
 
 import me.skiincraft.api.ousu.OusuAPI;
 import me.skiincraft.api.ousu.exceptions.InvalidTokenException;
+import me.skiincraft.discord.ousu.api.DBLJavaLibrary;
 import me.skiincraft.discord.ousu.commands.BeatMapCommand;
 import me.skiincraft.discord.ousu.commands.BeatMapSetCommand;
 import me.skiincraft.discord.ousu.commands.EmbedCommand;
@@ -22,6 +23,7 @@ import me.skiincraft.discord.ousu.commands.LanguageCommand;
 import me.skiincraft.discord.ousu.commands.MentionCommand;
 import me.skiincraft.discord.ousu.commands.PlayersCommand;
 import me.skiincraft.discord.ousu.commands.PrefixCommand;
+import me.skiincraft.discord.ousu.commands.RankingCommand;
 import me.skiincraft.discord.ousu.commands.RecentUserCommand;
 import me.skiincraft.discord.ousu.commands.SearchCommand;
 import me.skiincraft.discord.ousu.commands.TopUserCommand;
@@ -32,6 +34,7 @@ import me.skiincraft.discord.ousu.commands.VoteCommand;
 import me.skiincraft.discord.ousu.commands.reactions.BeatmapsetEvent;
 import me.skiincraft.discord.ousu.commands.reactions.HistoryEvent;
 import me.skiincraft.discord.ousu.commands.reactions.PlayerReactionEvent;
+import me.skiincraft.discord.ousu.commands.reactions.RankingReactionEvent;
 import me.skiincraft.discord.ousu.commands.reactions.RecentuserEvent;
 import me.skiincraft.discord.ousu.commands.reactions.SearchReactionsEvent;
 import me.skiincraft.discord.ousu.commands.reactions.ServerReactionsEvent;
@@ -72,22 +75,22 @@ public class OusuBot {
 	public static OusuBot getOusu() {
 		return ousu;
 	}
-	
+
 	public static List<Emote> getEmotes() {
 		return getJda().getGuildById("680436378240286720").getEmotes();
 	}
-	
+
 	public static Emote getEmote(String name) {
-		for (Emote emote: getEmotes()) {
+		for (Emote emote : getEmotes()) {
 			if (emote.getName().toLowerCase().contains(name)) {
 				return emote;
 			}
 		}
 		return getEmotes().get(0);
 	}
-	
+
 	public static String getEmoteAsMention(String name) {
-		for (Emote emote: getEmotes()) {
+		for (Emote emote : getEmotes()) {
 			if (emote.getName().toLowerCase().contains(name)) {
 				return emote.getAsMention();
 			}
@@ -135,18 +138,18 @@ public class OusuBot {
 		ApplicationUtils.openconsole();
 		new OusuBot().loader(args);
 	}
-	
+
 	public static String[] arguments;
 
 	private void loader(String[] args) {
 		ousu = this;
 		log = new Logging();
 		arguments = args;
-		
+
 		build.setDisabledCacheFlags(EnumSet.of(CacheFlag.VOICE_STATE, CacheFlag.CLIENT_STATUS));
-	    //build.setGuildSubscriptionsEnabled(false);
-	    build.setChunkingFilter(ChunkingFilter.NONE);
-	    
+		// build.setGuildSubscriptionsEnabled(false);
+		build.setChunkingFilter(ChunkingFilter.NONE);
+
 		commands();
 		events();
 		System.out.println("MYSQL: Conectando ao servidor MySQL.");
@@ -201,6 +204,7 @@ public class OusuBot {
 			thread.start();
 			ApplicationUtils.frame
 					.setTitle(ApplicationUtils.frame.getTitle().replace("[Bot]", jda.getSelfUser().getName()));
+			new DBLJavaLibrary().connect();
 		} catch (LoginException e) {
 			System.out.println("JDA: Ocorreu um erro ao logar no bot. Verifique se o Token está correto.");
 		} catch (InvalidTokenException e) {
@@ -214,7 +218,7 @@ public class OusuBot {
 	public void events() {
 		registerEvents(new ReceivedEvent(), new HistoryEvent(), new ReadyBotEvent(), new BeatmapsetEvent(),
 				new RecentuserEvent(), new PlayerReactionEvent(), new MentionCommand(), new ServerReactionsEvent(),
-				new SearchReactionsEvent(), new OtherEvents());
+				new SearchReactionsEvent(), new OtherEvents(), new RankingReactionEvent());
 	}
 
 	public void commands() {
@@ -222,7 +226,7 @@ public class OusuBot {
 		registerCommands(new HelpCommand(), new EmbedCommand(), new UserCommand(), new TopUserCommand(),
 				new UserImageCommand(), new PrefixCommand(), new BeatMapCommand(), new VersionCommand(),
 				new InviteCommand(), new RecentUserCommand(), new LanguageCommand(), new BeatMapSetCommand(),
-				new SearchCommand(), new VoteCommand());
+				new SearchCommand(), new VoteCommand(), new RankingCommand());
 
 		registerCommands(new PresenseCommand(), new LogChannelCommand(), new PlayersCommand(), new ServersCommand());
 	}

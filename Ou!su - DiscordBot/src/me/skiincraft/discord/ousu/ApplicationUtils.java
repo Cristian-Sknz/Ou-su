@@ -19,6 +19,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.WindowConstants;
 
 import me.skiincraft.discord.ousu.console.JComponentOutputStream;
 import me.skiincraft.discord.ousu.console.JComponentOutputStream.JComponentHandler;
@@ -72,24 +73,26 @@ public class ApplicationUtils {
 	public static void openconsole() {
 		frame = new JFrame();
 		frame.setTitle("[Bot] - Discord Bot [JDA]");
-		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		frame.getContentPane().setLayout(new BorderLayout(0, 0));
-		
+
 		JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
 		JMenu mnFunes = new JMenu("Funções");
 		menuBar.add(mnFunes);
-		
+
 		JMenuItem mntmFechar = new JMenuItem("Fechar");
 		mntmFechar.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				System.exit(0);
 			}
 		});
 		mnFunes.add(mntmFechar);
-		
+
 		JMenuItem mntmReiniciar = new JMenuItem("Reiniciar");
 		mntmReiniciar.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
 					Thread.sleep(1000);
@@ -100,13 +103,13 @@ public class ApplicationUtils {
 			}
 		});
 		mnFunes.add(mntmReiniciar);
-		
+
 		JSeparator separator = new JSeparator();
 		mnFunes.add(separator);
-		
-		JMenuItem mntmComando = new JMenuItem("Comando");
+
+		JMenuItem mntmComando = new JMenuItem("SpyMode");
 		mnFunes.add(mntmComando);
-		
+
 		consoleapp(frame);
 
 		frame.setIconImage(Toolkit.getDefaultToolkit()

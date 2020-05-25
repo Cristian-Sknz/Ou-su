@@ -10,15 +10,14 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class OtherEvents extends ListenerAdapter {
 
-	//Verificar se foi colocado somente o prefix
+	// Verificar se foi colocado somente o prefix
 	@Override
 	public void onGuildMessageReceived(GuildMessageReceivedEvent e) {
 		String arg = e.getMessage().getContentRaw();
 		if (e.getAuthor().isBot()) {
 			return;
 		}
-		if (e.getJDA().getSelfUser()
-				.getAsMention().equals(e.getAuthor().getAsMention())) {
+		if (e.getJDA().getSelfUser().getAsMention().equals(e.getAuthor().getAsMention())) {
 			return;
 		}
 		if (e.getChannel().isNSFW()) {
@@ -27,21 +26,19 @@ public class OtherEvents extends ListenerAdapter {
 		SQLAccess sql = new SQLAccess(e.getGuild());
 		LanguageManager lang = new LanguageManager(Language.valueOf(sql.get("language")));
 		String prefix = sql.get("prefix");
-		
+
 		if (prefix.length() == 1) {
 			return;
 		}
-		
+
 		if (arg.equalsIgnoreCase(prefix)) {
 			String[] prefixHelp = lang.translatedArrayHelp("PREFIX_HELP");
-			e.getChannel().sendMessage(
-					TypeEmbed.InfoEmbed(prefixHelp[0], StringUtils.arrayToString2(1, prefixHelp))
-					.build()).queue();
+			e.getChannel()
+					.sendMessage(TypeEmbed.InfoEmbed(prefixHelp[0], StringUtils.arrayToString2(1, prefixHelp)).build())
+					.queue();
 			return;
 		}
 		return;
 	}
-	
-	
-	
+
 }

@@ -102,7 +102,7 @@ public class TopUserCommand extends Commands {
 				StringBuffer buffer = new StringBuffer();
 				for (String append : str) {
 					if (append != str[0]) {
-						buffer.append(EmojiCustom.S_RDiamond.getEmoji() + " " +append);
+						buffer.append(EmojiCustom.S_RDiamond.getEmoji() + " " + append);
 					}
 				}
 				sendEmbedMessage(TypeEmbed.WarningEmbed(str[0], buffer.toString())).queue();
@@ -160,7 +160,7 @@ public class TopUserCommand extends Commands {
 		String field = h300 + l + h100 + l + h50 + l + miss + l;
 		int id = score.getBeatmap().getBeatmapSetID();
 		String url = "https://assets.ppy.sh/beatmaps/" + id + "/covers/cover.jpg?";
-		
+
 		String mods = "";
 		for (Mods mod : score.getEnabledMods()) {
 			for (Emote emoji : OusuBot.getEmotes()) {
@@ -169,7 +169,7 @@ public class TopUserCommand extends Commands {
 				}
 			}
 		}
-		
+
 		// Embed
 		embed.setAuthor(user.getUserName());
 		embed.setTitle(inicial + " " + lang.translatedEmbeds("TITLE_USER_COMMAND_HISTORY") + " | " + ordem);
@@ -179,7 +179,7 @@ public class TopUserCommand extends Commands {
 		embed.addField("Beatmap:", Emoji.HEADPHONES.getAsMention() + title, true);
 		embed.addField(lang.translatedEmbeds("MAP_STATS"),
 				"`" + getApproval(beatmap.getApprovated()) + "`\n" + beatmap.getVersion() + "\n" + mods, true);
-		
+
 		embed.addField(lang.translatedEmbeds("SCORE"), field, true);
 		embed.addField(lang.translatedEmbeds("TOTAL_SCORE"), score.getScore() + "", true);
 		embed.addField(lang.translatedEmbeds("MAX_COMBO"), score.getMaxCombo() + "/" + score.getBeatmap().getMaxCombo(),

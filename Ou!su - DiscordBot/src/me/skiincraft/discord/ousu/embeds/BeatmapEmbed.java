@@ -31,22 +31,24 @@ public class BeatmapEmbed {
 
 		Beatmap beatmap = beat.get(value);
 
-		embed.setTitle(Emoji.HEADPHONES.getAsMention()+ " " + beatmap.getTitle(), beatmap.getURL());
+		embed.setTitle(Emoji.HEADPHONES.getAsMention() + " " + beatmap.getTitle(), beatmap.getURL());
 		int id = beatmap.getCreatorId();
 
 		embed.setAuthor(beatmap.getCreator(), "https://osu.ppy.sh/users/" + id, "https://a.ppy.sh/" + id);
-		
+
 		String artist = beatmap.getArtist();
 		if (!beatmap.getArtistUnicode().equalsIgnoreCase(beatmap.getArtist())) {
 			artist = beatmap.getArtistUnicode() + " \n(" + beatmap.getArtist() + ")";
 		}
-		
-		embed.addField(lang.translatedEmbeds("ARTIST"), artist,	true);
+
+		embed.addField(lang.translatedEmbeds("ARTIST"), artist, true);
 		embed.addField("BPM:", OusuBot.getEmoteAsMention("reversearrow") + beatmap.getBPM(), true);
 		embed.addField(lang.translatedEmbeds("GENRE"), "" + beatmap.getGenre().getDisplayName(), true);
 
-		embed.addField(lang.translatedEmbeds("GAMEMODE"),OusuBot.getEmoteAsMention(beatmap.getGameMode().name().toLowerCase()) + " " 
-				+ beatmap.getGameMode().getDisplayName(), true);
+		embed.addField(lang.translatedEmbeds("GAMEMODE"),
+				OusuBot.getEmoteAsMention(beatmap.getGameMode().name().toLowerCase()) + " "
+						+ beatmap.getGameMode().getDisplayName(),
+				true);
 		embed.addField(lang.translatedEmbeds("STARS"), beatmap.getStarsEmoji(), true);
 		embed.addField(lang.translatedEmbeds("DIFFICULT"), beatmap.getVersion(), true);
 
@@ -57,23 +59,24 @@ public class BeatmapEmbed {
 			app = format.format(beatmap.getApprovedDate());
 		}
 
-		embed.addField(lang.translatedEmbeds("APPROVATED_IN"), Emoji.DATE.getAsMention() + " " + app 
-				+ "\n" + OusuBot.getEmoteAsMention("arrow_pause") + beatmap.getApprovated().name(), true);
-		embed.addField(lang.translatedEmbeds("SUCCESS_RATE"), Emoji.BAR_CHART.getAsMention() +" "+ beatmap.getSuccessRate(), true);
+		embed.addField(lang.translatedEmbeds("APPROVATED_IN"), Emoji.DATE.getAsMention() + " " + app + "\n"
+				+ OusuBot.getEmoteAsMention("arrow_pause") + beatmap.getApprovated().name(), true);
+		embed.addField(lang.translatedEmbeds("SUCCESS_RATE"),
+				Emoji.BAR_CHART.getAsMention() + " " + beatmap.getSuccessRate(), true);
 		embed.addField(lang.translatedEmbeds("MAX_COMBO"), beatmap.getMaxCombo() + "", true);
 
 		embed.setImage(beatmap.getBeatmapCoverUrl());
 
 		// User user = OusuBot.getOusu().getJda().getUserById("247096601242238991");
 		// embed.setFooter(lang.translatedBot("FOOTER_DEFAULT"), user.getAvatarUrl());
-		
+
 		embed.setFooter("[BeatmapSetID] " + beatmap.getBeatmapSetID() + " | " + "[BeatmapID]" + beatmap.getBeatmapID());
 		try {
 			embed.setColor(ImageUtils.getPredominatColor(ImageIO.read(new URL(beatmap.getBeatmapThumbnailUrl()))));
 		} catch (NullPointerException | IOException e) {
 			embed.setColor(Color.BLUE);
 		}
-		
+
 		try {
 			idb = beatmap.getBeatmapPreview();
 		} catch (IOException e) {

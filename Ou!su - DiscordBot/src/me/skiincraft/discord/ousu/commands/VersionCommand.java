@@ -41,7 +41,7 @@ public class VersionCommand extends Commands {
 
 	public EmbedBuilder embed(Guild guild) {
 		EmbedBuilder embed = new EmbedBuilder();
-		
+
 		User user = OusuBot.getJda().getUserById("247096601242238991");
 		SelfUser self = OusuBot.getJda().getSelfUser();
 		embed.setAuthor(self.getName() + "#" + self.getDiscriminator(), "https://github.com/skiincraft",
@@ -50,7 +50,7 @@ public class VersionCommand extends Commands {
 
 		embed.setDescription(getLang().translatedMessages("VERSION_COMMAND_MESSAGE")
 				.replace("{emoji1}", OsuEmoji.OusuEmoji.getEmojiString()).replace("{emoji2}", ":stopwatch:") + " "
-			 + new SimpleDateFormat("dd/MM/yyyy").format(Date.from(data.toInstant())));
+				+ new SimpleDateFormat("dd/MM/yyyy").format(Date.from(data.toInstant())));
 
 		embed.addField("Versão", "1.1", true);
 
@@ -61,7 +61,7 @@ public class VersionCommand extends Commands {
 		}
 
 		embed.setThumbnail("https://i.imgur.com/WxEN1bw.jpg");
-		
+
 		embed.setColor(Color.YELLOW);
 		embed.setFooter(getLang().translatedBot("FOOTER_DEFAULT"), user.getAvatarUrl());
 		return embed;

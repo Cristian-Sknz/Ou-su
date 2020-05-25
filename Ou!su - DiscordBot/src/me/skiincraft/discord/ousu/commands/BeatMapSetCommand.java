@@ -49,13 +49,13 @@ public class BeatMapSetCommand extends Commands {
 				osuBeat = OusuBot.getOsu().getBeatmapSet(Integer.valueOf(args[0]));
 			} catch (InvalidBeatmapException e) {
 				String[] msg = getLang().translatedArrayOsuMessages("INEXISTENT_BEATMAPID");
-				
+
 				MessageEmbed build = TypeEmbed.WarningEmbed(msg[0], StringUtils.commandMessage(msg)).build();
 				sendEmbedMessage(build).queue();
 				return;
 			} catch (NumberFormatException e) {
 				String[] msg = getLang().translatedArrayOsuMessages("USE_NUMBERS");
-				
+
 				MessageEmbed build = TypeEmbed.WarningEmbed(msg[0], StringUtils.commandMessage(msg)).build();
 				sendEmbedMessage(build).queue();
 				return;
@@ -73,7 +73,8 @@ public class BeatMapSetCommand extends Commands {
 					osuBeat.toArray(bm);
 
 					ReactionMessage.beatHistory.add(new TopUserReaction(user, message.getId(), bm, 0));
-					message.getChannel().sendFile(BeatmapEmbed.idb, message.getEmbeds().get(0).getTitle().replace(Emoji.HEADPHONES.getAsMention(), "") + ".mp3")
+					message.getChannel().sendFile(BeatmapEmbed.idb,
+							message.getEmbeds().get(0).getTitle().replace(Emoji.HEADPHONES.getAsMention(), "") + ".mp3")
 							.queue();
 				}
 			});

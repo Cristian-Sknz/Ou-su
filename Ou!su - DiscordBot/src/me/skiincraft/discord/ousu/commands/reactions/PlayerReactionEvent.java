@@ -55,18 +55,18 @@ public class PlayerReactionEvent extends ReactionsManager {
 			listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, v));
 
 		}
-		
+
 		if (emoji.equalsIgnoreCase("🔍")) {
-			
+
 			SearchBearmap searchBearmap;
 			List<Beatmap> beat;
-			
+
 			Object obj = getUtils().getObject();
 			Rich[] score = (Rich[]) obj;
 			int v = getUtils().getValue();
-			
+
 			EmbedBuilder embed = PlayersCommand.richformat(Arrays.asList(score), v, channel.getGuild());
-			
+
 			boolean contains = false;
 			String value = "";
 			for (Field field : embed.getFields()) {
@@ -76,19 +76,20 @@ public class PlayerReactionEvent extends ReactionsManager {
 					System.out.println(value);
 				}
 			}
-			
+
 			if (contains == false) {
 				return;
 			}
-			
+
 			try {
 				searchBearmap = new SearchBearmap(value);
 				beat = OusuBot.getOsu().getBeatmapSet(searchBearmap.getBeatmapSetIDs2().get(0));
-				getEvent().getChannel().removeReactionById(getUtils().getMessageID(), emoji, OusuBot.getSelfUser()).queue();
+				getEvent().getChannel().removeReactionById(getUtils().getMessageID(), emoji, OusuBot.getSelfUser())
+						.queue();
 			} catch (SearchNotFoundException | InvalidBeatmapException e) {
 				return;
 			}
-			
+
 			sendEmbedMessage(SearchEmbed.beatmapEmbed(beat, channel.getGuild())).queue(new Consumer<Message>() {
 
 				@Override
@@ -99,13 +100,13 @@ public class PlayerReactionEvent extends ReactionsManager {
 
 					ReactionMessage.searchReactions.add(new TopUserReaction(user, message.getId(), bm, 0));
 					message.addReaction("U+1F3AF").queue();
-					
+
 				}
 			});
 
 			return;
 		}
-		
+
 		if (emoji.equalsIgnoreCase("💫")) {
 			Object obj = getUtils().getObject();
 			Rich[] score = (Rich[]) obj;
@@ -116,8 +117,6 @@ public class PlayerReactionEvent extends ReactionsManager {
 			if (nickname.equalsIgnoreCase("guest")) {
 				return;
 			}
-			
-			
 
 			listHistory().remove(getUtils());
 			try {
@@ -149,7 +148,7 @@ public class PlayerReactionEvent extends ReactionsManager {
 				return;
 			}
 			EmbedBuilder embed = PlayersCommand.richformat(Arrays.asList(score), v, channel.getGuild());
-			
+
 			channel.editMessageById(getEvent().getMessageId(), embed.build()).queue();
 			listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, v));
 		}

@@ -168,7 +168,7 @@ public abstract class Commands extends ListenerAdapter {
 				try {
 					Thread.sleep(200);
 				} catch (InterruptedException e) {
-					
+
 				}
 				action(sarray, label, user, channel);
 
@@ -202,10 +202,9 @@ public abstract class Commands extends ListenerAdapter {
 
 	public MessageAction sendUsage() {
 		String[] msg = getLang().translatedArrayMessages("INCORRECT_USE");
-		MessageAction a = event.getChannel().sendMessage(
-				TypeEmbed.WarningEmbed(msg[0], EmojiCustom.S_RDiamond.getEmoji() + msg[1] + getUsage())
-				.setFooter("ou!help to help!")
-				.build());
+		MessageAction a = event.getChannel()
+				.sendMessage(TypeEmbed.WarningEmbed(msg[0], EmojiCustom.S_RDiamond.getEmoji() + msg[1] + getUsage())
+						.setFooter("ou!help to help!").build());
 		return a;
 	}
 
