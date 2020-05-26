@@ -170,6 +170,7 @@ public abstract class Commands extends ListenerAdapter {
 				} catch (InterruptedException e) {
 
 				}
+				System.out.println("[args] = " + StringUtils.arrayToString(0, sarray));
 				action(sarray, label, user, channel);
 
 				final long result = startElapsed - System.currentTimeMillis();

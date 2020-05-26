@@ -72,6 +72,9 @@ public class PlayersCommand extends Commands {
 				}
 
 				// Pegando todos os usuarios do banco de dados e verificando se existem na guild
+				if (u == null) {
+					continue;
+				}
 				if (channel.getGuild().isMember(u)) {
 					getter.add(new Rich(u, new FakeRichPresence(values.get(i)).build()));
 					// Caso existam transformar em Rich para encaixar no embed.
