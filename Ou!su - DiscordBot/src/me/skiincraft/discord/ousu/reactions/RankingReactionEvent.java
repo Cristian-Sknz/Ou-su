@@ -19,12 +19,12 @@ public class RankingReactionEvent extends ReactionsManager {
 
 	@Override
 	public void action(User user, TextChannel channel, String emoji) {
-
+		Object obj = getUtils().getObject();
+		EmbedBuilder[] score = (EmbedBuilder[]) obj;
 		if (emoji.equalsIgnoreCase("◀")) {
 			listHistory().remove(getUtils());
 
-			Object obj = getUtils().getObject();
-			EmbedBuilder[] score = (EmbedBuilder[]) obj;
+
 			int v = getUtils().getValue();
 			if (v <= 0) {
 				v = 0;
@@ -43,9 +43,6 @@ public class RankingReactionEvent extends ReactionsManager {
 			listHistory().remove(getUtils());
 			int v = getUtils().getValue();
 			v += 1;
-
-			Object obj = getUtils().getObject();
-			EmbedBuilder[] score = (EmbedBuilder[]) obj;
 
 			if (v >= score.length) {
 				listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, score.length - 1));

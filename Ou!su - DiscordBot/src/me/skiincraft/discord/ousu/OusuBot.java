@@ -43,7 +43,7 @@ import me.skiincraft.discord.ousu.owneraccess.LogChannelCommand;
 import me.skiincraft.discord.ousu.owneraccess.PresenseCommand;
 import me.skiincraft.discord.ousu.owneraccess.ServersCommand;
 import me.skiincraft.discord.ousu.reactions.BeatmapsetEvent;
-import me.skiincraft.discord.ousu.reactions.HistoryEvent;
+import me.skiincraft.discord.ousu.reactions.TopUserReactionEvent;
 import me.skiincraft.discord.ousu.reactions.PlayerReactionEvent;
 import me.skiincraft.discord.ousu.reactions.RankingReactionEvent;
 import me.skiincraft.discord.ousu.reactions.RecentuserEvent;
@@ -71,6 +71,8 @@ public class OusuBot {
 	private static JDA jda;
 	private SQLite connection;
 	private static SelfUser selfUser;
+	
+	private static List<Emote> emotes;
 
 	private boolean DBSQL;
 
@@ -79,7 +81,7 @@ public class OusuBot {
 	}
 
 	public static List<Emote> getEmotes() {
-		return getJda().getGuildById("680436378240286720").getEmotes();
+		return emotes;
 	}
 
 	public static Emote getEmote(String name) {
@@ -206,6 +208,8 @@ public class OusuBot {
 			thread.start();
 			ApplicationUtils.frame
 					.setTitle(ApplicationUtils.frame.getTitle().replace("[Bot]", jda.getSelfUser().getName()));
+			emotes = getJda().getGuildById("680436378240286720").getEmotes();
+			
 			new DBLJavaLibrary().connect();
 		} catch (LoginException e) {
 			System.out.println("JDA: Ocorreu um erro ao logar no bot. Verifique se o Token está correto.");
@@ -218,7 +222,7 @@ public class OusuBot {
 	}
 
 	public void events() {
-		registerEvents(new ReceivedEvent(), new HistoryEvent(), new ReadyBotEvent(), new BeatmapsetEvent(),
+		registerEvents(new ReceivedEvent(), new TopUserReactionEvent(), new ReadyBotEvent(), new BeatmapsetEvent(),
 				new RecentuserEvent(), new PlayerReactionEvent(), new MentionCommand(), new ServerReactionsEvent(),
 				new SearchReactionsEvent(), new OtherEvents(), new RankingReactionEvent(), new SkinsReactionEvent());
 	}

@@ -1,15 +1,13 @@
 package me.skiincraft.discord.ousu.reactions;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
-import me.skiincraft.api.ousu.beatmaps.Beatmap;
-import me.skiincraft.discord.ousu.embeds.BeatmapEmbed;
 import me.skiincraft.discord.ousu.events.TopUserReaction;
 import me.skiincraft.discord.ousu.manager.ReactionUtils;
 import me.skiincraft.discord.ousu.manager.ReactionsManager;
 import me.skiincraft.discord.ousu.utils.ReactionMessage;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -28,11 +26,10 @@ public class SearchReactionsEvent extends ReactionsManager {
 			listHistory().remove(getUtils());
 
 			Object obj = getUtils().getObject();
-			Beatmap[] score = (Beatmap[]) obj;
+			EmbedBuilder[] score = (EmbedBuilder[]) obj;
 
 			channel.clearReactionsById(getUtils().getMessageID()).queue();
-			channel.editMessageById(getEvent().getMessageId(),
-					BeatmapEmbed.beatmapEmbed(Arrays.asList(score), 0, channel.getGuild()).build())
+			channel.editMessageById(getEvent().getMessageId(), score[0].build())
 					.queue(new Consumer<Message>() {
 
 						@Override

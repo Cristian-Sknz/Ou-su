@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.List;
 
 import javax.imageio.ImageIO;
 
@@ -23,13 +22,13 @@ public class BeatmapEmbed {
 
 	public static InputStream idb;
 
-	public synchronized static EmbedBuilder beatmapEmbed(List<Beatmap> beat, int value, Guild guild) {
+	public synchronized static EmbedBuilder beatmapEmbed(Beatmap beat, Guild guild) {
 		EmbedBuilder embed = new EmbedBuilder();
 		SQLAccess sql = new SQLAccess(guild);
-
+		
 		LanguageManager lang = new LanguageManager(Language.valueOf(sql.get("language")));
 
-		Beatmap beatmap = beat.get(value);
+		Beatmap beatmap = beat;
 
 		embed.setTitle(Emoji.HEADPHONES.getAsMention() + " " + beatmap.getTitle(), beatmap.getURL());
 		int id = beatmap.getCreatorId();

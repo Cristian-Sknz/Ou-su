@@ -1,10 +1,7 @@
 package me.skiincraft.discord.ousu.reactions;
 
-import java.util.Arrays;
 import java.util.List;
 
-import me.skiincraft.api.ousu.beatmaps.Beatmap;
-import me.skiincraft.discord.ousu.embeds.BeatmapEmbed;
 import me.skiincraft.discord.ousu.events.TopUserReaction;
 import me.skiincraft.discord.ousu.manager.ReactionUtils;
 import me.skiincraft.discord.ousu.manager.ReactionsManager;
@@ -27,7 +24,7 @@ public class BeatmapsetEvent extends ReactionsManager {
 			listHistory().remove(getUtils());
 
 			Object obj = getUtils().getObject();
-			Beatmap[] beatmap = (Beatmap[]) obj;
+			EmbedBuilder[] beatmap = (EmbedBuilder[]) obj;
 
 			int v = getUtils().getValue();
 			if (v <= 0) {
@@ -38,7 +35,7 @@ public class BeatmapsetEvent extends ReactionsManager {
 				v = getUtils().getValue() - 1;
 			}
 
-			EmbedBuilder embed = BeatmapEmbed.beatmapEmbed(Arrays.asList(beatmap), v, channel.getGuild());
+			EmbedBuilder embed = beatmap[v];
 
 			channel.editMessageById(getEvent().getMessageId(), embed.build()).queue();
 			listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, v));
@@ -57,14 +54,14 @@ public class BeatmapsetEvent extends ReactionsManager {
 			v += 1;
 
 			Object obj = getUtils().getObject();
-			Beatmap[] beatmap = (Beatmap[]) obj;
+			EmbedBuilder[] beatmap = (EmbedBuilder[]) obj;
 
 			if (v >= beatmap.length) {
 				listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, beatmap.length - 1));
 				return;
 			}
 
-			EmbedBuilder embed = BeatmapEmbed.beatmapEmbed(Arrays.asList(beatmap), v, channel.getGuild());
+			EmbedBuilder embed = beatmap[v];
 
 			channel.editMessageById(getEvent().getMessageId(), embed.build()).queue();
 			listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, v));

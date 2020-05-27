@@ -1,8 +1,7 @@
 package me.skiincraft.discord.ousu.commands;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
-
 import me.skiincraft.api.ousu.beatmaps.Beatmap;
 import me.skiincraft.api.ousu.exceptions.InvalidBeatmapException;
 import me.skiincraft.discord.ousu.OusuBot;
@@ -15,7 +14,7 @@ import me.skiincraft.discord.ousu.manager.Commands;
 import me.skiincraft.discord.ousu.utils.Emoji;
 import me.skiincraft.discord.ousu.utils.ReactionMessage;
 import me.skiincraft.discord.ousu.utils.StringUtils;
-import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -61,22 +60,23 @@ public class BeatMapSetCommand extends Commands {
 				return;
 			}
 
-			sendEmbedMessage(BeatmapEmbed.beatmapEmbed(osuBeat, 0, channel.getGuild())).queue(new Consumer<Message>() {
-
-				@Override
-				public void accept(Message message) {
-					message.addReaction("U+25C0").queue();
-					message.addReaction("U+25FC").queue();
-					message.addReaction("U+25B6").queue();
-
-					Beatmap[] bm = new Beatmap[osuBeat.size()];
-					osuBeat.toArray(bm);
-
-					ReactionMessage.beatHistory.add(new TopUserReaction(user, message.getId(), bm, 0));
-					message.getChannel().sendFile(BeatmapEmbed.idb,
-							message.getEmbeds().get(0).getTitle().replace(Emoji.HEADPHONES.getAsMention(), "") + ".mp3")
-							.queue();
+			sendEmbedMessage(TypeEmbed.LoadingEmbed()).queue(loadmessage -> {
+				List<EmbedBuilder> bmb = new ArrayList<EmbedBuilder>();
+				for (Beatmap b : osuBeat) {
+					bmb.add(BeatmapEmbed.beatmapEmbed(b, channel.getGuild()));
 				}
+
+				EmbedBuilder[] bm = new EmbedBuilder[bmb.size()];
+				bmb.toArray(bm);
+				loadmessage.editMessage(bm[0].build()).queue();
+				loadmessage.addReaction("U+25C0").queue();
+				loadmessage.addReaction("U+25FC").queue();
+				loadmessage.addReaction("U+25B6").queue();
+
+				ReactionMessage.beatHistory.add(new TopUserReaction(user, loadmessage.getId(), bm, 0));
+				loadmessage.getChannel().sendFile(BeatmapEmbed.idb,
+						bm[0].build().getTitle().replace(Emoji.HEADPHONES.getAsMention(), "") + ".mp3").queue();
+
 			});
 		}
 	}

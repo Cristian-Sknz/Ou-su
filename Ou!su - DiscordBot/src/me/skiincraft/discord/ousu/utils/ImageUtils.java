@@ -14,9 +14,9 @@ public class ImageUtils {
 
 	public static Color getPredominatColor(BufferedImage image) {
 		try {
-			BufferedImage img = new BufferedImage(200, 200, 2);
+			BufferedImage img = new BufferedImage(40, 40, 2);
 			Graphics2D graph = img.createGraphics();
-			graph.drawImage(image, 0, 0, 200, 200, null);
+			graph.drawImage(image, 0, 0, 40, 40, null);
 			graph.dispose();
 
 			CMap result;

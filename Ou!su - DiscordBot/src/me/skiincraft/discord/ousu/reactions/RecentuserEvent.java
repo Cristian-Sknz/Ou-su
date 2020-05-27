@@ -1,10 +1,7 @@
 package me.skiincraft.discord.ousu.reactions;
 
-import java.util.Arrays;
 import java.util.List;
 
-import me.skiincraft.api.ousu.scores.Score;
-import me.skiincraft.discord.ousu.commands.RecentUserCommand;
 import me.skiincraft.discord.ousu.events.TopUserReaction;
 import me.skiincraft.discord.ousu.manager.ReactionUtils;
 import me.skiincraft.discord.ousu.manager.ReactionsManager;
@@ -22,12 +19,11 @@ public class RecentuserEvent extends ReactionsManager {
 
 	@Override
 	public void action(User user, TextChannel channel, String emoji) {
-
+		Object obj = getUtils().getObject();
+		EmbedBuilder[] beatmap = (EmbedBuilder[]) obj;
+		
 		if (emoji.equalsIgnoreCase("◀")) {
 			listHistory().remove(getUtils());
-
-			Object obj = getUtils().getObject();
-			Score[] beatmap = (Score[]) obj;
 
 			int v = getUtils().getValue();
 			if (v <= 0) {
@@ -38,7 +34,7 @@ public class RecentuserEvent extends ReactionsManager {
 				v = getUtils().getValue() - 1;
 			}
 
-			EmbedBuilder embed = RecentUserCommand.embed(Arrays.asList(beatmap), v, channel.getGuild());
+			EmbedBuilder embed = beatmap[v];
 
 			channel.editMessageById(getEvent().getMessageId(), embed.build()).queue();
 			listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, v));
@@ -56,15 +52,12 @@ public class RecentuserEvent extends ReactionsManager {
 			int v = getUtils().getValue();
 			v += 1;
 
-			Object obj = getUtils().getObject();
-			Score[] beatmap = (Score[]) obj;
-
 			if (v >= beatmap.length) {
 				listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, beatmap.length - 1));
 				return;
 			}
 
-			EmbedBuilder embed = RecentUserCommand.embed(Arrays.asList(beatmap), v, channel.getGuild());
+			EmbedBuilder embed = beatmap[v];
 
 			channel.editMessageById(getEvent().getMessageId(), embed.build()).queue();
 			listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, v));

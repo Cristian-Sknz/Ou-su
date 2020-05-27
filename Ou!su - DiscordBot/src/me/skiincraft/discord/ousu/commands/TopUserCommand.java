@@ -1,9 +1,12 @@
 package me.skiincraft.discord.ousu.commands;
 
 import java.awt.Color;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -118,35 +121,41 @@ public class TopUserCommand extends Commands {
 				sendEmbedMessage(TypeEmbed.SoftWarningEmbed(str[0], buffer.toString())).queue();
 				return;
 			}
+			sendEmbedMessage(TypeEmbed.LoadingEmbed()).queue(message -> {
+				// Transform list to array
+				List<EmbedBuilder> emb = new ArrayList<EmbedBuilder>();
+				int v = 1;
+				me.skiincraft.api.ousu.users.User us = osuUser.get(0).getUser();
+				for (Score sc : osuUser) {
+					emb.add(embed(sc, new Integer[] {v,  osuUser.size()}, us,channel.getGuild()));
+					v++;
+				}
 
-			// Transform list to array
-			System.out.println(osuUser.size());
-
-			Score[] scorearray = new Score[osuUser.size()];
-			osuUser.toArray(scorearray);
-
-			sendEmbedMessage(embed(osuUser, 0, channel.getGuild())).queue(message -> {
-				message.addReaction("U+25C0").queue();
-				message.addReaction("U+25FC").queue();
-				message.addReaction("U+25B6").queue();
-				ReactionMessage.osuHistory.add(new TopUserReaction(user, message.getId(), scorearray, 0));
+				EmbedBuilder[] scorearray = new EmbedBuilder[emb.size()];
+				emb.toArray(scorearray);
+				
+				message.editMessage(scorearray[0].build()).queue(message2 -> {
+					message2.addReaction("U+25C0").queue();
+					//message2.addReaction("U+25FC").queue();
+					message2.addReaction("U+25B6").queue();
+					ReactionMessage.osuHistory.add(new TopUserReaction(user, message.getId(), scorearray, 0));
+				});
+				return;
 			});
-			return;
 		}
 	}
 
-	public static EmbedBuilder embed(List<Score> scorelist, int order, Guild guild) {
-		// "Imports"
+	public static EmbedBuilder embed(Score scorelist, Integer[] order, me.skiincraft.api.ousu.users.User user, Guild guild) {
 		EmbedBuilder embed = new EmbedBuilder();
-		Score score = scorelist.get(order);
+		Score score = scorelist;
 		SQLAccess sql = new SQLAccess(guild);
 		LanguageManager lang = new LanguageManager(Language.valueOf(sql.get("language")));
 		Beatmap beatmap = score.getBeatmap();
-		me.skiincraft.api.ousu.users.User user = score.getUser();
-
+		
 		// Strings
+		System.out.println(score.getRank());
 		String inicial = getRankEmote(score);
-		String ordem = "[" + (order + 1) + "/" + scorelist.size() + "]";
+		String ordem = "[" + order[0].intValue() + "/" + order[1].intValue() + "]";
 		String u = "[" + user.getUserName() + "](" + user.getURL() + ")";
 		String title = "[" + beatmap.getTitle() + "](" + beatmap.getURL() + ") por `" + beatmap.getArtist() + "`";
 
@@ -158,7 +167,7 @@ public class TopUserCommand extends Commands {
 		String pp = OsuEmoji.PP.getEmojiString() + ": ";
 		String l = "\n";
 		String field = h300 + l + h100 + l + h50 + l + miss + l;
-		int id = score.getBeatmap().getBeatmapSetID();
+		int id = beatmap.getBeatmapSetID();
 		String url = "https://assets.ppy.sh/beatmaps/" + id + "/covers/cover.jpg?";
 
 		String mods = "";
@@ -182,7 +191,7 @@ public class TopUserCommand extends Commands {
 
 		embed.addField(lang.translatedEmbeds("SCORE"), field, true);
 		embed.addField(lang.translatedEmbeds("TOTAL_SCORE"), score.getScore() + "", true);
-		embed.addField(lang.translatedEmbeds("MAX_COMBO"), score.getMaxCombo() + "/" + score.getBeatmap().getMaxCombo(),
+		embed.addField(lang.translatedEmbeds("MAX_COMBO"), score.getMaxCombo() + "/" + beatmap.getMaxCombo(),
 				true);
 
 		embed.addField("PP", pp + new DecimalFormat("#").format(score.getScorePP()) + "", true);
@@ -194,8 +203,12 @@ public class TopUserCommand extends Commands {
 		String author = beatmap.getCreator();
 		embed.setFooter("[" + beatmap.getBeatmapID() + "] " + beatmap.getTitle() + " por " + beatmap.getArtist() + " | "
 				+ lang.translatedEmbeds("MAP_CREATED_BY") + author);
-		try {
-			embed.setColor(ImageUtils.getPredominatColor(ImageIO.read(new URL(beatmap.getBeatmapThumbnailUrl()))));
+
+		try { // para carregar mais rapido foi resized
+			BufferedImage im = new BufferedImage(30, 30, 2);
+			Image image = ImageIO.read(new URL(beatmap.getBeatmapThumbnailUrl()));
+			im.createGraphics().drawImage(image, 0, 0, 30, 30, null);
+			embed.setColor(ImageUtils.getPredominatColor(im));
 		} catch (NullPointerException | IOException e) {
 			embed.setColor(Color.BLUE);
 		}
@@ -222,13 +235,16 @@ public class TopUserCommand extends Commands {
 
 	public static String getRankEmote(Score score) {
 		String rank = score.getRank();
-		if (rank.equalsIgnoreCase("SSH")) {
+		if (rank.equalsIgnoreCase("SS+")) {
 			return OsuEmoji.SSPlus.getEmojiString();
 		}
 		if (rank.equalsIgnoreCase("SS")) {
 			return OsuEmoji.SS.getEmojiString();
 		}
-		if (rank.equalsIgnoreCase("SH")) {
+		if (rank.equalsIgnoreCase("X")) {
+			return OsuEmoji.SS.getEmojiString();
+		}
+		if (rank.equalsIgnoreCase("S+")) {
 			return OsuEmoji.SPlus.getEmojiString();
 		}
 		if (rank.equalsIgnoreCase("S")) {

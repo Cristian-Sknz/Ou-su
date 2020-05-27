@@ -1,6 +1,8 @@
 package me.skiincraft.discord.ousu.commands;
 
 import java.awt.Color;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -136,8 +138,11 @@ public class UserCommand extends Commands {
 		embed.setFooter(lang.translatedBot("FOOTER_DEFAULT"),
 				"https://osu.ppy.sh/images/flags/" + osuUser.getCountryCode() + ".png");
 
-		try {
-			embed.setColor(ImageUtils.getPredominatColor(ImageIO.read(new URL(osuUser.getUserAvatar()))));
+		try { // para carregar mais rapido foi resized
+			BufferedImage im = new BufferedImage(200, 200, 2);
+			Image image = ImageIO.read(new URL(osuUser.getUserAvatar()));
+			im.createGraphics().drawImage(image, 0, 0, 200, 200, null);
+			embed.setColor(ImageUtils.getPredominatColor(im));
 		} catch (NullPointerException | IOException e) {
 			embed.setColor(Color.BLUE);
 		}

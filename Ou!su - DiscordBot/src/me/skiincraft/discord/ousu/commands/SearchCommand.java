@@ -1,5 +1,6 @@
 package me.skiincraft.discord.ousu.commands;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
@@ -7,6 +8,7 @@ import java.util.function.Consumer;
 import me.skiincraft.api.ousu.beatmaps.Beatmap;
 import me.skiincraft.api.ousu.exceptions.InvalidBeatmapException;
 import me.skiincraft.discord.ousu.OusuBot;
+import me.skiincraft.discord.ousu.embeds.BeatmapEmbed;
 import me.skiincraft.discord.ousu.embeds.SearchEmbed;
 import me.skiincraft.discord.ousu.embeds.TypeEmbed;
 import me.skiincraft.discord.ousu.events.TopUserReaction;
@@ -17,6 +19,7 @@ import me.skiincraft.discord.ousu.manager.Commands;
 import me.skiincraft.discord.ousu.search.SearchBearmap;
 import me.skiincraft.discord.ousu.utils.ReactionMessage;
 import me.skiincraft.discord.ousu.utils.StringUtils;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -68,8 +71,14 @@ public class SearchCommand extends Commands {
 				@Override
 				public void accept(Message message) {
 					channel.sendFile(SearchEmbed.getAudioPreview(), beat.get(0).getTitle() + ".mp3").queue();
-					Beatmap[] bm = new Beatmap[beat.size()];
-					beat.toArray(bm);
+					
+					List<EmbedBuilder> emb = new ArrayList<EmbedBuilder>();
+					for (Beatmap beatmap : beat) {
+						emb.add(BeatmapEmbed.beatmapEmbed(beatmap, channel.getGuild()));
+					}
+					
+					EmbedBuilder[] bm = new EmbedBuilder[emb.size()];
+					emb.toArray(bm);
 
 					ReactionMessage.searchReactions.add(new TopUserReaction(user, message.getId(), bm, 0));
 					message.addReaction("U+1F3AF").queue();

@@ -3,6 +3,7 @@ package me.skiincraft.discord.ousu.commands;
 import java.awt.Color;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -119,32 +120,43 @@ public class RecentUserCommand extends Commands {
 				sendEmbedMessage(TypeEmbed.SoftWarningEmbed(str[0], buffer.toString())).queue();
 				return;
 			}
+			sendEmbedMessage(TypeEmbed.LoadingEmbed()).queue(message -> {
+				me.skiincraft.api.ousu.users.User us = osuUser.get(0).getUser();
+				List<EmbedBuilder> emb = new ArrayList<EmbedBuilder>();
+				
+				int v = 1;
+				for (Score s :osuUser) {
+					emb.add(embed(s, new Integer[] {v, osuUser.size()}, us, channel.getGuild()));
+					v++;
+				}
+				
+				EmbedBuilder[] sc = new EmbedBuilder[emb.size()];
+				emb.toArray(sc);
+				message.editMessage(sc[0].build()).queue(message2 -> {
+					message.addReaction("U+25C0").queue();
+					// message.addReaction("U+25FC").queue();
+					message.addReaction("U+25B6").queue();
 
-			sendEmbedMessage(embed(osuUser, 0, channel.getGuild())).queue(message -> {
-				message.addReaction("U+25C0").queue();
-				// message.addReaction("U+25FC").queue();
-				message.addReaction("U+25B6").queue();
-				Score[] sc = new Score[osuUser.size()];
-				osuUser.toArray(sc);
-
-				ReactionMessage.recentHistory.add(new TopUserReaction(user, message.getId(), sc, 0));
+					ReactionMessage.recentHistory.add(new TopUserReaction(user, message.getId(), sc, 0));
+				});
 			});
+			
+			
 			return;
 		}
 	}
 
-	public static EmbedBuilder embed(List<Score> scorelist, int order, Guild guild) {
+	public static EmbedBuilder embed(Score scorelist, Integer[] order, me.skiincraft.api.ousu.users.User user, Guild guild) {
 		// "Imports"
 		EmbedBuilder embed = new EmbedBuilder();
-		Score score = scorelist.get(order);
+		Score score = scorelist;
 		SQLAccess sql = new SQLAccess(guild);
 		LanguageManager lang = new LanguageManager(Language.valueOf(sql.get("language")));
 		Beatmap beatmap = score.getBeatmap();
-		me.skiincraft.api.ousu.users.User user = score.getUser();
 
 		// Strings
 		String inicial = getRankEmote(score);
-		String ordem = "[" + (order + 1) + "/" + scorelist.size() + "]";
+		String ordem = "[" + order[0].intValue() + "/" + order[1].intValue() + "]";
 		String u = "[" + user.getUserName() + "](" + user.getURL() + ")";
 		String title = "[" + beatmap.getTitle() + "](" + beatmap.getURL() + ") por `" + beatmap.getArtist() + "`";
 
@@ -155,7 +167,7 @@ public class RecentUserCommand extends Commands {
 		String miss = OsuEmoji.Miss.getEmojiString() + ": " + score.getMiss();
 		String l = "\n";
 		String field = h300 + l + h100 + l + h50 + l + miss + l;
-		int id = score.getBeatmap().getBeatmapSetID();
+		int id = beatmap.getBeatmapSetID();
 		String url = "https://assets.ppy.sh/beatmaps/" + id + "/covers/cover.jpg?";
 
 		String mods = "";
@@ -215,15 +227,18 @@ public class RecentUserCommand extends Commands {
 		return "Não classificado";
 	}
 
-	public static String getRankEmote(Score osuUser) {
-		String rank = osuUser.getRank();
-		if (rank.equalsIgnoreCase("SSH")) {
+	public static String getRankEmote(Score score) {
+		String rank = score.getRank();
+		if (rank.equalsIgnoreCase("SS+")) {
 			return OsuEmoji.SSPlus.getEmojiString();
 		}
 		if (rank.equalsIgnoreCase("SS")) {
 			return OsuEmoji.SS.getEmojiString();
 		}
-		if (rank.equalsIgnoreCase("SH")) {
+		if (rank.equalsIgnoreCase("X")) {
+			return OsuEmoji.SS.getEmojiString();
+		}
+		if (rank.equalsIgnoreCase("S+")) {
 			return OsuEmoji.SPlus.getEmojiString();
 		}
 		if (rank.equalsIgnoreCase("S")) {

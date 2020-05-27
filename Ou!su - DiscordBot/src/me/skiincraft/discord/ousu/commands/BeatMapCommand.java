@@ -1,6 +1,5 @@
 package me.skiincraft.discord.ousu.commands;
 
-import java.util.Arrays;
 import java.util.function.Consumer;
 
 import me.skiincraft.api.ousu.beatmaps.Beatmap;
@@ -59,7 +58,7 @@ public class BeatMapCommand extends Commands {
 				return;
 			}
 
-			sendEmbedMessage(BeatmapEmbed.beatmapEmbed(Arrays.asList(osuBeat), 0, channel.getGuild()))
+			sendEmbedMessage(BeatmapEmbed.beatmapEmbed(osuBeat, channel.getGuild()))
 					.queue(new Consumer<Message>() {
 
 						@Override
