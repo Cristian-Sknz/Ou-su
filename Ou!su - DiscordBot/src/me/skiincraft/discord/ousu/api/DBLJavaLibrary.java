@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.JDA.ShardInfo;
 public class DBLJavaLibrary {
 
 	public void connect() {
+
 		ShardInfo shardinfo = OusuBot.getJda().getShardInfo();
 
 		DiscordBotListAPI api = new DiscordBotListAPI.Builder().token(Token.dbltoken).botId("701825726449582192")

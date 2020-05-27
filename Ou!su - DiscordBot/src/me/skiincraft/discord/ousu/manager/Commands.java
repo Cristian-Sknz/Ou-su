@@ -177,10 +177,12 @@ public abstract class Commands extends ListenerAdapter {
 				String elapsedtime = new DecimalFormat("#.0").format(result / 1000) + "s";
 				if (elapsedtime.startsWith(",")) {
 					OusuBot.getOusu().logger("[" + getCommandFull() + " | Elapsed Time: 0s]");
+					Thread.currentThread().interrupt();
 					return;
 				}
 				OusuBot.getOusu()
 						.logger("[" + getCommandFull() + " | Elapsed Time: " + elapsedtime.replace("-", "") + "]");
+				Thread.currentThread().interrupt();
 			}
 		});
 

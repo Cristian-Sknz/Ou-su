@@ -26,6 +26,7 @@ import me.skiincraft.discord.ousu.commands.PrefixCommand;
 import me.skiincraft.discord.ousu.commands.RankingCommand;
 import me.skiincraft.discord.ousu.commands.RecentUserCommand;
 import me.skiincraft.discord.ousu.commands.SearchCommand;
+import me.skiincraft.discord.ousu.commands.SkinsCommand;
 import me.skiincraft.discord.ousu.commands.TopUserCommand;
 import me.skiincraft.discord.ousu.commands.UserCommand;
 import me.skiincraft.discord.ousu.commands.UserImageCommand;
@@ -38,6 +39,7 @@ import me.skiincraft.discord.ousu.commands.reactions.RankingReactionEvent;
 import me.skiincraft.discord.ousu.commands.reactions.RecentuserEvent;
 import me.skiincraft.discord.ousu.commands.reactions.SearchReactionsEvent;
 import me.skiincraft.discord.ousu.commands.reactions.ServerReactionsEvent;
+import me.skiincraft.discord.ousu.commands.reactions.SkinsReactionEvent;
 import me.skiincraft.discord.ousu.events.OtherEvents;
 import me.skiincraft.discord.ousu.events.PresenceTask;
 import me.skiincraft.discord.ousu.events.ReadyBotEvent;
@@ -218,7 +220,7 @@ public class OusuBot {
 	public void events() {
 		registerEvents(new ReceivedEvent(), new HistoryEvent(), new ReadyBotEvent(), new BeatmapsetEvent(),
 				new RecentuserEvent(), new PlayerReactionEvent(), new MentionCommand(), new ServerReactionsEvent(),
-				new SearchReactionsEvent(), new OtherEvents(), new RankingReactionEvent());
+				new SearchReactionsEvent(), new OtherEvents(), new RankingReactionEvent(), new SkinsReactionEvent());
 	}
 
 	public void commands() {
@@ -226,7 +228,7 @@ public class OusuBot {
 		registerCommands(new HelpCommand(), new EmbedCommand(), new UserCommand(), new TopUserCommand(),
 				new UserImageCommand(), new PrefixCommand(), new BeatMapCommand(), new VersionCommand(),
 				new InviteCommand(), new RecentUserCommand(), new LanguageCommand(), new BeatMapSetCommand(),
-				new SearchCommand(), new VoteCommand(), new RankingCommand());
+				new SearchCommand(), new VoteCommand(), new RankingCommand(), new SkinsCommand());
 
 		registerCommands(new PresenseCommand(), new LogChannelCommand(), new PlayersCommand(), new ServersCommand());
 	}

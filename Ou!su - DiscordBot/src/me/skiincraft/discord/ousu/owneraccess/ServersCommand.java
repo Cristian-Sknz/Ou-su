@@ -103,7 +103,9 @@ public class ServersCommand extends Commands {
 		builder.setThumbnail(guild.getIconUrl());
 		builder.addField("Guild ID:", guild.getId(), true);
 		builder.addField("Região:", guild.getRegion().getName(), true);
-		builder.addField("Dono:", guild.getOwner().getAsMention(), true);
+		if (guild.getOwner() != null) {
+		builder.addField("Dono:", guild.getOwner().getNickname(), true);
+		}
 
 		builder.addField("Canais:",
 				"Texto - " + guild.getTextChannels().size() + "\nAudio - " + guild.getVoiceChannels().size(), true);

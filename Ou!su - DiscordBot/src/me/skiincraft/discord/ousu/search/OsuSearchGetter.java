@@ -65,12 +65,13 @@ public class OsuSearchGetter {
 		Elements ele = doc.getElementsByClass("skins");
 
 		Elements skins = ele.get(0).getElementsByClass("skin-container");
-		
+		int i = 0;
 		for (Element skin : skins) {
+			if (i == 10)break;
 			String skinname = skin.select("h2").get(0).text();
 			String skinlink = "https://osuskins.net" + skin.select("a").attr("href");
 			String skinimage = skinlink.replace("/skin/", "/screenshots/") + ".jpg";
-			
+			String download = skinlink.replace("/skin/", "/download/");
 			String downloads = skin.select("li").get(0).text();
 			String views = skin.select("li").get(1).text();
 			String comments = "0";
@@ -96,11 +97,11 @@ public class OsuSearchGetter {
 				gamemodes.add(Gamemode.valueOf(modes));
 			}
 			
-			OsuSkin skincomplete = new OsuSkin(skinname, skinlink, skinimage, skinlink.replace("skin", "download"),
+			OsuSkin skincomplete = new OsuSkin(skinname, skinlink, skinimage, download,
 					creator, gamemodes, new Statistics(downloads, views, comments));
 			
 			skinslist.add(skincomplete);
-			System.out.println(skincomplete);
+			i++;
 		}
 		
 		return skinslist;
