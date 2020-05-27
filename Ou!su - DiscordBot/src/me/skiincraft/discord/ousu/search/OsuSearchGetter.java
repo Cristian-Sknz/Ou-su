@@ -67,7 +67,9 @@ public class OsuSearchGetter {
 		Elements skins = ele.get(0).getElementsByClass("skin-container");
 		int i = 0;
 		for (Element skin : skins) {
-			if (i == 10)break;
+			if (i == 10) {
+				break;
+			}
 			String skinname = skin.select("h2").get(0).text();
 			String skinlink = "https://osuskins.net" + skin.select("a").attr("href");
 			String skinimage = skinlink.replace("/skin/", "/screenshots/") + ".jpg";
@@ -78,7 +80,7 @@ public class OsuSearchGetter {
 			if (skin.select("li").size() == 3) {
 				comments = skin.select("li").get(2).text();
 			}
-			
+
 			Document doc2 = Jsoup.connect(skinlink).get();
 			String creator = doc2.getElementsByClass("skin-page-detail").get(2).text();
 			if (creator.contains("Players")) {
@@ -87,23 +89,19 @@ public class OsuSearchGetter {
 				creator = creator.replace("Creators ", "");
 			}
 			List<Gamemode> gamemodes = new ArrayList<Gamemode>();
-			String[] m = doc2.getElementsByClass("skin-page-detail")
-					.get(1)
-					.text()
-					.replace("Modes ", "")
-					.split(" ");
-			
+			String[] m = doc2.getElementsByClass("skin-page-detail").get(1).text().replace("Modes ", "").split(" ");
+
 			for (String modes : m) {
 				gamemodes.add(Gamemode.valueOf(modes));
 			}
-			
-			OsuSkin skincomplete = new OsuSkin(skinname, skinlink, skinimage, download,
-					creator, gamemodes, new Statistics(downloads, views, comments));
-			
+
+			OsuSkin skincomplete = new OsuSkin(skinname, skinlink, skinimage, download, creator, gamemodes,
+					new Statistics(downloads, views, comments));
+
 			skinslist.add(skincomplete);
 			i++;
 		}
-		
+
 		return skinslist;
 	}
 

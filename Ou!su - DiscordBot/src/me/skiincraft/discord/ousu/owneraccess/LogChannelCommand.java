@@ -29,7 +29,8 @@ public class LogChannelCommand extends Commands {
 		}
 
 		new ConfigAcess(channel.getGuild()).set("Logchannel", channel.getId());
-		//sendEmbedMessage(new DefaultEmbed("Configuração", "Você setou o chat de logging")).queue();
+		// sendEmbedMessage(new DefaultEmbed("Configuração", "Você setou o chat de
+		// logging")).queue();
 	}
 
 }

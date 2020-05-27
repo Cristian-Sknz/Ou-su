@@ -112,9 +112,8 @@ public class UserCommand extends Commands {
 		NumberFormat f = NumberFormat.getNumberInstance();
 		String accuracy = new DecimalFormat("#.0").format(osuUser.getAccuracy());
 		String PP = OsuEmoji.PP.getEmojiString();
-		
-		String code = ":flag_" + osuUser.getCountryCode().toLowerCase() + ": "
-				+ osuUser.getCountryCode();
+
+		String code = ":flag_" + osuUser.getCountryCode().toLowerCase() + ": " + osuUser.getCountryCode();
 
 		embed.setThumbnail(osuUser.getUserAvatar());
 

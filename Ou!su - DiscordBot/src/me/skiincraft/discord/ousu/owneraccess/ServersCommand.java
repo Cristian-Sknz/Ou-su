@@ -104,7 +104,7 @@ public class ServersCommand extends Commands {
 		builder.addField("Guild ID:", guild.getId(), true);
 		builder.addField("Região:", guild.getRegion().getName(), true);
 		if (guild.getOwner() != null) {
-		builder.addField("Dono:", guild.getOwner().getNickname(), true);
+			builder.addField("Dono:", guild.getOwner().getNickname(), true);
 		}
 
 		builder.addField("Canais:",

@@ -37,8 +37,8 @@ public class BeatmapEmbed {
 		embed.setAuthor(beatmap.getCreator(), "https://osu.ppy.sh/users/" + id, "https://a.ppy.sh/" + id);
 
 		String artist = beatmap.getArtist();
-		
-		//Isso daqui esta Temporario, pois esta ocorrendo um erro desconhecido....
+
+		// Isso daqui esta Temporario, pois esta ocorrendo um erro desconhecido....
 		if (beatmap.getArtistUnicode() == null) {
 			artist = beatmap.getArtist();
 		} else {
@@ -46,7 +46,7 @@ public class BeatmapEmbed {
 				artist = beatmap.getArtistUnicode() + " \n(" + beatmap.getArtist() + ")";
 			}
 		}
-		
+
 		embed.addField(lang.translatedEmbeds("ARTIST"), artist, true);
 		embed.addField("BPM:", OusuBot.getEmoteAsMention("reversearrow") + beatmap.getBPM(), true);
 		embed.addField(lang.translatedEmbeds("GENRE"), "" + beatmap.getGenre().getDisplayName(), true);
