@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.customemoji.EmojiCustom;
-import me.skiincraft.discord.ousu.embedtypes.DefaultEmbed;
+import me.skiincraft.discord.ousu.embeds.TypeEmbed;
 import me.skiincraft.discord.ousu.events.TopUserReaction;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.language.LanguageManager.Language;
@@ -138,7 +138,7 @@ public class PlayersCommand extends Commands {
 				value++;
 				if (value >= rich.size()) {
 					String[] msg = lang.translatedArrayOsuMessages("UNAVAILABLE_RESOURCE");
-					return new DefaultEmbed(msg[0], ":warning: " + msg[1]).construirEmbed();
+					return TypeEmbed.DefaultEmbed(msg[0], ":warning: " + msg[1]);
 				}
 				user = rich.get(value).getUser();
 				presence = rich.get(value).getRich();

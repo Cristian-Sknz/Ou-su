@@ -1,4 +1,4 @@
-package me.skiincraft.discord.ousu.commands.reactions;
+package me.skiincraft.discord.ousu.reactions;
 
 import java.util.List;
 
@@ -10,11 +10,11 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 
-public class SkinsReactionEvent extends ReactionsManager {
+public class RankingReactionEvent extends ReactionsManager {
 
 	@Override
 	public List<ReactionUtils> listHistory() {
-		return ReactionMessage.skinsReaction;
+		return ReactionMessage.rankingReaction;
 	}
 
 	@Override

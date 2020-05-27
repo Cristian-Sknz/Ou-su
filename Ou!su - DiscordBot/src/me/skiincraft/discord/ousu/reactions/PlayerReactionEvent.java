@@ -1,4 +1,4 @@
-package me.skiincraft.discord.ousu.commands.reactions;
+package me.skiincraft.discord.ousu.reactions;
 
 import java.util.Arrays;
 import java.util.List;

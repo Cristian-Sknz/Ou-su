@@ -3,7 +3,9 @@ package me.skiincraft.discord.ousu.embeds;
 import java.awt.Color;
 import java.util.Random;
 
+import me.skiincraft.discord.ousu.OusuBot;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.User;
 
 public class TypeEmbed {
 
@@ -81,6 +83,17 @@ public class TypeEmbed {
 		embed.setFooter("ou!help to help!");
 
 		return embed;
+	}
+	
+	public static EmbedBuilder DefaultEmbed(String title, String description) {
+		EmbedBuilder b = new EmbedBuilder();
+		User user = OusuBot.getJda().getUserById("247096601242238991");
+
+		b.setColor(Color.PINK);
+		b.setTitle(title);
+		b.setDescription(description);
+		b.setFooter("Ou!su Bot | Created by " + user.getName() + user.getDiscriminator());
+		return b;
 	}
 
 	public static EmbedBuilder LoadingEmbed() {

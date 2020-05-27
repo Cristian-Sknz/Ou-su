@@ -2,7 +2,6 @@ package me.skiincraft.discord.ousu.manager;
 
 import java.util.List;
 
-import me.skiincraft.discord.ousu.embedtypes.DefaultEmbed;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Role;
@@ -109,16 +108,6 @@ public abstract class ReactionsManager extends ListenerAdapter {
 
 	public MessageAction sendEmbedMessage(EmbedBuilder e) {
 		MessageAction a = event.getChannel().sendMessage(e.build());
-		return a;
-	}
-
-	public MessageAction sendEmbedMessage(DefaultEmbed e) {
-		MessageAction a = event.getChannel().sendMessage(e.construir());
-		return a;
-	}
-
-	public MessageAction sendPrivateEmbedMessage(DefaultEmbed e) {
-		MessageAction a = event.getUser().openPrivateChannel().complete().sendMessage(e.construir());
 		return a;
 	}
 

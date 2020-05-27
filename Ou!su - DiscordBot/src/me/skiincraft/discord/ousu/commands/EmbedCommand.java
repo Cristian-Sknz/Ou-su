@@ -2,7 +2,7 @@ package me.skiincraft.discord.ousu.commands;
 
 import java.util.Arrays;
 
-import me.skiincraft.discord.ousu.embedtypes.DefaultEmbed;
+import me.skiincraft.discord.ousu.embeds.TypeEmbed;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
@@ -39,7 +39,7 @@ public class EmbedCommand extends Commands {
 		}
 
 		if (args.length == 1) {
-			sendEmbedMessage(new DefaultEmbed(args[0].replaceAll("_", " "), "")).queue();
+			sendEmbedMessage(TypeEmbed.DefaultEmbed(args[0].replaceAll("_", " "), "")).queue();
 			return;
 		}
 
@@ -50,7 +50,7 @@ public class EmbedCommand extends Commands {
 				em.append(args[i] + " ");
 			}
 
-			sendEmbedMessage(new DefaultEmbed(args[0].replaceAll("_", " "), em.toString())).queue();
+			sendEmbedMessage(TypeEmbed.DefaultEmbed(args[0].replaceAll("_", " "), em.toString())).queue();
 			return;
 		}
 		return;

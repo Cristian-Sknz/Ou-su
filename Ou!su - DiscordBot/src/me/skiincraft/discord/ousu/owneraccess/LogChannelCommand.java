@@ -1,6 +1,5 @@
 package me.skiincraft.discord.ousu.owneraccess;
 
-import me.skiincraft.discord.ousu.embedtypes.DefaultEmbed;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
@@ -30,7 +29,7 @@ public class LogChannelCommand extends Commands {
 		}
 
 		new ConfigAcess(channel.getGuild()).set("Logchannel", channel.getId());
-		sendEmbedMessage(new DefaultEmbed("Configuração", "Você setou o chat de logging")).queue();
+		//sendEmbedMessage(new DefaultEmbed("Configuração", "Você setou o chat de logging")).queue();
 	}
 
 }

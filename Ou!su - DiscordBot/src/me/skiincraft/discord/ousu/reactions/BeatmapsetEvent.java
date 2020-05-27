@@ -1,10 +1,10 @@
-package me.skiincraft.discord.ousu.commands.reactions;
+package me.skiincraft.discord.ousu.reactions;
 
 import java.util.Arrays;
 import java.util.List;
 
-import me.skiincraft.api.ousu.scores.Score;
-import me.skiincraft.discord.ousu.commands.TopUserCommand;
+import me.skiincraft.api.ousu.beatmaps.Beatmap;
+import me.skiincraft.discord.ousu.embeds.BeatmapEmbed;
 import me.skiincraft.discord.ousu.events.TopUserReaction;
 import me.skiincraft.discord.ousu.manager.ReactionUtils;
 import me.skiincraft.discord.ousu.manager.ReactionsManager;
@@ -13,11 +13,11 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 
-public class HistoryEvent extends ReactionsManager {
+public class BeatmapsetEvent extends ReactionsManager {
 
 	@Override
 	public List<ReactionUtils> listHistory() {
-		return ReactionMessage.osuHistory;
+		return ReactionMessage.beatHistory;
 	}
 
 	@Override
@@ -27,7 +27,8 @@ public class HistoryEvent extends ReactionsManager {
 			listHistory().remove(getUtils());
 
 			Object obj = getUtils().getObject();
-			Score[] score = (Score[]) obj;
+			Beatmap[] beatmap = (Beatmap[]) obj;
+
 			int v = getUtils().getValue();
 			if (v <= 0) {
 				v = 0;
@@ -37,7 +38,7 @@ public class HistoryEvent extends ReactionsManager {
 				v = getUtils().getValue() - 1;
 			}
 
-			EmbedBuilder embed = TopUserCommand.embed(Arrays.asList(score), v, channel.getGuild());
+			EmbedBuilder embed = BeatmapEmbed.beatmapEmbed(Arrays.asList(beatmap), v, channel.getGuild());
 
 			channel.editMessageById(getEvent().getMessageId(), embed.build()).queue();
 			listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, v));
@@ -56,13 +57,14 @@ public class HistoryEvent extends ReactionsManager {
 			v += 1;
 
 			Object obj = getUtils().getObject();
-			Score[] score = (Score[]) obj;
+			Beatmap[] beatmap = (Beatmap[]) obj;
 
-			if (v >= score.length) {
-				listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, score.length - 1));
+			if (v >= beatmap.length) {
+				listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, beatmap.length - 1));
 				return;
 			}
-			EmbedBuilder embed = TopUserCommand.embed(Arrays.asList(score), v, channel.getGuild());
+
+			EmbedBuilder embed = BeatmapEmbed.beatmapEmbed(Arrays.asList(beatmap), v, channel.getGuild());
 
 			channel.editMessageById(getEvent().getMessageId(), embed.build()).queue();
 			listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, v));

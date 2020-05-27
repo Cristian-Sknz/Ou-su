@@ -10,7 +10,6 @@ import java.util.List;
 import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.customemoji.EmojiCustom;
 import me.skiincraft.discord.ousu.embeds.TypeEmbed;
-import me.skiincraft.discord.ousu.embedtypes.DefaultEmbed;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.language.LanguageManager.Language;
 import me.skiincraft.discord.ousu.mysql.SQLAccess;
@@ -261,22 +260,6 @@ public abstract class Commands extends ListenerAdapter {
 		MessageAction b = event.getChannel().sendFile(input, "profile_osu.png")
 				.embed(e.setImage("attachment://profile_osu.png").build());
 		return b;
-	}
-
-	public MessageAction sendFileEmbeded(DefaultEmbed e, File file) {
-		MessageAction b = event.getChannel().sendFile(file, file.getName())
-				.embed(e.construirEmbed().setImage("attachment://" + file.getName()).build());
-		return b;
-	}
-
-	public MessageAction sendEmbedMessage(DefaultEmbed e) {
-		MessageAction a = event.getChannel().sendMessage(e.construir());
-		return a;
-	}
-
-	public MessageAction sendPrivateEmbedMessage(DefaultEmbed e) {
-		MessageAction a = event.getAuthor().openPrivateChannel().complete().sendMessage(e.construir());
-		return a;
 	}
 
 	public List<String> getAliases() {
