@@ -99,7 +99,7 @@ public class TypeEmbed {
 	public static EmbedBuilder LoadingEmbed() {
 		EmbedBuilder embed = new EmbedBuilder();
 		embed.setTitle("Loading...");
-		embed.setColor(Color.BLUE);
+		embed.setColor(Color.YELLOW);
 		embed.setThumbnail("https://i.imgur.com/kPLyktW.gif");
 		return embed;
 	}

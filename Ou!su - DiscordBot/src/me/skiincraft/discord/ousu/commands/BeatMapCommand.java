@@ -58,17 +58,15 @@ public class BeatMapCommand extends Commands {
 				return;
 			}
 
-			sendEmbedMessage(BeatmapEmbed.beatmapEmbed(osuBeat, channel.getGuild()))
-					.queue(new Consumer<Message>() {
+			sendEmbedMessage(BeatmapEmbed.beatmapEmbed(osuBeat, channel.getGuild())).queue(new Consumer<Message>() {
 
-						@Override
-						public void accept(Message message) {
-							message.getChannel().sendFile(BeatmapEmbed.idb,
-									message.getEmbeds().get(0).getTitle().replace(Emoji.HEADPHONES.getAsMention(), "")
-											+ ".mp3")
-									.queue();
-						}
-					});
+				@Override
+				public void accept(Message message) {
+					message.getChannel().sendFile(BeatmapEmbed.idb,
+							message.getEmbeds().get(0).getTitle().replace(Emoji.HEADPHONES.getAsMention(), "") + ".mp3")
+							.queue();
+				}
+			});
 		}
 	}
 }

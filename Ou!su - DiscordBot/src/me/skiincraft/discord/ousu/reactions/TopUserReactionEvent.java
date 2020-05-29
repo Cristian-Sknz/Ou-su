@@ -24,7 +24,6 @@ public class TopUserReactionEvent extends ReactionsManager {
 		if (emoji.equalsIgnoreCase("◀")) {
 			listHistory().remove(getUtils());
 
-
 			int v = getUtils().getValue();
 			if (v <= 0) {
 				v = 0;

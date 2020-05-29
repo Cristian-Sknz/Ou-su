@@ -112,6 +112,7 @@ public class ReadyBotEvent extends ListenerAdapter {
 		}
 
 		ReadyUtil.updateServerUsers(guildas); // Atualizar numero de membros.
+
 		if (newGuilds == 0) {
 			OusuBot.getOusu().logger("Não foi adicionado nenhum servidor novo, desde o ultimo update.");
 			return;

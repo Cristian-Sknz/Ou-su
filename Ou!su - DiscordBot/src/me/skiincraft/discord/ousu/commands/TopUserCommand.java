@@ -127,16 +127,16 @@ public class TopUserCommand extends Commands {
 				int v = 1;
 				me.skiincraft.api.ousu.users.User us = osuUser.get(0).getUser();
 				for (Score sc : osuUser) {
-					emb.add(embed(sc, new Integer[] {v,  osuUser.size()}, us,channel.getGuild()));
+					emb.add(embed(sc, new Integer[] { v, osuUser.size() }, us, channel.getGuild()));
 					v++;
 				}
 
 				EmbedBuilder[] scorearray = new EmbedBuilder[emb.size()];
 				emb.toArray(scorearray);
-				
+
 				message.editMessage(scorearray[0].build()).queue(message2 -> {
 					message2.addReaction("U+25C0").queue();
-					//message2.addReaction("U+25FC").queue();
+					// message2.addReaction("U+25FC").queue();
 					message2.addReaction("U+25B6").queue();
 					ReactionMessage.osuHistory.add(new TopUserReaction(user, message.getId(), scorearray, 0));
 				});
@@ -145,13 +145,14 @@ public class TopUserCommand extends Commands {
 		}
 	}
 
-	public static EmbedBuilder embed(Score scorelist, Integer[] order, me.skiincraft.api.ousu.users.User user, Guild guild) {
+	public static EmbedBuilder embed(Score scorelist, Integer[] order, me.skiincraft.api.ousu.users.User user,
+			Guild guild) {
 		EmbedBuilder embed = new EmbedBuilder();
 		Score score = scorelist;
 		SQLAccess sql = new SQLAccess(guild);
 		LanguageManager lang = new LanguageManager(Language.valueOf(sql.get("language")));
 		Beatmap beatmap = score.getBeatmap();
-		
+
 		// Strings
 		System.out.println(score.getRank());
 		String inicial = getRankEmote(score);
@@ -191,8 +192,7 @@ public class TopUserCommand extends Commands {
 
 		embed.addField(lang.translatedEmbeds("SCORE"), field, true);
 		embed.addField(lang.translatedEmbeds("TOTAL_SCORE"), score.getScore() + "", true);
-		embed.addField(lang.translatedEmbeds("MAX_COMBO"), score.getMaxCombo() + "/" + beatmap.getMaxCombo(),
-				true);
+		embed.addField(lang.translatedEmbeds("MAX_COMBO"), score.getMaxCombo() + "/" + beatmap.getMaxCombo(), true);
 
 		embed.addField("PP", pp + new DecimalFormat("#").format(score.getScorePP()) + "", true);
 

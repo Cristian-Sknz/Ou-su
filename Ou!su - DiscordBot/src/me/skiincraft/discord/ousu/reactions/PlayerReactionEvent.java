@@ -16,7 +16,7 @@ import me.skiincraft.discord.ousu.exception.SearchNotFoundException;
 import me.skiincraft.discord.ousu.manager.ReactionUtils;
 import me.skiincraft.discord.ousu.manager.ReactionsManager;
 import me.skiincraft.discord.ousu.richpresence.Rich;
-import me.skiincraft.discord.ousu.search.SearchBearmap;
+import me.skiincraft.discord.ousu.search.GoogleSearch;
 import me.skiincraft.discord.ousu.utils.ReactionMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -32,6 +32,7 @@ public class PlayerReactionEvent extends ReactionsManager {
 		return ReactionMessage.playersHistory;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void action(User user, TextChannel channel, String emoji) {
 
@@ -58,7 +59,7 @@ public class PlayerReactionEvent extends ReactionsManager {
 
 		if (emoji.equalsIgnoreCase("🔍")) {
 
-			SearchBearmap searchBearmap;
+			GoogleSearch searchBearmap;
 			List<Beatmap> beat;
 
 			Object obj = getUtils().getObject();
@@ -82,7 +83,7 @@ public class PlayerReactionEvent extends ReactionsManager {
 			}
 
 			try {
-				searchBearmap = new SearchBearmap(value);
+				searchBearmap = new GoogleSearch(value);
 				beat = OusuBot.getOsu().getBeatmapSet(searchBearmap.getBeatmapSetIDs2().get(0));
 				getEvent().getChannel().removeReactionById(getUtils().getMessageID(), emoji, OusuBot.getSelfUser())
 						.queue();

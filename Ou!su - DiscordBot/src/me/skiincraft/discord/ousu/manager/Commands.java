@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 import me.skiincraft.discord.ousu.OusuBot;
+import me.skiincraft.discord.ousu.api.CooldownManager;
 import me.skiincraft.discord.ousu.customemoji.EmojiCustom;
 import me.skiincraft.discord.ousu.embeds.TypeEmbed;
 import me.skiincraft.discord.ousu.language.LanguageManager;
@@ -81,6 +82,11 @@ public abstract class Commands extends ListenerAdapter {
 			if (!args[0].equalsIgnoreCase(prefix + command)) {
 				return false;
 			}
+		}
+		if (new CooldownManager().isInCooldown(e.getAuthor().getId())) {
+			String[] str = getLang().translatedArrayMessages("COOLDOWN_MESSAGE");
+			sendEmbedMessage(TypeEmbed.DefaultEmbed(str[0], str[1])).queue();
+			return false;
 		}
 
 		this.label = prefix + command;
@@ -169,11 +175,13 @@ public abstract class Commands extends ListenerAdapter {
 				} catch (InterruptedException e) {
 
 				}
-				System.out.println("[args] = " + StringUtils.arrayToString(0, sarray));
+				System.out.println("[args] = " + StringUtils.arrayToString2(0, sarray));
+				new CooldownManager().addToCooldown(user.getId(), 2);
 				action(sarray, label, user, channel);
 
 				final long result = startElapsed - System.currentTimeMillis();
 				String elapsedtime = new DecimalFormat("#.0").format(result / 1000) + "s";
+
 				if (elapsedtime.startsWith(",")) {
 					OusuBot.getOusu().logger("[" + getCommandFull() + " | Elapsed Time: 0s]");
 					Thread.currentThread().interrupt();

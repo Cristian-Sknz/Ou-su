@@ -25,7 +25,7 @@ public class BeatmapEmbed {
 	public synchronized static EmbedBuilder beatmapEmbed(Beatmap beat, Guild guild) {
 		EmbedBuilder embed = new EmbedBuilder();
 		SQLAccess sql = new SQLAccess(guild);
-		
+
 		LanguageManager lang = new LanguageManager(Language.valueOf(sql.get("language")));
 
 		Beatmap beatmap = beat;

@@ -123,13 +123,13 @@ public class RecentUserCommand extends Commands {
 			sendEmbedMessage(TypeEmbed.LoadingEmbed()).queue(message -> {
 				me.skiincraft.api.ousu.users.User us = osuUser.get(0).getUser();
 				List<EmbedBuilder> emb = new ArrayList<EmbedBuilder>();
-				
+
 				int v = 1;
-				for (Score s :osuUser) {
-					emb.add(embed(s, new Integer[] {v, osuUser.size()}, us, channel.getGuild()));
+				for (Score s : osuUser) {
+					emb.add(embed(s, new Integer[] { v, osuUser.size() }, us, channel.getGuild()));
 					v++;
 				}
-				
+
 				EmbedBuilder[] sc = new EmbedBuilder[emb.size()];
 				emb.toArray(sc);
 				message.editMessage(sc[0].build()).queue(message2 -> {
@@ -140,13 +140,13 @@ public class RecentUserCommand extends Commands {
 					ReactionMessage.recentHistory.add(new TopUserReaction(user, message.getId(), sc, 0));
 				});
 			});
-			
-			
+
 			return;
 		}
 	}
 
-	public static EmbedBuilder embed(Score scorelist, Integer[] order, me.skiincraft.api.ousu.users.User user, Guild guild) {
+	public static EmbedBuilder embed(Score scorelist, Integer[] order, me.skiincraft.api.ousu.users.User user,
+			Guild guild) {
 		// "Imports"
 		EmbedBuilder embed = new EmbedBuilder();
 		Score score = scorelist;

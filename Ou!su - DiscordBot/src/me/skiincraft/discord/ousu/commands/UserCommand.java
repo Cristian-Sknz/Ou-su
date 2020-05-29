@@ -56,7 +56,6 @@ public class UserCommand extends Commands {
 		}
 
 		if (args.length >= 1) {
-
 			me.skiincraft.api.ousu.users.User osuUser;
 			try {
 				StringBuffer stringArgs = new StringBuffer();

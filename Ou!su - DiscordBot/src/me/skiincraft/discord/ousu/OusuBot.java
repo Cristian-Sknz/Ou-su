@@ -13,6 +13,7 @@ import javax.security.auth.login.LoginException;
 
 import me.skiincraft.api.ousu.OusuAPI;
 import me.skiincraft.api.ousu.exceptions.InvalidTokenException;
+import me.skiincraft.discord.ousu.api.CooldownManager;
 import me.skiincraft.discord.ousu.api.DBLJavaLibrary;
 import me.skiincraft.discord.ousu.commands.BeatMapCommand;
 import me.skiincraft.discord.ousu.commands.BeatMapSetCommand;
@@ -43,13 +44,13 @@ import me.skiincraft.discord.ousu.owneraccess.LogChannelCommand;
 import me.skiincraft.discord.ousu.owneraccess.PresenseCommand;
 import me.skiincraft.discord.ousu.owneraccess.ServersCommand;
 import me.skiincraft.discord.ousu.reactions.BeatmapsetEvent;
-import me.skiincraft.discord.ousu.reactions.TopUserReactionEvent;
 import me.skiincraft.discord.ousu.reactions.PlayerReactionEvent;
 import me.skiincraft.discord.ousu.reactions.RankingReactionEvent;
 import me.skiincraft.discord.ousu.reactions.RecentuserEvent;
 import me.skiincraft.discord.ousu.reactions.SearchReactionsEvent;
 import me.skiincraft.discord.ousu.reactions.ServerReactionsEvent;
 import me.skiincraft.discord.ousu.reactions.SkinsReactionEvent;
+import me.skiincraft.discord.ousu.reactions.TopUserReactionEvent;
 import me.skiincraft.discord.ousu.utils.Token;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -71,7 +72,7 @@ public class OusuBot {
 	private static JDA jda;
 	private SQLite connection;
 	private static SelfUser selfUser;
-	
+
 	private static List<Emote> emotes;
 
 	private boolean DBSQL;
@@ -145,17 +146,18 @@ public class OusuBot {
 
 	public static String[] arguments;
 
+	@SuppressWarnings("deprecation")
 	private void loader(String[] args) {
 		ousu = this;
 		log = new Logging();
 		arguments = args;
 
-		build.setDisabledCacheFlags(EnumSet.of(CacheFlag.VOICE_STATE, CacheFlag.CLIENT_STATUS));
-		// build.setGuildSubscriptionsEnabled(false);
+		build.setDisabledCacheFlags(EnumSet.of(CacheFlag.VOICE_STATE));
 		build.setChunkingFilter(ChunkingFilter.NONE);
 
 		commands();
 		events();
+
 		System.out.println("MYSQL: Conectando ao servidor MySQL.");
 		this.connection = new SQLite(this);
 		this.connection.abrir();
@@ -164,7 +166,7 @@ public class OusuBot {
 		if (this.isDBSQL()) {
 			logger("MYSQL: Conexão foi estabelecida com sucesso.");
 		} else {
-			logger("MYSQL: Conexão foi estabelecida com sucesso.", Level.SEVERE);
+			logger("MYSQL: Conexão não foi estabelecida.", Level.SEVERE);
 			System.exit(0);
 		}
 		try {
@@ -182,33 +184,11 @@ public class OusuBot {
 			Timer timer = new Timer();
 			timer.schedule(new PresenceTask(), 1000, 2 * (60 * 1000));
 
-			Thread thread = new Thread(new Runnable() {
-
-				@Override
-				public void run() {
-					try {
-						int tempo = 120 * (60 * 1000);
-						logger("\nEssa aplicação irá reiniciar em 2h\n");
-						Thread.sleep(tempo / 2);
-						logger("\nEssa aplicação irá reiniciar em 1h\n");
-						System.out.println();
-						Thread.sleep(tempo / 2);
-						System.out.println("Reiniciando....");
-						try {
-							ApplicationUtils.restartApplication(args);
-						} catch (URISyntaxException e) {
-							e.printStackTrace();
-						}
-					} catch (IOException | InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			});
-
-			thread.start();
-			ApplicationUtils.frame
-					.setTitle(ApplicationUtils.frame.getTitle().replace("[Bot]", jda.getSelfUser().getName()));
+			ApplicationUtils.frame.setTitle(ApplicationUtils.frame.getTitle().replace("[Bot]", jda.getSelfUser().getName()));
 			emotes = getJda().getGuildById("680436378240286720").getEmotes();
+			
+			AppRestartThread(args);
+			CooldownManager.start();
 			
 			new DBLJavaLibrary().connect();
 		} catch (LoginException e) {
@@ -262,6 +242,34 @@ public class OusuBot {
 
 	public void setDBSQL(boolean dBSQL) {
 		DBSQL = dBSQL;
+	}
+	
+	public void AppRestartThread(String[] args) {
+		Thread thread = new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					int tempo = 120 * (60 * 1000);
+					logger("\nEssa aplicação irá reiniciar em 2h\n");
+					Thread.sleep(tempo / 2);
+					logger("\nEssa aplicação irá reiniciar em 1h\n");
+					System.out.println();
+					Thread.sleep(tempo / 2);
+					System.out.println("Reiniciando....");
+					try {
+						ApplicationUtils.restartApplication(args);
+					} catch (URISyntaxException e) {
+						e.printStackTrace();
+					}
+				} catch (IOException | InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+
+		thread.start();
+
 	}
 
 }

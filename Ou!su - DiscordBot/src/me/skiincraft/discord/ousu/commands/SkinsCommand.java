@@ -14,7 +14,7 @@ import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
 import me.skiincraft.discord.ousu.osuskins.OsuSkin;
-import me.skiincraft.discord.ousu.search.OsuSearchGetter;
+import me.skiincraft.discord.ousu.search.JSoupGetters;
 import me.skiincraft.discord.ousu.utils.Emoji;
 import me.skiincraft.discord.ousu.utils.ReactionMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -46,7 +46,7 @@ public class SkinsCommand extends Commands {
 			public void accept(Message msg) {
 				List<OsuSkin> skins;
 				try {
-					skins = OsuSearchGetter.pageskins();
+					skins = JSoupGetters.pageskins();
 					List<EmbedBuilder> embeds = new ArrayList<EmbedBuilder>();
 
 					for (OsuSkin osu : skins) {

@@ -1,14 +1,12 @@
 package me.skiincraft.discord.ousu.reactions;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 import me.skiincraft.discord.ousu.events.TopUserReaction;
 import me.skiincraft.discord.ousu.manager.ReactionUtils;
 import me.skiincraft.discord.ousu.manager.ReactionsManager;
 import me.skiincraft.discord.ousu.utils.ReactionMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 
@@ -22,25 +20,40 @@ public class SearchReactionsEvent extends ReactionsManager {
 	@Override
 	public void action(User user, TextChannel channel, String emoji) {
 
-		if (emoji.equalsIgnoreCase("🎯")) {
+		if (emoji.equalsIgnoreCase("◀")) {
 			listHistory().remove(getUtils());
 
 			Object obj = getUtils().getObject();
 			EmbedBuilder[] score = (EmbedBuilder[]) obj;
+			int v = getUtils().getValue();
+			if (v <= 0) {
+				v = 0;
+				listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, v));
+				return;
+			} else {
+				v = getUtils().getValue() - 1;
+			}
 
-			channel.clearReactionsById(getUtils().getMessageID()).queue();
-			channel.editMessageById(getEvent().getMessageId(), score[0].build())
-					.queue(new Consumer<Message>() {
+			channel.editMessageById(getEvent().getMessageId(), score[v].build()).queue();
+			listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, v));
 
-						@Override
-						public void accept(Message message) {
-							message.addReaction("U+25C0").queue();
-							message.addReaction("U+25FC").queue();
-							message.addReaction("U+25B6").queue();
-							ReactionMessage.beatHistory.add(new TopUserReaction(user, message.getId(), obj, 0));
-						}
-					});
+		}
 
+		if (emoji.equalsIgnoreCase("▶")) {
+			listHistory().remove(getUtils());
+			int v = getUtils().getValue();
+			v += 1;
+
+			Object obj = getUtils().getObject();
+			EmbedBuilder[] score = (EmbedBuilder[]) obj;
+
+			if (v >= score.length) {
+				listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, score.length - 1));
+				return;
+			}
+
+			channel.editMessageById(getEvent().getMessageId(), score[v].build()).queue();
+			listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, v));
 		}
 	}
 

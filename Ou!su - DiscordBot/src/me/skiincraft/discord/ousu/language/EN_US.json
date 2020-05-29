@@ -41,6 +41,7 @@
 	"GLOBAL_RANKING_MESSAGE": "You are viewing a global ranking of osu!",
 	"NATIONAL_RANKING_MESSAGE": "You are viewing the classification by country{l}The country you are seeing now is {country}",
 	"INCORRECT_USE": "❌  Incorrect use{l}Try using the command ",
+	"COOLDOWN_MESSAGE": "Please wait!{l} You are so fast! ",
 	"PREFIX_INCORRECT_USE2": "Incorrect Use{l}Only 3 characters are allowed.{l}*[ex: ou!]*",
 	"INEXISTENT_COMMAND_HELP": "Command doesn't exist{l}This command in which you requested help does not exist!",
 	"VOTE_COMMAND_MESSAGE": "Vote for me!{l}Hello {user} I’m Ousu, a bot with lots of cool features about {logo} it is very difficult to live in this internet world, especially when you are a robot! :smirk_cat: and like all robot I want to take over the world! Just kidding haha!{l} {l}If you want to help me, vote for me for more people to know me.That way you don't pay anything and it still helps me a lot :3"

@@ -21,7 +21,7 @@ public class RecentuserEvent extends ReactionsManager {
 	public void action(User user, TextChannel channel, String emoji) {
 		Object obj = getUtils().getObject();
 		EmbedBuilder[] beatmap = (EmbedBuilder[]) obj;
-		
+
 		if (emoji.equalsIgnoreCase("◀")) {
 			listHistory().remove(getUtils());
 
