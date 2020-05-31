@@ -1,27 +1,28 @@
 package me.skiincraft.discord.ousu.manager;
 
+import me.skiincraft.discord.ousu.OusuBot;
 import net.dv8tion.jda.api.entities.User;
 
 public abstract class ReactionUtils {
 
-	private User user;
+	private String userid;
 	private String messageID;
 	private int value;
 	private Object object;
 
-	public ReactionUtils(User user, String messageID, Object obj, int ordem) {
-		this.user = user;
+	public ReactionUtils(String userid, String messageID, Object obj, int ordem) {
+		this.userid = userid;
 		this.messageID = messageID;
 		this.value = ordem;
 		this.setObject(obj);
 	}
 
 	public User getUser() {
-		return user;
+		return OusuBot.getJda().getUserById(userid);
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setUser(String userid) {
+		this.userid = userid;
 	}
 
 	public String getMessageID() {

@@ -21,6 +21,7 @@ import me.skiincraft.api.ousu.modifiers.Approvated;
 import me.skiincraft.api.ousu.modifiers.Gamemode;
 import me.skiincraft.api.ousu.modifiers.Mods;
 import me.skiincraft.api.ousu.scores.Score;
+import me.skiincraft.api.ousu.users.User;
 import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.customemoji.EmojiCustom;
 import me.skiincraft.discord.ousu.customemoji.OsuEmoji;
@@ -39,7 +40,6 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
 
 public class TopUserCommand extends Commands {
 
@@ -60,7 +60,7 @@ public class TopUserCommand extends Commands {
 	public static String linkcover;
 
 	@Override
-	public void action(String[] args, String label, User user, TextChannel channel) {
+	public void action(String[] args, String label, TextChannel channel) {
 		if (args.length == 0) {
 			sendUsage().queue();
 			return;
@@ -125,7 +125,7 @@ public class TopUserCommand extends Commands {
 				// Transform list to array
 				List<EmbedBuilder> emb = new ArrayList<EmbedBuilder>();
 				int v = 1;
-				me.skiincraft.api.ousu.users.User us = osuUser.get(0).getUser();
+				User us = osuUser.get(0).getUser();
 				for (Score sc : osuUser) {
 					emb.add(embed(sc, new Integer[] { v, osuUser.size() }, us, channel.getGuild()));
 					v++;
@@ -138,14 +138,14 @@ public class TopUserCommand extends Commands {
 					message2.addReaction("U+25C0").queue();
 					// message2.addReaction("U+25FC").queue();
 					message2.addReaction("U+25B6").queue();
-					ReactionMessage.osuHistory.add(new TopUserReaction(user, message.getId(), scorearray, 0));
+					ReactionMessage.osuHistory.add(new TopUserReaction(getUserId(), message.getId(), scorearray, 0));
 				});
 				return;
 			});
 		}
 	}
 
-	public static EmbedBuilder embed(Score scorelist, Integer[] order, me.skiincraft.api.ousu.users.User user,
+	public static EmbedBuilder embed(Score scorelist, Integer[] order, User user,
 			Guild guild) {
 		EmbedBuilder embed = new EmbedBuilder();
 		Score score = scorelist;
@@ -154,7 +154,6 @@ public class TopUserCommand extends Commands {
 		Beatmap beatmap = score.getBeatmap();
 
 		// Strings
-		System.out.println(score.getRank());
 		String inicial = getRankEmote(score);
 		String ordem = "[" + order[0].intValue() + "/" + order[1].intValue() + "]";
 		String u = "[" + user.getUserName() + "](" + user.getURL() + ")";

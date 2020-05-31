@@ -22,7 +22,6 @@ import me.skiincraft.discord.ousu.commands.HelpCommand;
 import me.skiincraft.discord.ousu.commands.InviteCommand;
 import me.skiincraft.discord.ousu.commands.LanguageCommand;
 import me.skiincraft.discord.ousu.commands.MentionCommand;
-import me.skiincraft.discord.ousu.commands.PlayersCommand;
 import me.skiincraft.discord.ousu.commands.PrefixCommand;
 import me.skiincraft.discord.ousu.commands.RankingCommand;
 import me.skiincraft.discord.ousu.commands.RecentUserCommand;
@@ -40,7 +39,6 @@ import me.skiincraft.discord.ousu.events.ReceivedEvent;
 import me.skiincraft.discord.ousu.logger.Logging;
 import me.skiincraft.discord.ousu.manager.Commands;
 import me.skiincraft.discord.ousu.mysql.SQLite;
-import me.skiincraft.discord.ousu.owneraccess.LogChannelCommand;
 import me.skiincraft.discord.ousu.owneraccess.PresenseCommand;
 import me.skiincraft.discord.ousu.owneraccess.ServersCommand;
 import me.skiincraft.discord.ousu.reactions.BeatmapsetEvent;
@@ -61,7 +59,7 @@ import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
 public class OusuBot {
-
+	
 	public static List<String> listPrivated = new ArrayList<String>();
 	JDABuilder build = new JDABuilder(token);
 
@@ -214,7 +212,9 @@ public class OusuBot {
 				new InviteCommand(), new RecentUserCommand(), new LanguageCommand(), new BeatMapSetCommand(),
 				new SearchCommand(), new VoteCommand(), new RankingCommand(), new SkinsCommand());
 
-		registerCommands(new PresenseCommand(), new LogChannelCommand(), new PlayersCommand(), new ServersCommand());
+		registerCommands(new PresenseCommand(),/* new PlayersCommand(),*/ new ServersCommand());
+		
+		// Comando Players temporariamente desativado.
 	}
 
 	private void registerEvents(ListenerAdapter... events) {

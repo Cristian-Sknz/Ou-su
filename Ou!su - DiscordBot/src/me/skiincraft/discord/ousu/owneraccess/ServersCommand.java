@@ -21,7 +21,6 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
 
 public class ServersCommand extends Commands {
 
@@ -40,7 +39,7 @@ public class ServersCommand extends Commands {
 	}
 
 	@Override
-	public void action(String[] args, String label, User user, TextChannel channel) {
+	public void action(String[] args, String label, TextChannel channel) {
 		if (!isOwner()) {
 			return;
 		}
@@ -90,7 +89,7 @@ public class ServersCommand extends Commands {
 				EmbedBuilder[] bm = new EmbedBuilder[build.size()];
 				build.toArray(bm);
 
-				ReactionMessage.serverReations.add(new TopUserReaction(user, message.getId(), bm, 0));
+				ReactionMessage.serverReations.add(new TopUserReaction(getUserId(), message.getId(), bm, 0));
 			}
 		});
 	}

@@ -20,7 +20,6 @@ import me.skiincraft.discord.ousu.utils.ReactionMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
 
 public class SkinsCommand extends Commands {
 
@@ -39,7 +38,7 @@ public class SkinsCommand extends Commands {
 	}
 
 	@Override
-	public void action(String[] args, String label, User user, TextChannel channel) {
+	public void action(String[] args, String label, TextChannel channel) {
 		sendEmbedMessage(TypeEmbed.LoadingEmbed()).queue(new Consumer<Message>() {
 
 			@Override
@@ -60,7 +59,7 @@ public class SkinsCommand extends Commands {
 						public void accept(Message t) {
 							t.addReaction("U+25C0").queue();
 							t.addReaction("U+25B6").queue();
-							ReactionMessage.skinsReaction.add(new TopUserReaction(user, t.getId(), embed, 0));
+							ReactionMessage.skinsReaction.add(new TopUserReaction(getUserId(), t.getId(), embed, 0));
 
 						}
 					});

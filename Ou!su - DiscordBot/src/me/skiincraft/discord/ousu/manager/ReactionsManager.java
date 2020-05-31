@@ -2,9 +2,9 @@ package me.skiincraft.discord.ousu.manager;
 
 import java.util.List;
 
+import me.skiincraft.discord.ousu.OusuBot;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
@@ -26,7 +26,7 @@ public abstract class ReactionsManager extends ListenerAdapter {
 
 	public abstract List<ReactionUtils> listHistory();
 
-	public abstract void action(User user, TextChannel channel, String emoji);
+	public abstract void action(String userId, TextChannel channel, String emoji);
 
 	public boolean isValidReaction(GuildMessageReactionAddEvent event) {
 		String eventMessageID = event.getMessageId();
@@ -69,21 +69,15 @@ public abstract class ReactionsManager extends ListenerAdapter {
 		return true;
 	}
 
-	public boolean hasPermission(User user, Permission permission) {
-		if (event.getGuild().getMember(user).hasPermission(permission)) {
+	public boolean hasPermission(String userid, Permission permission) {
+		if (event.getGuild().getMemberById(userid).hasPermission(permission)) {
 			return true;
 		}
 		return false;
 	}
-
-	public boolean hasRole(User user, String rolename) {
-		List<Role> role = getEvent().getGuild().getRolesByName(rolename, true);
-		List<Role> memberRoles = event.getGuild().getMember(user).getRoles();
-
-		if (memberRoles.contains(role.get(0))) {
-			return true;
-		}
-		return false;
+	
+	public User getUser() {
+		return OusuBot.getJda().getUserById(getEvent().getUserId());
 	}
 
 	@Override
@@ -92,7 +86,7 @@ public abstract class ReactionsManager extends ListenerAdapter {
 			return;
 		}
 		event.getMessageId();
-		action(event.getUser(), event.getChannel(), emoji);
+		action(event.getUser().getId(), event.getChannel(), emoji);
 
 	}
 

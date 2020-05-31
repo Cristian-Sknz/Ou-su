@@ -20,7 +20,6 @@ import me.skiincraft.discord.ousu.utils.ReactionMessage;
 import me.skiincraft.discord.ousu.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
 
 public class SearchCommand extends Commands {
 
@@ -39,7 +38,7 @@ public class SearchCommand extends Commands {
 	}
 
 	@Override
-	public void action(String[] args, String label, User user, TextChannel channel) {
+	public void action(String[] args, String label, TextChannel channel) {
 		if (args.length == 0) {
 			sendUsage().queue();
 			return;
@@ -91,7 +90,7 @@ public class SearchCommand extends Commands {
 					EmbedBuilder[] bm = new EmbedBuilder[emb.size()];
 					emb.toArray(bm);
 
-					ReactionMessage.searchReactions.add(new TopUserReaction(user, message.getId(), bm, 0));
+					ReactionMessage.searchReactions.add(new TopUserReaction(getUserId(), message.getId(), bm, 0));
 					// message2.addReaction("U+1F3AF").queue();
 					message2.addReaction("U+25C0").queue();
 					message2.addReaction("U+25B6").queue();

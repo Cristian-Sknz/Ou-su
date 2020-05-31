@@ -34,7 +34,7 @@ public class VersionCommand extends Commands {
 	}
 
 	@Override
-	public void action(String[] args, String label, User user, TextChannel channel) {
+	public void action(String[] args, String label, TextChannel channel) {
 		channel.sendMessage(embed(channel.getGuild()).build()).queue();
 
 	}

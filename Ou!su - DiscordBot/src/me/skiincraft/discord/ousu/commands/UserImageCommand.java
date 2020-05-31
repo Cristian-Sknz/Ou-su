@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import me.skiincraft.api.ousu.exceptions.InvalidUserException;
 import me.skiincraft.api.ousu.modifiers.Gamemode;
+import me.skiincraft.api.ousu.users.User;
 import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.customemoji.EmojiCustom;
 import me.skiincraft.discord.ousu.embeds.TypeEmbed;
@@ -14,7 +15,6 @@ import me.skiincraft.discord.ousu.manager.Commands;
 import me.skiincraft.discord.ousu.mysql.SQLPlayer;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
 
 public class UserImageCommand extends Commands {
 
@@ -33,7 +33,7 @@ public class UserImageCommand extends Commands {
 	}
 
 	@Override
-	public void action(String[] args, String label, User user, TextChannel channel) {
+	public void action(String[] args, String label, TextChannel channel) {
 		if (args.length == 0) {
 			sendUsage().queue();
 			return;
@@ -41,7 +41,7 @@ public class UserImageCommand extends Commands {
 
 		if (args.length >= 1) {
 
-			me.skiincraft.api.ousu.users.User osuUser;
+			User osuUser;
 			try {
 				StringBuffer stringArgs = new StringBuffer();
 				for (int i = 0; i < args.length; i++) {

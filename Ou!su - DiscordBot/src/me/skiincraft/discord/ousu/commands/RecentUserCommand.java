@@ -18,6 +18,7 @@ import me.skiincraft.api.ousu.modifiers.Approvated;
 import me.skiincraft.api.ousu.modifiers.Gamemode;
 import me.skiincraft.api.ousu.modifiers.Mods;
 import me.skiincraft.api.ousu.scores.Score;
+import me.skiincraft.api.ousu.users.User;
 import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.customemoji.EmojiCustom;
 import me.skiincraft.discord.ousu.customemoji.OsuEmoji;
@@ -36,7 +37,6 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
 
 public class RecentUserCommand extends Commands {
 
@@ -57,7 +57,7 @@ public class RecentUserCommand extends Commands {
 	public static String linkcover;
 
 	@Override
-	public void action(String[] args, String label, User user, TextChannel channel) {
+	public void action(String[] args, String label, TextChannel channel) {
 		if (args.length == 0) {
 			sendUsage().queue();
 			return;
@@ -137,7 +137,7 @@ public class RecentUserCommand extends Commands {
 					// message.addReaction("U+25FC").queue();
 					message.addReaction("U+25B6").queue();
 
-					ReactionMessage.recentHistory.add(new TopUserReaction(user, message.getId(), sc, 0));
+					ReactionMessage.recentHistory.add(new TopUserReaction(getUserId(), message.getId(), sc, 0));
 				});
 			});
 
@@ -145,8 +145,7 @@ public class RecentUserCommand extends Commands {
 		}
 	}
 
-	public static EmbedBuilder embed(Score scorelist, Integer[] order, me.skiincraft.api.ousu.users.User user,
-			Guild guild) {
+	public static EmbedBuilder embed(Score scorelist, Integer[] order,User user, Guild guild) {
 		// "Imports"
 		EmbedBuilder embed = new EmbedBuilder();
 		Score score = scorelist;

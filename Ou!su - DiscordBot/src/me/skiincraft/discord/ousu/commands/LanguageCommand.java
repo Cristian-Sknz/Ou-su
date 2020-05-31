@@ -12,7 +12,6 @@ import me.skiincraft.discord.ousu.mysql.SQLAccess;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
 
 public class LanguageCommand extends Commands {
 
@@ -31,8 +30,8 @@ public class LanguageCommand extends Commands {
 	}
 
 	@Override
-	public void action(String[] args, String label, User user, TextChannel channel) {
-		if (!hasPermission(user, Permission.MANAGE_CHANNEL)) {
+	public void action(String[] args, String label, TextChannel channel) {
+		if (!hasPermission(getUserId(), Permission.MANAGE_CHANNEL)) {
 			noPermissionMessage(Permission.MANAGE_SERVER).queue();
 			return;
 		}

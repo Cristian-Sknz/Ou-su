@@ -8,7 +8,6 @@ import me.skiincraft.discord.ousu.manager.ReactionsManager;
 import me.skiincraft.discord.ousu.utils.ReactionMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
 
 public class RecentuserEvent extends ReactionsManager {
 
@@ -18,7 +17,7 @@ public class RecentuserEvent extends ReactionsManager {
 	}
 
 	@Override
-	public void action(User user, TextChannel channel, String emoji) {
+	public void action(String userid, TextChannel channel, String emoji) {
 		Object obj = getUtils().getObject();
 		EmbedBuilder[] beatmap = (EmbedBuilder[]) obj;
 
@@ -28,7 +27,7 @@ public class RecentuserEvent extends ReactionsManager {
 			int v = getUtils().getValue();
 			if (v <= 0) {
 				v = 0;
-				listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, v));
+				listHistory().add(new TopUserReaction(userid, getEvent().getMessageId(), obj, v));
 				return;
 			} else {
 				v = getUtils().getValue() - 1;
@@ -37,7 +36,7 @@ public class RecentuserEvent extends ReactionsManager {
 			EmbedBuilder embed = beatmap[v];
 
 			channel.editMessageById(getEvent().getMessageId(), embed.build()).queue();
-			listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, v));
+			listHistory().add(new TopUserReaction(userid, getEvent().getMessageId(), obj, v));
 
 		}
 
@@ -53,14 +52,14 @@ public class RecentuserEvent extends ReactionsManager {
 			v += 1;
 
 			if (v >= beatmap.length) {
-				listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, beatmap.length - 1));
+				listHistory().add(new TopUserReaction(userid, getEvent().getMessageId(), obj, beatmap.length - 1));
 				return;
 			}
 
 			EmbedBuilder embed = beatmap[v];
 
 			channel.editMessageById(getEvent().getMessageId(), embed.build()).queue();
-			listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, v));
+			listHistory().add(new TopUserReaction(userid, getEvent().getMessageId(), obj, v));
 		}
 	}
 

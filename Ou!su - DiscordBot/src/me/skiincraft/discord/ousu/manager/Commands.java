@@ -18,7 +18,6 @@ import me.skiincraft.discord.ousu.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -37,7 +36,7 @@ public abstract class Commands extends ListenerAdapter {
 	private GuildMessageReceivedEvent event;
 
 	private TextChannel channel;
-	private User user;
+	private String userid;
 
 	private LanguageManager lang;
 
@@ -59,8 +58,16 @@ public abstract class Commands extends ListenerAdapter {
 
 	public abstract CommandCategory categoria();
 
-	public abstract void action(String[] args, String label, User user, TextChannel channel);
+	public abstract void action(String[] args, String label, TextChannel channel);
 
+	public User getUser() {
+		return OusuBot.getJda().getUserById(userid);
+	}
+	
+	public String getUserId() {
+		return userid;
+	}
+	
 	public boolean isValidCommand(GuildMessageReceivedEvent e) {
 		args = e.getMessage().getContentRaw().split(" ");
 		if (e.getAuthor().isBot()) {
@@ -93,30 +100,20 @@ public abstract class Commands extends ListenerAdapter {
 		this.lang = new LanguageManager(Language.valueOf(sql.get("language")));
 
 		this.channel = e.getChannel();
-		this.user = e.getAuthor();
+		this.userid = e.getAuthor().getId();
 		this.event = e;
 		return true;
 	}
 
-	public boolean hasPermission(User user, Permission permission) {
-		if (event.getGuild().getMember(user).hasPermission(permission)) {
-			return true;
-		}
-		return false;
-	}
-
-	public boolean hasRole(User user, String rolename) {
-		List<Role> role = getEvent().getGuild().getRolesByName(rolename, true);
-		List<Role> memberRoles = event.getGuild().getMember(user).getRoles();
-
-		if (memberRoles.contains(role.get(0))) {
+	public boolean hasPermission(String userId, Permission permission) {
+		if (event.getGuild().getMemberById(userId).hasPermission(permission)) {
 			return true;
 		}
 		return false;
 	}
 
 	public boolean isOwner() {
-		if (!user.equals(OusuBot.getJda().getUserById("247096601242238991"))) {
+		if (!userid.equals("247096601242238991")) {
 			return false;
 		} else {
 			return true;
@@ -158,7 +155,8 @@ public abstract class Commands extends ListenerAdapter {
 		complete.append(":" + channel.getName());
 		complete.append(" | " + data + "]:");
 
-		String userFull = user.getName() + "#" + user.getDiscriminator();
+		String userFull = event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator();
+		
 		OusuBot.getOusu().logger(complete.toString() + userFull + " executou o comando " + getCommandFull());
 
 		Thread t = new Thread(new Runnable() {
@@ -176,8 +174,9 @@ public abstract class Commands extends ListenerAdapter {
 
 				}
 				System.out.println("[args] = " + StringUtils.arrayToString2(0, sarray));
-				new CooldownManager().addToCooldown(user.getId(), 2);
-				action(sarray, label, user, channel);
+				new CooldownManager().addToCooldown(userid, 2);
+				
+				action(sarray, label, channel);
 
 				final long result = startElapsed - System.currentTimeMillis();
 				String elapsedtime = new DecimalFormat("#.0").format(result / 1000) + "s";

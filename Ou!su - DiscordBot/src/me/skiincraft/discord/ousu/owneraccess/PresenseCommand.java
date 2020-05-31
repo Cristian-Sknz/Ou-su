@@ -6,7 +6,6 @@ import me.skiincraft.discord.ousu.manager.Commands;
 import me.skiincraft.discord.ousu.utils.StringUtils;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.managers.Presence;
 
 public class PresenseCommand extends Commands {
@@ -26,7 +25,7 @@ public class PresenseCommand extends Commands {
 	}
 
 	@Override
-	public void action(String[] args, String label, User user, TextChannel channel) {
+	public void action(String[] args, String label, TextChannel channel) {
 		if (!isOwner()) {
 			return;
 		}

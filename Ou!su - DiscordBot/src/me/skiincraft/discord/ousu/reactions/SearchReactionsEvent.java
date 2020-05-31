@@ -8,7 +8,6 @@ import me.skiincraft.discord.ousu.manager.ReactionsManager;
 import me.skiincraft.discord.ousu.utils.ReactionMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
 
 public class SearchReactionsEvent extends ReactionsManager {
 
@@ -18,7 +17,7 @@ public class SearchReactionsEvent extends ReactionsManager {
 	}
 
 	@Override
-	public void action(User user, TextChannel channel, String emoji) {
+	public void action(String userid, TextChannel channel, String emoji) {
 
 		if (emoji.equalsIgnoreCase("◀")) {
 			listHistory().remove(getUtils());
@@ -28,14 +27,14 @@ public class SearchReactionsEvent extends ReactionsManager {
 			int v = getUtils().getValue();
 			if (v <= 0) {
 				v = 0;
-				listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, v));
+				listHistory().add(new TopUserReaction(userid, getEvent().getMessageId(), obj, v));
 				return;
 			} else {
 				v = getUtils().getValue() - 1;
 			}
 
 			channel.editMessageById(getEvent().getMessageId(), score[v].build()).queue();
-			listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, v));
+			listHistory().add(new TopUserReaction(userid, getEvent().getMessageId(), obj, v));
 
 		}
 
@@ -48,12 +47,12 @@ public class SearchReactionsEvent extends ReactionsManager {
 			EmbedBuilder[] score = (EmbedBuilder[]) obj;
 
 			if (v >= score.length) {
-				listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, score.length - 1));
+				listHistory().add(new TopUserReaction(userid, getEvent().getMessageId(), obj, score.length - 1));
 				return;
 			}
 
 			channel.editMessageById(getEvent().getMessageId(), score[v].build()).queue();
-			listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, v));
+			listHistory().add(new TopUserReaction(userid, getEvent().getMessageId(), obj, v));
 		}
 	}
 

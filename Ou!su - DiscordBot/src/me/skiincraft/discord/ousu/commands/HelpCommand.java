@@ -37,7 +37,7 @@ public class HelpCommand extends Commands {
 	}
 
 	@Override
-	public void action(String[] args, String label, User user, TextChannel channel) {
+	public void action(String[] args, String label, TextChannel channel) {
 		if (args.length == 0) {
 			sendEmbedMessage(embed(channel.getGuild())).queue();
 			return;

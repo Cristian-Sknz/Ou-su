@@ -18,7 +18,6 @@ import me.skiincraft.discord.ousu.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
 
 public class BeatMapSetCommand extends Commands {
 
@@ -37,7 +36,7 @@ public class BeatMapSetCommand extends Commands {
 	}
 
 	@Override
-	public void action(String[] args, String label, User user, TextChannel channel) {
+	public void action(String[] args, String label, TextChannel channel) {
 		if (args.length == 0) {
 			sendUsage().queue();
 			return;
@@ -74,7 +73,7 @@ public class BeatMapSetCommand extends Commands {
 				loadmessage.addReaction("U+25FC").queue();
 				loadmessage.addReaction("U+25B6").queue();
 
-				ReactionMessage.beatHistory.add(new TopUserReaction(user, loadmessage.getId(), bm, 0));
+				ReactionMessage.beatHistory.add(new TopUserReaction(getUser().getId(), loadmessage.getId(), bm, 0));
 				loadmessage.getChannel().sendFile(BeatmapEmbed.idb,
 						bm[0].build().getTitle().replace(Emoji.HEADPHONES.getAsMention(), "") + ".mp3").queue();
 

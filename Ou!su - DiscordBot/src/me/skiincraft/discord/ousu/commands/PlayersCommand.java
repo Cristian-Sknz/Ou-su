@@ -46,7 +46,7 @@ public class PlayersCommand extends Commands {
 	}
 
 	@Override
-	public void action(String[] args, String label, User user, TextChannel channel) {
+	public void action(String[] args, String label, TextChannel channel) {
 		// Pegar todos os presences de osu online no servidor discord.
 		List<Rich> getter = new PresenceGetter(channel.getGuild(), "367827983903490050", true).getRichPresences();
 
@@ -103,7 +103,7 @@ public class PlayersCommand extends Commands {
 				Rich[] g = new Rich[size];
 				finalrich.toArray(g);
 
-				ReactionMessage.playersHistory.add(new TopUserReaction(user, message.getId(), g, 0));
+				ReactionMessage.playersHistory.add(new TopUserReaction(getUserId(), message.getId(), g, 0));
 			}
 		});
 	}

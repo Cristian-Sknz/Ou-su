@@ -14,6 +14,7 @@ import javax.imageio.ImageIO;
 
 import me.skiincraft.api.ousu.exceptions.InvalidUserException;
 import me.skiincraft.api.ousu.modifiers.Gamemode;
+import me.skiincraft.api.ousu.users.User;
 import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.customemoji.EmojiCustom;
 import me.skiincraft.discord.ousu.customemoji.OsuEmoji;
@@ -30,7 +31,6 @@ import me.skiincraft.discord.ousu.utils.ImageUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
 
 public class UserCommand extends Commands {
 
@@ -49,14 +49,14 @@ public class UserCommand extends Commands {
 	}
 
 	@Override
-	public void action(String[] args, String label, User user, TextChannel channel) {
+	public void action(String[] args, String label, TextChannel channel) {
 		if (args.length == 0) {
 			sendUsage().queue();
 			return;
 		}
 
 		if (args.length >= 1) {
-			me.skiincraft.api.ousu.users.User osuUser;
+			User osuUser;
 			try {
 				StringBuffer stringArgs = new StringBuffer();
 				for (int i = 0; i < args.length; i++) {
@@ -100,13 +100,12 @@ public class UserCommand extends Commands {
 			}
 			InputStream drawer = OsuProfileNote.drawImage(osuUser, getLanguage());
 			String aname = osuUser.getUserID() + "userOsu.png";
-			channel.sendFile(drawer, aname)
-					.embed(embed(osuUser, getEvent().getGuild()).setImage("attachment://" + aname).build()).queue();
+			channel.sendFile(drawer, aname).embed(embed(osuUser, getEvent().getGuild()).setImage("attachment://" + aname).build()).queue();
 			return;
 		}
 	}
 
-	public static EmbedBuilder embed(me.skiincraft.api.ousu.users.User osuUser, Guild guild) {
+	public static EmbedBuilder embed(User osuUser, Guild guild) {
 		EmbedBuilder embed = new EmbedBuilder();
 		SQLAccess sql = new SQLAccess(guild);
 		LanguageManager lang = new LanguageManager(Language.valueOf(sql.get("language")));

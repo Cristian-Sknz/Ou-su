@@ -22,7 +22,6 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 
 public class PlayerReactionEvent extends ReactionsManager {
@@ -34,7 +33,7 @@ public class PlayerReactionEvent extends ReactionsManager {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public void action(User user, TextChannel channel, String emoji) {
+	public void action(String userid, TextChannel channel, String emoji) {
 
 		if (emoji.equalsIgnoreCase("◀")) {
 			listHistory().remove(getUtils());
@@ -44,7 +43,7 @@ public class PlayerReactionEvent extends ReactionsManager {
 			int v = getUtils().getValue();
 			if (v <= 0) {
 				v = 0;
-				listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, v));
+				listHistory().add(new TopUserReaction(userid, getEvent().getMessageId(), obj, v));
 				return;
 			} else {
 				v = getUtils().getValue() - 1;
@@ -53,7 +52,7 @@ public class PlayerReactionEvent extends ReactionsManager {
 			EmbedBuilder embed = PlayersCommand.richformat(Arrays.asList(score), v, channel.getGuild());
 
 			channel.editMessageById(getEvent().getMessageId(), embed.build()).queue();
-			listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, v));
+			listHistory().add(new TopUserReaction(userid, getEvent().getMessageId(), obj, v));
 
 		}
 
@@ -99,7 +98,7 @@ public class PlayerReactionEvent extends ReactionsManager {
 					Beatmap[] bm = new Beatmap[beat.size()];
 					beat.toArray(bm);
 
-					ReactionMessage.searchReactions.add(new TopUserReaction(user, message.getId(), bm, 0));
+					ReactionMessage.searchReactions.add(new TopUserReaction(userid, message.getId(), bm, 0));
 					message.addReaction("U+1F3AF").queue();
 
 				}
@@ -131,7 +130,7 @@ public class PlayerReactionEvent extends ReactionsManager {
 
 				channel.editMessageById(getUtils().getMessageID(), embed.build()).queue();
 			} catch (InvalidUserException e) {
-				listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, getUtils().getValue()));
+				listHistory().add(new TopUserReaction(userid, getEvent().getMessageId(), obj, getUtils().getValue()));
 				return;
 			}
 		}
@@ -145,13 +144,13 @@ public class PlayerReactionEvent extends ReactionsManager {
 			Rich[] score = (Rich[]) obj;
 
 			if (v >= score.length) {
-				listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, score.length - 1));
+				listHistory().add(new TopUserReaction(userid, getEvent().getMessageId(), obj, score.length - 1));
 				return;
 			}
 			EmbedBuilder embed = PlayersCommand.richformat(Arrays.asList(score), v, channel.getGuild());
 
 			channel.editMessageById(getEvent().getMessageId(), embed.build()).queue();
-			listHistory().add(new TopUserReaction(user, getEvent().getMessageId(), obj, v));
+			listHistory().add(new TopUserReaction(userid, getEvent().getMessageId(), obj, v));
 		}
 	}
 

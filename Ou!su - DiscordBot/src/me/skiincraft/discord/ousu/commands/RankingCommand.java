@@ -20,7 +20,6 @@ import me.skiincraft.discord.ousu.utils.ReactionMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
 
 public class RankingCommand extends Commands {
 
@@ -39,7 +38,7 @@ public class RankingCommand extends Commands {
 	}
 
 	@Override
-	public void action(String[] args, String label, User user, TextChannel channel) {
+	public void action(String[] args, String label, TextChannel channel) {
 		sendEmbedMessage(TypeEmbed.LoadingEmbed()).queue(new Consumer<Message>() {
 
 			@Override
@@ -65,7 +64,7 @@ public class RankingCommand extends Commands {
 							EmbedBuilder[] embedb = new EmbedBuilder[] { embed(ou, 0), embed(ou, 10), embed(ou, 20),
 									embed(ou, 30), embed(ou, 40) };
 
-							ReactionMessage.rankingReaction.add(new TopUserReaction(user, message.getId(), embedb, 0));
+							ReactionMessage.rankingReaction.add(new TopUserReaction(getUserId(), message.getId(), embedb, 0));
 						}
 					});
 				} catch (IOException e) {
