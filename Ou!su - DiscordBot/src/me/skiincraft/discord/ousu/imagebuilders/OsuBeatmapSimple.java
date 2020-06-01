@@ -8,14 +8,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.Map;
-
 import me.skiincraft.api.ousu.beatmaps.Beatmap;
-import me.skiincraft.api.ousu.modifiers.Gamemode;
 import me.skiincraft.discord.ousu.api.ImageBuilder;
 import me.skiincraft.discord.ousu.utils.CustomFont;
 import me.skiincraft.discord.ousu.utils.CustomFont.CustomFonts;
+import me.skiincraft.discord.ousu.utils.OusuUtils;
 
 public class OsuBeatmapSimple {
 
@@ -24,12 +21,10 @@ public class OsuBeatmapSimple {
 	public static InputStream drawImage(Beatmap beatmap) {
 		ImageBuilder builder = new ImageBuilder(beatmap.getBeatmapSetID() + "_cover", 900, 250);
 		try {
-			builder.addImage(
-					new URL("https://assets.ppy.sh/beatmaps/" + beatmap.getBeatmapSetID() + "/covers/cover.jpg?"), 0, 0,
-					builder.getSize());
-			builder.addImage(new URL("https://a.ppy.sh/" + beatmap.getCreatorId() + "?.jpeg"), 18, 16,
-					new Dimension(140, 140));
-
+			builder.addImage(new URL("https://assets.ppy.sh/beatmaps/" + beatmap.getBeatmapSetID() + "/covers/cover.jpg?"), 
+					0, 0, builder.getSize());
+			builder.addImage(new URL("https://a.ppy.sh/" + beatmap.getCreatorId() + "?.jpeg"), 
+					18, 16, new Dimension(140, 140));
 			builder.addImage(new File(path + "BeatmapOverlayer.png"), 0, 0, builder.getSize());
 
 			Font arialRound = CustomFont.getFont(CustomFonts.ArialRound, Font.PLAIN, 36);
@@ -53,7 +48,7 @@ public class OsuBeatmapSimple {
 
 			builder.addCentralizedString(beatmap.getGenre().name(), 805, 121, arialRound);
 
-			builder.addImage(new File(path + "modes/" + getGamemode(beatmap.getGameMode())), 793, 150,
+			builder.addImage(new File(path + "modes/" + OusuUtils.getGamemodeString(beatmap.getGameMode())), 793, 150,
 					new Dimension(74, 74));
 
 			builder.getGraphic().setColor(new Color(21, 156, 123));
@@ -66,21 +61,6 @@ public class OsuBeatmapSimple {
 		}
 
 		return null;
-	}
-
-	private static String getGamemode(Gamemode gamemode) {
-		Gamemode gm = gamemode;
-		Map<Gamemode, String> map = new HashMap<>();
-
-		map.put(Gamemode.Standard, "standard.png");
-		map.put(Gamemode.Catch, "catch.png");
-		map.put(Gamemode.Mania, "mania.png");
-		map.put(Gamemode.Taiko, "taiko.png");
-
-		if (map.containsKey(gm)) {
-			return map.get(gamemode);
-		}
-		return "standard";
 	}
 
 }

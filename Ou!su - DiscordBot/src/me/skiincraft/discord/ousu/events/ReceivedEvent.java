@@ -1,6 +1,7 @@
 package me.skiincraft.discord.ousu.events;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.List;
 
 import me.skiincraft.discord.ousu.OusuBot;
@@ -16,6 +17,8 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class ReceivedEvent extends ListenerAdapter {
 
+	public static List<String> listPrivated = new ArrayList<String>();
+	
 	public MessageEmbed portuguese() {
 		EmbedBuilder e = new EmbedBuilder();
 		User user = OusuBot.getJda().getUserById("247096601242238991");
@@ -63,7 +66,7 @@ public class ReceivedEvent extends ListenerAdapter {
 			return;
 		}
 
-		if (!OusuBot.listPrivated.contains(event.getAuthor().getName())) {
+		if (!listPrivated.contains(event.getAuthor().getName())) {
 			List<Guild> mutualguilds = event.getAuthor().getMutualGuilds();
 
 			int pt = 0;
@@ -92,7 +95,7 @@ public class ReceivedEvent extends ListenerAdapter {
 				event.getAuthor().openPrivateChannel().complete().sendMessage(portuguese()).queue();
 			}
 
-			OusuBot.listPrivated.add(event.getAuthor().getName());
+			listPrivated.add(event.getAuthor().getName());
 		}
 
 	}

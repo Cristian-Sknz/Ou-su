@@ -1,5 +1,6 @@
 package me.skiincraft.discord.ousu.commands;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +9,7 @@ import me.skiincraft.api.ousu.exceptions.InvalidBeatmapException;
 import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.embeds.BeatmapEmbed;
 import me.skiincraft.discord.ousu.embeds.TypeEmbed;
-import me.skiincraft.discord.ousu.events.TopUserReaction;
+import me.skiincraft.discord.ousu.events.DefaultReaction;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
@@ -43,9 +44,33 @@ public class BeatMapSetCommand extends Commands {
 		}
 
 		if (args.length == 1) {
-			List<Beatmap> osuBeat;
 			try {
-				osuBeat = OusuBot.getOsu().getBeatmapSet(Integer.valueOf(args[0]));
+				List<Beatmap> osuBeat = OusuBot.getOsu().getBeatmapSet(Integer.valueOf(args[0]));
+
+				sendEmbedMessage(TypeEmbed.LoadingEmbed()).queue(loadmessage -> {
+					List<EmbedBuilder> bmb = new ArrayList<EmbedBuilder>();
+					for (Beatmap b : osuBeat) {
+						bmb.add(BeatmapEmbed.beatmapEmbed(b, channel.getGuild()));
+					}
+
+					EmbedBuilder[] bm = new EmbedBuilder[bmb.size()];
+					bmb.toArray(bm);
+					loadmessage.editMessage(bm[0].build()).queue();
+					loadmessage.addReaction("U+25C0").queue();
+					loadmessage.addReaction("U+25FC").queue();
+					loadmessage.addReaction("U+25B6").queue();
+
+					ReactionMessage.beatHistory.add(new DefaultReaction(getUser().getId(), loadmessage.getId(), bm, 0));
+					try {
+						loadmessage.getChannel()
+								.sendFile(osuBeat.get(0).getBeatmapPreview(),
+										bm[0].build().getTitle().replace(Emoji.HEADPHONES.getAsMention(), "") + ".mp3")
+								.queue();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+
+				});
 			} catch (InvalidBeatmapException e) {
 				String[] msg = getLang().translatedArrayOsuMessages("INEXISTENT_BEATMAPID");
 
@@ -60,24 +85,6 @@ public class BeatMapSetCommand extends Commands {
 				return;
 			}
 
-			sendEmbedMessage(TypeEmbed.LoadingEmbed()).queue(loadmessage -> {
-				List<EmbedBuilder> bmb = new ArrayList<EmbedBuilder>();
-				for (Beatmap b : osuBeat) {
-					bmb.add(BeatmapEmbed.beatmapEmbed(b, channel.getGuild()));
-				}
-
-				EmbedBuilder[] bm = new EmbedBuilder[bmb.size()];
-				bmb.toArray(bm);
-				loadmessage.editMessage(bm[0].build()).queue();
-				loadmessage.addReaction("U+25C0").queue();
-				loadmessage.addReaction("U+25FC").queue();
-				loadmessage.addReaction("U+25B6").queue();
-
-				ReactionMessage.beatHistory.add(new TopUserReaction(getUser().getId(), loadmessage.getId(), bm, 0));
-				loadmessage.getChannel().sendFile(BeatmapEmbed.idb,
-						bm[0].build().getTitle().replace(Emoji.HEADPHONES.getAsMention(), "") + ".mp3").queue();
-
-			});
 		}
 	}
 }

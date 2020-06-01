@@ -2,9 +2,7 @@ package me.skiincraft.discord.ousu;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.logging.Level;
@@ -21,7 +19,6 @@ import me.skiincraft.discord.ousu.commands.EmbedCommand;
 import me.skiincraft.discord.ousu.commands.HelpCommand;
 import me.skiincraft.discord.ousu.commands.InviteCommand;
 import me.skiincraft.discord.ousu.commands.LanguageCommand;
-import me.skiincraft.discord.ousu.commands.MentionCommand;
 import me.skiincraft.discord.ousu.commands.PrefixCommand;
 import me.skiincraft.discord.ousu.commands.RankingCommand;
 import me.skiincraft.discord.ousu.commands.RecentUserCommand;
@@ -32,6 +29,7 @@ import me.skiincraft.discord.ousu.commands.UserCommand;
 import me.skiincraft.discord.ousu.commands.UserImageCommand;
 import me.skiincraft.discord.ousu.commands.VersionCommand;
 import me.skiincraft.discord.ousu.commands.VoteCommand;
+import me.skiincraft.discord.ousu.customemoji.OusuEmojis;
 import me.skiincraft.discord.ousu.events.OtherEvents;
 import me.skiincraft.discord.ousu.events.PresenceTask;
 import me.skiincraft.discord.ousu.events.ReadyBotEvent;
@@ -42,17 +40,16 @@ import me.skiincraft.discord.ousu.mysql.SQLite;
 import me.skiincraft.discord.ousu.owneraccess.PresenseCommand;
 import me.skiincraft.discord.ousu.owneraccess.ServersCommand;
 import me.skiincraft.discord.ousu.reactions.BeatmapsetEvent;
-import me.skiincraft.discord.ousu.reactions.PlayerReactionEvent;
 import me.skiincraft.discord.ousu.reactions.RankingReactionEvent;
 import me.skiincraft.discord.ousu.reactions.RecentuserEvent;
 import me.skiincraft.discord.ousu.reactions.SearchReactionsEvent;
 import me.skiincraft.discord.ousu.reactions.ServerReactionsEvent;
 import me.skiincraft.discord.ousu.reactions.SkinsReactionEvent;
 import me.skiincraft.discord.ousu.reactions.TopUserReactionEvent;
+import me.skiincraft.discord.ousu.reactions.UserReactionEvent;
 import me.skiincraft.discord.ousu.utils.Token;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.SelfUser;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
@@ -60,45 +57,18 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
 public class OusuBot {
 	
-	public static List<String> listPrivated = new ArrayList<String>();
-	JDABuilder build = new JDABuilder(token);
+	private JDABuilder build = new JDABuilder(Token.token);
 
-	public static OusuBot ousu;
+	private static OusuBot ousu;
 	private static OusuAPI osu;
-	private static String token = Token.token; // Isso é uma String estatica com o token.
 	private static Logging log;
 	private static JDA jda;
-	private SQLite connection;
 	private static SelfUser selfUser;
-
-	private static List<Emote> emotes;
-
 	private boolean DBSQL;
 
+	private SQLite connection;
 	public static OusuBot getOusu() {
 		return ousu;
-	}
-
-	public static List<Emote> getEmotes() {
-		return emotes;
-	}
-
-	public static Emote getEmote(String name) {
-		for (Emote emote : getEmotes()) {
-			if (emote.getName().toLowerCase().contains(name)) {
-				return emote;
-			}
-		}
-		return getEmotes().get(0);
-	}
-
-	public static String getEmoteAsMention(String name) {
-		for (Emote emote : getEmotes()) {
-			if (emote.getName().toLowerCase().contains(name)) {
-				return emote.getAsMention();
-			}
-		}
-		return getEmotes().get(0).getAsMention();
 	}
 
 	public static OusuAPI getOsu() {
@@ -150,25 +120,18 @@ public class OusuBot {
 		log = new Logging();
 		arguments = args;
 
-		build.setDisabledCacheFlags(EnumSet.of(CacheFlag.VOICE_STATE));
-		build.setChunkingFilter(ChunkingFilter.NONE);
-
 		commands();
 		events();
 
 		System.out.println("MYSQL: Conectando ao servidor MySQL.");
-		this.connection = new SQLite(this);
-		this.connection.abrir();
-		this.connection.setup();
-
-		if (this.isDBSQL()) {
-			logger("MYSQL: Conexão foi estabelecida com sucesso.");
-		} else {
-			logger("MYSQL: Conexão não foi estabelecida.", Level.SEVERE);
-			System.exit(0);
-		}
+		
+		connection = new SQLite(this);
+		connection.abrir();
+		connection.setup();
+		
 		try {
-
+			build.setDisabledCacheFlags(EnumSet.of(CacheFlag.VOICE_STATE));
+			build.setChunkingFilter(ChunkingFilter.NONE);
 			jda = build.build();
 			jda.awaitReady();
 			logger("JDA: Conexão foi estabelecida com sucesso");
@@ -183,7 +146,7 @@ public class OusuBot {
 			timer.schedule(new PresenceTask(), 1000, 2 * (60 * 1000));
 
 			ApplicationUtils.frame.setTitle(ApplicationUtils.frame.getTitle().replace("[Bot]", jda.getSelfUser().getName()));
-			emotes = getJda().getGuildById("680436378240286720").getEmotes();
+			new OusuEmojis().setEmotes(getJda().getGuildById("680436378240286720").getEmotes());
 			
 			AppRestartThread(args);
 			CooldownManager.start();
@@ -201,8 +164,9 @@ public class OusuBot {
 
 	public void events() {
 		registerEvents(new ReceivedEvent(), new TopUserReactionEvent(), new ReadyBotEvent(), new BeatmapsetEvent(),
-				new RecentuserEvent(), new PlayerReactionEvent(), new MentionCommand(), new ServerReactionsEvent(),
-				new SearchReactionsEvent(), new OtherEvents(), new RankingReactionEvent(), new SkinsReactionEvent());
+				new RecentuserEvent(), new ServerReactionsEvent(),
+				new SearchReactionsEvent(), new OtherEvents(), new RankingReactionEvent(), new SkinsReactionEvent(),
+				new UserReactionEvent());
 	}
 
 	public void commands() {

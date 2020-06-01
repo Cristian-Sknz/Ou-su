@@ -13,13 +13,8 @@ public class TypeEmbed {
 		Random r = new Random();
 		int i = r.nextInt(2);
 
-		if (i == 0) {
-			return "https://i.imgur.com/bz1MKtv.jpg";
-		}
-		if (i == 1) {
-			return "https://i.imgur.com/pkvpKuJ.jpg";
-		}
-		return null;
+		return (i == 0) ? "https://i.imgur.com/bz1MKtv.jpg" 
+				: (i == 1) ? "https://i.imgur.com/pkvpKuJ.jpg" : null;
 	}
 
 	public static EmbedBuilder WarningEmbed(String title, String description) {

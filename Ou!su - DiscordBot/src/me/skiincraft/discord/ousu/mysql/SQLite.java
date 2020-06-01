@@ -171,7 +171,8 @@ public class SQLite {
 		buffer.append("(ID INTEGER PRIMARY KEY AUTOINCREMENT,");
 		buffer.append("`userid` VARCHAR(64) NOT NULL, ");
 		buffer.append("`username` VARCHAR(64) NOT NULL, ");
-		buffer.append("`osu_account` VARCHAR(64) NOT NULL");
+		buffer.append("`lastpp` VARCHAR(64) NOT NULL, ");
+		buffer.append("`lastscore` VARCHAR(64) NOT NULL");
 		buffer.append(");");
 
 		return buffer.toString();

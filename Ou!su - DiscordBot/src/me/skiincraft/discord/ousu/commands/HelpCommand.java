@@ -6,12 +6,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import me.skiincraft.discord.ousu.OusuBot;
-import me.skiincraft.discord.ousu.customemoji.OsuEmoji;
+import me.skiincraft.discord.ousu.customemoji.OusuEmojis;
 import me.skiincraft.discord.ousu.embeds.TypeEmbed;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
 import me.skiincraft.discord.ousu.mysql.SQLAccess;
+import me.skiincraft.discord.ousu.utils.Emoji;
 import me.skiincraft.discord.ousu.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
@@ -59,26 +60,24 @@ public class HelpCommand extends Commands {
 			if (comando.equalsIgnoreCase(com.getCommand())) {
 				embed.setTitle("Help <" + com.getCommand() + ">");
 				if (com.helpMessage(getLang()) != null) {
-					String emoji = ":small_orange_diamond:";
+					String emoji = Emoji.SMALL_ORANGE_DIAMOND.getAsMention();;
 					StringBuffer buffer = new StringBuffer();
+					
 					for (String str : com.helpMessage(getLang())) {
 						buffer.append(emoji + " " + str + "\n");
 
 					}
-
 					embed.setDescription(buffer.toString());
 				} else {
 					embed.setDescription(getLang().translatedHelp("NO_COMMAND_DESCRIPTION"));
 				}
 
-				if (com.getAliases() != null) {// ALIASES
-					if (com.getAliases().size() != 0) {
-						String[] alias = new String[com.getAliases().size()];
-						com.getAliases().toArray(alias);
-						StringBuffer buffer = new StringBuffer();
-						for (String str : alias) {
-							buffer.append(prefix + str + "\n");
-						}
+				if (com.getAliases() != null && com.getAliases().size() != 0) {
+					String[] alias = new String[com.getAliases().size()];
+					com.getAliases().toArray(alias);
+					StringBuffer buffer = new StringBuffer();
+					for (String str : alias) {
+						buffer.append(prefix + str + "\n");
 
 						embed.addField(":mega: Aliases", buffer.toString(), true);
 					}
@@ -91,8 +90,8 @@ public class HelpCommand extends Commands {
 		}
 
 		String[] msg = getLang().translatedArrayMessages("INEXISTENT_COMMAND_HELP");
-		return TypeEmbed.SoftWarningEmbed(OsuEmoji.ThinkAnime.getEmojiString() + msg[0],
-				":space_invader: " + StringUtils.commandMessage(msg)).setFooter(prefix + "help to help!");
+		return TypeEmbed.SoftWarningEmbed(OusuEmojis.getEmoteAsMention("thinkanime") + msg[0],
+				Emoji.SPACE_INVADER.getAsMention() + " " + StringUtils.commandMessage(msg)).setFooter(prefix + "help to help!");
 	}
 
 	public EmbedBuilder embed(Guild guild) {
@@ -143,9 +142,6 @@ public class HelpCommand extends Commands {
 
 		String[] str = getLang().translatedArrayMessages("HELP_COMMAND_MESSAGE");
 
-		// embed.setTitle(str[0]);
-		String gif = "https://cdn.discordapp.com/attachments/710231271623753738/710231428037869568/3dgifmaker25.gif";
-		embed.setAuthor("", null, gif);
 		embed.setTitle(str[0]);
 		embed.setThumbnail(OusuBot.getSelfUser().getAvatarUrl());
 		StringBuffer buffer = new StringBuffer();
@@ -156,16 +152,16 @@ public class HelpCommand extends Commands {
 		}
 
 		embed.setDescription(buffer.toString());
-
+		
+		
 		embed.addField(":computer: **" + CommandCategory.Administração.getCategoria(getLanguage()) + "**",
 				"`" + String.join("\n", Adm) + "`", true);
 		embed.addField(":question: **" + CommandCategory.Ajuda.getCategoria(getLanguage()) + "**",
 				"`" + String.join("\n", Ajuda) + "`", true);
-		embed.addField(
-				OsuEmoji.OsuLogo.getEmojiString() + " **" + CommandCategory.Osu.getCategoria(getLanguage()) + "**",
+		embed.addField(OusuEmojis.getEmoteAsMention("osulogo") + " **" + CommandCategory.Osu.getCategoria(getLanguage()) + "**",
 				"`" + String.join("\n", Osu) + "`", true);
-		// embed.addField("**" + CommandCategory.Utilidade.getCategoria(getLanguage()) +
-		// "**", "`" + String.join("\n", Util) + "`", true);
+		/*embed.addField("**" + CommandCategory.Utilidade.getCategoria(getLanguage()) +
+		 "**", "`" + String.join("\n", Util) + "`", true);*/
 		embed.addField(":bulb: **" + CommandCategory.Sobre.getCategoria(getLanguage()) + "**",
 				"`" + String.join("\n", Sobre) + "`", true);
 

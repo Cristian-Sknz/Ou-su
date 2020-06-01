@@ -60,7 +60,7 @@ public class OsuProfile {
 			scoreCalculates(builder, f.format(osuUser.getSh()), 683);
 			scoreCalculates(builder, f.format(osuUser.getS()), 805);
 			scoreCalculates(builder, f.format(osuUser.getA()), 921);
-
+			
 			return builder.buildInput();
 
 		} catch (IOException e1) {

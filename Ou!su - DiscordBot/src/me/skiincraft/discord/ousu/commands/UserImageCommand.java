@@ -6,13 +6,12 @@ import me.skiincraft.api.ousu.exceptions.InvalidUserException;
 import me.skiincraft.api.ousu.modifiers.Gamemode;
 import me.skiincraft.api.ousu.users.User;
 import me.skiincraft.discord.ousu.OusuBot;
-import me.skiincraft.discord.ousu.customemoji.EmojiCustom;
+import me.skiincraft.discord.ousu.customemoji.OusuEmojis;
 import me.skiincraft.discord.ousu.embeds.TypeEmbed;
 import me.skiincraft.discord.ousu.imagebuilders.OsuProfile;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
-import me.skiincraft.discord.ousu.mysql.SQLPlayer;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -48,23 +47,11 @@ public class UserImageCommand extends Commands {
 					stringArgs.append(args[i] + " ");
 				}
 
-				int length = stringArgs.toString().length() - 1;
+				int length = stringArgs.length() - 1;
 
 				String usermsg = stringArgs.toString().substring(0, length);
 				String lastmsg = args[args.length - 1];
 				String name = usermsg.replace(" " + lastmsg, "");
-
-				if (getEvent().getMessage().getMentionedUsers().size() != 0) {
-					String userid = getEvent().getMessage().getMentionedUsers().get(0).getAsMention().replaceAll("\\D+",
-							"");
-
-					SQLPlayer sql = new SQLPlayer(OusuBot.getJda().getUserById(userid));
-					if (sql.existe()) {
-						String nic = sql.get("osu_account");
-						name = nic;
-						usermsg = nic;
-					}
-				}
 
 				if (Gamemode.getGamemode(lastmsg) != null) {
 					osuUser = OusuBot.getOsu().getUser(name, Gamemode.getGamemode(lastmsg));
@@ -77,7 +64,7 @@ public class UserImageCommand extends Commands {
 				StringBuffer buffer = new StringBuffer();
 				for (String append : str) {
 					if (append != str[0]) {
-						buffer.append(EmojiCustom.S_RDiamond.getEmoji() + " " + append);
+						buffer.append(OusuEmojis.getEmoteAsMention("small_red_diamond") + " " + append);
 					}
 				}
 

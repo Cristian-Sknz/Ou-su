@@ -8,7 +8,7 @@ import java.util.List;
 import me.skiincraft.api.ousu.exceptions.InvalidBeatmapException;
 import me.skiincraft.discord.ousu.embeds.SearchEmbed;
 import me.skiincraft.discord.ousu.embeds.TypeEmbed;
-import me.skiincraft.discord.ousu.events.TopUserReaction;
+import me.skiincraft.discord.ousu.events.DefaultReaction;
 import me.skiincraft.discord.ousu.exception.SearchNotFoundException;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
@@ -50,10 +50,10 @@ public class SearchCommand extends Commands {
 				GoogleSearch searchBearmap = null;
 				try {
 					searchBearmap = new GoogleSearch(StringUtils.arrayToString2(0, args));
-					List<Integer> beatmaplist = searchBearmap.getBeatmapSetIDs2();
+					List<Integer> beatmaplist = searchBearmap.getBeatmapSetIDs();
 					int i = 0;
 					for (int n : beatmaplist) {
-						bb.add(JSoupGetters.beatmapinfos(n));
+						bb.add(JSoupGetters.beatmapInfo(n));
 						if (bb.get(i) == null) {
 							continue;
 						}
@@ -70,13 +70,7 @@ public class SearchCommand extends Commands {
 					}
 				} catch (SearchNotFoundException | InvalidBeatmapException | IOException e) {
 					String[] str = getLang().translatedArrayOsuMessages("INEXISTENT_BEATMAPID");
-					StringBuffer buffer = new StringBuffer();
-					for (String s : str) {
-						if (s != str[0]) {
-							buffer.append(s + "\n");
-						}
-					}
-					message.editMessage(TypeEmbed.WarningEmbed(str[0], buffer.toString()).build()).queue();
+					message.editMessage(TypeEmbed.WarningEmbed(str[0], StringUtils.commandMessage(str)).build()).queue();
 					return;
 				}
 
@@ -90,7 +84,7 @@ public class SearchCommand extends Commands {
 					EmbedBuilder[] bm = new EmbedBuilder[emb.size()];
 					emb.toArray(bm);
 
-					ReactionMessage.searchReactions.add(new TopUserReaction(getUserId(), message.getId(), bm, 0));
+					ReactionMessage.searchReactions.add(new DefaultReaction(getUserId(), message.getId(), bm, 0));
 					// message2.addReaction("U+1F3AF").queue();
 					message2.addReaction("U+25C0").queue();
 					message2.addReaction("U+25B6").queue();

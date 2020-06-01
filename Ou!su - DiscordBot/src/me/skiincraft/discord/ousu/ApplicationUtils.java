@@ -59,12 +59,9 @@ public class ApplicationUtils {
 		System.setOut(con);
 		System.setErr(con);
 
-		// Optional: add a scrollpane around the console for having scrolling bars
-		JScrollPane sp = new JScrollPane( //
-				console, //
-				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, //
-				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED //
-		);
+		JScrollPane sp = new JScrollPane(console, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		
 		myPanel.add(sp);
 	}
 
@@ -77,8 +74,8 @@ public class ApplicationUtils {
 		frame.getContentPane().setLayout(new BorderLayout(0, 0));
 
 		JMenuBar menuBar = new JMenuBar();
-		frame.setJMenuBar(menuBar);
 		JMenu mnFunes = new JMenu("Funções");
+		frame.setJMenuBar(menuBar);
 		menuBar.add(mnFunes);
 
 		JMenuItem mntmFechar = new JMenuItem("Fechar");

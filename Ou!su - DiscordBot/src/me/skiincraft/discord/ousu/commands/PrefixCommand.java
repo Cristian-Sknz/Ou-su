@@ -1,6 +1,6 @@
 package me.skiincraft.discord.ousu.commands;
 
-import me.skiincraft.discord.ousu.customemoji.EmojiCustom;
+import me.skiincraft.discord.ousu.customemoji.OusuEmojis;
 import me.skiincraft.discord.ousu.embeds.TypeEmbed;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
@@ -42,32 +42,17 @@ public class PrefixCommand extends Commands {
 		if (args.length >= 1) {
 			if (!StringUtils.containsSpecialCharacters(args[0])) {
 				String[] str = getLang().translatedArrayMessages("PREFIX_INCORRECT_USE");
-				StringBuffer buffer = new StringBuffer();
-				for (String append : str) {
-					if (append != str[0]) {
-						buffer.append(append);
-					}
-				}
-
-				sendEmbedMessage(TypeEmbed.WarningEmbed("'❌' " + str[0], buffer.toString())).queue();
+				sendEmbedMessage(TypeEmbed.WarningEmbed("'❌' " + str[0], StringUtils.commandMessage(str))).queue();
 				return;
 			}
 
 			if (args[0].length() > 3) {
 				String[] str = getLang().translatedArrayMessages("PREFIX_INCORRECT_USE2");
-				StringBuffer buffer = new StringBuffer();
-				for (String append : str) {
-					if (append != str[0]) {
-						buffer.append(append);
-					}
-				}
-
-				sendEmbedMessage(TypeEmbed.WarningEmbed("'❌' " + str[0], buffer.toString())).queue();
+				sendEmbedMessage(TypeEmbed.WarningEmbed("'❌' " + str[0], StringUtils.commandMessage(str))).queue();
 				return;
 			}
 
 			SQLAccess sql = new SQLAccess(channel.getGuild());
-			channel.getGuild();
 
 			String oldPrefix = sql.get("prefix");
 			String newPrefix = args[0];
@@ -75,7 +60,7 @@ public class PrefixCommand extends Commands {
 
 			String[] str = getLang().translatedArrayMessages("PREFIX_COMMAND_MESSAGE");
 
-			EmbedBuilder defaultembed = TypeEmbed.ConfigEmbed(":gear: " + str[0], EmojiCustom.S_GDiamond + str[1]);
+			EmbedBuilder defaultembed = TypeEmbed.ConfigEmbed(":gear: " + str[0], OusuEmojis.getEmoteAsMention("small_green_diamond" + str[1]));
 
 			defaultembed.addField(str[2], oldPrefix, true);
 			defaultembed.addField(str[3], newPrefix, true);

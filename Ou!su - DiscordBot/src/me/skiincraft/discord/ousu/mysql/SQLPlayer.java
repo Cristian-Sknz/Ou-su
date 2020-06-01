@@ -5,8 +5,8 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import me.skiincraft.api.ousu.users.User;
 import me.skiincraft.discord.ousu.OusuBot;
-import net.dv8tion.jda.api.entities.User;
 
 public class SQLPlayer {
 
@@ -28,7 +28,7 @@ public class SQLPlayer {
 	public boolean existe() {
 		try {
 			ResultSet resultSet = Ousu.getSQL().getConnection().createStatement()
-					.executeQuery("SELECT * FROM " + databaseName + " WHERE `userid` = '" + user.getId() + "';");
+					.executeQuery("SELECT * FROM " + databaseName + " WHERE `userid` = '" + user.getUserID() + "';");
 
 			if (resultSet.next()) {
 				return resultSet.getString("userid") != null;
@@ -36,7 +36,7 @@ public class SQLPlayer {
 
 			return false;
 		} catch (Exception e) {
-			Ousu.logger("Não foi possivel verificar se existe " + user.getId());
+			Ousu.logger("Não foi possivel verificar se existe " + user.getUserID());
 			return true;
 		}
 	}
@@ -47,10 +47,13 @@ public class SQLPlayer {
 		}
 
 		try {
-			String name = user.getName().replace("´", "").replace("'", "");
+			String name = user.getUserName().replace("´", "").replace("'", "");
 			Ousu.getSQL().getConnection().createStatement()
-					.execute("INSERT INTO " + databaseName + "(`userid`, `username`, `osu_account`) VALUES" + "('"
-							+ user.getId() + "', " + "'" + name + "#" + user.getDiscriminator() + "', " + "'" + "none"
+					.execute("INSERT INTO " + databaseName + "(`userid`, `username`, `lastpp`, `lastscore`) VALUES" + "('"
+							+ user.getUserID() + "', "
+							+ "'" + name +  "', "
+							+ "'" + user.getPP()+ "&" + user.getPP() + "', "
+							+ "'" + user.getTotalScore() + "&" + user.getTotalScore()
 							+ "');");
 			return;
 		} catch (SQLException e) {
@@ -63,9 +66,9 @@ public class SQLPlayer {
 	public void deletar() {
 		try {
 			Ousu.getSQL().getConnection().createStatement()
-					.execute("DELETE FROM " + databaseName + "WHERE `userid` = '" + user.getId() + "';");
+					.execute("DELETE FROM " + databaseName + "WHERE `userid` = '" + user.getUserID() + "';");
 		} catch (SQLException e) {
-			Ousu.logger("Ocorreu um erro ao deletar uma tabela: " + user.getId());
+			Ousu.logger("Ocorreu um erro ao deletar uma tabela: " + user.getUserID());
 		}
 
 	}
@@ -77,14 +80,14 @@ public class SQLPlayer {
 
 		try {
 			ResultSet resultSet = Ousu.getSQL().getConnection().createStatement()
-					.executeQuery("SELECT * FROM " + databaseName + " WHERE `userid` = '" + user.getId() + "';");
+					.executeQuery("SELECT * FROM " + databaseName + " WHERE `userid` = '" + user.getUserID() + "';");
 
 			if (resultSet.next()) {
 				return resultSet.getString(coluna);
 			}
 			return null;
 		} catch (Exception e) {
-			Ousu.logger("Ocorreu um erro ao pegar um valor de uma tabela: " + user.getId());
+			Ousu.logger("Ocorreu um erro ao pegar um valor de uma tabela: " + user.getUserID());
 			return null;
 		}
 	}
@@ -96,14 +99,14 @@ public class SQLPlayer {
 
 		try {
 			ResultSet resultSet = Ousu.getSQL().getConnection().createStatement()
-					.executeQuery("SELECT * FROM " + databaseName + " WHERE `userid` = '" + user.getId() + "';");
+					.executeQuery("SELECT * FROM " + databaseName + " WHERE `userid` = '" + user.getUserID() + "';");
 
 			if (resultSet.next()) {
 				return resultSet.getInt(coluna);
 			}
 			return 0;
 		} catch (Exception e) {
-			Ousu.logger("Ocorreu um erro ao pegar um valor inteiro de uma tabela: " + user.getId());
+			Ousu.logger("Ocorreu um erro ao pegar um valor inteiro de uma tabela: " + user.getUserID());
 			return 0;
 		}
 	}
@@ -115,10 +118,10 @@ public class SQLPlayer {
 
 		try {
 			Ousu.getSQL().getConnection().createStatement().execute("UPDATE " + databaseName + " SET `" + coluna
-					+ "` = '" + valor + "' WHERE `userid` = '" + user.getId() + "';");
+					+ "` = '" + valor + "' WHERE `userid` = '" + user.getUserID() + "';");
 			return;
 		} catch (SQLException e) {
-			Ousu.logger("Ocorreu um erro ao setar um valor de uma tabela: " + user.getId());
+			Ousu.logger("Ocorreu um erro ao setar um valor de uma tabela: " + user.getUserID());
 			return;
 		}
 	}
@@ -130,10 +133,10 @@ public class SQLPlayer {
 
 		try {
 			Ousu.getSQL().getConnection().createStatement().execute("UPDATE " + databaseName + " SET `" + coluna
-					+ "` = '" + valor + "' WHERE `userid` = '" + user.getId() + "';");
+					+ "` = '" + valor + "' WHERE `userid` = '" + user.getUserID() + "';");
 			return;
 		} catch (SQLException e) {
-			Ousu.logger("Ocorreu um erro ao setar um valor de uma tabela: " + user.getId());
+			Ousu.logger("Ocorreu um erro ao setar um valor de uma tabela: " + user.getUserID());
 			return;
 		}
 	}

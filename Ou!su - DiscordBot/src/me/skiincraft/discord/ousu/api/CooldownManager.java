@@ -51,10 +51,7 @@ public class CooldownManager {
 	}
 
 	public boolean isInCooldown(String userid) {
-		if (cooldown.containsKey(userid)) {
-			return true;
-		}
-		return false;
+		return cooldown.containsKey(userid);
 	}
 
 	public int cooldownSize() {

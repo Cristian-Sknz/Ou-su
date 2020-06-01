@@ -2,14 +2,13 @@ package me.skiincraft.discord.ousu.embeds;
 
 import java.awt.Color;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 
 import javax.imageio.ImageIO;
 
 import me.skiincraft.api.ousu.beatmaps.Beatmap;
-import me.skiincraft.discord.ousu.OusuBot;
+import me.skiincraft.discord.ousu.customemoji.OusuEmojis;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.language.LanguageManager.Language;
 import me.skiincraft.discord.ousu.mysql.SQLAccess;
@@ -20,16 +19,11 @@ import net.dv8tion.jda.api.entities.Guild;
 
 public class BeatmapEmbed {
 
-	public static InputStream idb;
-
-	public synchronized static EmbedBuilder beatmapEmbed(Beatmap beat, Guild guild) {
+	public synchronized static EmbedBuilder beatmapEmbed(Beatmap beatmap, Guild guild) {
 		EmbedBuilder embed = new EmbedBuilder();
 		SQLAccess sql = new SQLAccess(guild);
-
 		LanguageManager lang = new LanguageManager(Language.valueOf(sql.get("language")));
-
-		Beatmap beatmap = beat;
-
+		
 		embed.setTitle(Emoji.HEADPHONES.getAsMention() + " " + beatmap.getTitle(), beatmap.getURL());
 		int id = beatmap.getCreatorId();
 
@@ -47,11 +41,11 @@ public class BeatmapEmbed {
 		}
 
 		embed.addField(lang.translatedEmbeds("ARTIST"), artist, true);
-		embed.addField("BPM:", OusuBot.getEmoteAsMention("reversearrow") + beatmap.getBPM(), true);
+		embed.addField("BPM:", OusuEmojis.getEmoteAsMention("reversearrow") + beatmap.getBPM(), true);
 		embed.addField(lang.translatedEmbeds("GENRE"), "" + beatmap.getGenre().getDisplayName(), true);
 
 		embed.addField(lang.translatedEmbeds("GAMEMODE"),
-				OusuBot.getEmoteAsMention(beatmap.getGameMode().name().toLowerCase()) + " "
+				OusuEmojis.getEmoteAsMention(beatmap.getGameMode().name().toLowerCase()) + " "
 						+ beatmap.getGameMode().getDisplayName(),
 				true);
 		embed.addField(lang.translatedEmbeds("STARS"), beatmap.getStarsEmoji(), true);
@@ -65,15 +59,11 @@ public class BeatmapEmbed {
 		}
 
 		embed.addField(lang.translatedEmbeds("APPROVATED_IN"), Emoji.DATE.getAsMention() + " " + app + "\n"
-				+ OusuBot.getEmoteAsMention("arrow_pause") + beatmap.getApprovated().name(), true);
+				+ OusuEmojis.getEmoteAsMention("arrow_pause") + beatmap.getApprovated().name(), true);
 		embed.addField(lang.translatedEmbeds("SUCCESS_RATE"),
 				Emoji.BAR_CHART.getAsMention() + " " + beatmap.getSuccessRate(), true);
 		embed.addField(lang.translatedEmbeds("MAX_COMBO"), beatmap.getMaxCombo() + "", true);
-
 		embed.setImage(beatmap.getBeatmapCoverUrl());
-
-		// User user = OusuBot.getOusu().getJda().getUserById("247096601242238991");
-		// embed.setFooter(lang.translatedBot("FOOTER_DEFAULT"), user.getAvatarUrl());
 
 		embed.setFooter("[BeatmapSetID] " + beatmap.getBeatmapSetID() + " | " + "[BeatmapID]" + beatmap.getBeatmapID());
 		try {
@@ -82,12 +72,6 @@ public class BeatmapEmbed {
 			embed.setColor(Color.BLUE);
 		}
 
-		try {
-			idb = beatmap.getBeatmapPreview();
-		} catch (IOException e) {
-			e.printStackTrace();
-			return embed;
-		}
 		return embed;
 	}
 

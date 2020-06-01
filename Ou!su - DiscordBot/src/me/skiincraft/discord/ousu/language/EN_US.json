@@ -50,6 +50,7 @@
 	"TITLE_USER_COMMAND_PLAYERSTATS": "Player Stats",
 	"TITLE_USER_COMMAND_HISTORY": "Player History",
 	"MESSAGE_USER": "You are viewing the {USERNAME}'s user information",
+	"MESSAGE_USER_STATISTICS": "You are viewing other information of the user {USERNAME}",
     "MESSAGE_RECENTUSER": "You are viewing the Beatmaps played in {USERNAME}'s last 24h",
     "MESSAGE_TOPUSER": "You are viewing {USERNAME}'s best rated Beatmaps ",
 	"ACCURACY": "Accuracy:",
@@ -72,10 +73,14 @@
 	"TOTAL_SCORE": "Total Score:",
 	"NATIONAL_RANKING": "National Rank",
 	"PLAYED_TIME": "Time Played",
-	"SEARCH": "Search"
+	"SEARCH": "Search",
+	"INPUTS": "Inputs",
+	"LASTPP": "Last PP",
+	"LASTACTIVE": "Seen ago",
+	"JOINED": "Joined on"
   },
   "Titles": {
-	"INVITE_ME": "Convide-me!"
+	"INVITE_ME": "Invite-me!"
   },
   "Bot": {
     "PREFIX": "The prefix on this server is: ",

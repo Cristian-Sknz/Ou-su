@@ -9,7 +9,7 @@ import java.util.List;
 
 import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.api.CooldownManager;
-import me.skiincraft.discord.ousu.customemoji.EmojiCustom;
+import me.skiincraft.discord.ousu.customemoji.OusuEmojis;
 import me.skiincraft.discord.ousu.embeds.TypeEmbed;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.language.LanguageManager.Language;
@@ -38,7 +38,7 @@ public abstract class Commands extends ListenerAdapter {
 	private TextChannel channel;
 	private String userid;
 
-	private LanguageManager lang;
+	private LanguageManager getLang;
 
 	public Commands(String prefix, String command) {
 		this.prefix = prefix;
@@ -97,7 +97,7 @@ public abstract class Commands extends ListenerAdapter {
 		}
 
 		this.label = prefix + command;
-		this.lang = new LanguageManager(Language.valueOf(sql.get("language")));
+		this.getLang = new LanguageManager(Language.valueOf(sql.get("language")));
 
 		this.channel = e.getChannel();
 		this.userid = e.getAuthor().getId();
@@ -212,15 +212,15 @@ public abstract class Commands extends ListenerAdapter {
 	public MessageAction sendUsage() {
 		String[] msg = getLang().translatedArrayMessages("INCORRECT_USE");
 		MessageAction a = event.getChannel()
-				.sendMessage(TypeEmbed.WarningEmbed(msg[0], EmojiCustom.S_RDiamond.getEmoji() + msg[1] + getUsage())
+				.sendMessage(TypeEmbed.WarningEmbed(msg[0], OusuEmojis.getEmoteAsMention("small_red_diamond") + msg[1] + getUsage())
 						.setFooter("ou!help to help!").build());
 		return a;
 	}
 
 	public MessageAction noPermissionMessage(Permission permission) {
-		String[] str = lang.translatedArrayHelp("INSUFICIENT_PERMISSIONS");
+		String[] str = getLang.translatedArrayHelp("INSUFICIENT_PERMISSIONS");
 		StringBuffer buffer = new StringBuffer();
-		buffer.append(OusuBot.getEmoteAsMention("small_red_diamond") + " ");
+		buffer.append(OusuEmojis.getEmoteAsMention("small_red_diamond") + " ");
 		for (String append : str) {
 			if (append != str[0]) {
 				buffer.append(append);
@@ -301,7 +301,7 @@ public abstract class Commands extends ListenerAdapter {
 	}
 
 	public LanguageManager getLang() {
-		return lang;
+		return getLang;
 	}
 
 	public Language getLanguage() {

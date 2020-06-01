@@ -9,6 +9,7 @@ import me.skiincraft.discord.ousu.language.LanguageManager.Language;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
 import me.skiincraft.discord.ousu.mysql.SQLAccess;
+import me.skiincraft.discord.ousu.utils.Emoji;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -43,7 +44,7 @@ public class LanguageCommand extends Commands {
 
 		if (args.length == 1) {
 			for (Language lang : Language.values()) {
-				if (lang.name().equalsIgnoreCase(args[0])) {
+				if (lang.name().equalsIgnoreCase(args[0]) || lang.getCountrycode().equalsIgnoreCase(args[0])) {
 					SQLAccess sql = new SQLAccess(channel.getGuild());
 					sql.set("language", lang.name());
 					LanguageManager m = new LanguageManager(lang);
@@ -82,12 +83,13 @@ public class LanguageCommand extends Commands {
 			}
 		}
 		for (Language lang : Language.values()) {
-			bufferlang.append("\n:small_blue_diamond: " + lang.name() + " - " + lang.getLanguageCode());
+			bufferlang.append("\n" + Emoji.SMALL_BLUE_DIAMOND.getAsMention() + " + lang.name()" + " - " + lang.getLanguageCode());
 		}
 
 		return TypeEmbed.ConfigEmbed(str[0], buffer.toString().replace("{LANGUAGES}", bufferlang.toString()))
 				.setThumbnail("https://i.imgur.com/sxIERAT.png")
-				.setFooter("A multilanguage bot!", "https://i.imgur.com/wDczNj3.jpg").setColor(new Color(52, 107, 235));
+				.setFooter("A multilanguage bot!", "https://i.imgur.com/wDczNj3.jpg")
+				.setColor(new Color(52, 107, 235));
 	}
 
 }

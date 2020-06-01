@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Locale;
 
 import com.google.gson.Gson;
 
@@ -12,12 +13,20 @@ import me.skiincraft.discord.ousu.OusuBot;
 public class LanguageManager {
 
 	public enum Language {
-		Portuguese("PT_BR.json"), English("EN_US.json");// Spanish("ES_ES.json");
+		Portuguese("PT_BR.json", "BR", new Locale("pt")), English("EN_US.json", "EN", new Locale("en"));// Spanish("ES_ES.json", "ES");
 
 		private String fileName;
+		private String countrycode;
+		private Locale locale;
 
-		Language(String fileName) {
+		Language(String fileName, String countrycode, Locale locale) {
 			this.fileName = fileName;
+			this.countrycode = countrycode;
+			this.locale = locale;
+		}
+		
+		public Locale getLocale() {
+			return locale;
 		}
 
 		public String getFileName() {
@@ -26,6 +35,10 @@ public class LanguageManager {
 
 		public String getLanguageCode() {
 			return fileName.replace(".json", "").replace("_", "-");
+		}
+
+		public String getCountrycode() {
+			return countrycode;
 		}
 	}
 
@@ -42,6 +55,10 @@ public class LanguageManager {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public Language getLanguage() {
+		return lang;
 	}
 
 	public String translatedTitles(String lineresult) {

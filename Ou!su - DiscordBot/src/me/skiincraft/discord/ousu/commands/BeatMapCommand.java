@@ -1,6 +1,6 @@
 package me.skiincraft.discord.ousu.commands;
 
-import java.util.function.Consumer;
+import java.io.IOException;
 
 import me.skiincraft.api.ousu.beatmaps.Beatmap;
 import me.skiincraft.api.ousu.exceptions.InvalidBeatmapException;
@@ -12,7 +12,6 @@ import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
 import me.skiincraft.discord.ousu.utils.Emoji;
 import me.skiincraft.discord.ousu.utils.StringUtils;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -40,9 +39,18 @@ public class BeatMapCommand extends Commands {
 		}
 
 		if (args.length == 1) {
-			Beatmap osuBeat;
 			try {
-				osuBeat = OusuBot.getOsu().getBeatmap(Integer.valueOf(args[0]));
+				Beatmap osuBeat = OusuBot.getOsu().getBeatmap(Integer.valueOf(args[0]));
+				sendEmbedMessage(BeatmapEmbed.beatmapEmbed(osuBeat, channel.getGuild())).queue(message -> {
+					try {
+						message.getChannel().sendFile(osuBeat.getBeatmapPreview(),	message.getEmbeds().get(0)
+								.getTitle()
+								.replace(Emoji.HEADPHONES.getAsMention(), "") + ".mp3")
+								.queue();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				});
 			} catch (InvalidBeatmapException e) {
 				String[] msg = getLang().translatedArrayOsuMessages("INEXISTENT_BEATMAPID");
 
@@ -56,16 +64,6 @@ public class BeatMapCommand extends Commands {
 				sendEmbedMessage(build).queue();
 				return;
 			}
-
-			sendEmbedMessage(BeatmapEmbed.beatmapEmbed(osuBeat, channel.getGuild())).queue(new Consumer<Message>() {
-
-				@Override
-				public void accept(Message message) {
-					message.getChannel().sendFile(BeatmapEmbed.idb,
-							message.getEmbeds().get(0).getTitle().replace(Emoji.HEADPHONES.getAsMention(), "") + ".mp3")
-							.queue();
-				}
-			});
 		}
 	}
 }

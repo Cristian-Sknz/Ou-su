@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 import me.skiincraft.api.ousu.beatmaps.Beatmap;
 import me.skiincraft.api.ousu.modifiers.Gamemode;
 import me.skiincraft.discord.ousu.OusuBot;
+import me.skiincraft.discord.ousu.customemoji.OusuEmojis;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.language.LanguageManager.Language;
 import me.skiincraft.discord.ousu.mysql.SQLAccess;
@@ -42,7 +43,7 @@ public class SearchEmbed {
 			if (dif.length() == 0) {
 				continue;
 			}
-			versions.append(OusuBot.getEmoteAsMention("rainbowcircle") + " " + dif + "\n");
+			versions.append(OusuEmojis.getEmoteAsMention("rainbowcircle") + " " + dif + "\n");
 			if (i >= 4) {
 				versions.append("*[...]*");
 				break;
@@ -51,7 +52,7 @@ public class SearchEmbed {
 		}
 
 		for (Gamemode gm : beatmap.getGamemodes()) {
-			gamemodes.append(OusuBot.getEmoteAsMention(gm.name().toLowerCase()) + " " + gm.getDisplayName());
+			gamemodes.append(OusuEmojis.getEmoteAsMention(gm.name().toLowerCase()) + " " + gm.getDisplayName());
 		}
 
 		String artist = beatmap.getAuthor();
@@ -61,7 +62,7 @@ public class SearchEmbed {
 			video = Emoji.X.getAsMention() + " | Video";
 		}
 
-		String approvated = OusuBot.getEmoteAsMention("arrow_pause") + " " + beatmap.getApprovated().name();
+		String approvated = OusuEmojis.getEmoteAsMention("arrow_pause") + " " + beatmap.getApprovated().name();
 		embed.setTitle(beatmap.getTitle(), beatmap.getURL());
 		int id = beatmap.getCreatorid();
 
@@ -70,9 +71,9 @@ public class SearchEmbed {
 				"https://osu.ppy.sh/users/" + id, "https://a.ppy.sh/" + id);
 
 		embed.addField(lang.translatedEmbeds("ARTIST"), artist, true);
-		embed.addField("BPM:", OusuBot.getEmoteAsMention("reversearrow") + beatmap.getBpm(), true);
+		embed.addField("BPM:", OusuEmojis.getEmoteAsMention("reversearrow") + beatmap.getBpm(), true);
 		embed.addField(lang.translatedEmbeds("GENRE"), "" + beatmap.getGenre().getDisplayName(), true);
-		embed.addField("Link", OusuBot.getEmoteAsMention("download") + "__[Download]" + "(" + beatmap.getURL() + ")__\n"
+		embed.addField("Link", OusuEmojis.getEmoteAsMention("download") + "__[Download]" + "(" + beatmap.getURL() + ")__\n"
 				+ video + "\n" + approvated, true);
 
 		embed.addField(lang.translatedEmbeds("GAMEMODE"), gamemodes.toString(), true);
@@ -110,13 +111,13 @@ public class SearchEmbed {
 				break;
 			}
 			if (!gamemodes.toString().contains(b.getGameMode().getDisplayName())) {
-				gamemodes.append(OusuBot.getEmoteAsMention(b.getGameMode().name().toLowerCase()) + " "
+				gamemodes.append(OusuEmojis.getEmoteAsMention(b.getGameMode().name().toLowerCase()) + " "
 						+ b.getGameMode().getDisplayName() + "\n");
 			}
 			if (versions.length() == 0) {
-				versions.append(OusuBot.getEmoteAsMention("rainbowcircle") + " " + b.getVersion());
+				versions.append(OusuEmojis.getEmoteAsMention("rainbowcircle") + " " + b.getVersion());
 			} else {
-				versions.append("\n" + OusuBot.getEmoteAsMention("rainbowcircle") + " " + b.getVersion());
+				versions.append("\n" + OusuEmojis.getEmoteAsMention("rainbowcircle") + " " + b.getVersion());
 			}
 			i++;
 		}
@@ -135,7 +136,7 @@ public class SearchEmbed {
 			storyboard = Emoji.X.getAsMention() + " | Storyboard";
 		}
 
-		String approvated = OusuBot.getEmoteAsMention("arrow_pause") + " " + beatmap.getApprovated().name();
+		String approvated = OusuEmojis.getEmoteAsMention("arrow_pause") + " " + beatmap.getApprovated().name();
 		embed.setTitle(beatmap.getTitle(), beatmap.getURL());
 		int id = beatmap.getCreatorId();
 
@@ -144,9 +145,9 @@ public class SearchEmbed {
 				"https://osu.ppy.sh/users/" + id, "https://a.ppy.sh/" + id);
 
 		embed.addField(lang.translatedEmbeds("ARTIST"), artist, true);
-		embed.addField("BPM:", OusuBot.getEmoteAsMention("reversearrow") + beatmap.getBPM(), true);
+		embed.addField("BPM:", OusuEmojis.getEmoteAsMention("reversearrow") + beatmap.getBPM(), true);
 		embed.addField(lang.translatedEmbeds("GENRE"), "" + beatmap.getGenre().getDisplayName(), true);
-		embed.addField("Link", OusuBot.getEmoteAsMention("download") + "__[Download]" + "(" + beatmap.getURL()
+		embed.addField("Link", OusuEmojis.getEmoteAsMention("download") + "__[Download]" + "(" + beatmap.getURL()
 				+ ")__\n\n" + storyboard + "\n" + video + "\n" + approvated, true);
 
 		embed.addField(lang.translatedEmbeds("GAMEMODE"), gamemodes.toString(), true);

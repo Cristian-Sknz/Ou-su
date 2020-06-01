@@ -2,7 +2,7 @@ package me.skiincraft.discord.ousu.reactions;
 
 import java.util.List;
 
-import me.skiincraft.discord.ousu.events.TopUserReaction;
+import me.skiincraft.discord.ousu.events.DefaultReaction;
 import me.skiincraft.discord.ousu.manager.ReactionUtils;
 import me.skiincraft.discord.ousu.manager.ReactionsManager;
 import me.skiincraft.discord.ousu.utils.ReactionMessage;
@@ -19,21 +19,21 @@ public class RankingReactionEvent extends ReactionsManager {
 	@Override
 	public void action(String userid, TextChannel channel, String emoji) {
 		Object obj = getUtils().getObject();
-		EmbedBuilder[] score = (EmbedBuilder[]) obj;
+		EmbedBuilder[] rankingEmbeds = (EmbedBuilder[]) obj;
 		if (emoji.equalsIgnoreCase("◀")) {
 			listHistory().remove(getUtils());
 
 			int v = getUtils().getValue();
 			if (v <= 0) {
 				v = 0;
-				listHistory().add(new TopUserReaction(userid, getEvent().getMessageId(), obj, v));
+				listHistory().add(new DefaultReaction(userid, getEvent().getMessageId(), obj, v));
 				return;
 			} else {
 				v = getUtils().getValue() - 1;
 			}
 
-			channel.editMessageById(getEvent().getMessageId(), score[v].build()).queue();
-			listHistory().add(new TopUserReaction(userid, getEvent().getMessageId(), obj, v));
+			channel.editMessageById(getEvent().getMessageId(), rankingEmbeds[v].build()).queue();
+			listHistory().add(new DefaultReaction(userid, getEvent().getMessageId(), obj, v));
 
 		}
 
@@ -42,13 +42,13 @@ public class RankingReactionEvent extends ReactionsManager {
 			int v = getUtils().getValue();
 			v += 1;
 
-			if (v >= score.length) {
-				listHistory().add(new TopUserReaction(userid, getEvent().getMessageId(), obj, score.length - 1));
+			if (v >= rankingEmbeds.length) {
+				listHistory().add(new DefaultReaction(userid, getEvent().getMessageId(), obj, rankingEmbeds.length - 1));
 				return;
 			}
 
-			channel.editMessageById(getEvent().getMessageId(), score[v].build()).queue();
-			listHistory().add(new TopUserReaction(userid, getEvent().getMessageId(), obj, v));
+			channel.editMessageById(getEvent().getMessageId(), rankingEmbeds[v].build()).queue();
+			listHistory().add(new DefaultReaction(userid, getEvent().getMessageId(), obj, v));
 		}
 	}
 

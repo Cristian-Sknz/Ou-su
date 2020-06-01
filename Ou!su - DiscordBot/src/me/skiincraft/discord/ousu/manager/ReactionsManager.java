@@ -70,10 +70,7 @@ public abstract class ReactionsManager extends ListenerAdapter {
 	}
 
 	public boolean hasPermission(String userid, Permission permission) {
-		if (event.getGuild().getMemberById(userid).hasPermission(permission)) {
-			return true;
-		}
-		return false;
+		return event.getGuild().getMemberById(userid).hasPermission(permission);
 	}
 	
 	public User getUser() {

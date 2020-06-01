@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import me.skiincraft.discord.ousu.OusuBot;
-import me.skiincraft.discord.ousu.events.TopUserReaction;
+import me.skiincraft.discord.ousu.events.DefaultReaction;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
@@ -89,7 +89,7 @@ public class ServersCommand extends Commands {
 				EmbedBuilder[] bm = new EmbedBuilder[build.size()];
 				build.toArray(bm);
 
-				ReactionMessage.serverReations.add(new TopUserReaction(getUserId(), message.getId(), bm, 0));
+				ReactionMessage.serverReations.add(new DefaultReaction(getUserId(), message.getId(), bm, 0));
 			}
 		});
 	}

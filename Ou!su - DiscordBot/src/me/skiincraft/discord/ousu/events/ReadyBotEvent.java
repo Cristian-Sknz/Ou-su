@@ -74,30 +74,23 @@ public class ReadyBotEvent extends ListenerAdapter {
 		String[] args = event.getMessage().getContentRaw().split(" ");
 		SQLAccess sql = new SQLAccess(event.getGuild());
 		String prefix = sql.get("prefix");
-		if (args[0].startsWith(prefix)) {
-			if (event.getChannel().isNSFW()) {
-				event.getChannel().sendMessage(
-						event.getAuthor().getAsMention() + " Desculpe! Eu não atendo pedidos nesse tipo de canal :(")
-						.queue();
-				return;
-			}
+		if (args[0].startsWith(prefix) && event.getChannel().isNSFW()) {
+			event.getChannel().sendMessage(
+					event.getAuthor().getAsMention() + " Desculpe! Eu não atendo pedidos nesse tipo de canal :(")
+					.queue();
+			return;
 		}
 
-		if (args[0].startsWith("ou!")) {
-			if (!prefix.equalsIgnoreCase("ou!")) {
-				LanguageManager lang = new LanguageManager(Language.valueOf(sql.get("language")));
-				event.getChannel()
-						.sendMessage(event.getAuthor().getAsMention() + " " + lang.translatedBot("PREFIX") + prefix)
-						.queue();
-			}
+		if (args[0].startsWith("ou!") && !prefix.equalsIgnoreCase("ou!")) {
+			LanguageManager lang = new LanguageManager(Language.valueOf(sql.get("language")));
+			event.getChannel()
+					.sendMessage(event.getAuthor().getAsMention() + " " + lang.translatedBot("PREFIX") + prefix)
+					.queue();
 		}
 	}
 
 	@Override
 	public void onReady(ReadyEvent event) {
-		// int guilds = event.getGuildTotalCount();
-		// event.getJDA().getPresence().setPresence(OnlineStatus.ONLINE,
-		// Activity.watching(guilds + " Servidores."));
 		event.getJDA().getPresence().setPresence(OnlineStatus.ONLINE, Activity.listening("Type ou!help for help."));
 		List<Guild> guildas = event.getJDA().getGuilds();
 

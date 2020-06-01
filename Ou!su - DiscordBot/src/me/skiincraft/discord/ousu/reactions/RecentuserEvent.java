@@ -2,7 +2,7 @@ package me.skiincraft.discord.ousu.reactions;
 
 import java.util.List;
 
-import me.skiincraft.discord.ousu.events.TopUserReaction;
+import me.skiincraft.discord.ousu.events.DefaultReaction;
 import me.skiincraft.discord.ousu.manager.ReactionUtils;
 import me.skiincraft.discord.ousu.manager.ReactionsManager;
 import me.skiincraft.discord.ousu.utils.ReactionMessage;
@@ -27,7 +27,7 @@ public class RecentuserEvent extends ReactionsManager {
 			int v = getUtils().getValue();
 			if (v <= 0) {
 				v = 0;
-				listHistory().add(new TopUserReaction(userid, getEvent().getMessageId(), obj, v));
+				listHistory().add(new DefaultReaction(userid, getEvent().getMessageId(), obj, v));
 				return;
 			} else {
 				v = getUtils().getValue() - 1;
@@ -36,7 +36,7 @@ public class RecentuserEvent extends ReactionsManager {
 			EmbedBuilder embed = beatmap[v];
 
 			channel.editMessageById(getEvent().getMessageId(), embed.build()).queue();
-			listHistory().add(new TopUserReaction(userid, getEvent().getMessageId(), obj, v));
+			listHistory().add(new DefaultReaction(userid, getEvent().getMessageId(), obj, v));
 
 		}
 
@@ -52,14 +52,14 @@ public class RecentuserEvent extends ReactionsManager {
 			v += 1;
 
 			if (v >= beatmap.length) {
-				listHistory().add(new TopUserReaction(userid, getEvent().getMessageId(), obj, beatmap.length - 1));
+				listHistory().add(new DefaultReaction(userid, getEvent().getMessageId(), obj, beatmap.length - 1));
 				return;
 			}
 
 			EmbedBuilder embed = beatmap[v];
 
 			channel.editMessageById(getEvent().getMessageId(), embed.build()).queue();
-			listHistory().add(new TopUserReaction(userid, getEvent().getMessageId(), obj, v));
+			listHistory().add(new DefaultReaction(userid, getEvent().getMessageId(), obj, v));
 		}
 	}
 

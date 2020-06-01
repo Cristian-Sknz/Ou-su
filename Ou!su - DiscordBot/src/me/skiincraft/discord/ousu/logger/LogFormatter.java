@@ -14,7 +14,7 @@ public class LogFormatter extends Formatter {
 	@Override
 	public String format(LogRecord record) {
 
-		StringBuilder builder = new StringBuilder(1000);
+		StringBuffer builder = new StringBuffer(1000);
 		builder.append("[").append(df.format(new Date(record.getMillis()))).append("] �");
 		builder.append("[").append("OusuBot").append("] - ");
 		builder.append("[").append(record.getLevel()).append("] - ");
