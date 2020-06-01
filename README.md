@@ -1,4 +1,6 @@
 # Ou-su
+[![Discord Bots](https://top.gg/api/widget/status/701825726449582192.svg)](https://top.gg/bot/701825726449582192)  [![Discord Bots](https://top.gg/api/widget/owner/701825726449582192.svg)](https://top.gg/bot/701825726449582192) [![Discord Bots](https://top.gg/api/widget/servers/701825726449582192.svg)](https://top.gg/bot/701825726449582192) [![Discord Bots](https://top.gg/api/widget/upvotes/701825726449582192.svg)](https://top.gg/bot/701825726449582192)
+
 Ou!su bot, é um bot de discord que possibilitar coletar dados do banco de dados do jogo Osu!.
 
 ## Dependencias
