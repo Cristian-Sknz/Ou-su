@@ -29,6 +29,8 @@ import me.skiincraft.discord.ousu.commands.UserCommand;
 import me.skiincraft.discord.ousu.commands.UserImageCommand;
 import me.skiincraft.discord.ousu.commands.VersionCommand;
 import me.skiincraft.discord.ousu.commands.VoteCommand;
+import me.skiincraft.discord.ousu.configuration.ConfigSetup;
+import me.skiincraft.discord.ousu.configuration.ConfigSetup.ConfigOptions;
 import me.skiincraft.discord.ousu.customemoji.OusuEmojis;
 import me.skiincraft.discord.ousu.events.OtherEvents;
 import me.skiincraft.discord.ousu.events.PresenceTask;
@@ -47,7 +49,6 @@ import me.skiincraft.discord.ousu.reactions.ServerReactionsEvent;
 import me.skiincraft.discord.ousu.reactions.SkinsReactionEvent;
 import me.skiincraft.discord.ousu.reactions.TopUserReactionEvent;
 import me.skiincraft.discord.ousu.reactions.UserReactionEvent;
-import me.skiincraft.discord.ousu.utils.Token;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.SelfUser;
@@ -57,7 +58,7 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
 public class OusuBot {
 	
-	private JDABuilder build = new JDABuilder(Token.token);
+	private JDABuilder build;
 
 	private static OusuBot ousu;
 	private static OusuAPI osu;
@@ -119,16 +120,26 @@ public class OusuBot {
 		ousu = this;
 		log = new Logging();
 		arguments = args;
-
+		
+		
+		ConfigSetup config = new ConfigSetup();
+		config.makeConfig();
+		if (config.verificarTokens() == false) {
+			System.out.println("| Arquivo de configuração não esta configurado corretamente.");
+			System.out.println("| Todos os campos devem ser preenchidos.");
+			return;
+		}
+		
+		build = new JDABuilder(config.getConfig(ConfigOptions.Token));
 		commands();
 		events();
-
+		
 		System.out.println("MYSQL: Conectando ao servidor MySQL.");
 		
 		connection = new SQLite(this);
 		connection.abrir();
 		connection.setup();
-		
+
 		try {
 			build.setDisabledCacheFlags(EnumSet.of(CacheFlag.VOICE_STATE));
 			build.setChunkingFilter(ChunkingFilter.NONE);
@@ -138,7 +149,6 @@ public class OusuBot {
 			osuLoader();
 
 			OusuBot.selfUser = jda.getSelfUser();
-
 			Locale.setDefault(new Locale("pt", "BR"));
 
 			// PresenceTask;
@@ -197,7 +207,7 @@ public class OusuBot {
 	}
 
 	public void osuLoader() throws InvalidTokenException {
-		OusuBot.osu = new OusuAPI(Token.osutoken);
+		OusuBot.osu = new OusuAPI(new ConfigSetup().getConfig(ConfigOptions.OsuToken));
 	}
 
 	public boolean isDBSQL() {

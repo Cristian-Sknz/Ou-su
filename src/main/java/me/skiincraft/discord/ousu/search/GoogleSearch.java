@@ -7,8 +7,9 @@ import java.util.Map;
 import com.github.kevinsawicki.http.HttpRequest;
 import com.google.gson.Gson;
 
+import me.skiincraft.discord.ousu.configuration.ConfigSetup;
+import me.skiincraft.discord.ousu.configuration.ConfigSetup.ConfigOptions;
 import me.skiincraft.discord.ousu.exception.SearchNotFoundException;
-import me.skiincraft.discord.ousu.utils.Token;
 
 public class GoogleSearch {
 
@@ -18,7 +19,7 @@ public class GoogleSearch {
 	public GoogleSearch(String beatmapname) {
 		String get = "https://www.googleapis.com/customsearch/v1";
 		String cx = "005029898272968949824:o3kccdcszcc";
-		String token = Token.googletoken;
+		String token = new ConfigSetup().getConfig(ConfigOptions.GoogleToken);
 
 		String search = beatmapname;
 		HttpRequest bc = HttpRequest.get(get, true, "key", token, "cx", cx, "q", search, "alt", "json");
