@@ -1,0 +1,34 @@
+
+plugins {
+    id 'java'
+    id 'application'
+}
+
+repositories {
+    jcenter()
+    maven { url 'https://jitpack.io' }
+    flatDir {
+      dirs 'libs'
+    }
+}
+
+targetCompatibility = 1.8 
+sourceCompatibility = 1.8
+
+dependencies {
+    testImplementation 'junit:junit:4.12'
+    compile 'org.discordbots:DBL-Java-Library:2.0.1'
+    compile "net.dv8tion:JDA:4.1.1_101"
+    compile (name:'ousu-api', ext:'jar')
+    compile (name:'sqlite-jdbc-3.20.0', ext:'jar')
+    compile (name:'mysql-connector', ext:'jar')
+    compile group: 'com.google.code.gson', name: 'gson', version: '2.8.2'
+    compile group: 'com.github.kevinsawicki', name: 'http-request', version: '5.3'
+    compile group: 'org.jsoup', name: 'jsoup', version: '1.13.1'
+    compile group: 'org.ocpsoft.prettytime', name: 'prettytime', version: '4.0.0.Final'
+    //compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.20.0'
+}
+
+application {
+    mainClassName = 'me.skiincraft.discord.ousu.OusuBot'
+}

@@ -1,6 +1,11 @@
 /Ou!su - DiscordBot/bin/
 /Ou!su - DiscordBot/logs/
 /Ou!su - DiscordBot/.settings/
+/Ou!su - DiscordBot/.gradle/
+/Ou!su - DiscordBot/resources/
+/Ou!su - DiscordBot/build/
 /Ou!su - DiscordBot/banco_de_dados/
-Ou!su - DiscordBot/.project
-Ou!su - DiscordBot/.classpath
+
+
+Ou!su - DiscordBot/src/main/java/me/skiincraft/discord/ousu/utils/Token.java
+Ou!su - DiscordBot/src/main/java/me/skiincraft/discord/ousu/Test.java
