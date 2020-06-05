@@ -9,10 +9,6 @@ public class DBLJavaLibrary {
 
 	public void connect() {
 		//ShardInfo shardinfo = OusuBot.getJda().getShardInfo();
-		boolean b = true;
-		if (b) {
-			return;
-		}
 		DiscordBotListAPI api = new DiscordBotListAPI.Builder()
 				.token(Token.dbltoken[0])
 				.botId(OusuBot.getJda().getSelfUser().getId()).build();

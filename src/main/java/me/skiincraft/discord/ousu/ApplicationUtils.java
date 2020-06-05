@@ -92,7 +92,7 @@ public class ApplicationUtils {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(500);
 					ApplicationUtils.restartApplication(OusuBot.arguments);
 				} catch (URISyntaxException | IOException | InterruptedException e1) {
 					e1.printStackTrace();

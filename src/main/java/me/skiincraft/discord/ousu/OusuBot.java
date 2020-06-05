@@ -228,7 +228,6 @@ public class OusuBot {
 					logger("\nEssa aplicação irá reiniciar " + time.format(OusuUtils.getDateAfter(restart)));
 					Thread.sleep(restart / 2);
 					logger("\nEssa aplicação irá reiniciar " + time.format(OusuUtils.getDateAfter(restart)));
-					System.out.println();
 					Thread.sleep(restart / 2);
 					System.out.println("Reiniciando....");
 					try {
@@ -241,9 +240,7 @@ public class OusuBot {
 				}
 			}
 		});
-
 		thread.start();
-
 	}
 
 }
