@@ -9,10 +9,10 @@ import me.skiincraft.api.ousu.exceptions.InvalidBeatmapException;
 import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.embeds.BeatmapEmbed;
 import me.skiincraft.discord.ousu.embeds.TypeEmbed;
-import me.skiincraft.discord.ousu.events.DefaultReaction;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
+import me.skiincraft.discord.ousu.manager.DefaultReaction;
 import me.skiincraft.discord.ousu.utils.Emoji;
 import me.skiincraft.discord.ousu.utils.ReactionMessage;
 import me.skiincraft.discord.ousu.utils.StringUtils;
@@ -43,7 +43,7 @@ public class BeatMapSetCommand extends Commands {
 			return;
 		}
 
-		if (args.length == 1) {
+		if (args.length >= 1) {
 			try {
 				List<Beatmap> osuBeat = OusuBot.getOsu().getBeatmapSet(Integer.valueOf(args[0]));
 
@@ -59,8 +59,8 @@ public class BeatMapSetCommand extends Commands {
 					loadmessage.addReaction("U+25C0").queue();
 					loadmessage.addReaction("U+25FC").queue();
 					loadmessage.addReaction("U+25B6").queue();
-
-					ReactionMessage.beatHistory.add(new DefaultReaction(getUser().getId(), loadmessage.getId(), bm, 0));
+					
+					new ReactionMessage().setToCooldown(new DefaultReaction(loadmessage.getId(), bm, 0, this), 120);
 					try {
 						loadmessage.getChannel()
 								.sendFile(osuBeat.get(0).getBeatmapPreview(),

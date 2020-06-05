@@ -16,7 +16,7 @@ public class ConfigSetup {
 	
     private ConfigurationFile fileConfig;
 
-	private void writeGson(File file , Object data) {
+	public static void writeGson(File file , Object data) {
         FileWriter fr = null;
         try {
             fr = new FileWriter(file);

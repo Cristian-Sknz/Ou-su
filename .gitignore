@@ -5,7 +5,7 @@
 /resources/
 /build/
 /banco_de_dados/
-
+config.json
 
 src/main/java/me/skiincraft/discord/ousu/utils/Token.java
 src/main/java/me/skiincraft/discord/ousu/Test.java

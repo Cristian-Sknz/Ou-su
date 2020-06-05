@@ -5,9 +5,12 @@ import java.net.URISyntaxException;
 import java.util.EnumSet;
 import java.util.Locale;
 import java.util.Timer;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import javax.security.auth.login.LoginException;
+
+import org.ocpsoft.prettytime.PrettyTime;
 
 import me.skiincraft.api.ousu.OusuAPI;
 import me.skiincraft.api.ousu.exceptions.InvalidTokenException;
@@ -15,6 +18,7 @@ import me.skiincraft.discord.ousu.api.CooldownManager;
 import me.skiincraft.discord.ousu.api.DBLJavaLibrary;
 import me.skiincraft.discord.ousu.commands.BeatMapCommand;
 import me.skiincraft.discord.ousu.commands.BeatMapSetCommand;
+import me.skiincraft.discord.ousu.commands.CardCommand;
 import me.skiincraft.discord.ousu.commands.EmbedCommand;
 import me.skiincraft.discord.ousu.commands.HelpCommand;
 import me.skiincraft.discord.ousu.commands.InviteCommand;
@@ -49,9 +53,9 @@ import me.skiincraft.discord.ousu.reactions.ServerReactionsEvent;
 import me.skiincraft.discord.ousu.reactions.SkinsReactionEvent;
 import me.skiincraft.discord.ousu.reactions.TopUserReactionEvent;
 import me.skiincraft.discord.ousu.reactions.UserReactionEvent;
+import me.skiincraft.discord.ousu.utils.OusuUtils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.entities.SelfUser;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
@@ -60,14 +64,14 @@ public class OusuBot {
 	
 	private JDABuilder build;
 
+	private static final long restart = TimeUnit.MINUTES.toMillis(60);
+	private boolean DBSQL;
 	private static OusuBot ousu;
 	private static OusuAPI osu;
 	private static Logging log;
 	private static JDA jda;
-	private static SelfUser selfUser;
-	private boolean DBSQL;
-
 	private SQLite connection;
+	
 	public static OusuBot getOusu() {
 		return ousu;
 	}
@@ -79,11 +83,7 @@ public class OusuBot {
 	public static JDA getJda() {
 		return jda;
 	}
-
-	public static SelfUser getSelfUser() {
-		return selfUser;
-	}
-
+	
 	public void setJda(JDA jda) {
 		OusuBot.jda = jda;
 	}
@@ -114,14 +114,14 @@ public class OusuBot {
 	}
 
 	public static String[] arguments;
-
-	@SuppressWarnings("deprecation")
+	
 	private void loader(String[] args) {
+		Locale.setDefault(Locale.forLanguageTag("PT"));
 		ousu = this;
 		log = new Logging();
 		arguments = args;
 		
-		
+		// Configfile
 		ConfigSetup config = new ConfigSetup();
 		config.makeConfig();
 		if (config.verificarTokens() == false) {
@@ -139,7 +139,11 @@ public class OusuBot {
 		connection = new SQLite(this);
 		connection.abrir();
 		connection.setup();
-
+		
+		setupOusu();
+	}
+	
+	public void setupOusu() {
 		try {
 			build.setDisabledCacheFlags(EnumSet.of(CacheFlag.VOICE_STATE));
 			build.setChunkingFilter(ChunkingFilter.NONE);
@@ -148,9 +152,6 @@ public class OusuBot {
 			logger("JDA: Conexão foi estabelecida com sucesso");
 			osuLoader();
 
-			OusuBot.selfUser = jda.getSelfUser();
-			Locale.setDefault(new Locale("pt", "BR"));
-
 			// PresenceTask;
 			Timer timer = new Timer();
 			timer.schedule(new PresenceTask(), 1000, 2 * (60 * 1000));
@@ -158,7 +159,7 @@ public class OusuBot {
 			ApplicationUtils.frame.setTitle(ApplicationUtils.frame.getTitle().replace("[Bot]", jda.getSelfUser().getName()));
 			new OusuEmojis().setEmotes(getJda().getGuildById("680436378240286720").getEmotes());
 			
-			AppRestartThread(args);
+			AppRestartThread(arguments, restart);
 			CooldownManager.start();
 			
 			new DBLJavaLibrary().connect();
@@ -169,7 +170,6 @@ public class OusuBot {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	public void events() {
@@ -184,7 +184,7 @@ public class OusuBot {
 		registerCommands(new HelpCommand(), new EmbedCommand(), new UserCommand(), new TopUserCommand(),
 				new UserImageCommand(), new PrefixCommand(), new BeatMapCommand(), new VersionCommand(),
 				new InviteCommand(), new RecentUserCommand(), new LanguageCommand(), new BeatMapSetCommand(),
-				new SearchCommand(), new VoteCommand(), new RankingCommand(), new SkinsCommand());
+				new SearchCommand(), new VoteCommand(), new RankingCommand(), new SkinsCommand(), new CardCommand());
 
 		registerCommands(new PresenseCommand(),/* new PlayersCommand(),*/ new ServersCommand());
 		
@@ -218,18 +218,18 @@ public class OusuBot {
 		DBSQL = dBSQL;
 	}
 	
-	public void AppRestartThread(String[] args) {
+	public void AppRestartThread(String[] args, long restart) {
 		Thread thread = new Thread(new Runnable() {
 
 			@Override
 			public void run() {
 				try {
-					int tempo = 120 * (60 * 1000);
-					logger("\nEssa aplicação irá reiniciar em 2h\n");
-					Thread.sleep(tempo / 2);
-					logger("\nEssa aplicação irá reiniciar em 1h\n");
+					PrettyTime time = new PrettyTime(Locale.forLanguageTag("PT"));
+					logger("\nEssa aplicação irá reiniciar " + time.format(OusuUtils.getDateAfter(restart)));
+					Thread.sleep(restart / 2);
+					logger("\nEssa aplicação irá reiniciar " + time.format(OusuUtils.getDateAfter(restart)));
 					System.out.println();
-					Thread.sleep(tempo / 2);
+					Thread.sleep(restart / 2);
 					System.out.println("Reiniciando....");
 					try {
 						ApplicationUtils.restartApplication(args);

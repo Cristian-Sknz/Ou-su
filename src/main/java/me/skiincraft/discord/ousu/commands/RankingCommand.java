@@ -4,21 +4,18 @@ import java.awt.Color;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
-import java.util.function.Consumer;
-
 import javax.imageio.ImageIO;
 
 import me.skiincraft.discord.ousu.embeds.TypeEmbed;
-import me.skiincraft.discord.ousu.events.DefaultReaction;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
+import me.skiincraft.discord.ousu.manager.DefaultReaction;
 import me.skiincraft.discord.ousu.search.OsuRankingGetter;
 import me.skiincraft.discord.ousu.search.RankingUsers;
 import me.skiincraft.discord.ousu.utils.ImageUtils;
 import me.skiincraft.discord.ousu.utils.ReactionMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 public class RankingCommand extends Commands {
@@ -39,10 +36,7 @@ public class RankingCommand extends Commands {
 
 	@Override
 	public void action(String[] args, String label, TextChannel channel) {
-		sendEmbedMessage(TypeEmbed.LoadingEmbed()).queue(new Consumer<Message>() {
-
-			@Override
-			public void accept(Message msg) {
+		sendEmbedMessage(TypeEmbed.LoadingEmbed()).queue(msg -> {
 				List<RankingUsers> ou;
 				try {
 					String cc = null;
@@ -55,22 +49,17 @@ public class RankingCommand extends Commands {
 						cc = args[0];
 					}
 					ou = OsuRankingGetter.rankingtop(cc);
-					msg.editMessage(embed(ou, 0).build()).queue(new Consumer<Message>() {
-
-						@Override
-						public void accept(Message message) {
+					msg.editMessage(embed(ou, 0).build()).queue(message -> {
 							message.addReaction("U+25C0").queue();
 							message.addReaction("U+25B6").queue();
 							EmbedBuilder[] embedb = new EmbedBuilder[] { embed(ou, 0), embed(ou, 10), embed(ou, 20),
 									embed(ou, 30), embed(ou, 40) };
-
-							ReactionMessage.rankingReaction.add(new DefaultReaction(getUserId(), message.getId(), embedb, 0));
-						}
+							
+							new ReactionMessage().setToCooldown(new DefaultReaction(message.getId(), embedb, 0, this), 120);
 					});
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-			}
 		});
 	}
 

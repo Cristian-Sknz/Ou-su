@@ -11,7 +11,7 @@ public class CustomFont {
 	private static String fontPath = "resources/fonts/";
 
 	public enum CustomFonts {
-		BebasKai("BebasKai-Regular.ttf"), ErasDemi("ERASDEMI.TTF"), InsanityBurger("Insanibu.ttf"),
+		Aurea("Aurea.ttf"), BebasKai("BebasKai-Regular.ttf"), Euphemia("EUPHEMIA.TTF"),ErasDemi("ERASDEMI.TTF"), InsanityBurger("Insanibu.ttf"),
 		MyFont("DISCORDIA.ttf"), Lane_UP("LANEUP_.TTF"), Lane_Cane("LANECANE.TTF"), ArialRound("ARLRDBD.TTF");
 		private String fontname;
 

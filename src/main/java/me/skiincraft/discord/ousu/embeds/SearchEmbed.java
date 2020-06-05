@@ -2,7 +2,6 @@ package me.skiincraft.discord.ousu.embeds;
 
 import java.awt.Color;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 
@@ -22,12 +21,6 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 
 public class SearchEmbed {
-
-	public static InputStream idb;
-
-	public synchronized static InputStream getAudioPreview() {
-		return idb;
-	}
 
 	public synchronized static EmbedBuilder searchEmbed(BeatmapSearch beatmap, Guild guild) {
 		EmbedBuilder embed = new EmbedBuilder();
@@ -84,7 +77,7 @@ public class SearchEmbed {
 		// User user = OusuBot.getOusu().getJda().getUserById("247096601242238991");
 		// embed.setFooter(lang.translatedBot("FOOTER_DEFAULT"), user.getAvatarUrl());
 
-		embed.setFooter("[BeatmapSetID] " + beatmap.getBeatmapSetID(), OusuBot.getSelfUser().getAvatarUrl());
+		embed.setFooter("[BeatmapSetID] " + beatmap.getBeatmapSetID(), OusuBot.getJda().getSelfUser().getAvatarUrl());
 		try {
 			embed.setColor(ImageUtils.getPredominatColor(ImageIO.read(new URL(beatmap.getBeatmapThumbnailUrl()))));
 		} catch (NullPointerException | IOException e) {
@@ -158,17 +151,11 @@ public class SearchEmbed {
 		// User user = OusuBot.getOusu().getJda().getUserById("247096601242238991");
 		// embed.setFooter(lang.translatedBot("FOOTER_DEFAULT"), user.getAvatarUrl());
 
-		embed.setFooter("[BeatmapSetID] " + beatmap.getBeatmapSetID(), OusuBot.getSelfUser().getAvatarUrl());
+		embed.setFooter("[BeatmapSetID] " + beatmap.getBeatmapSetID(), OusuBot.getJda().getSelfUser().getAvatarUrl());
 		try {
 			embed.setColor(ImageUtils.getPredominatColor(ImageIO.read(new URL(beatmap.getBeatmapThumbnailUrl()))));
 		} catch (NullPointerException | IOException e) {
 			embed.setColor(Color.BLUE);
-		}
-		try {
-			idb = beatmap.getBeatmapPreview();
-		} catch (IOException e) {
-			e.printStackTrace();
-			return embed;
 		}
 		return embed;
 	}

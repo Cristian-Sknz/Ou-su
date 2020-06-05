@@ -1,6 +1,7 @@
 {
   "Help": {
 	"OSU_HELPMESSAGE_BEATMAP": "Este comando possibilita pegar informações de um beatmap{l}Basta colocar o ID do beatmap.",
+	"OSU_HELPMESSAGE_CARD": "Crie um cartão osu! Este cartão terá algumas estatísticas.",
     "OSU_HELPMESSAGE_RECENTUSER": "Este comando possibilita mostar os beatmaps jogados{l}nas ultimas 24h de um jogador{l}O maximo de estatisticas que serão mostradas são 5",
     "OSU_HELPMESSAGE_TOPUSER": "Este comando possibilita mostar as melhores estatisticas de um jogador{l}O maximo de estatisticas que serão mostradas são 5",
     "OSU_HELPMESSAGE_USER": "Verifique as informações de um jogador{l}Inserindo o Username ou ID",
@@ -25,6 +26,7 @@
     "INEXISTENT_BEATMAPID": "Beatmap Inexistente{l}Este beatmap que você solicitou não existe.",
     "NO_HAS_HISTORY": "Não há historico{l}Este usuario que você solicitou{l}Não jogou nada nas ultimas 24h",
     "USE_NUMBERS": "Utilize Numeros!{l}IDs são formados por numeros, por favor utilize numeros.",
+    "USE_NUMBERS2": "Dicas{l}Caso queira um beatmap pelo nome!{l}Tente utilizar ou!search.",
     "UNAVAILABLE_RESOURCE": "Recurso Indisponível{l}Este jogador está com rich presence privado.",
     "NO_PLAYER_DETECTED": "Não foi detectado nenhum jogador de osu!",
     "OFFLINE_PLAYER": "Este jogador está atualmente offline no rich presence do osu!",

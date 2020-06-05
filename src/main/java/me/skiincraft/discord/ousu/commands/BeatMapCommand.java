@@ -38,7 +38,7 @@ public class BeatMapCommand extends Commands {
 			return;
 		}
 
-		if (args.length == 1) {
+		if (args.length >= 1) {
 			try {
 				Beatmap osuBeat = OusuBot.getOsu().getBeatmap(Integer.valueOf(args[0]));
 				sendEmbedMessage(BeatmapEmbed.beatmapEmbed(osuBeat, channel.getGuild())).queue(message -> {
@@ -61,7 +61,11 @@ public class BeatMapCommand extends Commands {
 				String[] msg = getLang().translatedArrayOsuMessages("USE_NUMBERS");
 				MessageEmbed build = TypeEmbed.WarningEmbed(msg[0], StringUtils.commandMessage(msg)).build();
 
-				sendEmbedMessage(build).queue();
+				sendEmbedMessage(build).queue(message -> {
+					String[] msg2 = getLang().translatedArrayOsuMessages("USE_NUMBERS2");
+					MessageEmbed build2 = TypeEmbed.InfoEmbed(msg2[0], StringUtils.commandMessage(msg2)).build();
+					channel.sendMessage(build2).queue();
+				});
 				return;
 			}
 		}

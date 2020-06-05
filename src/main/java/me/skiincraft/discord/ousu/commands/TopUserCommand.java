@@ -19,11 +19,11 @@ import me.skiincraft.api.ousu.users.User;
 import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.customemoji.OusuEmojis;
 import me.skiincraft.discord.ousu.embeds.TypeEmbed;
-import me.skiincraft.discord.ousu.events.DefaultReaction;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.language.LanguageManager.Language;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
+import me.skiincraft.discord.ousu.manager.DefaultReaction;
 import me.skiincraft.discord.ousu.mysql.SQLAccess;
 import me.skiincraft.discord.ousu.utils.Emoji;
 import me.skiincraft.discord.ousu.utils.ImageUtils;
@@ -85,8 +85,7 @@ public class TopUserCommand extends Commands {
 					loadmessage.editMessage(scorearray[0].build()).queue(sucessfullmessage -> {
 						sucessfullmessage.addReaction("U+25C0").queue();
 						sucessfullmessage.addReaction("U+25B6").queue();
-						ReactionMessage.osuHistory
-								.add(new DefaultReaction(getUserId(), loadmessage.getId(), scorearray, 0));
+						new ReactionMessage().setToCooldown(new DefaultReaction(loadmessage.getId(), scorearray, 0, this), 120);
 					});
 				});
 				

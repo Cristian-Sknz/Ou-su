@@ -78,9 +78,8 @@ public class HelpCommand extends Commands {
 					StringBuffer buffer = new StringBuffer();
 					for (String str : alias) {
 						buffer.append(prefix + str + "\n");
-
-						embed.addField(":mega: Aliases", buffer.toString(), true);
 					}
+					embed.addField(":mega: Aliases", buffer.toString(), true);
 				}
 
 				embed.addField(":pencil: Usage", com.getUsage().replace("ou!", prefix), true);
@@ -143,7 +142,7 @@ public class HelpCommand extends Commands {
 		String[] str = getLang().translatedArrayMessages("HELP_COMMAND_MESSAGE");
 
 		embed.setTitle(str[0]);
-		embed.setThumbnail(OusuBot.getSelfUser().getAvatarUrl());
+		embed.setThumbnail(OusuBot.getJda().getSelfUser().getAvatarUrl());
 		StringBuffer buffer = new StringBuffer();
 		for (String append : str) {
 			if (append != str[0]) {
@@ -160,8 +159,8 @@ public class HelpCommand extends Commands {
 				"`" + String.join("\n", Ajuda) + "`", true);
 		embed.addField(OusuEmojis.getEmoteAsMention("osulogo") + " **" + CommandCategory.Osu.getCategoria(getLanguage()) + "**",
 				"`" + String.join("\n", Osu) + "`", true);
-		/*embed.addField("**" + CommandCategory.Utilidade.getCategoria(getLanguage()) +
-		 "**", "`" + String.join("\n", Util) + "`", true);*/
+		embed.addField(":hammer_pick:" + "**" + CommandCategory.Utilidade.getCategoria(getLanguage()) +
+		 "**", "`" + String.join("\n", Util) + "`", true);
 		embed.addField(":bulb: **" + CommandCategory.Sobre.getCategoria(getLanguage()) + "**",
 				"`" + String.join("\n", Sobre) + "`", true);
 

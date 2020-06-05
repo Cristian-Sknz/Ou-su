@@ -42,7 +42,7 @@ public class VoteCommand extends Commands {
 
 		embed.setImage("https://media.discordapp.net/attachments/710231271623753738/712106708087865354/voteimage.png");
 		embed.addField("Vote :3","[Here!](" + voteurl + ")", false);
-		embed.setFooter("Link: " + voteurl, OusuBot.getSelfUser().getAvatarUrl());
+		embed.setFooter("Link: " + voteurl, OusuBot.getJda().getSelfUser().getAvatarUrl());
 		embed.setColor(Color.PINK);
 		channel.sendMessage(embed.build()).queue();
 

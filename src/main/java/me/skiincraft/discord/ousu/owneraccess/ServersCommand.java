@@ -7,18 +7,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.function.Consumer;
-
 import me.skiincraft.discord.ousu.OusuBot;
-import me.skiincraft.discord.ousu.events.DefaultReaction;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
+import me.skiincraft.discord.ousu.manager.DefaultReaction;
 import me.skiincraft.discord.ousu.mysql.SQLAccess;
 import me.skiincraft.discord.ousu.utils.ReactionMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -79,18 +76,14 @@ public class ServersCommand extends Commands {
 			}
 		});
 
-		channel.sendMessage(build.get(0).build()).queue(new Consumer<Message>() {
-
-			@Override
-			public void accept(Message message) {
+		channel.sendMessage(build.get(0).build()).queue(message -> {
 				message.addReaction("U+25C0").queue();
 				message.addReaction("U+25B6").queue();
 
 				EmbedBuilder[] bm = new EmbedBuilder[build.size()];
 				build.toArray(bm);
 
-				ReactionMessage.serverReations.add(new DefaultReaction(getUserId(), message.getId(), bm, 0));
-			}
+				new ReactionMessage().addToCooldown(new DefaultReaction(message.getId(), bm, 0, this), 20);
 		});
 	}
 

@@ -1,5 +1,6 @@
 package me.skiincraft.discord.ousu.utils;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,6 +10,18 @@ import me.skiincraft.api.ousu.scores.Score;
 import me.skiincraft.discord.ousu.customemoji.OusuEmojis;
 
 public class OusuUtils {
+	
+	public static Date getDateAfter(long aftermillis){
+		Date date = new Date();
+		date.setTime(date.getTime() + aftermillis);
+		return date;
+	}
+	
+	public static Date getDateBefore(long aftermillis){
+		Date date = new Date();
+		date.setTime(date.getTime() + aftermillis);
+		return date;
+	}
 	
 	public static String getApproval(Approvated approval) {
 		Map<Approvated, String> map = new HashMap<>();

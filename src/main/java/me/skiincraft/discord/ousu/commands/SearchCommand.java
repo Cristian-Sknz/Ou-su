@@ -8,11 +8,11 @@ import java.util.List;
 import me.skiincraft.api.ousu.exceptions.InvalidBeatmapException;
 import me.skiincraft.discord.ousu.embeds.SearchEmbed;
 import me.skiincraft.discord.ousu.embeds.TypeEmbed;
-import me.skiincraft.discord.ousu.events.DefaultReaction;
 import me.skiincraft.discord.ousu.exception.SearchNotFoundException;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
+import me.skiincraft.discord.ousu.manager.DefaultReaction;
 import me.skiincraft.discord.ousu.search.BeatmapSearch;
 import me.skiincraft.discord.ousu.search.GoogleSearch;
 import me.skiincraft.discord.ousu.search.JSoupGetters;
@@ -24,7 +24,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 public class SearchCommand extends Commands {
 
 	public SearchCommand() {
-		super("ou!", "search", "search <beatmap>", Arrays.asList("pesquisar"));
+		super("ou!", "search", "ou!search <beatmap>", Arrays.asList("pesquisar"));
 	}
 
 	@Override
@@ -84,7 +84,7 @@ public class SearchCommand extends Commands {
 					EmbedBuilder[] bm = new EmbedBuilder[emb.size()];
 					emb.toArray(bm);
 
-					ReactionMessage.searchReactions.add(new DefaultReaction(getUserId(), message.getId(), bm, 0));
+					new ReactionMessage().setToCooldown(new DefaultReaction(message.getId(), bm, 0, this), 120);
 					// message2.addReaction("U+1F3AF").queue();
 					message2.addReaction("U+25C0").queue();
 					message2.addReaction("U+25B6").queue();

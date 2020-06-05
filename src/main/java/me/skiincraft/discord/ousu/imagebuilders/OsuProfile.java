@@ -2,6 +2,7 @@ package me.skiincraft.discord.ousu.imagebuilders;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.RenderingHints;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
@@ -22,6 +23,7 @@ public class OsuProfile {
 		}
 		ProfileImage builder = new ProfileImage(osuUser.getUserID() + "_osuProfile", 1000, 750, osuUser);
 		try {
+			builder.getGraphic().setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			builder.addBackground("resources/osu_images/Background.png");
 			builder.addAvatar(osuUser.getUserAvatar());
 			builder.addOverlayer("resources/osu_images/Overlayer.png");
