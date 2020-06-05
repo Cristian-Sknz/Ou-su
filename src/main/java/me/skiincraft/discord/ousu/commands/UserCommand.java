@@ -18,11 +18,11 @@ import me.skiincraft.api.ousu.users.User;
 import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.customemoji.OusuEmojis;
 import me.skiincraft.discord.ousu.embeds.TypeEmbed;
+import me.skiincraft.discord.ousu.events.DefaultReaction;
 import me.skiincraft.discord.ousu.imagebuilders.OsuProfileNote;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
-import me.skiincraft.discord.ousu.manager.DefaultReaction;
 import me.skiincraft.discord.ousu.search.JSoupGetters;
 import me.skiincraft.discord.ousu.search.UserStatistics;
 import me.skiincraft.discord.ousu.utils.Emoji;
@@ -85,7 +85,7 @@ public class UserCommand extends Commands {
 					try {
 						EmbedBuilder[] embeds = new EmbedBuilder[] {embedlocal, 
 								embed2(JSoupGetters.inputType(osuUser, getLang()), message.getEmbeds().get(0).getColor()).setImage("attachment://" + aname)};
-						new ReactionMessage().setToCooldown(new DefaultReaction(message.getId(), embeds, 0, this), 120);
+						ReactionMessage.userReactions.add(new DefaultReaction(getUserId(), message.getId(), embeds, 0));
 						message.addReaction("U+1F4F0").queue();
 					} catch (IOException e) {
 						e.printStackTrace();

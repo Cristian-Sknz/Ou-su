@@ -7,10 +7,10 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import me.skiincraft.discord.ousu.embeds.TypeEmbed;
+import me.skiincraft.discord.ousu.events.DefaultReaction;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
-import me.skiincraft.discord.ousu.manager.DefaultReaction;
 import me.skiincraft.discord.ousu.search.OsuRankingGetter;
 import me.skiincraft.discord.ousu.search.RankingUsers;
 import me.skiincraft.discord.ousu.utils.ImageUtils;
@@ -55,7 +55,7 @@ public class RankingCommand extends Commands {
 							EmbedBuilder[] embedb = new EmbedBuilder[] { embed(ou, 0), embed(ou, 10), embed(ou, 20),
 									embed(ou, 30), embed(ou, 40) };
 							
-							new ReactionMessage().setToCooldown(new DefaultReaction(message.getId(), embedb, 0, this), 120);
+							ReactionMessage.rankingReaction.add(new DefaultReaction(getUserId(), message.getId(), embedb, 0));
 					});
 				} catch (IOException e) {
 					e.printStackTrace();

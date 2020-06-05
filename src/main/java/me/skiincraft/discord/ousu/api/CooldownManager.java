@@ -62,7 +62,6 @@ public class CooldownManager {
 		cooldown.clear();
 	}
 
-	@Deprecated
 	public static void start() {
 		Timer t = new Timer();
 		t.schedule(new TimerTask() {

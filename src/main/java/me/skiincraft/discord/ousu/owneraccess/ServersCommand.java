@@ -8,10 +8,10 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import me.skiincraft.discord.ousu.OusuBot;
+import me.skiincraft.discord.ousu.events.DefaultReaction;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
-import me.skiincraft.discord.ousu.manager.DefaultReaction;
 import me.skiincraft.discord.ousu.mysql.SQLAccess;
 import me.skiincraft.discord.ousu.utils.ReactionMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -82,8 +82,7 @@ public class ServersCommand extends Commands {
 
 				EmbedBuilder[] bm = new EmbedBuilder[build.size()];
 				build.toArray(bm);
-
-				new ReactionMessage().addToCooldown(new DefaultReaction(message.getId(), bm, 0, this), 20);
+				ReactionMessage.serverReations.add(new DefaultReaction(getUserId(), message.getId(), bm, 0));
 		});
 	}
 

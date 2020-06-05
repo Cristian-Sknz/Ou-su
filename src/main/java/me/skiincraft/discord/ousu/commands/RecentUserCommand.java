@@ -18,11 +18,11 @@ import me.skiincraft.api.ousu.users.User;
 import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.customemoji.OusuEmojis;
 import me.skiincraft.discord.ousu.embeds.TypeEmbed;
+import me.skiincraft.discord.ousu.events.DefaultReaction;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.language.LanguageManager.Language;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
-import me.skiincraft.discord.ousu.manager.DefaultReaction;
 import me.skiincraft.discord.ousu.mysql.SQLAccess;
 import me.skiincraft.discord.ousu.utils.Emoji;
 import me.skiincraft.discord.ousu.utils.ImageUtils;
@@ -89,8 +89,7 @@ public class RecentUserCommand extends Commands {
 					message.editMessage(sc[0].build()).queue(message2 -> {
 						message.addReaction("U+25C0").queue();
 						message.addReaction("U+25B6").queue();
-
-						new ReactionMessage().setToCooldown(new DefaultReaction(message.getId(), sc, 0, this), 120);
+						ReactionMessage.recentHistory.add(new DefaultReaction(getUserId(), message.getId(), sc, 0));
 					});
 				});
 

@@ -7,10 +7,10 @@ import java.util.List;
 import me.skiincraft.api.ousu.modifiers.Gamemode;
 import me.skiincraft.discord.ousu.customemoji.OusuEmojis;
 import me.skiincraft.discord.ousu.embeds.TypeEmbed;
+import me.skiincraft.discord.ousu.events.DefaultReaction;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
-import me.skiincraft.discord.ousu.manager.DefaultReaction;
 import me.skiincraft.discord.ousu.osuskins.OsuSkin;
 import me.skiincraft.discord.ousu.search.JSoupGetters;
 import me.skiincraft.discord.ousu.utils.Emoji;
@@ -49,7 +49,7 @@ public class SkinsCommand extends Commands {
 				msg.editMessage(embeds.get(0).build()).queue(t -> {
 					t.addReaction("U+25C0").queue();
 					t.addReaction("U+25B6").queue();
-					new ReactionMessage().setToCooldown(new DefaultReaction(t.getId(), embed, 0, this), 120);
+					ReactionMessage.skinsReaction.add(new DefaultReaction(getUserId(), t.getId(), embed, 0));
 				});
 
 			} catch (IOException e) {
