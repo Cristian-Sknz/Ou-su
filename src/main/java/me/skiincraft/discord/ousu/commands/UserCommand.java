@@ -83,9 +83,8 @@ public class UserCommand extends Commands {
 					}
 					
 					try {
-						
-						EmbedBuilder[] embeds = new EmbedBuilder[] {embedlocal, 
-								embed2(JSoupGetters.inputType(osuUser, getLang()), embedlocal)};
+						EmbedBuilder embed1 = new EmbedBuilder(message.getEmbeds().get(0)).setImage("attachment://" + aname);
+						EmbedBuilder[] embeds = new EmbedBuilder[] {embed1 ,embed2(JSoupGetters.inputType(osuUser, getLang()), embedlocal)};
 						ReactionMessage.userReactions.add(new DefaultReaction(getUserId(), message.getId(), embeds, 0));
 						message.addReaction("U+1F4F0").queue();
 					} catch (IOException e) {
