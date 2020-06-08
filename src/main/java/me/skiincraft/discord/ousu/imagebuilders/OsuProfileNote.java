@@ -20,9 +20,9 @@ public class OsuProfileNote {
 		builder.getGraphic().setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		try {
 			if (lang != Language.English) {
-				builder.addImage(new File("resources/osu_images/notes/Layer.png"), 0, 0, builder.getSize());
+				builder.drawImage(new File("resources/osu_images/notes/Layer.png"), 0, 0, builder.getSize(), null);
 			} else {
-				builder.addImage(new File("resources/osu_images/notes/LayerEN.png"), 0, 0, builder.getSize());
+				builder.drawImage(new File("resources/osu_images/notes/LayerEN.png"), 0, 0, builder.getSize(), null);
 			}
 			builder.getGraphic().setColor(new Color( 138, 0, 103));
 			scoreCalculates(builder, osuUser.getSSh(), 150);

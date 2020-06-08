@@ -72,7 +72,10 @@ public class SearchEmbed {
 		embed.addField(lang.translatedEmbeds("GAMEMODE"), gamemodes.toString(), true);
 		embed.addField(lang.translatedEmbeds("DIFFICULT"), versions.toString(), true);
 
-		embed.setImage(beatmap.getBeatmapCoverUrl());
+		String url = beatmap.getBeatmapCoverUrl();
+		embed.setImage((ImageUtils.existsImage(url))
+				? url
+				: "https://i.imgur.com/LfF0VBR.gif");
 
 		// User user = OusuBot.getOusu().getJda().getUserById("247096601242238991");
 		// embed.setFooter(lang.translatedBot("FOOTER_DEFAULT"), user.getAvatarUrl());

@@ -154,7 +154,9 @@ public class TopUserCommand extends Commands {
 
 		linkcover = url;
 		embed.setThumbnail(user.getUserAvatar());
-		embed.setImage(url);
+		embed.setImage((ImageUtils.existsImage(url))
+				? url
+				: "https://i.imgur.com/LfF0VBR.gif");
 
 		String author = beatmap.getCreator();
 		embed.setFooter("[" + beatmap.getBeatmapID() + "] " + beatmap.getTitle() + " por " + beatmap.getArtist() + " | "

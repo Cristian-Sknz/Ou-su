@@ -25,7 +25,7 @@ public class ProfileImage extends ImageBuilder {
 
 	public void addBackground(String path) {
 		try {
-			addImage(new File(path), 0, 0, getSize());
+			drawImage(new File(path), 0, 0, getSize(), null);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -33,10 +33,10 @@ public class ProfileImage extends ImageBuilder {
 
 	public void addAvatar(String url) {
 		try {
-			addImage(new URL(osuUser.getUserAvatar()), 5, 5, new Dimension(192, 192));
+			drawImage(new URL(osuUser.getUserAvatar()), 5, 5, new Dimension(192, 192), null);
 		} catch (IOException e) {
 			try {
-				addImage(new File("resources/osu_images/nonexistentuser.png"), 5, 5, new Dimension(192, 192));
+				drawImage(new File("resources/osu_images/nonexistentuser.png"), 5, 5, new Dimension(192, 192), null);
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -46,7 +46,7 @@ public class ProfileImage extends ImageBuilder {
 
 	public void addOverlayer(String path) {
 		try {
-			addImage(new File(path), 0, 0, getSize());
+			drawImage(new File(path), 0, 0, getSize(), null);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -83,8 +83,8 @@ public class ProfileImage extends ImageBuilder {
 
 	public void addCountry(int x, int y) {
 		try {
-			addImage(new URL("https://osu.ppy.sh/images/flags/" + osuUser.getCountryCode() + ".png"), x, y,
-					new Dimension(96, 65));
+			drawImage(new URL("https://osu.ppy.sh/images/flags/" + osuUser.getCountryCode() + ".png"), x, y,
+					new Dimension(96, 65), null);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

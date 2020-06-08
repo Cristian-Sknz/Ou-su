@@ -63,7 +63,11 @@ public class BeatmapEmbed {
 		embed.addField(lang.translatedEmbeds("SUCCESS_RATE"),
 				Emoji.BAR_CHART.getAsMention() + " " + beatmap.getSuccessRate(), true);
 		embed.addField(lang.translatedEmbeds("MAX_COMBO"), beatmap.getMaxCombo() + "", true);
-		embed.setImage(beatmap.getBeatmapCoverUrl());
+		//https://i.imgur.com/LfF0VBR.gif
+		
+		embed.setImage((ImageUtils.existsImage(beatmap.getBeatmapCoverUrl()))
+				? beatmap.getBeatmapCoverUrl()
+				: "https://i.imgur.com/LfF0VBR.gif");
 
 		embed.setFooter("[BeatmapSetID] " + beatmap.getBeatmapSetID() + " | " + "[BeatmapID]" + beatmap.getBeatmapID());
 		try {

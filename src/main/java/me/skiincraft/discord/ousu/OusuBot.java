@@ -227,7 +227,7 @@ public class OusuBot {
 					PrettyTime time = new PrettyTime(Locale.forLanguageTag("PT"));
 					logger("\nEssa aplicação irá reiniciar " + time.format(OusuUtils.getDateAfter(restart)));
 					Thread.sleep(restart / 2);
-					logger("\nEssa aplicação irá reiniciar " + time.format(OusuUtils.getDateAfter(restart)));
+					logger("\nEssa aplicação irá reiniciar " + time.format(OusuUtils.getDateAfter(restart/2)));
 					Thread.sleep(restart / 2);
 					System.out.println("Reiniciando....");
 					try {

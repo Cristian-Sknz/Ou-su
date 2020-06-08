@@ -83,8 +83,9 @@ public class UserCommand extends Commands {
 					}
 					
 					try {
+						
 						EmbedBuilder[] embeds = new EmbedBuilder[] {embedlocal, 
-								embed2(JSoupGetters.inputType(osuUser, getLang()), message.getEmbeds().get(0).getColor()).setImage("attachment://" + aname)};
+								embed2(JSoupGetters.inputType(osuUser, getLang()), embedlocal)};
 						ReactionMessage.userReactions.add(new DefaultReaction(getUserId(), message.getId(), embeds, 0));
 						message.addReaction("U+1F4F0").queue();
 					} catch (IOException e) {
@@ -113,10 +114,13 @@ public class UserCommand extends Commands {
 		String PP = OusuEmojis.getEmoteAsMentionEquals("pp");
 
 		String code = ":flag_" + osuUser.getCountryCode().toLowerCase() + ": " + osuUser.getCountryCode();
-
-		embed.setThumbnail(osuUser.getUserAvatar());
-
-		embed.setAuthor(osuUser.getUserName(), osuUser.getURL(), osuUser.getUserAvatar());
+		
+		String useravatar = (ImageUtils.existsImage(osuUser.getUserAvatar())) 
+				? osuUser.getUserAvatar()
+				: "https://i.imgur.com/tG1btnR.png";
+		embed.setThumbnail(useravatar);
+		embed.setAuthor(osuUser.getUserName(), osuUser.getURL(), useravatar);
+		
 		embed.setTitle(getLang().translatedEmbeds("TITLE_USER_COMMAND_PLAYERSTATS"));
 		embed.setDescription(Emoji.SMALL_BLUE_DIAMOND.getAsMention() + getLang().translatedEmbeds("MESSAGE_USER")
 				.replace("{USERNAME}", "[" + osuUser.getUserName() + "](" + osuUser.getURL() + ")"));
@@ -141,19 +145,17 @@ public class UserCommand extends Commands {
 			im.createGraphics().drawImage(image, 0, 0, 200, 200, null);
 			embed.setColor(ImageUtils.getPredominatColor(im));
 		} catch (NullPointerException | IOException e) {
-			embed.setColor(Color.BLUE);
+			embed.setColor(Color.YELLOW);
 		}
 		return embed;
 	}
 	
-	public EmbedBuilder embed2(UserStatistics osuUser, Color color) {
-		EmbedBuilder embed = new EmbedBuilder();
+	public EmbedBuilder embed2(UserStatistics osuUser, EmbedBuilder embed) {
+		embed.clearFields();
 		embed.setTitle(getLang().translatedEmbeds("TITLE_USER_COMMAND_PLAYERSTATS"));
 		embed.setDescription(Emoji.SMALL_BLUE_DIAMOND.getAsMention() + " " + getLang().translatedEmbeds("MESSAGE_USER_STATISTICS")
 				.replace("{USERNAME}",
 						"[" + osuUser.getUser().getUserName() + "](" + osuUser.getUser().getURL() +")"));
-		embed.setThumbnail(osuUser.getUser().getUserAvatar());
-		embed.setAuthor(osuUser.getUser().getUserName(), osuUser.getUser().getURL(), osuUser.getUser().getUserAvatar());
 		
 		embed.addField(getLang().translatedEmbeds("INPUTS"), osuUser.getInputEmotes(), true);
 		embed.addField("Level", osuUser.getUser().getLevel() + "", true);
@@ -162,7 +164,6 @@ public class UserCommand extends Commands {
 		embed.addField(getLang().translatedEmbeds("LASTACTIVE"), osuUser.getLastActive() + "", true);
 		embed.addField(getLang().translatedEmbeds("JOINED"), osuUser.getFirstlogin(), true);
 		
-		embed.setColor(color);
 		embed.setFooter(getLang().translatedBot("FOOTER_DEFAULT"),
 				"https://osu.ppy.sh/images/flags/" + osuUser.getUser().getCountryCode() + ".png");
 		return embed;
