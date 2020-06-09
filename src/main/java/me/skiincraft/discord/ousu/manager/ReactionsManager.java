@@ -2,7 +2,6 @@ package me.skiincraft.discord.ousu.manager;
 
 import java.util.List;
 
-import me.skiincraft.discord.ousu.OusuBot;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -74,7 +73,7 @@ public abstract class ReactionsManager extends ListenerAdapter {
 	}
 	
 	public User getUser() {
-		return OusuBot.getJda().getUserById(getEvent().getUserId());
+		return event.getUser();
 	}
 
 	@Override

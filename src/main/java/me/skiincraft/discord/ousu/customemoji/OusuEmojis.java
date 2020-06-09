@@ -2,14 +2,13 @@ package me.skiincraft.discord.ousu.customemoji;
 
 import java.util.List;
 
+import me.skiincraft.discord.ousu.OusuBot;
 import net.dv8tion.jda.api.entities.Emote;
 
 public class OusuEmojis {
 	
-	private static List<Emote> emotes;
-	
 	public static List<Emote> getEmotes() {
-		return emotes;
+		return OusuBot.getShardmanager().getGuildById(680436378240286720L).getEmotes();
 	}
 	
 	public static Emote getEmoteEquals(String nameequals) {
@@ -47,7 +46,5 @@ public class OusuEmojis {
 		}
 		return getEmotes().get(0).getAsMention();
 	}
-	
-	public void setEmotes(List<Emote> emote) {OusuEmojis.emotes = emote;}
 
 }

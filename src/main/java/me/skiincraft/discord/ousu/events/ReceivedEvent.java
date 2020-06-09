@@ -21,7 +21,7 @@ public class ReceivedEvent extends ListenerAdapter {
 	
 	public MessageEmbed portuguese() {
 		EmbedBuilder e = new EmbedBuilder();
-		User user = OusuBot.getJda().getUserById("247096601242238991");
+		User user = OusuBot.getUserById("247096601242238991");
 
 		e.setColor(Color.red);
 		e.setTitle("Olá!");
@@ -34,7 +34,7 @@ public class ReceivedEvent extends ListenerAdapter {
 
 	public MessageEmbed english() {
 		EmbedBuilder e = new EmbedBuilder();
-		User user = OusuBot.getJda().getUserById("247096601242238991");
+		User user = OusuBot.getUserById("247096601242238991");
 
 		e.setColor(Color.red);
 		e.setTitle("Hi!");

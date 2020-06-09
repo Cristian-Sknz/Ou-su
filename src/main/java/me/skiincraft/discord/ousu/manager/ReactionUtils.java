@@ -18,7 +18,7 @@ public abstract class ReactionUtils {
 	}
 
 	public User getUser() {
-		return OusuBot.getJda().getUserById(userid);
+		return OusuBot.getShardmanager().getUserById(userid);
 	}
 
 	public void setUser(String userid) {

@@ -11,10 +11,10 @@ public class DBLJavaLibrary {
 		//ShardInfo shardinfo = OusuBot.getJda().getShardInfo();
 		DiscordBotListAPI api = new DiscordBotListAPI.Builder()
 				.token(Token.dbltoken[0])
-				.botId(OusuBot.getJda().getSelfUser().getId()).build();
+				.botId(OusuBot.getShardmanager().getShardById(0).getSelfUser().getId()).build();
 		
 		//api.setStats(shardinfo.getShardId(), shardinfo.getShardTotal(), OusuBot.getJda().getGuilds().size());
-		api.setStats(OusuBot.getJda().getGuilds().size());
+		api.setStats(OusuBot.getShardmanager().getShardById(0).getGuilds().size());
 	}
 
 }

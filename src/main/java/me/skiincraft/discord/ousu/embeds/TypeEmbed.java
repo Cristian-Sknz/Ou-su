@@ -82,7 +82,7 @@ public class TypeEmbed {
 
 	public static EmbedBuilder DefaultEmbed(String title, String description) {
 		EmbedBuilder b = new EmbedBuilder();
-		User user = OusuBot.getJda().getUserById("247096601242238991");
+		User user = OusuBot.getShardmanager().getUserById("247096601242238991");
 
 		b.setColor(Color.PINK);
 		b.setTitle(title);

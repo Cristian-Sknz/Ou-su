@@ -38,7 +38,7 @@ public class InviteCommand extends Commands {
 	public MessageEmbed embed(Guild guild) {
 		EmbedBuilder embed = new EmbedBuilder();
 
-		SelfUser self = OusuBot.getJda().getSelfUser();
+		SelfUser self = OusuBot.getShardmanager().getShardById(0).getSelfUser();
 		String[] links = new String[] {"https://discordapp.com/oauth2/authorize?client_id=701825726449582192&scope=bot&permissions=1678108752",
 				"https://discord.gg/VtkYdBR"};
 		

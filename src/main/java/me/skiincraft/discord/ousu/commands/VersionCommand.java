@@ -43,8 +43,8 @@ public class VersionCommand extends Commands {
 	public EmbedBuilder embed(Guild guild) {
 		EmbedBuilder embed = new EmbedBuilder();
 
-		User user = OusuBot.getJda().getUserById("247096601242238991");
-		SelfUser self = OusuBot.getJda().getSelfUser();
+		User user = OusuBot.getShardmanager().getUserById("247096601242238991");
+		SelfUser self = OusuBot.getShardmanager().getShardById(0).getSelfUser();
 		embed.setAuthor(self.getName() + "#" + self.getDiscriminator(), "https://github.com/skiincraft", self.getAvatarUrl());
 		OffsetDateTime data = self.getTimeCreated();
 

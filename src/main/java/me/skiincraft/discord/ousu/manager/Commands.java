@@ -31,6 +31,7 @@ public abstract class Commands extends ListenerAdapter {
 	private List<String> aliases;
 	private String usage;
 
+	private boolean end;
 	private String[] args;
 	private String label;
 	private GuildMessageReceivedEvent event;
@@ -61,11 +62,15 @@ public abstract class Commands extends ListenerAdapter {
 	public abstract void action(String[] args, String label, TextChannel channel);
 
 	public User getUser() {
-		return OusuBot.getJda().getUserById(userid);
+		return event.getAuthor();
 	}
 	
 	public String getUserId() {
 		return userid;
+	}
+	
+	public boolean isEnd() {
+		return end;
 	}
 	
 	public boolean isValidCommand(GuildMessageReceivedEvent e) {
@@ -147,7 +152,7 @@ public abstract class Commands extends ListenerAdapter {
 		if (isValidCommand(event) == false) {
 			return;
 		}
-
+		
 		StringBuilder complete = new StringBuilder();
 		String data = new SimpleDateFormat("HH:mm:ss").format(new Date());
 
@@ -159,24 +164,32 @@ public abstract class Commands extends ListenerAdapter {
 		
 		OusuBot.getOusu().logger(complete.toString() + userFull + " executou o comando " + getCommandFull());
 
-		Thread t = new Thread(new Runnable() {
+		Runnable commandrunnable = new Runnable() {
 
 			@Override
 			public void run() {
-				final long startElapsed = System.currentTimeMillis();
+				//setEnd(false);
 				channel.sendTyping().queue();
+				final long startElapsed = System.currentTimeMillis();
 				String[] sarray = event.getMessage().getContentRaw().split(" ");
-
 				sarray = StringUtils.removeString(sarray, 0);
-				try {
-					Thread.sleep(200);
-				} catch (InterruptedException e) {
-
-				}
+				
+				try {Thread.sleep(200);} 
+				catch (InterruptedException e) {}
+				
 				System.out.println("[args] = " + StringUtils.arrayToString2(0, sarray));
 				new CooldownManager().addToCooldown(userid, 2);
 				
 				action(sarray, label, channel);
+				
+				/*
+				while (!isEnd()) {
+					try {
+						Thread.sleep(200);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}*/
 
 				final long result = startElapsed - System.currentTimeMillis();
 				String elapsedtime = new DecimalFormat("#.0").format(result / 1000) + "s";
@@ -190,7 +203,9 @@ public abstract class Commands extends ListenerAdapter {
 						.logger("[" + getCommandFull() + " | Elapsed Time: " + elapsedtime.replace("-", "") + "]");
 				Thread.currentThread().interrupt();
 			}
-		});
+		};
+		
+		Thread t = new Thread(commandrunnable, "BotCommand_" + this.getCommand());
 
 		t.start();
 	}
@@ -298,6 +313,10 @@ public abstract class Commands extends ListenerAdapter {
 
 	public void setEvent(GuildMessageReceivedEvent event) {
 		this.event = event;
+	}
+	
+	public void setEnd(boolean bool) {
+		end = bool;
 	}
 
 	public LanguageManager getLang() {

@@ -34,8 +34,7 @@ public class ReadyBotEvent extends ListenerAdapter {
 
 		int guilds = event.getJDA().getGuilds().size();
 
-		PresenceTask.ordem = 2;
-		String name = OusuBot.getJda().getPresence().getActivity().getName();
+		String name = event.getJDA().getPresence().getActivity().getName();
 		if (name.contains(" Servidores.")) {
 			event.getJDA().getPresence().setPresence(OnlineStatus.ONLINE, Activity.watching((guilds) + " Servidores."));
 		}

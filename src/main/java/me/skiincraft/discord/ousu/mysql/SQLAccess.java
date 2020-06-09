@@ -42,7 +42,7 @@ public class SQLAccess {
 			return false;
 		} catch (Exception e) {
 			OusuBot.getOusu().logger("Não foi possivel verificar se existe");
-			OusuBot.getOusu().logger(OusuBot.getJda().getGuildById(guildId).getName() + " - " + guildId);
+			OusuBot.getOusu().logger(OusuBot.getShardmanager().getGuildById(guildId).getName() + " - " + guildId);
 			return true;
 		}
 	}
@@ -52,7 +52,7 @@ public class SQLAccess {
 			return;
 		}
 		String date = new SimpleDateFormat("dd/MM/yyyy - HH:mm").format(new Date());
-		Guild guild = OusuBot.getJda().getGuildById(guildId);
+		Guild guild = OusuBot.getShardmanager().getGuildById(guildId);
 		try {
 			String guildname = guild.getName().replace("'", "").replace("´", "");
 			OusuBot.getOusu().getSQL().getConnection().createStatement()
@@ -73,10 +73,10 @@ public class SQLAccess {
 	}
 
 	private String generatelang() {
-		if (OusuBot.getJda().getGuildById(guildId).getRegionRaw().contains("brazil")) {
+		if (OusuBot.getShardmanager().getGuildById(guildId).getRegionRaw().contains("brazil")) {
 			return "Portuguese";
 		}
-		if (OusuBot.getJda().getGuildById(guildId).getRegionRaw().contains("us")) {
+		if (OusuBot.getShardmanager().getGuildById(guildId).getRegionRaw().contains("us")) {
 			return "English";
 		}
 		return "English";
@@ -159,7 +159,7 @@ public class SQLAccess {
 			return;
 		} catch (SQLException e) {
 			OusuBot.getOusu().logger("Ocorreu um erro ao setar um valor(int) de uma tabela: ");
-			OusuBot.getOusu().logger(OusuBot.getJda().getGuildById(guildId)+ " - " + guildId);
+			OusuBot.getOusu().logger(OusuBot.getShardmanager().getGuildById(guildId)+ " - " + guildId);
 			return;
 		}
 	}

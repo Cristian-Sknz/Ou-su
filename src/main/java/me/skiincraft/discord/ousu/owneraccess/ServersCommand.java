@@ -40,7 +40,7 @@ public class ServersCommand extends Commands {
 		if (!isOwner()) {
 			return;
 		}
-		List<Guild> guildas = OusuBot.getJda().getGuilds();
+		List<Guild> guildas = OusuBot.getShardmanager().getGuilds();
 
 		List<EmbedBuilder> build = new ArrayList<EmbedBuilder>();
 		for (int i = 0; i < guildas.size(); i++) {

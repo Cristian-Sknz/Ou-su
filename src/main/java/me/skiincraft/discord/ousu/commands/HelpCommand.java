@@ -142,7 +142,7 @@ public class HelpCommand extends Commands {
 		String[] str = getLang().translatedArrayMessages("HELP_COMMAND_MESSAGE");
 
 		embed.setTitle(str[0]);
-		embed.setThumbnail(OusuBot.getJda().getSelfUser().getAvatarUrl());
+		embed.setThumbnail(OusuBot.getShardmanager().getShardById(0).getSelfUser().getAvatarUrl());
 		StringBuffer buffer = new StringBuffer();
 		for (String append : str) {
 			if (append != str[0]) {
@@ -164,7 +164,7 @@ public class HelpCommand extends Commands {
 		embed.addField(":bulb: **" + CommandCategory.Sobre.getCategoria(getLanguage()) + "**",
 				"`" + String.join("\n", Sobre) + "`", true);
 
-		User user = OusuBot.getJda().getUserById("247096601242238991");
+		User user = OusuBot.getShardmanager().getUserById("247096601242238991");
 		embed.setColor(new Color(226, 41, 230));
 		embed.setFooter(user.getName() + "#" + user.getDiscriminator() + " | Ou!su bot ™", user.getAvatarUrl());
 		return embed;

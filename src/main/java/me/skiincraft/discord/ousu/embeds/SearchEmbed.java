@@ -80,7 +80,7 @@ public class SearchEmbed {
 		// User user = OusuBot.getOusu().getJda().getUserById("247096601242238991");
 		// embed.setFooter(lang.translatedBot("FOOTER_DEFAULT"), user.getAvatarUrl());
 
-		embed.setFooter("[BeatmapSetID] " + beatmap.getBeatmapSetID(), OusuBot.getJda().getSelfUser().getAvatarUrl());
+		embed.setFooter("[BeatmapSetID] " + beatmap.getBeatmapSetID(), OusuBot.getShardmanager().getShardById(0).getSelfUser().getAvatarUrl());
 		try {
 			embed.setColor(ImageUtils.getPredominatColor(ImageIO.read(new URL(beatmap.getBeatmapThumbnailUrl()))));
 		} catch (NullPointerException | IOException e) {
@@ -154,7 +154,7 @@ public class SearchEmbed {
 		// User user = OusuBot.getOusu().getJda().getUserById("247096601242238991");
 		// embed.setFooter(lang.translatedBot("FOOTER_DEFAULT"), user.getAvatarUrl());
 
-		embed.setFooter("[BeatmapSetID] " + beatmap.getBeatmapSetID(), OusuBot.getJda().getSelfUser().getAvatarUrl());
+		embed.setFooter("[BeatmapSetID] " + beatmap.getBeatmapSetID(), OusuBot.getShardmanager().getShardById(0).getSelfUser().getAvatarUrl());
 		try {
 			embed.setColor(ImageUtils.getPredominatColor(ImageIO.read(new URL(beatmap.getBeatmapThumbnailUrl()))));
 		} catch (NullPointerException | IOException e) {
