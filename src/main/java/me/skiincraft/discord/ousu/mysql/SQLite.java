@@ -59,6 +59,11 @@ public class SQLite {
 
 	public synchronized void abrir() {
 		try {
+			if (connection != null) {
+				if (!connection.isClosed()) {
+					return;
+				}
+			}
 			Class.forName("com.mysql.jdbc.Driver");
 			String url = "jdbc:sqlite:banco_de_dados/banco_sqlite.db";
 			this.connection = DriverManager.getConnection(url);
@@ -132,6 +137,23 @@ public class SQLite {
 			return null;
 		}
 	}
+	
+	public Statement getOusuStatement() {
+		if (statement != null && connection != null) {
+			try {
+				if (statement.isClosed()) {
+					statement = connection.createStatement();
+					return statement;
+				}
+				return statement;
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			return statement;	
+		}
+		abrir();
+		return statement;
+	}
 
 	public synchronized void executeUpdateAsync(String update) {
 		if (this.connection == null || this.statement == null) {
@@ -140,7 +162,7 @@ public class SQLite {
 			return;
 		}
 		try {
-			Statement s = getConnection().createStatement();
+			Statement s = connection.createStatement();
 			s.executeUpdate(update);
 			s.close();
 		} catch (Exception e) {

@@ -90,7 +90,6 @@ public class ReadyBotEvent extends ListenerAdapter {
 
 	@Override
 	public void onReady(ReadyEvent event) {
-		event.getJDA().getPresence().setPresence(OnlineStatus.ONLINE, Activity.listening("Type ou!help for help."));
 		List<Guild> guildas = event.getJDA().getGuilds();
 
 		int newGuilds = 0;

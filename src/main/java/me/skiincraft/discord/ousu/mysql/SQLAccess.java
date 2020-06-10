@@ -32,18 +32,19 @@ public class SQLAccess {
 
 	public boolean existe() {
 		try {
-			ResultSet resultSet = OusuBot.getOusu().getSQL().getConnection().createStatement()
+			ResultSet resultSet = OusuBot.getSQL().getOusuStatement()
 					.executeQuery("SELECT * FROM " + databaseName + " WHERE `guildid` = '" + guildId + "';");
 
 			if (resultSet.next()) {
 				return resultSet.getString("guildid") != null;
 			}
-
 			return false;
 		} catch (Exception e) {
 			OusuBot.getOusu().logger("Não foi possivel verificar se existe");
 			OusuBot.getOusu().logger(OusuBot.getShardmanager().getGuildById(guildId).getName() + " - " + guildId);
 			return true;
+		} finally {
+			fechar();
 		}
 	}
 
@@ -55,7 +56,7 @@ public class SQLAccess {
 		Guild guild = OusuBot.getShardmanager().getGuildById(guildId);
 		try {
 			String guildname = guild.getName().replace("'", "").replace("´", "");
-			OusuBot.getOusu().getSQL().getConnection().createStatement()
+			OusuBot.getSQL().getOusuStatement()
 					.execute("INSERT INTO " + databaseName
 							+ "(`guildid`, `nome`, `membros`, `prefix`, `adicionado em`, `language`) VALUES" + "('"
 							+ guildId + "', " + "'" + guildname + "', " + "'" + guild.getMemberCount() + "', "
@@ -69,7 +70,10 @@ public class SQLAccess {
 			OusuBot.getOusu().logger("Data: " + date + " | " + generatelang());
 			OusuBot.getOusu().logger(e.getMessage());
 			return;
+		} finally {
+			fechar();
 		}
+		
 	}
 
 	private String generatelang() {
@@ -84,12 +88,13 @@ public class SQLAccess {
 
 	public void deletar() {
 		try {
-			OusuBot.getOusu().getSQL().getConnection().createStatement()
+			OusuBot.getSQL().getOusuStatement()
 					.execute("DELETE FROM " + databaseName + "WHERE `guildid` = '" + guildId + "';");
 		} catch (SQLException e) {
 			OusuBot.getOusu().logger("Ocorreu um erro ao deletar uma tabela: " + guildId);
+		} finally {
+			fechar();
 		}
-
 	}
 
 	public String get(String coluna) {
@@ -98,7 +103,7 @@ public class SQLAccess {
 		}
 
 		try {
-			ResultSet resultSet = OusuBot.getOusu().getSQL().getConnection().createStatement()
+			ResultSet resultSet = OusuBot.getSQL().getOusuStatement()
 					.executeQuery("SELECT * FROM " + databaseName + " WHERE `guildid` = '" + guildId + "';");
 
 			if (resultSet.next()) {
@@ -109,6 +114,8 @@ public class SQLAccess {
 			OusuBot.getOusu().logger("Ocorreu um erro ao pegar um valor de uma tabela: ");
 			OusuBot.getOusu().logger(" - " + guildId);
 			return null;
+		} finally {
+			fechar();
 		}
 	}
 
@@ -118,7 +125,7 @@ public class SQLAccess {
 		}
 
 		try {
-			ResultSet resultSet = OusuBot.getOusu().getSQL().getConnection().createStatement()
+			ResultSet resultSet = OusuBot.getSQL().getOusuStatement()
 					.executeQuery("SELECT * FROM " + databaseName + " WHERE `guildid` = '" + guildId + "';");
 
 			if (resultSet.next()) {
@@ -129,6 +136,8 @@ public class SQLAccess {
 			OusuBot.getOusu().logger("Ocorreu um erro ao pegar um valor(int) de uma tabela: ");
 			OusuBot.getOusu().logger(" - " + guildId);
 			return 0;
+		} finally {
+			fechar();
 		}
 	}
 
@@ -138,13 +147,15 @@ public class SQLAccess {
 		}
 
 		try {
-			OusuBot.getOusu().getSQL().getConnection().createStatement().execute("UPDATE " + databaseName + " SET `" + coluna
+			OusuBot.getSQL().getOusuStatement().execute("UPDATE " + databaseName + " SET `" + coluna
 					+ "` = '" + valor + "' WHERE `guildid` = '" + guildId + "';");
 			return;
 		} catch (SQLException e) {
 			OusuBot.getOusu().logger("Ocorreu um erro ao setar um valor de uma tabela: ");
 			OusuBot.getOusu().logger(" - " + guildId);
 			return;
+		} finally {
+			fechar();
 		}
 	}
 
@@ -154,17 +165,20 @@ public class SQLAccess {
 		}
 
 		try {
-			OusuBot.getOusu().getSQL().getConnection().createStatement().execute("UPDATE " + databaseName + " SET `" + coluna
+			OusuBot.getSQL().getOusuStatement().execute("UPDATE " + databaseName + " SET `" + coluna
 					+ "` = '" + valor + "' WHERE `guildid` = '" + guildId + "';");
 			return;
 		} catch (SQLException e) {
 			OusuBot.getOusu().logger("Ocorreu um erro ao setar um valor(int) de uma tabela: ");
 			OusuBot.getOusu().logger(OusuBot.getShardmanager().getGuildById(guildId)+ " - " + guildId);
 			return;
+		} finally {
+			fechar();
 		}
 	}
 
 	public Map<String, String> getOrderBy(String colunm, int limit, boolean desc) {
+		ResultSet result = null;
 		try {
 			String d;
 			if (desc == false) {
@@ -175,11 +189,12 @@ public class SQLAccess {
 			// SELECT * FROM `servidores` GROUP BY `ID` ORDER BY `adicionado em` DESC LIMIT
 			// 5; esse era teste*
 			Map<String, String> map = new HashMap<String, String>();
-			ResultSet result = OusuBot.getOusu().getSQL().getConnection().prepareStatement(
+			result = OusuBot.getSQL().getConnection().prepareStatement(
 					"SELECT * FROM `" + databaseName + "` GROUP BY `ID` ORDER BY `" + colunm + d + "LIMIT " + limit)
 					.executeQuery();
 			do {
 				if (!result.next()) {
+					result.getStatement().close();
 					result.close();
 					return map;
 				}
@@ -188,7 +203,20 @@ public class SQLAccess {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
+		} finally {
+			try {
+				result.getStatement().close();
+			} catch (SQLException e) {
+				//e.printStackTrace();
+			}
 		}
 	}
-
+	
+	private void fechar() {
+		try {
+			OusuBot.getSQL().getOusuStatement().close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 }

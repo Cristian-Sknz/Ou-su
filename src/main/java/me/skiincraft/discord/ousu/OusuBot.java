@@ -2,8 +2,11 @@ package me.skiincraft.discord.ousu;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.sql.SQLException;
 import java.util.EnumSet;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
@@ -70,8 +73,8 @@ public class OusuBot {
 	private static OusuAPI osu;
 	private static Logging log;
 	private static ShardManager shardmanager;
-	private SQLite connection;
-	
+	private static SQLite connection;
+	private static int presenceOrdem = 0;
 	public static OusuBot getOusu() {
 		return ousu;
 	}
@@ -84,7 +87,7 @@ public class OusuBot {
 		return osu;
 	}
 
-	public SQLite getSQL() {
+	public static SQLite getSQL() {
 		return connection;
 	}
 
@@ -137,7 +140,12 @@ public class OusuBot {
 		
 		connection.abrir();
 		connection.setup();
-	
+		try {
+			connection.getStatement().close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
 		shardmanager = shardbuilder.build();
 		logger("Esperando todas as shards...");
 		for (JDA jda :shardmanager.getShards()) {
@@ -146,23 +154,20 @@ public class OusuBot {
 		
 		logger("Todas as shards foram carregadas.");
 		osuLoader();
-		
-		Runnable presencerunnable = () -> {
-			int i = 0;
-			while (true) {
-				i = (i > new PresenceMessages().getMessages(shardmanager).size()) ? 0 : i;
+		TimerTask timertask = new TimerTask() {
+			
+			@Override
+			public void run() {
+				presenceOrdem = (presenceOrdem >= new PresenceMessages().getMessages(shardmanager).size()) ? 0 : presenceOrdem;
 				shardmanager.setPresence(OnlineStatus.ONLINE,
-						new PresenceMessages().getMessages(shardmanager).get(i));
-				try {
-					Thread.sleep(TimeUnit.MINUTES.toMillis(2));
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+						new PresenceMessages().getMessages(shardmanager).get(presenceOrdem));
+				presenceOrdem++;
 			}
 		};
 
-		Thread t = new Thread(presencerunnable, "PresenceChanger-Task");
-		t.start();
+		
+		Timer t = new Timer("Presence-Timer");
+		t.schedule(timertask, 1000, TimeUnit.SECONDS.toMillis(30));
 		SelfUser self = shardmanager.getShardById(0).getSelfUser();
 		
 		ApplicationUtils.frame.setTitle(ApplicationUtils.frame.getTitle().replace("[Bot]", self.getName()));
