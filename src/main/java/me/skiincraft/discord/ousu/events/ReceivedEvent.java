@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.skiincraft.discord.ousu.OusuBot;
-import me.skiincraft.discord.ousu.mysql.SQLAccess;
+import me.skiincraft.discord.ousu.sqlite.GuildsDB;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
@@ -73,8 +73,8 @@ public class ReceivedEvent extends ListenerAdapter {
 			int en = 0;
 
 			for (Guild guild : mutualguilds) {
-				SQLAccess sql = new SQLAccess(guild);
-				if (sql.existe()) {
+				GuildsDB sql = new GuildsDB(guild);
+				if (sql.exists()) {
 					String lang = sql.get("language");
 					if (lang.equalsIgnoreCase("portuguese")) {
 						pt++;

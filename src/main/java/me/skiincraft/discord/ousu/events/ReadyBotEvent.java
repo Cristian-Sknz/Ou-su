@@ -7,7 +7,7 @@ import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.api.DBLJavaLibrary;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.language.LanguageManager.Language;
-import me.skiincraft.discord.ousu.mysql.SQLAccess;
+import me.skiincraft.discord.ousu.sqlite.GuildsDB;
 import me.skiincraft.discord.ousu.utils.ReadyUtil;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
@@ -25,8 +25,8 @@ public class ReadyBotEvent extends ListenerAdapter {
 
 	@Override
 	public void onGuildJoin(GuildJoinEvent event) {
-		SQLAccess guild = new SQLAccess(event.getGuild());
-		guild.criar();
+		GuildsDB guild = new GuildsDB(event.getGuild());
+		guild.create();
 		String[] str = new String[] { "\nNovo servidor adicionado!", event.getGuild().getId(),
 				event.getGuild().getName(), "com " + event.getGuild().getMemberCount() + " membros.\n" };
 
@@ -43,9 +43,9 @@ public class ReadyBotEvent extends ListenerAdapter {
 
 	@Override
 	public void onGuildLeave(GuildLeaveEvent event) {
-		SQLAccess guild = new SQLAccess(event.getGuild());
+		GuildsDB guild = new GuildsDB(event.getGuild());
 
-		guild.deletar();
+		guild.delete();
 		String[] str = new String[] { "\nServidor removido.", event.getGuild().getId(), event.getGuild().getName(),
 				"com " + event.getGuild().getMemberCount() + " membros.\n" };
 
@@ -71,7 +71,7 @@ public class ReadyBotEvent extends ListenerAdapter {
 	@Override
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
 		String[] args = event.getMessage().getContentRaw().split(" ");
-		SQLAccess sql = new SQLAccess(event.getGuild());
+		GuildsDB sql = new GuildsDB(event.getGuild());
 		String prefix = sql.get("prefix");
 		if (args[0].startsWith(prefix) && event.getChannel().isNSFW()) {
 			event.getChannel().sendMessage(
@@ -95,11 +95,11 @@ public class ReadyBotEvent extends ListenerAdapter {
 		int newGuilds = 0;
 
 		for (Guild guild : guildas) {
-			SQLAccess sql = new SQLAccess(guild);
-			if (!sql.existe()) {
+			GuildsDB sql = new GuildsDB(guild);
+			if (!sql.exists()) {
 				newGuilds++;
 			}
-			sql.criar();
+			sql.create();
 		}
 
 		ReadyUtil.updateServerUsers(guildas); // Atualizar numero de membros.

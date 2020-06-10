@@ -19,9 +19,9 @@ import me.skiincraft.api.ousu.modifiers.Gamemode;
 import me.skiincraft.api.ousu.modifiers.Genre;
 import me.skiincraft.api.ousu.users.User;
 import me.skiincraft.discord.ousu.language.LanguageManager;
-import me.skiincraft.discord.ousu.mysql.SQLPlayer;
 import me.skiincraft.discord.ousu.osuskins.OsuSkin;
 import me.skiincraft.discord.ousu.osuskins.OsuSkin.Statistics;
+import me.skiincraft.discord.ousu.sqlite.OsuUserDB;
 
 public class JSoupGetters {
 
@@ -56,7 +56,7 @@ public class JSoupGetters {
 			e.printStackTrace();
 		}
 		
-		SQLPlayer sql = new SQLPlayer(user);
+		OsuUserDB sql = new OsuUserDB(user);
 		String lastpp = "";
 		String[] lpp = sql.get("lastpp").split("&");
 		int valor1 = Integer.valueOf(lpp[0]);

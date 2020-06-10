@@ -14,7 +14,7 @@ public class DBLJavaLibrary {
 				.botId(OusuBot.getShardmanager().getShardById(0).getSelfUser().getId()).build();
 		
 		//api.setStats(shardinfo.getShardId(), shardinfo.getShardTotal(), OusuBot.getJda().getGuilds().size());
-		api.setStats(OusuBot.getShardmanager().getShardById(0).getGuilds().size());
+		api.setStats(OusuBot.getShardmanager().getGuilds().size());
 	}
 
 }

@@ -8,6 +8,35 @@ import java.util.regex.Pattern;
 
 public class StringUtils {
 
+	
+	public static String insertBuild(String...strings) {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append(" (");
+		
+		for (int i = 0; i < strings.length; i++) {
+			buffer.append("`" + strings[i] +"`");
+			if (i != strings.length-1) {
+				buffer.append(", ");
+			}
+		}
+		buffer.append(")");
+		return buffer.toString();
+	}
+	
+	public static String selectBuild(String...strings) {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append(" (");
+		
+		for (int i = 0; i < strings.length; i++) {
+			buffer.append("'" + strings[i] +"'");
+			if (i != strings.length-1) {
+				buffer.append(", ");
+			}
+		}
+		buffer.append(")");
+		return buffer.toString();
+	}
+	
 	public static int quantityLetters(String regex, String string) {
 		if (!string.contains(regex + "")) {
 			return 0;

@@ -3,7 +3,7 @@ package me.skiincraft.discord.ousu.events;
 import me.skiincraft.discord.ousu.embeds.TypeEmbed;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.language.LanguageManager.Language;
-import me.skiincraft.discord.ousu.mysql.SQLAccess;
+import me.skiincraft.discord.ousu.sqlite.GuildsDB;
 import me.skiincraft.discord.ousu.utils.StringUtils;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -23,7 +23,7 @@ public class OtherEvents extends ListenerAdapter {
 		if (e.getChannel().isNSFW()) {
 			return;
 		}
-		SQLAccess sql = new SQLAccess(e.getGuild());
+		GuildsDB sql = new GuildsDB(e.getGuild());
 		LanguageManager lang = new LanguageManager(Language.valueOf(sql.get("language")));
 		String prefix = sql.get("prefix");
 

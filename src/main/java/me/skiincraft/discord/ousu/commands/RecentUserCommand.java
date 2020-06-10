@@ -23,7 +23,7 @@ import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.language.LanguageManager.Language;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
-import me.skiincraft.discord.ousu.mysql.SQLAccess;
+import me.skiincraft.discord.ousu.sqlite.GuildsDB;
 import me.skiincraft.discord.ousu.utils.Emoji;
 import me.skiincraft.discord.ousu.utils.ImageUtils;
 import me.skiincraft.discord.ousu.utils.OusuUtils;
@@ -109,7 +109,7 @@ public class RecentUserCommand extends Commands {
 		// "Imports"
 		EmbedBuilder embed = new EmbedBuilder();
 		Score score = scorelist;
-		SQLAccess sql = new SQLAccess(guild);
+		GuildsDB sql = new GuildsDB(guild);
 		LanguageManager lang = new LanguageManager(Language.valueOf(sql.get("language")));
 		Beatmap beatmap = score.getBeatmap();
 

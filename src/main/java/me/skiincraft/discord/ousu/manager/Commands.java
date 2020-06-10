@@ -13,7 +13,7 @@ import me.skiincraft.discord.ousu.customemoji.OusuEmojis;
 import me.skiincraft.discord.ousu.embeds.TypeEmbed;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.language.LanguageManager.Language;
-import me.skiincraft.discord.ousu.mysql.SQLAccess;
+import me.skiincraft.discord.ousu.sqlite.GuildsDB;
 import me.skiincraft.discord.ousu.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -87,7 +87,7 @@ public abstract class Commands extends ListenerAdapter {
 			return false;
 		}
 
-		SQLAccess sql = new SQLAccess(e.getGuild());
+		GuildsDB sql = new GuildsDB(e.getGuild());
 
 		prefix = sql.get("prefix");
 		if (!hasAliases()) {
@@ -324,7 +324,7 @@ public abstract class Commands extends ListenerAdapter {
 	}
 
 	public Language getLanguage() {
-		SQLAccess sql = new SQLAccess(getEvent().getGuild());
+		GuildsDB sql = new GuildsDB(getEvent().getGuild());
 		return Language.valueOf(sql.get("language"));
 	}
 
