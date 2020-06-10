@@ -11,7 +11,7 @@ import me.skiincraft.discord.ousu.embeds.TypeEmbed;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
-import me.skiincraft.discord.ousu.mysql.SQLAccess;
+import me.skiincraft.discord.ousu.sqlite.GuildsDB;
 import me.skiincraft.discord.ousu.utils.Emoji;
 import me.skiincraft.discord.ousu.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -55,7 +55,7 @@ public class HelpCommand extends Commands {
 
 	public EmbedBuilder emb(String comando, Guild guild) {
 		EmbedBuilder embed = TypeEmbed.HelpEmbed("help title", "help description");
-		String prefix = new SQLAccess(guild).get("prefix");
+		String prefix = new GuildsDB(guild).get("prefix");
 		for (Commands com : commands) {
 			if (comando.equalsIgnoreCase(com.getCommand())) {
 				embed.setTitle("Help <" + com.getCommand() + ">");
@@ -104,7 +104,7 @@ public class HelpCommand extends Commands {
 
 		for (int i = 0; i < commands.size(); i++) {
 			Commands comando = commands.get(i);
-			String prefix = new SQLAccess(guild).get("prefix");
+			String prefix = new GuildsDB(guild).get("prefix");
 
 			if (comando.getCategoria() == CommandCategory.Administracao) {
 				a.append("- " + prefix + comando.getCommand());

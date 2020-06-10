@@ -12,7 +12,7 @@ import me.skiincraft.discord.ousu.events.DefaultReaction;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
-import me.skiincraft.discord.ousu.mysql.SQLAccess;
+import me.skiincraft.discord.ousu.sqlite.GuildsDB;
 import me.skiincraft.discord.ousu.utils.ReactionMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
@@ -99,7 +99,7 @@ public class ServersCommand extends Commands {
 				"Texto - " + guild.getTextChannels().size() + "\nAudio - " + guild.getVoiceChannels().size(), true);
 
 		builder.addField("Membros", "" + guild.getMemberCount(), true);
-		builder.addField("Adicionado em:", new SQLAccess(guild).get("adicionado em"), true);
+		builder.addField("Adicionado em:", new GuildsDB(guild).get("adicionado em"), true);
 
 		return builder;
 	}

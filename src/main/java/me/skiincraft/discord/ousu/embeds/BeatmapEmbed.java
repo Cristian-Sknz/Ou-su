@@ -11,7 +11,7 @@ import me.skiincraft.api.ousu.beatmaps.Beatmap;
 import me.skiincraft.discord.ousu.customemoji.OusuEmojis;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.language.LanguageManager.Language;
-import me.skiincraft.discord.ousu.mysql.SQLAccess;
+import me.skiincraft.discord.ousu.sqlite.GuildsDB;
 import me.skiincraft.discord.ousu.utils.Emoji;
 import me.skiincraft.discord.ousu.utils.ImageUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -21,7 +21,7 @@ public class BeatmapEmbed {
 
 	public synchronized static EmbedBuilder beatmapEmbed(Beatmap beatmap, Guild guild) {
 		EmbedBuilder embed = new EmbedBuilder();
-		SQLAccess sql = new SQLAccess(guild);
+		GuildsDB sql = new GuildsDB(guild);
 		LanguageManager lang = new LanguageManager(Language.valueOf(sql.get("language")));
 		
 		embed.setTitle(Emoji.HEADPHONES.getAsMention() + " " + beatmap.getTitle(), beatmap.getURL());

@@ -43,7 +43,6 @@ import me.skiincraft.discord.ousu.events.ReadyBotEvent;
 import me.skiincraft.discord.ousu.events.ReceivedEvent;
 import me.skiincraft.discord.ousu.logger.Logging;
 import me.skiincraft.discord.ousu.manager.Commands;
-import me.skiincraft.discord.ousu.mysql.SQLite;
 import me.skiincraft.discord.ousu.owneraccess.PresenseCommand;
 import me.skiincraft.discord.ousu.owneraccess.ServersCommand;
 import me.skiincraft.discord.ousu.reactions.BeatmapsetEvent;
@@ -54,9 +53,11 @@ import me.skiincraft.discord.ousu.reactions.ServerReactionsEvent;
 import me.skiincraft.discord.ousu.reactions.SkinsReactionEvent;
 import me.skiincraft.discord.ousu.reactions.TopUserReactionEvent;
 import me.skiincraft.discord.ousu.reactions.UserReactionEvent;
+import me.skiincraft.discord.ousu.sqlite.SQLite;
 import me.skiincraft.discord.ousu.utils.OusuUtils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.SelfUser;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -167,7 +168,7 @@ public class OusuBot {
 
 		
 		Timer t = new Timer("Presence-Timer");
-		t.schedule(timertask, 1000, TimeUnit.SECONDS.toMillis(30));
+		t.schedule(timertask, 1000, TimeUnit.SECONDS.toMillis(60));
 		SelfUser self = shardmanager.getShardById(0).getSelfUser();
 		
 		ApplicationUtils.frame.setTitle(ApplicationUtils.frame.getTitle().replace("[Bot]", self.getName()));
@@ -254,8 +255,16 @@ public class OusuBot {
 		return getShardmanager().getUserById(id);
 	}
 	
-	public static User getUserByID(long id) {
+	public static User getUserById(long id) {
 		return getShardmanager().getUserById(id);
+	}
+	
+	public static Guild getGuildById(String id) {
+		return getShardmanager().getGuildById(id);
+	}
+	
+	public static Guild getGuildById(long id) {
+		return getShardmanager().getGuildById(id);
 	}
 
 }

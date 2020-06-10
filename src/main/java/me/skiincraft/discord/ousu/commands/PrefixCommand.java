@@ -5,7 +5,7 @@ import me.skiincraft.discord.ousu.embeds.TypeEmbed;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
-import me.skiincraft.discord.ousu.mysql.SQLAccess;
+import me.skiincraft.discord.ousu.sqlite.GuildsDB;
 import me.skiincraft.discord.ousu.utils.Emoji;
 import me.skiincraft.discord.ousu.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -53,7 +53,7 @@ public class PrefixCommand extends Commands {
 				return;
 			}
 
-			SQLAccess sql = new SQLAccess(channel.getGuild());
+			GuildsDB sql = new GuildsDB(channel.getGuild());
 
 			String oldPrefix = sql.get("prefix");
 			String newPrefix = args[0];

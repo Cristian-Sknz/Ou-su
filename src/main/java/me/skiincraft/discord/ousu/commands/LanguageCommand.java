@@ -8,7 +8,7 @@ import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.language.LanguageManager.Language;
 import me.skiincraft.discord.ousu.manager.CommandCategory;
 import me.skiincraft.discord.ousu.manager.Commands;
-import me.skiincraft.discord.ousu.mysql.SQLAccess;
+import me.skiincraft.discord.ousu.sqlite.GuildsDB;
 import me.skiincraft.discord.ousu.utils.Emoji;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -45,7 +45,7 @@ public class LanguageCommand extends Commands {
 		if (args.length == 1) {
 			for (Language lang : Language.values()) {
 				if (lang.name().equalsIgnoreCase(args[0]) || lang.getCountrycode().equalsIgnoreCase(args[0])) {
-					SQLAccess sql = new SQLAccess(channel.getGuild());
+					GuildsDB sql = new GuildsDB(channel.getGuild());
 					sql.set("language", lang.name());
 					LanguageManager m = new LanguageManager(lang);
 
