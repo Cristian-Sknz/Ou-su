@@ -1,16 +1,16 @@
-<img src="https://i.imgur.com/5OGGeBj.png" alt="Ousu!" width="750"/>
+<img src="https://i.imgur.com/5OGGeBj.png" alt="Ousu!" width="650"/>
 
-[![Discord Bots](https://top.gg/api/widget/status/701825726449582192.svg)](https://top.gg/bot/701825726449582192)  [![Discord Bots](https://top.gg/api/widget/owner/701825726449582192.svg)](https://top.gg/bot/701825726449582192) [![Discord Bots](https://top.gg/api/widget/servers/701825726449582192.svg)](https://top.gg/bot/701825726449582192) [![Discord Bots](https://top.gg/api/widget/upvotes/701825726449582192.svg)](https://top.gg/bot/701825726449582192)
+> [![Discord Bots](https://top.gg/api/widget/status/701825726449582192.svg)](https://top.gg/bot/701825726449582192)  [![Discord Bots](https://top.gg/api/widget/owner/701825726449582192.svg)](https://top.gg/bot/701825726449582192) [![Discord Bots](https://top.gg/api/widget/servers/701825726449582192.svg)](https://top.gg/bot/701825726449582192) [![Discord Bots](https://top.gg/api/widget/upvotes/701825726449582192.svg)](https://top.gg/bot/701825726449582192) *
 
 ## :scroll: What is ousu?
 Ousu is a discord bot that lets you show information about everything related to osu with some of the things a competitive or casual player needs to know! Ousu is able to display your information in interactive and slightly fun ways, like music previews and information from your favorite beatmaps, among others.
 
-## How can I enjoy this feature for Discord?
-First you can start by adding me to your discord server, using this link! Ousu has a short list of commands that can be seen by typing ou!Help in the discord chat. All commands have a help specification for easy use, and with a pleasant look :3
+## :drum: How can I enjoy this feature for Discord?
+First you can start by adding me to your discord server, [using this link](https://discord.com/oauth2/authorize?client_id=701825726449582192&scope=bot&permissions=1678108752)! Ousu has a short list of commands that can be seen by typing ou!Help in the discord chat. All commands have a help specification for easy use, and with a pleasant look :3
 
 Another way to access the bot is by self-hosting, I get jealous when talking about it (uwu). Right below it will be explained how to self-host
 
-## Dependencies
+## :jigsaw: Dependencies
  Ousu uses some of these dependencies below:
 * * <img src="https://i.imgur.com/79812DA.png" alt="JDA!" width="13"/> [**JDA** | **DV8FromTheWorld**](https://github.com/DV8FromTheWorld/JDA)
 * * <img src="https://top.gg/images/dblnew.png" alt="DiscordBotList!" width="13"/> [**Discord Bots List API**](https://github.com/DiscordBotList)
@@ -21,7 +21,7 @@ Another way to access the bot is by self-hosting, I get jealous when talking abo
 If you want something more detailed, take a look at build.gradle
 
 
-### <img src="https://i.imgur.com/Lnq89ST.png" alt="SQLite" width="15"/>Self-Hosting
+### <img src="https://i.imgur.com/Lnq89ST.png" alt="SQLite" width="15"/> Self-Hosting
 > Soon the bot will be fully configurable for self-hosting, still missing features that are incomplete.
 
 ### :dizzy: Special thanks to...
