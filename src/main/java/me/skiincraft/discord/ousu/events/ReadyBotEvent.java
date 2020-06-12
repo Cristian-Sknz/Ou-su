@@ -36,7 +36,7 @@ public class ReadyBotEvent extends ListenerAdapter {
 
 		String name = event.getJDA().getPresence().getActivity().getName();
 		if (name.contains(" Servidores.")) {
-			event.getJDA().getPresence().setPresence(OnlineStatus.ONLINE, Activity.watching((guilds) + " Servidores."));
+			OusuBot.getShardmanager().setPresence(OnlineStatus.ONLINE, Activity.watching((guilds) + " Servidores."));
 		}
 		new DBLJavaLibrary().connect();
 	}
@@ -65,7 +65,7 @@ public class ReadyBotEvent extends ListenerAdapter {
 
 	@Override
 	public void onGuildUpdateName(GuildUpdateNameEvent event) {
-		ReadyUtil.updateServerNames(Arrays.asList(event.getGuild()));
+		ReadyUtil.updateServersData(Arrays.asList(event.getGuild()));
 	}
 
 	@Override
@@ -105,7 +105,6 @@ public class ReadyBotEvent extends ListenerAdapter {
 		ReadyUtil.updateServerUsers(guildas); // Atualizar numero de membros.
 
 		if (newGuilds == 0) {
-			OusuBot.getOusu().logger("Não foi adicionado nenhum servidor novo, desde o ultimo update.");
 			return;
 		}
 

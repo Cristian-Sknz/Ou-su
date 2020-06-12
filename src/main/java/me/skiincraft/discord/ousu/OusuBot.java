@@ -38,6 +38,7 @@ import me.skiincraft.discord.ousu.commands.VersionCommand;
 import me.skiincraft.discord.ousu.commands.VoteCommand;
 import me.skiincraft.discord.ousu.configuration.ConfigSetup;
 import me.skiincraft.discord.ousu.configuration.ConfigSetup.ConfigOptions;
+import me.skiincraft.discord.ousu.customemoji.GenerateEmote;
 import me.skiincraft.discord.ousu.events.OtherEvents;
 import me.skiincraft.discord.ousu.events.PresenceMessages;
 import me.skiincraft.discord.ousu.events.ReadyBotEvent;
@@ -174,6 +175,7 @@ public class OusuBot {
 		
 		ApplicationUtils.frame.setTitle(ApplicationUtils.frame.getTitle().replace("[Bot]", self.getName()));
 		new DBLJavaLibrary().connect();
+		new GenerateEmote().makeConfig(shardmanager.getGuildById(680436378240286720L));
 		
 		AppRestartThread(arguments, restart);
 		CooldownManager.start();
@@ -236,7 +238,7 @@ public class OusuBot {
 		Runnable runnable = () -> {
 			PrettyTime time = new PrettyTime(Locale.forLanguageTag("PT"));
 			try {
-				for (int i = 0; i < 1; i++) {
+				for (int i = 0; i < 2; i++) {
 					String str = (i == 0) ? time.format(OusuUtils.getDateAfter(restart))
 							: time.format(OusuUtils.getDateAfter(restart / 2));
 					logger("Essa aplicação irá reiniciar " + str);
