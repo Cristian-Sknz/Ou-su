@@ -3,8 +3,10 @@ package me.skiincraft.discord.ousu.sqlite;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import me.skiincraft.discord.ousu.OusuBot;
@@ -19,7 +21,6 @@ public class GuildsDB {
 	private final String defaultPrefix = "ou!";
 
 	private Map<String, String> lastmap;
-	private boolean lastboolean;
 	private String laststring;
 	private int lastint;
 	
@@ -34,10 +35,6 @@ public class GuildsDB {
 	public GuildsDB(String guildId) {
 		this.guildId = guildId;
 	}
-	
-	private void setLast(boolean bool) {
-		lastboolean = bool;
-	}
 	private void setLast(String string) {
 		laststring = string;
 	}
@@ -46,9 +43,6 @@ public class GuildsDB {
 	}
 	private void setLast(int integer) {
 		lastint = integer;
-	}
-	private boolean getLastBoolean() {
-		return lastboolean;
 	}
 	private String getLastString() {
 		return laststring;
@@ -62,6 +56,7 @@ public class GuildsDB {
 	}
 	
 	public boolean exists() {
+		List<Boolean> booleans = new ArrayList<Boolean>();
 			OusuBot.getSQL().executeStatementTask(statement -> {
 				try {
 					StringBuffer buffer = new StringBuffer();
@@ -69,16 +64,24 @@ public class GuildsDB {
 					buffer.append("`guildid` = '" + guildId + "';");
 					ResultSet result = statement.executeQuery(buffer.toString());
 					
-					setLast((result.next()) ? result.getString("guildid") != null
+					booleans.add((result.next()) ? result.getString("guildid") != null
 							: false);
 				} catch (SQLException e) {
-					setLast(false);
+					booleans.add(false);
 					OusuBot.getOusu().logger("| Não foi possivel verificar se uma tabela existe.");
 					OusuBot.getOusu().logger("|" + OusuBot.getShardmanager().getGuildById(guildId).getName() + " - " + guildId);					
 					e.printStackTrace();
 				}
 			});
-		return getLastBoolean();
+			while (booleans.size() == 0) {
+				try {
+					Thread.sleep(200L);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			
+		return booleans.get(0);
 	}
 	
 	public void create() {

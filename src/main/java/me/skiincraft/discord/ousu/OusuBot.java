@@ -25,6 +25,7 @@ import me.skiincraft.discord.ousu.commands.EmbedCommand;
 import me.skiincraft.discord.ousu.commands.HelpCommand;
 import me.skiincraft.discord.ousu.commands.InviteCommand;
 import me.skiincraft.discord.ousu.commands.LanguageCommand;
+import me.skiincraft.discord.ousu.commands.PingCommand;
 import me.skiincraft.discord.ousu.commands.PrefixCommand;
 import me.skiincraft.discord.ousu.commands.RankingCommand;
 import me.skiincraft.discord.ousu.commands.RecentUserCommand;
@@ -198,7 +199,8 @@ public class OusuBot {
 		registerCommands(build, new HelpCommand(), new EmbedCommand(), new UserCommand(), new TopUserCommand(),
 				new UserImageCommand(), new PrefixCommand(), new BeatMapCommand(), new VersionCommand(),
 				new InviteCommand(), new RecentUserCommand(), new LanguageCommand(), new BeatMapSetCommand(),
-				new SearchCommand(), new VoteCommand(), new RankingCommand(), new SkinsCommand(), new CardCommand());
+				new SearchCommand(), new VoteCommand(), new RankingCommand(), new SkinsCommand(), new CardCommand(),
+				new PingCommand());
 
 		registerCommands(build, new PresenseCommand(), new ServersCommand());
 	}

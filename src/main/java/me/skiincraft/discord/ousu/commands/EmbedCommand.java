@@ -48,7 +48,6 @@ public class EmbedCommand extends Commands {
 			for (int i = 1; i < args.length; i++) {
 				em.append(args[i] + " ");
 			}
-
 			sendEmbedMessage(TypeEmbed.DefaultEmbed(args[0].replaceAll("_", " "), em.toString())).queue();
 			return;
 		}

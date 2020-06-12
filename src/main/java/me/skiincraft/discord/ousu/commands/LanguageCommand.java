@@ -82,6 +82,7 @@ public class LanguageCommand extends Commands {
 				buffer.append(append);
 			}
 		}
+		
 		for (Language lang : Language.values()) {
 			bufferlang.append("\n" + Emoji.SMALL_BLUE_DIAMOND.getAsMention() + " + lang.name()" + " - " + lang.getLanguageCode());
 		}

@@ -63,10 +63,11 @@ public class HelpCommand extends Commands {
 					String emoji = Emoji.SMALL_ORANGE_DIAMOND.getAsMention();;
 					StringBuffer buffer = new StringBuffer();
 					
-					for (String str : com.helpMessage(getLang())) {
+					List<String> helpmessages = Arrays.asList(com.helpMessage(getLang()));
+					helpmessages.forEach(str ->{
 						buffer.append(emoji + " " + str + "\n");
-
-					}
+					});
+					
 					embed.setDescription(buffer.toString());
 				} else {
 					embed.setDescription(getLang().translatedHelp("NO_COMMAND_DESCRIPTION"));

@@ -61,7 +61,6 @@ public class CardCommand extends Commands {
 				InputStream drawer = OsuCard.drawImage(osuUser);
 				
 				String aname = osuUser.getUserID() + "userOsu.png";
-				//EmbedBuilder embedlocal = embed(osuUser).setImage("attachment://" + aname);
 				channel.sendMessage(getUser().getAsMention()).addFile(drawer, aname).queue();
 				
 			} catch (InvalidUserException e) {

@@ -63,7 +63,7 @@ public class CooldownManager {
 	}
 
 	public static void start() {
-		Timer t = new Timer();
+		Timer t = new Timer("Users-Cooldowns");
 		t.schedule(new TimerTask() {
 
 			@Override
@@ -73,12 +73,12 @@ public class CooldownManager {
 				}
 
 				List<String> keys = cooldown.keySet().stream().collect(Collectors.toList());
-				for (String v : keys) {
+				keys.forEach(v -> {
 					Cooldown v2 = cooldown.get(v);
 					if (v2.getEndtime() < System.currentTimeMillis() - v2.getStarttime()) {
 						cooldown.remove(v);
 					}
-				}
+				});
 				return;
 			}
 		}, 0, 200);

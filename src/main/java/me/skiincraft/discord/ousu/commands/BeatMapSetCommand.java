@@ -49,13 +49,14 @@ public class BeatMapSetCommand extends Commands {
 
 				sendEmbedMessage(TypeEmbed.LoadingEmbed()).queue(loadmessage -> {
 					List<EmbedBuilder> bmb = new ArrayList<EmbedBuilder>();
-					for (Beatmap b : osuBeat) {
+					osuBeat.forEach(b -> {
 						bmb.add(BeatmapEmbed.beatmapEmbed(b, channel.getGuild()));
-					}
+					});
 
 					EmbedBuilder[] bm = new EmbedBuilder[bmb.size()];
 					bmb.toArray(bm);
 					loadmessage.editMessage(bm[0].build()).queue();
+					
 					loadmessage.addReaction("U+25C0").queue();
 					loadmessage.addReaction("U+25FC").queue();
 					loadmessage.addReaction("U+25B6").queue();
