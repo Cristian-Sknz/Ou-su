@@ -76,12 +76,13 @@ public class TopUserCommand extends Commands {
 					User us = osuUser.get(0).getUser();
 
 					for (int i = 0; i < osuUser.size(); i++) {
-						emb.add(embed(osuUser.get(i), new Integer[] { i + 1, osuUser.size() }, us, channel.getGuild()));
+						EmbedBuilder embed = embed(osuUser.get(i), new Integer[] { i + 1, osuUser.size() }, us, channel.getGuild());
+						emb.add(embed);
 					}
 
 					EmbedBuilder[] scorearray = new EmbedBuilder[emb.size()];
 					emb.toArray(scorearray);
-
+					
 					loadmessage.editMessage(scorearray[0].build()).queue(sucessfullmessage -> {
 						sucessfullmessage.addReaction("U+25C0").queue();
 						sucessfullmessage.addReaction("U+25B6").queue();
@@ -154,9 +155,7 @@ public class TopUserCommand extends Commands {
 
 		linkcover = url;
 		embed.setThumbnail(user.getUserAvatar());
-		embed.setImage((ImageUtils.existsImage(url))
-				? url
-				: "https://i.imgur.com/LfF0VBR.gif");
+		embed.setImage(url);
 
 		String author = beatmap.getCreator();
 		embed.setFooter("[" + beatmap.getBeatmapID() + "] " + beatmap.getTitle() + " por " + beatmap.getArtist() + " | "
