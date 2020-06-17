@@ -6,11 +6,11 @@ import java.net.URL;
 import java.util.List;
 import javax.imageio.ImageIO;
 
+import me.skiincraft.discord.ousu.abstractcore.CommandCategory;
+import me.skiincraft.discord.ousu.abstractcore.Commands;
 import me.skiincraft.discord.ousu.embeds.TypeEmbed;
 import me.skiincraft.discord.ousu.events.DefaultReaction;
 import me.skiincraft.discord.ousu.language.LanguageManager;
-import me.skiincraft.discord.ousu.manager.CommandCategory;
-import me.skiincraft.discord.ousu.manager.Commands;
 import me.skiincraft.discord.ousu.search.OsuRankingGetter;
 import me.skiincraft.discord.ousu.search.RankingUsers;
 import me.skiincraft.discord.ousu.utils.ImageUtils;
@@ -36,27 +36,29 @@ public class RankingCommand extends Commands {
 
 	@Override
 	public void action(String[] args, String label, TextChannel channel) {
-		sendEmbedMessage(TypeEmbed.LoadingEmbed()).queue(msg -> {
-				List<RankingUsers> ou;
-				try {
-					String cc = null;
-					if (args.length != 0) {
-						if (args[0].length() != 2) {
-							sendUsage().queue();
-							msg.delete().queue();
-							return;
-						}
-						cc = args[0];
+		replyQueue(TypeEmbed.LoadingEmbed().build(), msg -> {
+			List<RankingUsers> ou;
+				String cc = null;
+				if (args.length != 0) {
+					if (args[0].length() != 2) {
+						sendUsage();
+						msg.delete().queue();
+						return;
 					}
+					cc = args[0];
+				}
+				try {
 					ou = OsuRankingGetter.rankingtop(cc);
-					msg.editMessage(embed(ou, 0).build()).queue(message -> {
-							message.addReaction("U+25C0").queue();
-							message.addReaction("U+25B6").queue();
-							EmbedBuilder[] embedb = new EmbedBuilder[] { embed(ou, 0), embed(ou, 10), embed(ou, 20),
-									embed(ou, 30), embed(ou, 40) };
-							
-							ReactionMessage.rankingReaction.add(new DefaultReaction(getUserId(), message.getId(), embedb, 0));
-					});
+
+				EmbedBuilder embedOne = embed(ou, 0);
+				msg.editMessage(embedOne.build()).queue();
+				
+				msg.addReaction("U+25C0").queue();
+				msg.addReaction("U+25B6").queue();
+				EmbedBuilder[] embedb = new EmbedBuilder[] { embedOne, embed(ou, 10), embed(ou, 20),
+						embed(ou, 30), embed(ou, 40) };
+				
+				ReactionMessage.rankingReaction.add(new DefaultReaction(getUserId(), msg.getId(), embedb, 0));
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

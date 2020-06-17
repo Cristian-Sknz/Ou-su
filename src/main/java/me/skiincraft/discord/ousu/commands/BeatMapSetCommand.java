@@ -7,13 +7,12 @@ import java.util.List;
 import me.skiincraft.api.ousu.beatmaps.Beatmap;
 import me.skiincraft.api.ousu.exceptions.InvalidBeatmapException;
 import me.skiincraft.discord.ousu.OusuBot;
+import me.skiincraft.discord.ousu.abstractcore.CommandCategory;
+import me.skiincraft.discord.ousu.abstractcore.Commands;
 import me.skiincraft.discord.ousu.embeds.BeatmapEmbed;
 import me.skiincraft.discord.ousu.embeds.TypeEmbed;
 import me.skiincraft.discord.ousu.events.DefaultReaction;
 import me.skiincraft.discord.ousu.language.LanguageManager;
-import me.skiincraft.discord.ousu.manager.CommandCategory;
-import me.skiincraft.discord.ousu.manager.Commands;
-import me.skiincraft.discord.ousu.utils.Emoji;
 import me.skiincraft.discord.ousu.utils.ReactionMessage;
 import me.skiincraft.discord.ousu.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -39,15 +38,14 @@ public class BeatMapSetCommand extends Commands {
 	@Override
 	public void action(String[] args, String label, TextChannel channel) {
 		if (args.length == 0) {
-			sendUsage().queue();
+			sendUsage();
 			return;
 		}
 
 		if (args.length >= 1) {
 			try {
 				List<Beatmap> osuBeat = OusuBot.getOsu().getBeatmapSet(Integer.valueOf(args[0]));
-
-				sendEmbedMessage(TypeEmbed.LoadingEmbed()).queue(loadmessage -> {
+				replyQueue(TypeEmbed.LoadingEmbed().build(), loadmessage -> { 
 					List<EmbedBuilder> bmb = new ArrayList<EmbedBuilder>();
 					osuBeat.forEach(b -> {
 						bmb.add(BeatmapEmbed.beatmapEmbed(b, channel.getGuild()));
@@ -63,26 +61,23 @@ public class BeatMapSetCommand extends Commands {
 					
 					ReactionMessage.beatHistory.add(new DefaultReaction(getUserId(), loadmessage.getId(), bm, 0));
 					try {
-						loadmessage.getChannel()
-								.sendFile(osuBeat.get(0).getBeatmapPreview(),
-										bm[0].build().getTitle().replace(Emoji.HEADPHONES.getAsMention(), "") + ".mp3")
-								.queue();
+						Beatmap beat = osuBeat.get(0);
+						reply(beat.getBeatmapPreview(), beat.getTitle() + ".mp3");
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-
 				});
 			} catch (InvalidBeatmapException e) {
 				String[] msg = getLang().translatedArrayOsuMessages("INEXISTENT_BEATMAPID");
 
 				MessageEmbed build = TypeEmbed.WarningEmbed(msg[0], StringUtils.commandMessage(msg)).build();
-				sendEmbedMessage(build).queue();
+				reply(build);
 				return;
 			} catch (NumberFormatException e) {
 				String[] msg = getLang().translatedArrayOsuMessages("USE_NUMBERS");
 
 				MessageEmbed build = TypeEmbed.WarningEmbed(msg[0], StringUtils.commandMessage(msg)).build();
-				sendEmbedMessage(build).queue();
+				reply(build);
 				return;
 			}
 

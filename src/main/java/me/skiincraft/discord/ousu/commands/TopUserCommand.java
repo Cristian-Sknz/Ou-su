@@ -17,13 +17,13 @@ import me.skiincraft.api.ousu.modifiers.Mods;
 import me.skiincraft.api.ousu.scores.Score;
 import me.skiincraft.api.ousu.users.User;
 import me.skiincraft.discord.ousu.OusuBot;
+import me.skiincraft.discord.ousu.abstractcore.CommandCategory;
+import me.skiincraft.discord.ousu.abstractcore.Commands;
 import me.skiincraft.discord.ousu.customemoji.OusuEmojis;
 import me.skiincraft.discord.ousu.embeds.TypeEmbed;
 import me.skiincraft.discord.ousu.events.DefaultReaction;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.language.LanguageManager.Language;
-import me.skiincraft.discord.ousu.manager.CommandCategory;
-import me.skiincraft.discord.ousu.manager.Commands;
 import me.skiincraft.discord.ousu.sqlite.GuildsDB;
 import me.skiincraft.discord.ousu.utils.Emoji;
 import me.skiincraft.discord.ousu.utils.ImageUtils;
@@ -56,7 +56,7 @@ public class TopUserCommand extends Commands {
 	@Override
 	public void action(String[] args, String label, TextChannel channel) {
 		if (args.length == 0) {
-			sendUsage().queue();
+			sendUsage();
 			return;
 		}
 
@@ -71,34 +71,35 @@ public class TopUserCommand extends Commands {
 				List<Score> osuUser = ((Gamemode.getGamemode(lastmsg) != null) 
 						? OusuBot.getOsu().getTopUser(name, Gamemode.getGamemode(lastmsg), 10) : OusuBot.getOsu().getTopUser(usermsg, 10));
 		
-				sendEmbedMessage(TypeEmbed.LoadingEmbed()).queue(loadmessage -> {
+				replyQueue(TypeEmbed.LoadingEmbed().build(), loadmessage -> {
 					List<EmbedBuilder> emb = new ArrayList<EmbedBuilder>();
 					User us = osuUser.get(0).getUser();
 
 					for (int i = 0; i < osuUser.size(); i++) {
 						EmbedBuilder embed = embed(osuUser.get(i), new Integer[] { i + 1, osuUser.size() }, us, channel.getGuild());
 						emb.add(embed);
+						if (i == 0) {
+							loadmessage.editMessage(embed.build()).queue();		
+						}
 					}
 
 					EmbedBuilder[] scorearray = new EmbedBuilder[emb.size()];
 					emb.toArray(scorearray);
 					
-					loadmessage.editMessage(scorearray[0].build()).queue(sucessfullmessage -> {
-						sucessfullmessage.addReaction("U+25C0").queue();
-						sucessfullmessage.addReaction("U+25B6").queue();
-						ReactionMessage.osuHistory.add(new DefaultReaction(getUserId(), loadmessage.getId(), scorearray, 0));
+					loadmessage.addReaction("U+25C0").queue();
+					loadmessage.addReaction("U+25B6").queue();
+					ReactionMessage.osuHistory.add(new DefaultReaction(getUserId(), loadmessage.getId(), scorearray, 0));
 					});
-				});
-				
+					
 			} catch (InvalidUserException e) {
 				String[] str = getLang().translatedArrayOsuMessages("INEXISTENT_USER");
-				sendEmbedMessage(TypeEmbed.WarningEmbed(str[0], StringUtils.commandMessageEmoji(str, 
-						OusuEmojis.getEmoteAsMention("small_red_diamond")))).queue();
+				reply(TypeEmbed.WarningEmbed(str[0], StringUtils.commandMessageEmoji(str, 
+						OusuEmojis.getEmoteAsMention("small_red_diamond"))).build());
 				return;
 			} catch (NoHistoryException e) {
 				String[] str = getLang().translatedArrayOsuMessages("NO_HAS_HISTORY");
-				sendEmbedMessage(TypeEmbed.WarningEmbed(str[0], StringUtils.commandMessageEmoji(str, 
-						Emoji.SMALL_ORANGE_DIAMOND.getAsMention()))).queue();
+				reply(TypeEmbed.WarningEmbed(str[0], StringUtils.commandMessageEmoji(str, 
+						Emoji.SMALL_ORANGE_DIAMOND.getAsMention())).build());
 				return;
 			}
 		}

@@ -7,12 +7,13 @@ import me.skiincraft.api.ousu.exceptions.InvalidUserException;
 import me.skiincraft.api.ousu.modifiers.Gamemode;
 import me.skiincraft.api.ousu.users.User;
 import me.skiincraft.discord.ousu.OusuBot;
+import me.skiincraft.discord.ousu.abstractcore.CommandCategory;
+import me.skiincraft.discord.ousu.abstractcore.Commands;
 import me.skiincraft.discord.ousu.customemoji.OusuEmojis;
 import me.skiincraft.discord.ousu.embeds.TypeEmbed;
 import me.skiincraft.discord.ousu.imagebuilders.OsuCard;
 import me.skiincraft.discord.ousu.language.LanguageManager;
-import me.skiincraft.discord.ousu.manager.CommandCategory;
-import me.skiincraft.discord.ousu.manager.Commands;
+import me.skiincraft.discord.ousu.utils.InputStreamFile;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 public class CardCommand extends Commands {
@@ -34,7 +35,7 @@ public class CardCommand extends Commands {
 	@Override
 	public void action(String[] args, String label, TextChannel channel) {
 		if (args.length == 0) {
-			sendUsage().queue();
+			sendUsage();
 			return;
 		}
 
@@ -60,8 +61,8 @@ public class CardCommand extends Commands {
 				
 				InputStream drawer = OsuCard.drawImage(osuUser);
 				
-				String aname = osuUser.getUserID() + "userOsu.png";
-				channel.sendMessage(getUser().getAsMention()).addFile(drawer, aname).queue();
+				String aname = osuUser.getUserID() + "_cardosu_user";
+				replyQueue(getUser().getAsMention(), new InputStreamFile(drawer, aname, ".png"));
 				
 			} catch (InvalidUserException e) {
 				String[] str = getLang().translatedArrayOsuMessages("INEXISTENT_USER");
@@ -71,8 +72,8 @@ public class CardCommand extends Commands {
 						buffer.append(OusuEmojis.getEmoteAsMention("small_red_diamond") + " " + append);
 					}
 				}
-
-				sendEmbedMessage(TypeEmbed.WarningEmbed(str[0], buffer.toString())).queue();
+				
+				reply(TypeEmbed.WarningEmbed(str[0], buffer.toString()).build());
 				return;
 			}
 		}

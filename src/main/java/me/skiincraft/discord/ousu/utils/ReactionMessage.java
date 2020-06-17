@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import me.skiincraft.discord.ousu.manager.ReactionUtils;
+import me.skiincraft.discord.ousu.abstractcore.ReactionUtils;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.User;
 

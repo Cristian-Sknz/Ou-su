@@ -1,4 +1,4 @@
-package me.skiincraft.discord.ousu.manager;
+package me.skiincraft.discord.ousu.abstractcore;
 
 import java.util.List;
 

@@ -16,6 +16,7 @@ import org.ocpsoft.prettytime.PrettyTime;
 
 import me.skiincraft.api.ousu.OusuAPI;
 import me.skiincraft.api.ousu.exceptions.InvalidTokenException;
+import me.skiincraft.discord.ousu.abstractcore.Commands;
 import me.skiincraft.discord.ousu.api.CooldownManager;
 import me.skiincraft.discord.ousu.api.DBLJavaLibrary;
 import me.skiincraft.discord.ousu.commands.BeatMapCommand;
@@ -44,9 +45,6 @@ import me.skiincraft.discord.ousu.events.PresenceMessages;
 import me.skiincraft.discord.ousu.events.ReadyBotEvent;
 import me.skiincraft.discord.ousu.events.ReceivedEvent;
 import me.skiincraft.discord.ousu.logger.Logging;
-import me.skiincraft.discord.ousu.manager.Commands;
-import me.skiincraft.discord.ousu.owneraccess.PresenseCommand;
-import me.skiincraft.discord.ousu.owneraccess.ServersCommand;
 import me.skiincraft.discord.ousu.reactions.BeatmapsetEvent;
 import me.skiincraft.discord.ousu.reactions.RankingReactionEvent;
 import me.skiincraft.discord.ousu.reactions.RecentuserEvent;
@@ -203,8 +201,6 @@ public class OusuBot {
 				new InviteCommand(), new RecentUserCommand(), new LanguageCommand(), new BeatMapSetCommand(),
 				new SearchCommand(), new VoteCommand(), new RankingCommand(), new SkinsCommand(), new CardCommand(),
 				new PingCommand());
-
-		registerCommands(build, new PresenseCommand(), new ServersCommand());
 	}
 
 	private void registerEvents(DefaultShardManagerBuilder build, ListenerAdapter... events) {

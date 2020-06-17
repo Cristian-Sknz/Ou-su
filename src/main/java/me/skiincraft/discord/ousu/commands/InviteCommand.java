@@ -4,9 +4,9 @@ import java.awt.Color;
 import java.util.Arrays;
 
 import me.skiincraft.discord.ousu.OusuBot;
+import me.skiincraft.discord.ousu.abstractcore.CommandCategory;
+import me.skiincraft.discord.ousu.abstractcore.Commands;
 import me.skiincraft.discord.ousu.language.LanguageManager;
-import me.skiincraft.discord.ousu.manager.CommandCategory;
-import me.skiincraft.discord.ousu.manager.Commands;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -31,8 +31,7 @@ public class InviteCommand extends Commands {
 
 	@Override
 	public void action(String[] args, String label, TextChannel channel) {
-		channel.sendMessage(embed(channel.getGuild())).queue();
-
+		reply(embed(channel.getGuild()));
 	}
 
 	public MessageEmbed embed(Guild guild) {

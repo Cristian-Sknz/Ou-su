@@ -2,9 +2,9 @@ package me.skiincraft.discord.ousu.reactions;
 
 import java.util.List;
 
+import me.skiincraft.discord.ousu.abstractcore.ReactionUtils;
+import me.skiincraft.discord.ousu.abstractcore.ReactionsManager;
 import me.skiincraft.discord.ousu.events.DefaultReaction;
-import me.skiincraft.discord.ousu.manager.ReactionUtils;
-import me.skiincraft.discord.ousu.manager.ReactionsManager;
 import me.skiincraft.discord.ousu.utils.ReactionMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;

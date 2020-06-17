@@ -3,10 +3,10 @@ package me.skiincraft.discord.ousu.commands;
 import java.awt.Color;
 
 import me.skiincraft.discord.ousu.OusuBot;
+import me.skiincraft.discord.ousu.abstractcore.CommandCategory;
+import me.skiincraft.discord.ousu.abstractcore.Commands;
 import me.skiincraft.discord.ousu.customemoji.OusuEmojis;
 import me.skiincraft.discord.ousu.language.LanguageManager;
-import me.skiincraft.discord.ousu.manager.CommandCategory;
-import me.skiincraft.discord.ousu.manager.Commands;
 import me.skiincraft.discord.ousu.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -44,7 +44,8 @@ public class VoteCommand extends Commands {
 		embed.addField("Vote :3","[Here!](" + voteurl + ")", false);
 		embed.setFooter("Link: " + voteurl, OusuBot.getShardmanager().getShardById(0).getSelfUser().getAvatarUrl());
 		embed.setColor(Color.PINK);
-		channel.sendMessage(embed.build()).queue();
+		
+		reply(embed.build());
 
 	}
 

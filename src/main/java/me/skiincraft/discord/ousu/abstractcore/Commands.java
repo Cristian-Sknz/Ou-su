@@ -1,7 +1,5 @@
-package me.skiincraft.discord.ousu.manager;
+package me.skiincraft.discord.ousu.abstractcore;
 
-import java.io.File;
-import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -15,23 +13,18 @@ import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.language.LanguageManager.Language;
 import me.skiincraft.discord.ousu.sqlite.GuildsDB;
 import me.skiincraft.discord.ousu.utils.StringUtils;
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.requests.restaction.MessageAction;
 
-public abstract class Commands extends ListenerAdapter {
+public abstract class Commands extends ChannelUtils {
 
 	private String prefix;
 	private String command;
 	private List<String> aliases;
 	private String usage;
 
-	private boolean end;
 	private String[] args;
 	private String label;
 	private GuildMessageReceivedEvent event;
@@ -40,6 +33,11 @@ public abstract class Commands extends ListenerAdapter {
 	private String userid;
 
 	private LanguageManager getLang;
+	
+	@Override
+	public TextChannel getTextChannel() {
+		return this.channel;
+	}
 
 	public Commands(String prefix, String command) {
 		this.prefix = prefix;
@@ -69,10 +67,6 @@ public abstract class Commands extends ListenerAdapter {
 		return userid;
 	}
 	
-	public boolean isEnd() {
-		return end;
-	}
-	
 	public boolean isValidCommand(GuildMessageReceivedEvent e) {
 		args = e.getMessage().getContentRaw().split(" ");
 		if (e.getAuthor().isBot()) {
@@ -86,6 +80,10 @@ public abstract class Commands extends ListenerAdapter {
 		if (e.getChannel().isNSFW()) {
 			return false;
 		}
+		
+		if (!args[0].toLowerCase().contains(command)) {
+			return false;
+		}
 
 		GuildsDB sql = new GuildsDB(e.getGuild());
 
@@ -97,7 +95,7 @@ public abstract class Commands extends ListenerAdapter {
 		}
 		if (new CooldownManager().isInCooldown(e.getAuthor().getId())) {
 			String[] str = getLang().translatedArrayMessages("COOLDOWN_MESSAGE");
-			sendEmbedMessage(TypeEmbed.DefaultEmbed(str[0], str[1])).queue();
+			reply(TypeEmbed.DefaultEmbed(str[0], str[1]).build());
 			return false;
 		}
 
@@ -181,15 +179,6 @@ public abstract class Commands extends ListenerAdapter {
 				new CooldownManager().addToCooldown(userid, 2);
 				
 				action(sarray, label, channel);
-				
-				/*
-				while (!isEnd()) {
-					try {
-						Thread.sleep(200);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}*/
 
 				final long result = startElapsed - System.currentTimeMillis();
 				String elapsedtime = new DecimalFormat("#.0").format(result / 1000) + "s";
@@ -206,7 +195,6 @@ public abstract class Commands extends ListenerAdapter {
 		};
 		
 		Thread t = new Thread(commandrunnable, "BotCommand_" + this.getCommand());
-
 		t.start();
 	}
 
@@ -220,19 +208,14 @@ public abstract class Commands extends ListenerAdapter {
 		}
 	}
 
-	public void DeletarMSGReceived() {
-		event.getMessage().delete().queue();
-	}
-
-	public MessageAction sendUsage() {
+	public void sendUsage() {
 		String[] msg = getLang().translatedArrayMessages("INCORRECT_USE");
-		MessageAction a = event.getChannel()
-				.sendMessage(TypeEmbed.WarningEmbed(msg[0], OusuEmojis.getEmoteAsMention("small_red_diamond") + msg[1] + getUsage())
-						.setFooter("ou!help to help!").build());
-		return a;
+		reply(TypeEmbed.WarningEmbed(msg[0], OusuEmojis.getEmoteAsMention("small_red_diamond") + msg[1] + getUsage())
+				.setFooter("ou!help to help!")
+				.build());
 	}
 
-	public MessageAction noPermissionMessage(Permission permission) {
+	public void noPermissionMessage(Permission permission) {
 		String[] str = getLang.translatedArrayHelp("INSUFICIENT_PERMISSIONS");
 		StringBuffer buffer = new StringBuffer();
 		buffer.append(OusuEmojis.getEmoteAsMention("small_red_diamond") + " ");
@@ -242,54 +225,11 @@ public abstract class Commands extends ListenerAdapter {
 			}
 		}
 		buffer.append("\n");
-		MessageAction a = event.getChannel()
-				.sendMessage(TypeEmbed.WarningEmbed(str[0], buffer.toString() + permission.getName()).build());
-		return a;
-	}
-
-	public MessageAction sendMessage(String message) {
-		MessageAction a = event.getChannel().sendMessage(message);
-		return a;
-	}
-
-	public MessageAction sendFile(File file) {
-		MessageAction a = event.getChannel().sendFile(file, file.getName());
-		return a;
-	}
-
-	public MessageAction sendPrivateMessage(String message) {
-		MessageAction a = event.getAuthor().openPrivateChannel().complete().sendMessage(message);
-		return a;
-	}
-
-	public MessageAction sendEmbedMessage(EmbedBuilder e) {
-		MessageAction a = event.getChannel().sendMessage(e.build());
-		return a;
-	}
-
-	public MessageAction sendEmbedMessage(MessageEmbed e) {
-		MessageAction a = event.getChannel().sendMessage(e);
-		return a;
-	}
-
-	public MessageAction sendFileEmbeded(EmbedBuilder e, File file) {
-		MessageAction b = event.getChannel().sendFile(file, file.getName())
-				.embed(e.setImage("attachment://" + file.getName()).build());
-		return b;
-	}
-
-	public MessageAction sendFileEmbeded(EmbedBuilder e, InputStream input) {
-		MessageAction b = event.getChannel().sendFile(input, "profile_osu.png")
-				.embed(e.setImage("attachment://profile_osu.png").build());
-		return b;
+		reply(TypeEmbed.WarningEmbed(str[0], buffer.toString() + permission.getName()).build());
 	}
 
 	public List<String> getAliases() {
 		return aliases;
-	}
-
-	public void setAliases(List<String> aliases) {
-		this.aliases = aliases;
 	}
 
 	public String getUsage() {
@@ -309,14 +249,6 @@ public abstract class Commands extends ListenerAdapter {
 
 	public CommandCategory getCategoria() {
 		return this.categoria();
-	}
-
-	public void setEvent(GuildMessageReceivedEvent event) {
-		this.event = event;
-	}
-	
-	public void setEnd(boolean bool) {
-		end = bool;
 	}
 
 	public LanguageManager getLang() {

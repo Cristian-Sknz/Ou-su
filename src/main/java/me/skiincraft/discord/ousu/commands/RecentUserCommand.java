@@ -17,13 +17,13 @@ import me.skiincraft.api.ousu.modifiers.Mods;
 import me.skiincraft.api.ousu.scores.Score;
 import me.skiincraft.api.ousu.users.User;
 import me.skiincraft.discord.ousu.OusuBot;
+import me.skiincraft.discord.ousu.abstractcore.CommandCategory;
+import me.skiincraft.discord.ousu.abstractcore.Commands;
 import me.skiincraft.discord.ousu.customemoji.OusuEmojis;
 import me.skiincraft.discord.ousu.embeds.TypeEmbed;
 import me.skiincraft.discord.ousu.events.DefaultReaction;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.language.LanguageManager.Language;
-import me.skiincraft.discord.ousu.manager.CommandCategory;
-import me.skiincraft.discord.ousu.manager.Commands;
 import me.skiincraft.discord.ousu.sqlite.GuildsDB;
 import me.skiincraft.discord.ousu.utils.Emoji;
 import me.skiincraft.discord.ousu.utils.ImageUtils;
@@ -33,6 +33,7 @@ import me.skiincraft.discord.ousu.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 public class RecentUserCommand extends Commands {
@@ -56,7 +57,7 @@ public class RecentUserCommand extends Commands {
 	@Override
 	public void action(String[] args, String label, TextChannel channel) {
 		if (args.length == 0) {
-			sendUsage().queue();
+			sendUsage();
 			return;
 		}
 
@@ -75,33 +76,37 @@ public class RecentUserCommand extends Commands {
 				@SuppressWarnings("unused")
 				Score score = osuUser.get(0);
 				
-				sendEmbedMessage(TypeEmbed.LoadingEmbed()).queue(message -> {
-					me.skiincraft.api.ousu.users.User us = osuUser.get(0).getUser();
+				replyQueue(TypeEmbed.LoadingEmbed().build(), message -> {
+					User us = osuUser.get(0).getUser();
 					List<EmbedBuilder> emb = new ArrayList<EmbedBuilder>();
 					
 					int v = 1;
 					for (Score s : osuUser) {
+		
 						EmbedBuilder embed = embed(s, new Integer[] { v, osuUser.size() }, us, channel.getGuild());
+						if (v == 1) {
+							message.editMessage(embed.build()).queue();
+						}
 						emb.add(embed);
 						v++;
 					}
 
 					EmbedBuilder[] sc = new EmbedBuilder[emb.size()];
 					emb.toArray(sc);
-					message.editMessage(sc[0].build()).queue(message2 -> {
-						message.addReaction("U+25C0").queue();
-						message.addReaction("U+25B6").queue();
-						ReactionMessage.recentHistory.add(new DefaultReaction(getUserId(), message.getId(), sc, 0));
-					});
+					message.addReaction("U+25C0").queue();
+					message.addReaction("U+25B6").queue();
+					ReactionMessage.recentHistory.add(new DefaultReaction(getUserId(), message.getId(), sc, 0));
 				});
 
 			} catch (InvalidUserException e) {
 				String[] str = getLang().translatedArrayOsuMessages("INEXISTENT_USER");
-				sendEmbedMessage(TypeEmbed.WarningEmbed(str[0], StringUtils.commandMessage(str))).queue();
+				MessageEmbed embed = TypeEmbed.WarningEmbed(str[0], StringUtils.commandMessage(str)).build();
+				reply(embed);
 				return;
 			} catch (NoHistoryException | NullPointerException e) {
 				String[] str = getLang().translatedArrayOsuMessages("NO_HAS_HISTORY");
-				sendEmbedMessage(TypeEmbed.SoftWarningEmbed(str[0], StringUtils.commandMessage(str))).queue();
+				MessageEmbed embed = TypeEmbed.SoftWarningEmbed(str[0], StringUtils.commandMessage(str)).build();
+				reply(embed);
 				return;
 			}
 		}

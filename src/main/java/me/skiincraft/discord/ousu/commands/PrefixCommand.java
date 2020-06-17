@@ -1,15 +1,16 @@
 package me.skiincraft.discord.ousu.commands;
 
+import me.skiincraft.discord.ousu.abstractcore.CommandCategory;
+import me.skiincraft.discord.ousu.abstractcore.Commands;
 import me.skiincraft.discord.ousu.customemoji.OusuEmojis;
 import me.skiincraft.discord.ousu.embeds.TypeEmbed;
 import me.skiincraft.discord.ousu.language.LanguageManager;
-import me.skiincraft.discord.ousu.manager.CommandCategory;
-import me.skiincraft.discord.ousu.manager.Commands;
 import me.skiincraft.discord.ousu.sqlite.GuildsDB;
 import me.skiincraft.discord.ousu.utils.Emoji;
 import me.skiincraft.discord.ousu.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 public class PrefixCommand extends Commands {
@@ -31,25 +32,27 @@ public class PrefixCommand extends Commands {
 	@Override
 	public void action(String[] args, String label, TextChannel channel) {
 		if (!hasPermission(getUserId(), Permission.MANAGE_CHANNEL)) {
-			noPermissionMessage(Permission.MANAGE_SERVER).queue();
+			noPermissionMessage(Permission.MANAGE_SERVER);
 			return;
 		}
 
 		if (args.length == 0) {
-			sendUsage().queue();
+			sendUsage();
 			return;
 		}
 
 		if (args.length >= 1) {
 			if (!StringUtils.containsSpecialCharacters(args[0])) {
 				String[] str = getLang().translatedArrayMessages("PREFIX_INCORRECT_USE");
-				sendEmbedMessage(TypeEmbed.WarningEmbed(Emoji.X.getAsMention() + str[0], StringUtils.commandMessage(str))).queue();
+				MessageEmbed embed = TypeEmbed.WarningEmbed(Emoji.X.getAsMention() + str[0], StringUtils.commandMessage(str)).build();
+				reply(embed);
 				return;
 			}
 
 			if (args[0].length() > 3) {
 				String[] str = getLang().translatedArrayMessages("PREFIX_INCORRECT_USE2");
-				sendEmbedMessage(TypeEmbed.WarningEmbed(Emoji.X.getAsMention() + str[0], StringUtils.commandMessage(str))).queue();
+				MessageEmbed embed = TypeEmbed.WarningEmbed(Emoji.X.getAsMention() + str[0], StringUtils.commandMessage(str)).build();
+				reply(embed);
 				return;
 			}
 
@@ -66,8 +69,8 @@ public class PrefixCommand extends Commands {
 			defaultembed.addField(str[2], oldPrefix, true);
 			defaultembed.addField(str[3], newPrefix, true);
 
-			sendEmbedMessage(defaultembed.build()).queue();
-
+			MessageEmbed embed = defaultembed.build();
+			reply(embed);
 			return;
 		}
 

@@ -1,18 +1,21 @@
 package me.skiincraft.discord.ousu.commands;
 
+import java.io.InputStream;
 import java.util.Arrays;
 
 import me.skiincraft.api.ousu.exceptions.InvalidUserException;
 import me.skiincraft.api.ousu.modifiers.Gamemode;
 import me.skiincraft.api.ousu.users.User;
 import me.skiincraft.discord.ousu.OusuBot;
+import me.skiincraft.discord.ousu.abstractcore.CommandCategory;
+import me.skiincraft.discord.ousu.abstractcore.Commands;
 import me.skiincraft.discord.ousu.customemoji.OusuEmojis;
 import me.skiincraft.discord.ousu.embeds.TypeEmbed;
 import me.skiincraft.discord.ousu.imagebuilders.OsuProfile;
 import me.skiincraft.discord.ousu.language.LanguageManager;
-import me.skiincraft.discord.ousu.manager.CommandCategory;
-import me.skiincraft.discord.ousu.manager.Commands;
+import me.skiincraft.discord.ousu.utils.InputStreamFile;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 public class UserImageCommand extends Commands {
@@ -34,7 +37,7 @@ public class UserImageCommand extends Commands {
 	@Override
 	public void action(String[] args, String label, TextChannel channel) {
 		if (args.length == 0) {
-			sendUsage().queue();
+			sendUsage();
 			return;
 		}
 
@@ -67,21 +70,21 @@ public class UserImageCommand extends Commands {
 						buffer.append(OusuEmojis.getEmoteAsMention("small_red_diamond") + " " + append);
 					}
 				}
-
-				sendEmbedMessage(TypeEmbed.WarningEmbed(str[0], buffer.toString())).queue();
+				MessageEmbed embed = TypeEmbed.WarningEmbed(str[0], buffer.toString()).build();
+				reply(embed);
 				return;
 			}
-
-			channel.sendFile(OsuProfile.drawImage(osuUser, getLanguage()), osuUser.getUserID() + "_osu.png")
-					.embed(embed(osuUser).build()).queue();
+			String aname = osuUser.getUserID() + "_osu";
+			InputStream draw = OsuProfile.drawImage(osuUser, getLanguage());
+			reply(embed(osuUser, aname).build(), new InputStreamFile(draw, aname, ".png"));
 			return;
 		}
 	}
 
-	private EmbedBuilder embed(me.skiincraft.api.ousu.users.User osuUser) {
+	private EmbedBuilder embed(me.skiincraft.api.ousu.users.User osuUser, String aname) {
 		EmbedBuilder embed = new EmbedBuilder();
 		embed.setTitle(":frame_photo: " + osuUser.getUserName());
-		embed.setImage("attachment://" + osuUser.getUserID() + "_osu.png");
+		embed.setImage("attachment://" + aname + ".png");
 		return embed;
 	}
 }

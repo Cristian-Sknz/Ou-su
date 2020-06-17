@@ -7,13 +7,14 @@ import java.util.Arrays;
 import java.util.Date;
 
 import me.skiincraft.discord.ousu.OusuBot;
+import me.skiincraft.discord.ousu.abstractcore.CommandCategory;
+import me.skiincraft.discord.ousu.abstractcore.Commands;
 import me.skiincraft.discord.ousu.customemoji.OusuEmojis;
 import me.skiincraft.discord.ousu.language.LanguageManager;
-import me.skiincraft.discord.ousu.manager.CommandCategory;
-import me.skiincraft.discord.ousu.manager.Commands;
 import me.skiincraft.discord.ousu.utils.Emoji;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.SelfUser;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -36,7 +37,8 @@ public class VersionCommand extends Commands {
 
 	@Override
 	public void action(String[] args, String label, TextChannel channel) {
-		channel.sendMessage(embed(channel.getGuild()).build()).queue();
+		MessageEmbed embed = embed(channel.getGuild()).build();
+		reply(embed);
 
 	}
 

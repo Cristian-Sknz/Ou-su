@@ -6,16 +6,17 @@ import java.util.Arrays;
 import java.util.List;
 
 import me.skiincraft.discord.ousu.OusuBot;
+import me.skiincraft.discord.ousu.abstractcore.CommandCategory;
+import me.skiincraft.discord.ousu.abstractcore.Commands;
 import me.skiincraft.discord.ousu.customemoji.OusuEmojis;
 import me.skiincraft.discord.ousu.embeds.TypeEmbed;
 import me.skiincraft.discord.ousu.language.LanguageManager;
-import me.skiincraft.discord.ousu.manager.CommandCategory;
-import me.skiincraft.discord.ousu.manager.Commands;
 import me.skiincraft.discord.ousu.sqlite.GuildsDB;
 import me.skiincraft.discord.ousu.utils.Emoji;
 import me.skiincraft.discord.ousu.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 
@@ -40,13 +41,14 @@ public class HelpCommand extends Commands {
 	@Override
 	public void action(String[] args, String label, TextChannel channel) {
 		if (args.length == 0) {
-			sendEmbedMessage(embed(channel.getGuild())).queue();
+			MessageEmbed embed = embed(channel.getGuild()).build();
+			reply(embed);
 			return;
 		}
 
 		if (args.length == 1) {
-			System.out.println(args[0]);
-			sendEmbedMessage(emb(args[0], channel.getGuild())).queue();
+			MessageEmbed embed = emb(args[0], channel.getGuild()).build();
+			reply(embed);
 			return;
 		}
 

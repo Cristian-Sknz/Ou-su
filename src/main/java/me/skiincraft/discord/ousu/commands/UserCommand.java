@@ -20,20 +20,22 @@ import me.skiincraft.api.ousu.modifiers.ProfileEvents;
 import me.skiincraft.api.ousu.modifiers.ProfileEvents.EventDisplay;
 import me.skiincraft.api.ousu.users.User;
 import me.skiincraft.discord.ousu.OusuBot;
+import me.skiincraft.discord.ousu.abstractcore.CommandCategory;
+import me.skiincraft.discord.ousu.abstractcore.Commands;
 import me.skiincraft.discord.ousu.customemoji.OusuEmojis;
 import me.skiincraft.discord.ousu.embeds.TypeEmbed;
 import me.skiincraft.discord.ousu.events.DoubleReaction;
 import me.skiincraft.discord.ousu.imagebuilders.OsuProfileNote;
 import me.skiincraft.discord.ousu.language.LanguageManager;
-import me.skiincraft.discord.ousu.manager.CommandCategory;
-import me.skiincraft.discord.ousu.manager.Commands;
 import me.skiincraft.discord.ousu.search.JSoupGetters;
 import me.skiincraft.discord.ousu.search.UserStatistics;
 import me.skiincraft.discord.ousu.utils.Emoji;
 import me.skiincraft.discord.ousu.utils.ImageUtils;
+import me.skiincraft.discord.ousu.utils.InputStreamFile;
 import me.skiincraft.discord.ousu.utils.ReactionMessage;
 import me.skiincraft.discord.ousu.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 public class UserCommand extends Commands {
@@ -55,7 +57,7 @@ public class UserCommand extends Commands {
 	@Override
 	public void action(String[] args, String label, TextChannel channel) {
 		if (args.length == 0) {
-			sendUsage().queue();
+			sendUsage();
 			return;
 		}
 
@@ -79,25 +81,23 @@ public class UserCommand extends Commands {
 					osuUser = OusuBot.getOsu().getUser(usermsg);
 				}
 				InputStream drawer = OsuProfileNote.drawImage(osuUser, getLanguage());
-				String aname = osuUser.getUserID() + "userOsu.png";
-				EmbedBuilder embedlocal = embed(osuUser).setImage("attachment://" + aname);
-
-				channel.sendFile(drawer, aname).embed(embedlocal.build()).queue(message -> {
+				String aname = osuUser.getUserID() + "osuuser_scores";
+				EmbedBuilder embedlocal = embed(osuUser).setImage("attachment://" + aname + ".png");
+				InputStreamFile isfile = new InputStreamFile(drawer, aname, ".png");
+				
+				replyQueue(embedlocal.build(), message -> {
 					if (osuUser.getGamemode() != Gamemode.Standard) {
 						return;
 					}
 					
 					try {
-						System.out.println("1 getter");
 						UserStatistics getter = JSoupGetters.inputType(osuUser, getLang());
-						System.out.println("2 embed1");
 						EmbedBuilder embed1 = new EmbedBuilder(message.getEmbeds().get(0))
-								.setImage("attachment://" + aname);
-						System.out.println("3 embed2");
-						EmbedBuilder embed2 = embed2(getter, embedlocal);
-						
-						System.out.println("4 parsing");
-						List<EmbedBuilder> e = embed3(osuUser, "attachment://" + aname);
+								.setImage("attachment://" + isfile.getFullname());
+						EmbedBuilder embed2 = embed2(getter, embedlocal)
+								.setImage("attachment://" + isfile.getFullname());
+						List<EmbedBuilder> e = embed3(osuUser, 
+								"attachment://" + isfile.getFullname());
 						EmbedBuilder[] events = new EmbedBuilder[e.size()];
 						EmbedBuilder[] embeds = new EmbedBuilder[] { embed1, embed2 };
 						e.toArray(events);
@@ -112,9 +112,8 @@ public class UserCommand extends Commands {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-				});
-
-				
+				},isfile, 12);
+	
 			} catch (InvalidUserException e) {
 				String[] str = getLang().translatedArrayOsuMessages("INEXISTENT_USER");
 				StringBuffer buffer = new StringBuffer();
@@ -124,7 +123,8 @@ public class UserCommand extends Commands {
 					}
 				}
 
-				sendEmbedMessage(TypeEmbed.WarningEmbed(str[0], buffer.toString())).queue();
+				MessageEmbed embed = TypeEmbed.WarningEmbed(str[0], buffer.toString()).build();
+				reply(embed);
 				return;
 			}
 		}

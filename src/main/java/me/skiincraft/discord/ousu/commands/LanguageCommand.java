@@ -3,15 +3,16 @@ package me.skiincraft.discord.ousu.commands;
 import java.awt.Color;
 import java.util.Arrays;
 
+import me.skiincraft.discord.ousu.abstractcore.CommandCategory;
+import me.skiincraft.discord.ousu.abstractcore.Commands;
 import me.skiincraft.discord.ousu.embeds.TypeEmbed;
 import me.skiincraft.discord.ousu.language.LanguageManager;
 import me.skiincraft.discord.ousu.language.LanguageManager.Language;
-import me.skiincraft.discord.ousu.manager.CommandCategory;
-import me.skiincraft.discord.ousu.manager.Commands;
 import me.skiincraft.discord.ousu.sqlite.GuildsDB;
 import me.skiincraft.discord.ousu.utils.Emoji;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 public class LanguageCommand extends Commands {
@@ -33,12 +34,13 @@ public class LanguageCommand extends Commands {
 	@Override
 	public void action(String[] args, String label, TextChannel channel) {
 		if (!hasPermission(getUserId(), Permission.MANAGE_CHANNEL)) {
-			noPermissionMessage(Permission.MANAGE_SERVER).queue();
+			noPermissionMessage(Permission.MANAGE_SERVER);
 			return;
 		}
 
 		if (args.length == 0) {
-			sendEmbedMessage(availablelang()).queue();
+			MessageEmbed embed = availablelang().build();
+			reply(embed);
 			return;
 		}
 
@@ -61,12 +63,12 @@ public class LanguageCommand extends Commands {
 							.setThumbnail("https://i.imgur.com/sxIERAT.png")
 							.setFooter("A multilanguage bot!", "https://i.imgur.com/wDczNj3.jpg")
 							.setColor(new Color(52, 107, 235));
-
-					sendEmbedMessage(variavel).queue();
+					
+					reply(variavel.build());
 					return;
 				}
 			}
-			sendEmbedMessage(availablelang()).queue();
+			reply(availablelang().build());
 		}
 	}
 

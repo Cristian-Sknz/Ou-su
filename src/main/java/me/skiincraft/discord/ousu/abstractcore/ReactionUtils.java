@@ -1,4 +1,4 @@
-package me.skiincraft.discord.ousu.manager;
+package me.skiincraft.discord.ousu.abstractcore;
 
 import me.skiincraft.discord.ousu.OusuBot;
 import net.dv8tion.jda.api.entities.User;

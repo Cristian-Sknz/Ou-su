@@ -1,6 +1,6 @@
 package me.skiincraft.discord.ousu.events;
 
-import me.skiincraft.discord.ousu.manager.ReactionUtils;
+import me.skiincraft.discord.ousu.abstractcore.ReactionUtils;
 
 public class DefaultReaction extends ReactionUtils {
 

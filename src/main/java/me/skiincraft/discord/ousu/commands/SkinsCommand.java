@@ -5,12 +5,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import me.skiincraft.api.ousu.modifiers.Gamemode;
+import me.skiincraft.discord.ousu.abstractcore.CommandCategory;
+import me.skiincraft.discord.ousu.abstractcore.Commands;
 import me.skiincraft.discord.ousu.customemoji.OusuEmojis;
 import me.skiincraft.discord.ousu.embeds.TypeEmbed;
 import me.skiincraft.discord.ousu.events.DefaultReaction;
 import me.skiincraft.discord.ousu.language.LanguageManager;
-import me.skiincraft.discord.ousu.manager.CommandCategory;
-import me.skiincraft.discord.ousu.manager.Commands;
 import me.skiincraft.discord.ousu.osuskins.OsuSkin;
 import me.skiincraft.discord.ousu.search.JSoupGetters;
 import me.skiincraft.discord.ousu.utils.Emoji;
@@ -36,26 +36,32 @@ public class SkinsCommand extends Commands {
 
 	@Override
 	public void action(String[] args, String label, TextChannel channel) {
-		sendEmbedMessage(TypeEmbed.LoadingEmbed()).queue(msg -> {
+		replyQueue(TypeEmbed.LoadingEmbed().build(), message -> {
 			try {
 				List<OsuSkin> skins = JSoupGetters.pageskins();
 				List<EmbedBuilder> embeds = new ArrayList<EmbedBuilder>();
-
+				
+				int i = 0;
 				for (OsuSkin osu : skins) {
-					embeds.add(embed(osu));
+					EmbedBuilder embed = embed(osu);
+					embeds.add(embed);
+					if (i == 0) {
+						message.editMessage(embed.build()).queue();
+					}
+					i++;
 				}
 				EmbedBuilder[] embed = new EmbedBuilder[embeds.size()];
 				embeds.toArray(embed);
-				msg.editMessage(embeds.get(0).build()).queue(t -> {
-					t.addReaction("U+25C0").queue();
-					t.addReaction("U+25B6").queue();
-					ReactionMessage.skinsReaction.add(new DefaultReaction(getUserId(), t.getId(), embed, 0));
-				});
+				message.editMessage(embeds.get(0).build()).queue();
+				message.addReaction("U+25C0").queue();
+				message.addReaction("U+25B6").queue();
+				ReactionMessage.skinsReaction.add(new DefaultReaction(getUserId(), message.getId(), embed, 0));
 
 			} catch (IOException e) {
-				msg.delete().queue();
+				message.delete().queue();
 			}
 		});
+
 	}
 
 	public EmbedBuilder embed(OsuSkin osu) {
