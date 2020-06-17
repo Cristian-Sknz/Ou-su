@@ -53,6 +53,7 @@ public class UserReactionEvent extends ReactionsManager {
 
 			if (v >= score.length) {
 				listHistory().add(new DoubleReaction(userid, getEvent().getMessageId(), obj, obj2, 1, 0));
+				channel.editMessageById(getEvent().getMessageId(), score[0].build()).queue();
 				return;
 			}
 			channel.editMessageById(getEvent().getMessageId(), score[v].build()).queue();

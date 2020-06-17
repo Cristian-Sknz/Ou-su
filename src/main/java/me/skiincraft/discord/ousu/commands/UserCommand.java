@@ -88,11 +88,15 @@ public class UserCommand extends Commands {
 					}
 					
 					try {
+						System.out.println("1 getter");
 						UserStatistics getter = JSoupGetters.inputType(osuUser, getLang());
+						System.out.println("2 embed1");
 						EmbedBuilder embed1 = new EmbedBuilder(message.getEmbeds().get(0))
 								.setImage("attachment://" + aname);
+						System.out.println("3 embed2");
 						EmbedBuilder embed2 = embed2(getter, embedlocal);
-
+						
+						System.out.println("4 parsing");
 						List<EmbedBuilder> e = embed3(osuUser, "attachment://" + aname);
 						EmbedBuilder[] events = new EmbedBuilder[e.size()];
 						EmbedBuilder[] embeds = new EmbedBuilder[] { embed1, embed2 };
@@ -189,9 +193,8 @@ public class UserCommand extends Commands {
 
 	public List<EmbedBuilder> embed3(User osuUser, String image) {
 		List<EmbedBuilder> b = new ArrayList<EmbedBuilder>();
-		if (osuUser.getProfileEvents().size() == 0) {
-			return b;
-		}
+		if (osuUser.getProfileEvents() == null) return b;
+		if (osuUser.getProfileEvents().size() == 0) return b;
 		
 		for (ProfileEvents profile : osuUser.getProfileEvents()) {
 			EmbedBuilder embed = new EmbedBuilder();
