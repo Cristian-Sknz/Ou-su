@@ -73,6 +73,44 @@ public class OusuUtils {
 		return OusuEmojis.getEmoteAsMention("osulogo");
 	}
 	
+	public static String getRankEmote(String score) {
+		String rank = score;
+		if (rank.equalsIgnoreCase("SS+")) {
+			return OusuEmojis.getEmoteAsMentionEquals("ss_plus");
+		}
+		if (rank.equalsIgnoreCase("SS")) {
+			return OusuEmojis.getEmoteAsMentionEquals("ss");
+		}
+		if (rank.equalsIgnoreCase("SSH")) {
+			return OusuEmojis.getEmoteAsMentionEquals("ss");
+		}
+		if (rank.equalsIgnoreCase("X")) {
+			return OusuEmojis.getEmoteAsMentionEquals("ss");
+		}
+		if (rank.equalsIgnoreCase("S+")) {
+			return OusuEmojis.getEmoteAsMentionEquals("s_plus");
+		}
+		if (rank.equalsIgnoreCase("SH")) {
+			return OusuEmojis.getEmoteAsMentionEquals("s_");
+		}
+		if (rank.equalsIgnoreCase("S")) {
+			return OusuEmojis.getEmoteAsMentionEquals("s_");
+		}
+		if (rank.equalsIgnoreCase("A")) {
+			return OusuEmojis.getEmoteAsMentionEquals("a_");
+		}
+		if (rank.equalsIgnoreCase("B")) {
+			return OusuEmojis.getEmoteAsMentionEquals("b_");
+		}
+		if (rank.equalsIgnoreCase("C")) {
+			return OusuEmojis.getEmoteAsMentionEquals("c_");
+		}
+		if (rank.equalsIgnoreCase("F")) {
+			return OusuEmojis.getEmoteAsMentionEquals("f_");
+		}
+		return OusuEmojis.getEmoteAsMention("osulogo");
+	}
+	
 
 	public static String getGamemodeString(Gamemode gamemode) {
 		Gamemode gm = gamemode;

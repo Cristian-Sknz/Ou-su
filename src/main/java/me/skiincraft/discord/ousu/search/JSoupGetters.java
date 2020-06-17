@@ -65,9 +65,9 @@ public class JSoupGetters {
 		if (valor2 != user.getPP()) {
 			sql.set("lastpp", valor2 + "&" + user.getPP());
 			
-			lastpp += user.getPP()+ " (+" + (valor2-user.getPP()) + ")";
+			lastpp += user.getPP()+ " (+" + Integer.toString(valor2-user.getPP()).replace("-", "") + ")";
 		} else {
-			lastpp = (Integer.valueOf(lpp[0]) == Integer.valueOf(lpp[1])) ? lpp[0]: valor2+ " (+" + (valor1-valor2) + ")";
+			lastpp = (Integer.valueOf(lpp[0]) == Integer.valueOf(lpp[1])) ? lpp[0]: valor2+ " (+" + Integer.toString(valor1-valor2).replace("-", "") + ")";
 		}
 		
 		String lastscore = "";
@@ -78,9 +78,9 @@ public class JSoupGetters {
 		if (val2 != user.getTotalScore()) {
 			sql.set("lastscore", val1 + "&" + user.getPP());
 			
-			lastscore += user.getTotalScore()+ " (+" + (val2-user.getTotalScore()) + ")";
+			lastscore += user.getTotalScore()+ " (+" + Long.toString((val2-user.getTotalScore())).replace("-", "") + ")";
 		} else {
-			lastscore = (val1 == val2) ? lscore[0]: val2+ " (+" + (val1-val2) + ")";
+			lastscore = (val1 == val2) ? lscore[0]: val2+ " (+" + Long.toString((val1-val2)).replace("-", "") + ")";
 		}
 		
 		Map<InputTypes, Boolean> input = new HashMap<>();

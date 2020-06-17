@@ -50,11 +50,13 @@
   },
   "Embeds": {
 	"TITLE_USER_COMMAND_PLAYERSTATS": "Player Stats",
+	"TITLE_USER_COMMAND_RECENTEVENTS": "Recent player events",
 	"TITLE_USER_COMMAND_HISTORY": "Player History",
 	"MESSAGE_USER": "You are viewing the {USERNAME}'s user information",
 	"MESSAGE_USER_STATISTICS": "You are viewing other information of the user {USERNAME}",
     "MESSAGE_RECENTUSER": "You are viewing the Beatmaps played in {USERNAME}'s last 24h",
     "MESSAGE_TOPUSER": "You are viewing {USERNAME}'s best rated Beatmaps ",
+    "MESSAGE_EVENTS": "{USERNAME} achieved rank #{RANKING} on {BEATMAPNAME}",
 	"ACCURACY": "Accuracy:",
     "ARTIST": "Artist:",
 	"AUTHOR": "Author:",
@@ -74,11 +76,12 @@
 	"SCORE": "Score:",
 	"TOTAL_SCORE": "Total Score:",
 	"NATIONAL_RANKING": "National Rank",
+	"PLAYED_IN": "Played in:",
 	"PLAYED_TIME": "Time Played",
 	"SEARCH": "Search",
 	"INPUTS": "Inputs",
 	"LASTPP": "Last PP",
-	"LASTACTIVE": "Seen ago",
+	"LASTACTIVE": "Seen",
 	"JOINED": "Joined on"
   },
   "Titles": {

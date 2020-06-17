@@ -2,7 +2,7 @@ package me.skiincraft.discord.ousu.reactions;
 
 import java.util.List;
 
-import me.skiincraft.discord.ousu.events.DefaultReaction;
+import me.skiincraft.discord.ousu.events.DoubleReaction;
 import me.skiincraft.discord.ousu.manager.ReactionUtils;
 import me.skiincraft.discord.ousu.manager.ReactionsManager;
 import me.skiincraft.discord.ousu.utils.ReactionMessage;
@@ -18,24 +18,46 @@ public class UserReactionEvent extends ReactionsManager {
 
 	@Override
 	public void action(String userid, TextChannel channel, String emoji) {
-
+		DoubleReaction reactions = (DoubleReaction) getUtils();
 		if (emoji.equalsIgnoreCase("📰")) {
-			listHistory().remove(getUtils());
+			listHistory().remove(reactions);
 
-			Object obj = getUtils().getObject();
+			Object obj = reactions.getObject();
+			Object obj2 = reactions.getObject2();
 			EmbedBuilder[] score = (EmbedBuilder[]) obj;
-			int v = getUtils().getValue();
+			int v = reactions.getValue();
+			if (v >= 2) {
+				v = 0;
+			}
+			
 			if (v == 0) {
 				v = 1;
 				channel.editMessageById(getEvent().getMessageId(), score[v].build()).queue();
-				listHistory().add(new DefaultReaction(userid, getEvent().getMessageId(), obj, v));
+				listHistory().add(new DoubleReaction(userid, getEvent().getMessageId(), obj, obj2, v, 0));
 				return;
-			} else {
+			} else
 				v = 0;
 				channel.editMessageById(getEvent().getMessageId(), score[v].build()).queue();
-				listHistory().add(new DefaultReaction(userid, getEvent().getMessageId(), obj, v));
+				listHistory().add(new DoubleReaction(userid, getEvent().getMessageId(), obj, obj2, v, 0));
 				return;
 			}
+		
+		if (emoji.equalsIgnoreCase("📋")) {
+			listHistory().remove(reactions);
+
+			Object obj = reactions.getObject();
+			Object obj2 = reactions.getObject2();
+			EmbedBuilder[] score = (EmbedBuilder[]) obj2;
+			int v = reactions.getValue2();
+			v += 1;
+
+			if (v >= score.length) {
+				listHistory().add(new DoubleReaction(userid, getEvent().getMessageId(), obj, obj2, 1, 0));
+				channel.editMessageById(getEvent().getMessageId(), score[0].build()).queue();
+				return;
+			}
+			channel.editMessageById(getEvent().getMessageId(), score[v].build()).queue();
+			listHistory().add(new DoubleReaction(userid, getEvent().getMessageId(), obj, obj2, 1, v));
 		}
 	}
 

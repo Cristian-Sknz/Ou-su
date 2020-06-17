@@ -3,6 +3,7 @@ package me.skiincraft.discord.ousu.commands;
 import java.awt.Color;
 import java.io.IOException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -77,10 +78,11 @@ public class RecentUserCommand extends Commands {
 				sendEmbedMessage(TypeEmbed.LoadingEmbed()).queue(message -> {
 					me.skiincraft.api.ousu.users.User us = osuUser.get(0).getUser();
 					List<EmbedBuilder> emb = new ArrayList<EmbedBuilder>();
-
+					
 					int v = 1;
 					for (Score s : osuUser) {
-						emb.add(embed(s, new Integer[] { v, osuUser.size() }, us, channel.getGuild()));
+						EmbedBuilder embed = embed(s, new Integer[] { v, osuUser.size() }, us, channel.getGuild());
+						emb.add(embed);
 						v++;
 					}
 
@@ -151,14 +153,14 @@ public class RecentUserCommand extends Commands {
 
 		embed.addField(lang.translatedEmbeds("SCORE"), scores.toString(), true);
 		embed.addField(lang.translatedEmbeds("TOTAL_SCORE"), score.getScore() + "", true);
+		SimpleDateFormat datef = new SimpleDateFormat("dd/MM/yyy - HH:mm");
+		embed.addField(lang.translatedEmbeds("PLAYED_IN"), datef.format(score.getScoreDate()), true);
 		embed.addField(lang.translatedEmbeds("MAX_COMBO"), score.getMaxCombo() + "/" + score.getBeatmap().getMaxCombo(),
 				true);
 
 		linkcover = url;
 		embed.setThumbnail(user.getUserAvatar());
-		embed.setImage((ImageUtils.existsImage(url))
-				? url
-				: "https://i.imgur.com/LfF0VBR.gif");
+		embed.setImage(url);
 
 		String author = beatmap.getCreator();
 		embed.setFooter("[" + beatmap.getBeatmapID() + "] " + beatmap.getTitle() + " por " + beatmap.getArtist() + " | "

@@ -52,6 +52,23 @@ public class StringUtils {
 
 		return letters;
 	}
+	
+	public static int getFirstLetters(String regex, String string) {
+		if (!string.contains(regex + "")) {
+			return 0;
+		}
+
+		char[] chars = string.toCharArray();
+		int letters = 0;
+		for (char c : chars) {
+			if (c == regex.charAt(0)) {
+				break;
+			}
+			letters++;
+		}
+
+		return letters;
+	}
 
 	public static boolean containsSpecialCharacters(String str) {
 		Pattern pattern = Pattern.compile("[a-zA-Z0-9]*");
