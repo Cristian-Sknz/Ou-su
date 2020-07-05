@@ -86,7 +86,7 @@ public class LanguageCommand extends Commands {
 		}
 		
 		for (Language lang : Language.values()) {
-			bufferlang.append("\n" + Emoji.SMALL_BLUE_DIAMOND.getAsMention() + " + lang.name()" + " - " + lang.getLanguageCode());
+			bufferlang.append("\n" + Emoji.SMALL_BLUE_DIAMOND.getAsMention() + lang.name() + " - " + lang.getLanguageCode());
 		}
 
 		return TypeEmbed.ConfigEmbed(str[0], buffer.toString().replace("{LANGUAGES}", bufferlang.toString()))

@@ -64,7 +64,7 @@ public class PrefixCommand extends Commands {
 
 			String[] str = getLang().translatedArrayMessages("PREFIX_COMMAND_MESSAGE");
 
-			EmbedBuilder defaultembed = TypeEmbed.ConfigEmbed(":gear: " + str[0], OusuEmojis.getEmoteAsMention("small_green_diamond" + str[1]));
+			EmbedBuilder defaultembed = TypeEmbed.ConfigEmbed(":gear: " + str[0], OusuEmojis.getEmoteAsMention("small_green_diamond")  + str[1]);
 
 			defaultembed.addField(str[2], oldPrefix, true);
 			defaultembed.addField(str[3], newPrefix, true);
