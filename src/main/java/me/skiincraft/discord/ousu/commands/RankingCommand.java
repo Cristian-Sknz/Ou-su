@@ -3,126 +3,137 @@ package me.skiincraft.discord.ousu.commands;
 import java.awt.Color;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
+
 import javax.imageio.ImageIO;
 
-import me.skiincraft.discord.ousu.abstractcore.CommandCategory;
-import me.skiincraft.discord.ousu.abstractcore.Commands;
-import me.skiincraft.discord.ousu.embeds.TypeEmbed;
-import me.skiincraft.discord.ousu.events.DefaultReaction;
-import me.skiincraft.discord.ousu.language.LanguageManager;
-import me.skiincraft.discord.ousu.search.OsuRankingGetter;
-import me.skiincraft.discord.ousu.search.RankingUsers;
-import me.skiincraft.discord.ousu.utils.ImageUtils;
-import me.skiincraft.discord.ousu.utils.ReactionMessage;
+import me.skiincraft.discord.core.reactions.ReactionObject;
+import me.skiincraft.discord.core.utils.ImageUtils;
+import me.skiincraft.discord.ousu.common.Comando;
+import me.skiincraft.discord.ousu.common.CommandCategory;
+import me.skiincraft.discord.ousu.htmlpage.HtmlRanking;
+import me.skiincraft.discord.ousu.messages.Ranking;
+import me.skiincraft.discord.ousu.messages.TypeEmbed;
+import me.skiincraft.discord.ousu.reactions.HistoryLists;
+
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
 
-public class RankingCommand extends Commands {
+public class RankingCommand extends Comando {
 
 	public RankingCommand() {
-		super("ou!", "ranking", "ou!ranking <countrycode>", null);
+		super("ranking", Arrays.asList("leaderboard"), "ranking <country>");
 	}
 
-	@Override
-	public String[] helpMessage(LanguageManager langm) {
-		return langm.translatedArrayHelp("OSU_HELPMESSAGE_RANKING");
-	}
-
-	@Override
-	public CommandCategory categoria() {
+	public CommandCategory getCategory() {
 		return CommandCategory.Osu;
 	}
 
-	@Override
-	public void action(String[] args, String label, TextChannel channel) {
-		replyQueue(TypeEmbed.LoadingEmbed().build(), msg -> {
-			List<RankingUsers> ou;
-				String cc = null;
-				if (args.length != 0) {
-					if (args[0].length() != 2) {
-						sendUsage();
-						msg.delete().queue();
-						return;
-					}
-					cc = args[0];
-				}
+	public void execute(User user, String[] args, TextChannel channel) {
+		if (args.length >= 2) {
+			replyUsage();
+			return;
+		}
+		reply(TypeEmbed.LoadingEmbed().build(), message -> {
+				String cc = (args.length == 0)? null : (args[0].length() >= 2) ? args[0] : null;
 				try {
-					ou = OsuRankingGetter.rankingtop(cc);
-
-				EmbedBuilder embedOne = embed(ou, 0);
-				msg.editMessage(embedOne.build()).queue();
-				
-				msg.addReaction("U+25C0").queue();
-				msg.addReaction("U+25B6").queue();
-				EmbedBuilder[] embedb = new EmbedBuilder[] { embedOne, embed(ou, 10), embed(ou, 20),
-						embed(ou, 30), embed(ou, 40) };
-				
-				ReactionMessage.rankingReaction.add(new DefaultReaction(getUserId(), msg.getId(), embedb, 0));
+					List<Ranking> rankinglist = HtmlRanking.get(cc);
+					List<EmbedBuilder> embeds = embed(rankinglist);
+					
+					message.editMessage(embeds.get(0).build()).queue();
+					
+					message.addReaction("U+25C0").queue();
+					message.addReaction("U+25B6").queue();
+					
+					HistoryLists.addToReaction(user, message, new ReactionObject(embeds, 0));
 				} catch (IOException e) {
 					e.printStackTrace();
+					reply("Ocorreu um problema :/ \n`" + e.getMessage() + "`");
 				}
 		});
 	}
-
-	public EmbedBuilder embed(List<RankingUsers> user, int val) {
+	
+	public List<EmbedBuilder> embed(List<Ranking> user) {
 		EmbedBuilder embed = new EmbedBuilder();
-
-		StringBuffer username = new StringBuffer();
-		StringBuffer pps = new StringBuffer();
-		StringBuffer flag = new StringBuffer();
-		embed.setTitle(getLang().translatedEmbeds("WORLD_RANKING"));
-		embed.setDescription(getLang().translatedMessages("GLOBAL_RANKING_MESSAGE"));
-		int num = 0;
-		int contador = 0;
-		int isCountry = 0;
-
-		// Verificando se o ranking é global ou regional
-		for (RankingUsers ra : user) {
-			if (ra.getCountry()[1].equals(user.get(0).getCountry()[1])) {
-				isCountry++;
-			}
+		
+		// Verificando se é regional
+		long countyEquals = user.stream().filter(u -> u.getCountry()[1].equalsIgnoreCase(user.get(0).getCountry()[1])).count();
+		boolean isCountry = countyEquals == user.size();
+		
+		if (isCountry) {
+			embed.setTitle(getLanguageManager().getString("Embeds", "NATIONAL_RANKING"));
+			embed.setDescription(getLanguageManager().getString("Message", "NATIONAL_RANKING_MESSAGE")
+					.replace("{country}", user.get(0).getCountry()[1]));
 		}
-
-		if (isCountry >= 50) {
-			embed.setTitle(getLang().translatedEmbeds("NATIONAL_RANKING"));
-			embed.setDescription(getLang().translatedMessages("NATIONAL_RANKING_MESSAGE").replace("{country}",
-					user.get(0).getCountry()[1]));
+		
+		if (!isCountry) {
+			embed.setTitle(getLanguageManager().getString("Embeds", "WORLD_RANKING"));
+			embed.setDescription(getLanguageManager().getString("Message", "GLOBAL_RANKING_MESSAGE"));
 		}
-
-		// Preparando Fields
-		for (RankingUsers u : user) {
-			if (num != val) {
-				num++;
-				continue;
-			}
-			if (contador == 10) {
-				break;
-			}
-			String cc = u.getCountry()[1].toLowerCase().replace(" ", "");
-
-			username.append("[" + u.getUsername() + "](" + u.getUrl() + ")\n");
-			pps.append(u.getPP() + "\n");
-			flag.append("#" + (val + contador + 1) + " :flag_" + cc + ":\n");
-
-			contador++;
-		}
-
-		embed.addField("Ranking", flag.toString(), true);
-		embed.addField("Username", username.toString(), true);
-		embed.addField("PP", pps.toString(), true);
-
+		//Pegando todos os valores
 		embed.setThumbnail("https://i.imgur.com/sxIERAT.png");
-		embed.setFooter("[" + (val + contador) + "/50]");
-		try {
-			embed.setColor(ImageUtils.getPredominatColor(
-					ImageIO.read(new URL("https://osu.ppy.sh/images/flags/" + user.get(0).getCountry()[1] + ".png"))));
-		} catch (IOException e) {
-			embed.setColor(new Color(0, 180, 253));
-			return embed;
+		
+		List<EmbedBuilder> embeds = new ArrayList<>();
+		int cada = 0;
+		for (int i = 1; i <= user.size()/10; i++) {
+			EmbedBuilder temp = new EmbedBuilder(embed);
+			List<Ranking> rank = new ArrayList<>();
+			for (int n = cada; n < cada+10; n++) {
+				rank.add(user.get(n));
+			}
+			temp.addField("Ranking", getRankingPlace(rank, cada + 1), true);
+			temp.addField("Username", getUsernames(rank), true);
+			temp.addField("PP", getPPs(rank), true);
+			
+			try {
+				temp.setColor(ImageUtils.getPredominatColor(
+						ImageIO.read(new URL("https://osu.ppy.sh/images/flags/" + rank.get(0).getCountry()[1] + ".png"))));
+			} catch (IOException e) {
+				temp.setColor(new Color(0, 180, 253));
+			}
+			
+			cada+=10;
+			embeds.add(temp);
 		}
-
-		return embed;
+		
+		return embeds;
+	}
+	
+	private String getRankingPlace(List<Ranking> ranking, int start) {
+		StringBuffer strings = new StringBuffer();
+		int s = start;
+		for (Ranking r: ranking) {
+			strings.append("#" + s + " :flag_" + r.getCountry()[1].toLowerCase()+ ":\n");
+			s++;
+		};
+		
+		return strings.toString();
+	}
+	
+	private String getUsernames(List<Ranking> ranking) {
+		StringBuffer strings = new StringBuffer();
+		
+		Stream<Ranking> stream = ranking.stream();
+		stream.forEach(v -> {
+			strings.append("[" + v.getUsername() + "](" + v.getUrl() + ")\n");
+		});
+		
+		return strings.toString();
+	}
+	
+	private String getPPs(List<Ranking> ranking) {
+		StringBuffer strings = new StringBuffer();
+		
+		Stream<Ranking> stream = ranking.stream();
+		stream.forEach(v -> {
+			strings.append(v.getPP() + "\n");
+		});
+		
+		return strings.toString();
 	}
 
 }

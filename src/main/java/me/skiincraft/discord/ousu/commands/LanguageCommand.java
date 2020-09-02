@@ -2,78 +2,81 @@ package me.skiincraft.discord.ousu.commands;
 
 import java.awt.Color;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import me.skiincraft.discord.ousu.abstractcore.CommandCategory;
-import me.skiincraft.discord.ousu.abstractcore.Commands;
-import me.skiincraft.discord.ousu.embeds.TypeEmbed;
-import me.skiincraft.discord.ousu.language.LanguageManager;
-import me.skiincraft.discord.ousu.language.LanguageManager.Language;
-import me.skiincraft.discord.ousu.sqlite.GuildsDB;
-import me.skiincraft.discord.ousu.utils.Emoji;
+import me.skiincraft.discord.core.configuration.GuildDB;
+import me.skiincraft.discord.core.configuration.Language;
+import me.skiincraft.discord.core.configuration.LanguageManager;
+import me.skiincraft.discord.core.utils.Emoji;
+import me.skiincraft.discord.ousu.OusuBot;
+import me.skiincraft.discord.ousu.common.Comando;
+import me.skiincraft.discord.ousu.common.CommandCategory;
+import me.skiincraft.discord.ousu.messages.TypeEmbed;
+
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
 
-public class LanguageCommand extends Commands {
+public class LanguageCommand extends Comando {
 
 	public LanguageCommand() {
-		super("ou!", "language", "language <lang>", Arrays.asList("lang", "linguagem", "lingua"));
+		super("language", Arrays.asList("idioma", "lang", "linguagem"), "language <lang>");
 	}
 
-	@Override
-	public String[] helpMessage(LanguageManager langm) {
-		return langm.translatedArrayHelp("OSU_HELPMESSAGE_LANGUAGE");
-	}
-
-	@Override
-	public CommandCategory categoria() {
+	public CommandCategory getCategory() {
 		return CommandCategory.Administracao;
 	}
 
-	@Override
-	public void action(String[] args, String label, TextChannel channel) {
-		if (!hasPermission(getUserId(), Permission.MANAGE_CHANNEL)) {
-			noPermissionMessage(Permission.MANAGE_SERVER);
+	public void execute(User user, String[] args, TextChannel channel) {
+		if (!getMember(user).hasPermission(Permission.MANAGE_SERVER)) {
+			//message
 			return;
 		}
-
+		List<Language> languages = OusuBot.getMain().getPlugin().getLanguages();
 		if (args.length == 0) {
-			MessageEmbed embed = availablelang().build();
-			reply(embed);
+			reply(languages(languages));
 			return;
 		}
-
-		if (args.length == 1) {
-			for (Language lang : Language.values()) {
-				if (lang.name().equalsIgnoreCase(args[0]) || lang.getCountrycode().equalsIgnoreCase(args[0])) {
-					GuildsDB sql = new GuildsDB(channel.getGuild());
-					sql.set("language", lang.name());
-					LanguageManager m = new LanguageManager(lang);
-
-					String[] str = m.translatedArrayMessages("LANGUAGE_COMMAND_MESSAGE");
-					StringBuffer buffer = new StringBuffer();
-					for (String append : str) {
-						if (append != str[0]) {
-							buffer.append(":small_blue_diamond: " + append);
-						}
-					}
-
-					EmbedBuilder variavel = TypeEmbed.ConfigEmbed(str[0], buffer.toString())
-							.setThumbnail("https://i.imgur.com/sxIERAT.png")
-							.setFooter("A multilanguage bot!", "https://i.imgur.com/wDczNj3.jpg")
-							.setColor(new Color(52, 107, 235));
-					
-					reply(variavel.build());
-					return;
+		
+		if (args.length >= 1) {
+			List<Language> filtro = languages.stream()
+					.filter(l -> l.getLanguageName().equalsIgnoreCase(args[0]) 
+							|| l.getLanguageCode().equalsIgnoreCase(args[0])
+							|| l.getName().equalsIgnoreCase(args[0])
+							|| l.getCountryCode().equalsIgnoreCase(args[0])
+							|| l.getCountry().equalsIgnoreCase(args[0]))
+					.collect(Collectors.toList());
+			
+			if (languages.size() == 0) {
+				reply(languages(languages));
+				return;
+			}
+			
+			LanguageManager lang = new LanguageManager(filtro.get(0));
+			new GuildDB(channel.getGuild()).set("language", lang.getLanguage().getLanguageName());
+			
+			String[] str = lang.getStrings("Messages", "LANGUAGE_COMMAND_MESSAGE");
+			StringBuffer buffer = new StringBuffer();
+			for (String append : str) {
+				if (append != str[0]) {
+					buffer.append(":small_blue_diamond: " + append);
 				}
 			}
-			reply(availablelang().build());
+			
+			EmbedBuilder var = TypeEmbed.ConfigEmbed(str[0], buffer.toString())
+					.setThumbnail("https://i.imgur.com/sxIERAT.png")
+					.setFooter("A multilanguage bot!", "https://i.imgur.com/wDczNj3.jpg")
+					.setColor(new Color(52, 107, 235));;
+					
+			reply(var.build());
 		}
 	}
-
-	public EmbedBuilder availablelang() {
-		String[] str = getLang().translatedArrayMessages("AVAILABLE_LANGUAGE_MESSAGE");
+	
+	public MessageEmbed languages(List<Language> languages) {
+		String[] str = getLanguageManager().getStrings("Messages", "AVAILABLE_LANGUAGE_MESSAGE");
 
 		StringBuffer buffer = new StringBuffer();
 		StringBuffer bufferlang = new StringBuffer();
@@ -85,14 +88,18 @@ public class LanguageCommand extends Commands {
 			}
 		}
 		
-		for (Language lang : Language.values()) {
-			bufferlang.append("\n" + Emoji.SMALL_BLUE_DIAMOND.getAsMention() + lang.name() + " - " + lang.getLanguageCode());
+		for (Language lang : languages) {
+			bufferlang.append("\n" + Emoji.SMALL_BLUE_DIAMOND.getAsMention() + upperFirstWord(lang.getName()) + " - " + lang.getCountry());
 		}
 
 		return TypeEmbed.ConfigEmbed(str[0], buffer.toString().replace("{LANGUAGES}", bufferlang.toString()))
 				.setThumbnail("https://i.imgur.com/sxIERAT.png")
 				.setFooter("A multilanguage bot!", "https://i.imgur.com/wDczNj3.jpg")
-				.setColor(new Color(52, 107, 235));
+				.setColor(new Color(52, 107, 235)).build();
 	}
 
+	public String upperFirstWord(String string) {
+		return String.valueOf(string.charAt(0)).toUpperCase() + string.substring(1);
+	}
+	
 }

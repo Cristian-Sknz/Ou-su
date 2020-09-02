@@ -1,12 +1,7 @@
-/bin/
-/logs/
-/.settings/
-/.gradle/
-/resources/
-/build/
-/banco_de_dados/
-config.json
+# Ignore Gradle project-specific cache directory
+.gradle
 
-src/main/java/me/skiincraft/discord/ousu/utils/Token.java
-src/main/java/me/skiincraft/discord/ousu/Test.java
-emotes.json
+# Ignore Gradle build output directory
+build
+bin/main/bot.json
+src/main/resources/bot.json

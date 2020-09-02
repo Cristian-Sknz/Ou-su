@@ -1,79 +1,79 @@
 package me.skiincraft.discord.ousu.commands;
 
-import me.skiincraft.discord.ousu.abstractcore.CommandCategory;
-import me.skiincraft.discord.ousu.abstractcore.Commands;
-import me.skiincraft.discord.ousu.customemoji.OusuEmojis;
-import me.skiincraft.discord.ousu.embeds.TypeEmbed;
-import me.skiincraft.discord.ousu.language.LanguageManager;
-import me.skiincraft.discord.ousu.sqlite.GuildsDB;
-import me.skiincraft.discord.ousu.utils.Emoji;
-import me.skiincraft.discord.ousu.utils.StringUtils;
+import java.util.Arrays;
+
+import me.skiincraft.discord.core.configuration.GuildDB;
+import me.skiincraft.discord.core.utils.Emoji;
+import me.skiincraft.discord.core.utils.StringUtils;
+import me.skiincraft.discord.ousu.common.Comando;
+import me.skiincraft.discord.ousu.common.CommandCategory;
+import me.skiincraft.discord.ousu.emojis.OusuEmote;
+import me.skiincraft.discord.ousu.messages.TypeEmbed;
+
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
 
-public class PrefixCommand extends Commands {
+public class PrefixCommand extends Comando {
 
 	public PrefixCommand() {
-		super("ou!", "prefix", "prefix <newprefix>", null);
+		super("prefix", Arrays.asList("prefixo"), "prefix <prefix>");
 	}
 
-	@Override
-	public String[] helpMessage(LanguageManager lang) {
-		return lang.translatedArrayHelp("HELPMESSAGE_PREFIX");
-	}
-
-	@Override
-	public CommandCategory categoria() {
+	public CommandCategory getCategory() {
 		return CommandCategory.Administracao;
 	}
 
-	@Override
-	public void action(String[] args, String label, TextChannel channel) {
-		if (!hasPermission(getUserId(), Permission.MANAGE_CHANNEL)) {
-			noPermissionMessage(Permission.MANAGE_SERVER);
+	public void execute(User user, String[] args, TextChannel channel) {
+		if (!getMember(user).hasPermission(Permission.MANAGE_SERVER)) {
+			//TODO message
 			return;
-		}
-
+		};
+		
 		if (args.length == 0) {
-			sendUsage();
+			replyUsage();
 			return;
 		}
-
+		
 		if (args.length >= 1) {
-			if (!StringUtils.containsSpecialCharacters(args[0])) {
-				String[] str = getLang().translatedArrayMessages("PREFIX_INCORRECT_USE");
-				MessageEmbed embed = TypeEmbed.WarningEmbed(Emoji.X.getAsMention() + str[0], StringUtils.commandMessage(str)).build();
-				reply(embed);
+			if (args[0].matches("[a-zA-Z0-9]*")) {
+				reply(formatMessage("PREFIX_INCORRECT_USE"));
 				return;
 			}
-
 			if (args[0].length() > 3) {
-				String[] str = getLang().translatedArrayMessages("PREFIX_INCORRECT_USE2");
-				MessageEmbed embed = TypeEmbed.WarningEmbed(Emoji.X.getAsMention() + str[0], StringUtils.commandMessage(str)).build();
-				reply(embed);
+				reply(formatMessage("PREFIX_INCORRECT_USE2"));
 				return;
 			}
-
-			GuildsDB sql = new GuildsDB(channel.getGuild());
-
-			String oldPrefix = sql.get("prefix");
-			String newPrefix = args[0];
-			sql.set("prefix", newPrefix);
-
-			String[] str = getLang().translatedArrayMessages("PREFIX_COMMAND_MESSAGE");
-
-			EmbedBuilder defaultembed = TypeEmbed.ConfigEmbed(":gear: " + str[0], OusuEmojis.getEmoteAsMention("small_green_diamond")  + str[1]);
-
-			defaultembed.addField(str[2], oldPrefix, true);
-			defaultembed.addField(str[3], newPrefix, true);
-
-			MessageEmbed embed = defaultembed.build();
-			reply(embed);
-			return;
+			
+			reply(formatSucessful(changePrefix(args[0], channel.getGuild()), args[0]));
 		}
+	}
+	
+	public String changePrefix(String prefix, Guild guild) {
+		GuildDB db = new GuildDB(guild);
+		String oldprefix = db.get("prefix");
+		db.set("prefix", prefix);
+		return oldprefix;
+	}
+	
+	public MessageEmbed formatMessage(String line) {
+		String[] str = getLanguageManager().getStrings("Messages", line);
+		MessageEmbed embed = TypeEmbed.WarningEmbed(Emoji.X.getAsMention() + str[0], StringUtils.commandMessage(str)).build();
+		return embed;
+	}
+	
+	public MessageEmbed formatSucessful(String oldPrefix, String newPrefix) {
+		String[] str = getLanguageManager().getStrings("Messages", "PREFIX_COMMAND_MESSAGE");
+		
+		EmbedBuilder defaultembed = TypeEmbed.ConfigEmbed(":gear: " + str[0], OusuEmote.getEmoteAsMention("small_green_diamond")  + str[1]);
 
+		defaultembed.addField(str[2], oldPrefix, true);
+		defaultembed.addField(str[3], newPrefix, true);
+
+		return defaultembed.build();
 	}
 
 }

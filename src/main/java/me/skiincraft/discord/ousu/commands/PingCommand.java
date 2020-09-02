@@ -1,42 +1,37 @@
 package me.skiincraft.discord.ousu.commands;
 
-import java.time.temporal.ChronoUnit;
+import me.skiincraft.discord.core.utils.Emoji;
+import me.skiincraft.discord.ousu.common.Comando;
+import me.skiincraft.discord.ousu.common.CommandCategory;
 
-import me.skiincraft.discord.ousu.abstractcore.CommandCategory;
-import me.skiincraft.discord.ousu.abstractcore.Commands;
-import me.skiincraft.discord.ousu.language.LanguageManager;
-import me.skiincraft.discord.ousu.utils.Emoji;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
 
-public class PingCommand extends Commands {
+public class PingCommand extends Comando {
 
 	public PingCommand() {
-		super("ou!", "ping", "ou!ping", null);
+		super("ping", null, "ping");
 	}
 
-	@Override
-	public String[] helpMessage(LanguageManager langm) {
-		return null;
-	}
-
-	@Override
-	public CommandCategory categoria() {
+	public CommandCategory getCategory() {
 		return CommandCategory.Sobre;
 	}
-
-	@Override
-	public void action(String[] args, String label, TextChannel channel) {
+	
+	public void execute(User user, String[] args, TextChannel channel) {
+		final long inicialms = System.currentTimeMillis(); 
+		reply(message(user, channel).build(), m -> {
+			m.editMessage(message(user, channel).replace("{?}", (System.currentTimeMillis()-inicialms) + "").build()).queue();
+		});
+	}
+	
+	public MessageBuilder message(User user, TextChannel channel) {
 		MessageBuilder message = new MessageBuilder();
-		message.append(getEvent().getAuthor().getAsMention() + " | " + Emoji.SMALL_BLUE_DIAMOND.getAsMention() + " Pong!");
+		message.append(user.getAsMention() + " Pong!");
 		message.append("\n" + Emoji.TIMER.getAsMention() + "| GatewayPing: `" + channel.getJDA().getGatewayPing());
 		message.append("ms`\n" + Emoji.INCOMING_ENVELOPE.getAsMention() +"| API Ping: `{?}ms`");
 		
-		replyQueue(message.build(), msg -> {
-			long ping = getEvent().getMessage().getTimeCreated().until(msg.getTimeCreated(), ChronoUnit.MILLIS);
-			message.replace("{?}", ping+"");
-			msg.editMessage(message.build()).queue();
-		});
+		return message;
 	}
 
 }

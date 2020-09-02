@@ -7,175 +7,170 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import javax.imageio.ImageIO;
 
-import me.skiincraft.api.ousu.beatmaps.Beatmap;
-import me.skiincraft.api.ousu.exceptions.InvalidUserException;
-import me.skiincraft.api.ousu.exceptions.NoHistoryException;
-import me.skiincraft.api.ousu.modifiers.Gamemode;
-import me.skiincraft.api.ousu.modifiers.Mods;
-import me.skiincraft.api.ousu.scores.Score;
-import me.skiincraft.api.ousu.users.User;
+import me.skiincraft.api.ousu.Request;
+import me.skiincraft.api.ousu.entity.objects.Gamemode;
+import me.skiincraft.api.ousu.entity.objects.Mods;
+import me.skiincraft.api.ousu.entity.score.RecentScore;
+import me.skiincraft.api.ousu.exceptions.ScoreException;
+import me.skiincraft.discord.core.configuration.LanguageManager;
+import me.skiincraft.discord.core.reactions.ReactionObject;
+import me.skiincraft.discord.core.utils.Emoji;
+import me.skiincraft.discord.core.utils.ImageUtils;
+import me.skiincraft.discord.core.utils.StringUtils;
 import me.skiincraft.discord.ousu.OusuBot;
-import me.skiincraft.discord.ousu.abstractcore.CommandCategory;
-import me.skiincraft.discord.ousu.abstractcore.Commands;
-import me.skiincraft.discord.ousu.customemoji.OusuEmojis;
-import me.skiincraft.discord.ousu.embeds.TypeEmbed;
-import me.skiincraft.discord.ousu.events.DefaultReaction;
-import me.skiincraft.discord.ousu.language.LanguageManager;
-import me.skiincraft.discord.ousu.language.LanguageManager.Language;
-import me.skiincraft.discord.ousu.sqlite.GuildsDB;
-import me.skiincraft.discord.ousu.utils.Emoji;
-import me.skiincraft.discord.ousu.utils.ImageUtils;
+import me.skiincraft.discord.ousu.common.Comando;
+import me.skiincraft.discord.ousu.common.CommandCategory;
+import me.skiincraft.discord.ousu.emojis.OusuEmote;
+import me.skiincraft.discord.ousu.htmlpage.BeatmapSearch;
+import me.skiincraft.discord.ousu.htmlpage.JSoupGetters;
+import me.skiincraft.discord.ousu.messages.TypeEmbed;
+import me.skiincraft.discord.ousu.osu.WebUser;
+import me.skiincraft.discord.ousu.reactions.HistoryLists;
 import me.skiincraft.discord.ousu.utils.OusuUtils;
-import me.skiincraft.discord.ousu.utils.ReactionMessage;
-import me.skiincraft.discord.ousu.utils.StringUtils;
+
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Emote;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
 
-public class RecentUserCommand extends Commands {
+public class RecentuserCommand extends Comando {
 
-	public RecentUserCommand() {
-		super("ou!", "recent", "ou!recent <nickname> <gamemode>", Arrays.asList("recents"));
+	public RecentuserCommand() {
+		super("recentuser", Arrays.asList("recent", "recente"), "recentuser <user>");
 	}
 
-	@Override
-	public String[] helpMessage(LanguageManager lang) {
-		return lang.translatedArrayHelp("OSU_HELPMESSAGE_RECENTUSER");
-	}
-
-	@Override
-	public CommandCategory categoria() {
+	public CommandCategory getCategory() {
 		return CommandCategory.Osu;
 	}
 
-	public static String linkcover;
-
-	@Override
-	public void action(String[] args, String label, TextChannel channel) {
+	public void execute(User buser, String[] args, TextChannel channel) {
 		if (args.length == 0) {
-			sendUsage();
+			replyUsage();
 			return;
 		}
-
-		if (args.length >= 1) {
-			try {
-				String stringArgs = StringUtils.arrayToString2(0, args);
-
-				String usermsg = stringArgs.substring(0, stringArgs.length() - 1);
-				String lastmsg = args[args.length - 1];
-				String name = usermsg.replace(" " + lastmsg, "");
-				
-				List<Score> osuUser = ((Gamemode.getGamemode(lastmsg) != null) 
-						? OusuBot.getOsu().getRecentUser(name, Gamemode.getGamemode(lastmsg), 5)
-						: OusuBot.getOsu().getRecentUser(usermsg, 5));
-
-				@SuppressWarnings("unused")
-				Score score = osuUser.get(0);
-				
-				replyQueue(TypeEmbed.LoadingEmbed().build(), message -> {
-					User us = osuUser.get(0).getUser();
-					List<EmbedBuilder> emb = new ArrayList<EmbedBuilder>();
-					
-					int v = 1;
-					for (Score s : osuUser) {
 		
-						EmbedBuilder embed = embed(s, new Integer[] { v, osuUser.size() }, us, channel.getGuild());
-						if (v == 1) {
-							message.editMessage(embed.build()).queue();
+		if (args.length >= 1) {
+			List<String> l = new ArrayList<>(Arrays.asList(args));
+			Gamemode gm = Gamemode.Standard;
+			
+			StringBuffer b = new StringBuffer();
+			if (args.length >= 2) {
+				if (isGamemode(args[args.length-1])) {
+					l.remove(args.length-1);
+				}
+			}
+			
+			l.forEach(s -> b.append(s + " "));
+			l.clear();
+			try {
+				System.out.println(b.toString());
+				Request<List<RecentScore>> request = OusuBot.getApi().getRecentUser(b.substring(0, b.length()-1), gm, 10);
+				List<RecentScore> score = request.get();
+				reply(TypeEmbed.LoadingEmbed().build(), message -> {
+					int i = 1;
+					List<EmbedBuilder> embeds = new ArrayList<>();
+					for (RecentScore r: score) {
+						BeatmapSearch be;
+						try {
+							be = JSoupGetters.beatmapInfoById(r.getBeatmapId());
+							embeds.add(embed(r, be, new int[] {i, score.size()}, WebUser.getName(b.substring(0, b.length()-1))));
+							i++;
+						} catch (IOException e) {
+							e.printStackTrace();
 						}
-						emb.add(embed);
-						v++;
+						if (embeds.size() == 1) {
+							message.editMessage(embeds.get(0).build()).queue();
+						}
 					}
-
-					EmbedBuilder[] sc = new EmbedBuilder[emb.size()];
-					emb.toArray(sc);
+					
 					message.addReaction("U+25C0").queue();
+					//message.addReaction("U+25FC").queue();
 					message.addReaction("U+25B6").queue();
-					ReactionMessage.recentHistory.add(new DefaultReaction(getUserId(), message.getId(), sc, 0));
+					
+					EmbedBuilder[] emb = embeds.toArray(new EmbedBuilder[embeds.size()]);
+					HistoryLists.addToReaction(buser, message, new ReactionObject(emb, 0));
 				});
-
-			} catch (InvalidUserException e) {
-				String[] str = getLang().translatedArrayOsuMessages("INEXISTENT_USER");
-				MessageEmbed embed = TypeEmbed.WarningEmbed(str[0], StringUtils.commandMessage(str)).build();
-				reply(embed);
-				return;
-			} catch (NoHistoryException | NullPointerException e) {
-				String[] str = getLang().translatedArrayOsuMessages("NO_HAS_HISTORY");
+			} catch (ScoreException e) {
+				String[] str = getLanguageManager().getStrings("Osu", "NO_HAS_HISTORY");
 				MessageEmbed embed = TypeEmbed.SoftWarningEmbed(str[0], StringUtils.commandMessage(str)).build();
+				
+				System.out.println(StringUtils.commandMessage(str));
 				reply(embed);
-				return;
 			}
 		}
 	}
-
-	public static EmbedBuilder embed(Score scorelist, Integer[] order,User user, Guild guild) {
-		// "Imports"
+	
+	private String emote(String name, int append) {
+		return OusuEmote.getEmoteAsMention(name) + " " + append + "\n";
+	}
+	
+	private String emote(String name) {
+		return OusuEmote.getEmoteAsMention(name) + " ";
+	}
+	
+	public EmbedBuilder embed(RecentScore score, BeatmapSearch beatmap, int[] ordem, String username) {
 		EmbedBuilder embed = new EmbedBuilder();
-		Score score = scorelist;
-		GuildsDB sql = new GuildsDB(guild);
-		LanguageManager lang = new LanguageManager(Language.valueOf(sql.get("language")));
-		Beatmap beatmap = score.getBeatmap();
-
-		// Strings
-		String inicial = OusuUtils.getRankEmote(score);
-		String ordem = "[" + order[0].intValue() + "/" + order[1].intValue() + "]";
-		String u = "[" + user.getUserName() + "](" + user.getURL() + ")";
-		String title = "[" + beatmap.getTitle() + "](" + beatmap.getURL() + ") por `" + beatmap.getArtist() + "`";
-
-		// String notes
-		StringBuffer scores = new StringBuffer();
+		String emote = OusuUtils.getRankEmote(score);
+		String title = new StringBuffer()
+				.append("[" + beatmap.getTitle() + "]")
+				.append("(" + beatmap.getURL() + ")")
+				.toString();
 		
-		scores.append(OusuEmojis.getEmoteAsMention("300") + ": " + score.get300() + "\n");
-		scores.append(OusuEmojis.getEmoteAsMention("100") + ": " + score.get100() + "\n");
-		scores.append(OusuEmojis.getEmoteAsMention("50") + ": " + score.get50() + "\n");
-		scores.append(OusuEmojis.getEmoteAsMention("miss") + ": " + score.getMiss() + "\n");
-
-		int id = beatmap.getBeatmapSetID();
-		String url = "https://assets.ppy.sh/beatmaps/" + id + "/covers/cover.jpg?";
-
-		String mods = "";
+		String user = new StringBuffer()
+				.append("[" + username + "]")
+				.append("(https://osu.ppy.sh/users/" + score.getUserId() + ")")
+				.toString();
+		
+		String scores = new StringBuffer()
+				.append(emote("300", score.get300())) 
+				.append(emote("100", score.get100()))
+				.append(emote("50", score.get50()))
+				.append(emote("miss", score.getMiss()))
+				.toString();
+		  
+		StringBuffer mods = new StringBuffer();
 		for (Mods mod : score.getEnabledMods()) {
-			for (Emote emoji : OusuEmojis.getEmotes()) {
+			for (Emote emoji : OusuEmote.getEmotes()) {
 				if (mod.name().toLowerCase().replace("_", "").contains(emoji.getName().toLowerCase())) {
-					mods += emoji.getAsMention() + " ";
+					mods.append(emoji.getAsMention() + " ");
 				}
 			}
 		}
-
-		// Embed
-		embed.setAuthor(user.getUserName());
-		embed.setTitle(inicial + " " + lang.translatedEmbeds("TITLE_USER_COMMAND_HISTORY") + " | " + ordem);
-		embed.setDescription(OusuEmojis.getEmoteAsMention("small_green_diamond") + " "
-				+ lang.translatedEmbeds("MESSAGE_RECENTUSER").replace("{USERNAME}", u));
-
+		
+		embed.setAuthor(username);
+		embed.setTitle(emote + " " + getLanguageManager().getString("Embeds", "USER_COMMAND_HISTORY"));
+		embed.setDescription(emote("small_green_diamond") + getLanguageManager().getString("Embeds", "MESSAGE_RECENTUSER").replace("{USERNAME}", user));
+		LanguageManager lang = getLanguageManager();
 		embed.addField("Beatmap:", Emoji.HEADPHONES.getAsMention() + title, true);
-		embed.addField(lang.translatedEmbeds("MAP_STATS"),
-				"`" + OusuUtils.getApproval(beatmap.getApprovated()) + "`\n" + beatmap.getVersion() + "\n" + mods, true);
-
-		embed.addField(lang.translatedEmbeds("SCORE"), scores.toString(), true);
-		embed.addField(lang.translatedEmbeds("TOTAL_SCORE"), score.getScore() + "", true);
-		SimpleDateFormat datef = new SimpleDateFormat("dd/MM/yyy - HH:mm");
-		embed.addField(lang.translatedEmbeds("PLAYED_IN"), datef.format(score.getScoreDate()), true);
-		embed.addField(lang.translatedEmbeds("MAX_COMBO"), score.getMaxCombo() + "/" + score.getBeatmap().getMaxCombo(),
-				true);
-
-		linkcover = url;
-		embed.setThumbnail(user.getUserAvatar());
-		embed.setImage(url);
-
+		embed.addField(lang.getString("Embeds", "MAP_STATS"), "`" + OusuUtils.getApproval(beatmap.getApprovated()) + "`\n" + beatmap.getDifficult()[0] + "\n" + mods.toString(), true);
+		embed.addField(lang.getString("Embeds", "SCORE"), scores, true);
+		
+		embed.addField(lang.getString("Embeds", "TOTAL_SCORE"), score.getScore()+"", true);
+		SimpleDateFormat datef = new SimpleDateFormat("dd/MM/yyyy");
+		embed.addField(lang.getString("Embeds", "PLAYED_IN"), datef.format(score.getDate()), true);
+		embed.addField(lang.getString("Embeds", "MAX_COMBO"), score.getMaxCombo() + "", true);
+		
+		embed.setImage(beatmap.getBeatmapCoverUrl());
+		embed.setThumbnail(beatmap.getBeatmapThumbnailUrl());
+		
 		String author = beatmap.getCreator();
-		embed.setFooter("[" + beatmap.getBeatmapID() + "] " + beatmap.getTitle() + " por " + beatmap.getArtist() + " | "
-				+ lang.translatedEmbeds("MAP_CREATED_BY") + author);
+		embed.setFooter("[" + beatmap.getBeatmapid() + "] " + beatmap.getTitle() + " por " + beatmap.getAuthor() + " | "
+				+ lang.getString("Embeds","MAP_CREATED_BY") + author);
 		try {
 			embed.setColor(ImageUtils.getPredominatColor(ImageIO.read(new URL(beatmap.getBeatmapThumbnailUrl()))));
 		} catch (NullPointerException | IOException e) {
 			embed.setColor(Color.BLUE);
 		}
+		
 		return embed;
+	}
+	
+	public boolean isGamemode(String arg) {
+		return Gamemode.getGamemode(arg.toLowerCase()) != null;
 	}
 
 }

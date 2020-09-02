@@ -1,270 +1,157 @@
 package me.skiincraft.discord.ousu;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.sql.SQLException;
-import java.util.EnumSet;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-
-import javax.security.auth.login.LoginException;
-
-import org.ocpsoft.prettytime.PrettyTime;
 
 import me.skiincraft.api.ousu.OusuAPI;
-import me.skiincraft.api.ousu.exceptions.InvalidTokenException;
-import me.skiincraft.discord.ousu.abstractcore.Commands;
-import me.skiincraft.discord.ousu.api.CooldownManager;
-import me.skiincraft.discord.ousu.api.DBLJavaLibrary;
-import me.skiincraft.discord.ousu.commands.BeatMapCommand;
-import me.skiincraft.discord.ousu.commands.BeatMapSetCommand;
+import me.skiincraft.api.ousu.exceptions.TokenException;
+import me.skiincraft.discord.core.configuration.Language;
+import me.skiincraft.discord.core.plugin.OusuPlugin;
+import me.skiincraft.discord.core.utils.PresenceUpdater;
+import me.skiincraft.discord.ousu.commands.BeatmapCommand;
+import me.skiincraft.discord.ousu.commands.BeatmapSetCommand;
 import me.skiincraft.discord.ousu.commands.CardCommand;
-import me.skiincraft.discord.ousu.commands.EmbedCommand;
 import me.skiincraft.discord.ousu.commands.HelpCommand;
 import me.skiincraft.discord.ousu.commands.InviteCommand;
 import me.skiincraft.discord.ousu.commands.LanguageCommand;
 import me.skiincraft.discord.ousu.commands.PingCommand;
 import me.skiincraft.discord.ousu.commands.PrefixCommand;
 import me.skiincraft.discord.ousu.commands.RankingCommand;
-import me.skiincraft.discord.ousu.commands.RecentUserCommand;
+import me.skiincraft.discord.ousu.commands.RecentuserCommand;
+import me.skiincraft.discord.ousu.commands.RestartCommand;
 import me.skiincraft.discord.ousu.commands.SearchCommand;
 import me.skiincraft.discord.ousu.commands.SkinsCommand;
 import me.skiincraft.discord.ousu.commands.TopUserCommand;
 import me.skiincraft.discord.ousu.commands.UserCommand;
-import me.skiincraft.discord.ousu.commands.UserImageCommand;
 import me.skiincraft.discord.ousu.commands.VersionCommand;
 import me.skiincraft.discord.ousu.commands.VoteCommand;
-import me.skiincraft.discord.ousu.configuration.ConfigSetup;
-import me.skiincraft.discord.ousu.configuration.ConfigSetup.ConfigOptions;
-import me.skiincraft.discord.ousu.customemoji.GenerateEmote;
-import me.skiincraft.discord.ousu.events.OtherEvents;
-import me.skiincraft.discord.ousu.events.PresenceMessages;
-import me.skiincraft.discord.ousu.events.ReadyBotEvent;
-import me.skiincraft.discord.ousu.events.ReceivedEvent;
-import me.skiincraft.discord.ousu.logger.Logging;
-import me.skiincraft.discord.ousu.reactions.BeatmapsetEvent;
-import me.skiincraft.discord.ousu.reactions.RankingReactionEvent;
-import me.skiincraft.discord.ousu.reactions.RecentuserEvent;
-import me.skiincraft.discord.ousu.reactions.SearchReactionsEvent;
-import me.skiincraft.discord.ousu.reactions.ServerReactionsEvent;
-import me.skiincraft.discord.ousu.reactions.SkinsReactionEvent;
-import me.skiincraft.discord.ousu.reactions.TopUserReactionEvent;
-import me.skiincraft.discord.ousu.reactions.UserReactionEvent;
-import me.skiincraft.discord.ousu.sqlite.SQLite;
-import me.skiincraft.discord.ousu.utils.OusuUtils;
-import net.dv8tion.jda.api.JDA;
+import me.skiincraft.discord.ousu.emojis.OusuEmote;
+import me.skiincraft.discord.ousu.listener.ReactionListeners;
+import me.skiincraft.discord.ousu.reactions.PageReactions;
+import me.skiincraft.discord.ousu.reactions.UserReaction;
+
+import com.google.gson.JsonNull;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import net.dv8tion.jda.api.OnlineStatus;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.SelfUser;
-import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
-import net.dv8tion.jda.api.sharding.ShardManager;
-import net.dv8tion.jda.api.utils.ChunkingFilter;
-import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import net.dv8tion.jda.api.entities.Activity;
 
-public class OusuBot {
-	
-	private static final long restart = TimeUnit.MINUTES.toMillis(60);
-	private boolean DBSQL;
-	private static OusuBot ousu;
-	private static OusuAPI osu;
-	private static Logging log;
-	private static ShardManager shardmanager;
-	private static SQLite connection;
-	private static int presenceOrdem = 0;
-	public static OusuBot getOusu() {
-		return ousu;
-	}
+public class OusuBot extends OusuPlugin {
 
-	public static ShardManager getShardmanager() {
-		return shardmanager;
-	}
+	private static OusuAPI api;
+	private static OusuBot main;
+	private static PresenceUpdater presenceUpdater;
 
-	public static OusuAPI getOsu() {
-		return osu;
-	}
-
-	public static SQLite getSQL() {
-		return connection;
-	}
-
-	public void logger(String message) {
-		log.debug(Level.INFO, message, true);
-	}
-
-	public void logger(String[] message) {
-		StringBuffer buffer = new StringBuffer();
-		for (int i = 0; i < message.length; i++) {
-			buffer.append(message[i] + "\n");
-		}
-		log.debug(Level.INFO, buffer.toString(), true);
-	}
-
-	public void logger(String message, Level level) {
-		log.debug(level, message, true);
-	}
-
-	public static void main(String[] args) {
-		ApplicationUtils.openconsole();
-		ConfigSetup config = new ConfigSetup();
-		config.makeConfig();
-		if (!config.verificarTokens()) {
-			System.out.println("| Arquivo de configuração não esta configurado corretamente.");
-			System.out.println("| Todos os campos devem ser preenchidos.");
-			return;
-		}
-		arguments = args;
-		log = new Logging();
-		new OusuBot(config.getConfig(ConfigOptions.Token), 3);
-	}
-
-	public static String[] arguments;
-		
-	public OusuBot(String token, int shards) {
-		try {
-		ousu = this;
-		
-		Locale.setDefault(new Locale("pt", "BR"));
-		DefaultShardManagerBuilder shardbuilder = new DefaultShardManagerBuilder(token);
-		shardbuilder.setShardsTotal(shards);
-		events(shardbuilder);
-		commands(shardbuilder);
-		
-		connection = new SQLite(this);
-		
-		shardbuilder.setDisabledCacheFlags(EnumSet.of(CacheFlag.VOICE_STATE));
-		shardbuilder.setChunkingFilter(ChunkingFilter.NONE);
-		
-		connection.abrir();
-		connection.setup();
-		try {
-			connection.getStatement().close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		shardmanager = shardbuilder.build();
-		logger("Esperando todas as shards...");
-		for (JDA jda :shardmanager.getShards()) {
-			jda.awaitReady();
-		}
-		
-		logger("Todas as shards foram carregadas.");
-		osuLoader();
-		TimerTask timertask = new TimerTask() {
-			
-			@Override
-			public void run() {
-				presenceOrdem = (presenceOrdem >= new PresenceMessages().getMessages(shardmanager).size()) ? 0 : presenceOrdem;
-				shardmanager.setPresence(OnlineStatus.ONLINE,
-						new PresenceMessages().getMessages(shardmanager).get(presenceOrdem));
-				presenceOrdem++;
-			}
-		};
-
-		
-		Timer t = new Timer("Presence-Timer");
-		t.schedule(timertask, 1000, TimeUnit.SECONDS.toMillis(60));
-		SelfUser self = shardmanager.getShardById(0).getSelfUser();
-		
-		ApplicationUtils.frame.setTitle(ApplicationUtils.frame.getTitle().replace("[Bot]", self.getName()));
-		new DBLJavaLibrary().connect();
-		new GenerateEmote().makeConfig(shardmanager.getGuildById(680436378240286720L));
-		
-		AppRestartThread(arguments, restart);
-		CooldownManager.start();
-		
-		} catch (LoginException e) {
-			System.out.println("JDA: Ocorreu um erro ao logar no bot. Verifique se o Token está correto.");
-		} catch (InvalidTokenException e) {
-			System.out.println(e.getMessage());
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void events(DefaultShardManagerBuilder build) {
-		registerEvents(build, new ReceivedEvent(), new TopUserReactionEvent(), new ReadyBotEvent(), new BeatmapsetEvent(),
-				new RecentuserEvent(), new ServerReactionsEvent(),
-				new SearchReactionsEvent(), new OtherEvents(), new RankingReactionEvent(), new SkinsReactionEvent(),
-				new UserReactionEvent());
-	}
-
-	public void commands(DefaultShardManagerBuilder build) {
-
-		registerCommands(build, new HelpCommand(), new EmbedCommand(), new UserCommand(), new TopUserCommand(),
-				new UserImageCommand(), new PrefixCommand(), new BeatMapCommand(), new VersionCommand(),
-				new InviteCommand(), new RecentUserCommand(), new LanguageCommand(), new BeatMapSetCommand(),
-				new SearchCommand(), new VoteCommand(), new RankingCommand(), new SkinsCommand(), new CardCommand(),
-				new PingCommand());
-	}
-
-	private void registerEvents(DefaultShardManagerBuilder build, ListenerAdapter... events) {
-		ListenerAdapter[] comm = events;
-		for (int i = 0; i < comm.length; i++) {
-			build.addEventListeners(comm[i]);
-		}
-	}
-
-	private void registerCommands(DefaultShardManagerBuilder build, Commands... commands) {
-		Commands[] comm = commands;
-		for (int i = 0; i < comm.length; i++) {
-			build.addEventListeners(comm[i]);
-			HelpCommand.commands.add(comm[i]);
-		}
-	}
-
-	public void osuLoader() throws InvalidTokenException {
-		OusuBot.osu = new OusuAPI(new ConfigSetup().getConfig(ConfigOptions.OsuToken));
-	}
-
-	public boolean isDBSQL() {
-		return DBSQL;
-	}
-
-	public void setDBSQL(boolean dBSQL) {
-		DBSQL = dBSQL;
+	public static OusuBot getMain() {
+		return main;
 	}
 	
-	public void AppRestartThread(String[] args, long restart) {
-		Runnable runnable = () -> {
-			PrettyTime time = new PrettyTime(Locale.forLanguageTag("PT"));
-			try {
-				for (int i = 0; i < 2; i++) {
-					String str = (i == 0) ? time.format(OusuUtils.getDateAfter(restart))
-							: time.format(OusuUtils.getDateAfter(restart / 2));
-					logger("Essa aplicação irá reiniciar " + str);
-					Thread.sleep(restart / 2);
+	private static long apiLast;
+	public static OusuAPI getApi() {
+		boolean nulls = Arrays.asList(getTokens()).contains(null) || Arrays.asList(getTokens()).size() == 1;
+		if (System.currentTimeMillis() - apiLast >= 2000) {
+			for (String string : getTokens()) {
+				if (string == null)
+					continue;
+				if (nulls) {
+					apiLast = System.currentTimeMillis();
+					return api = new OusuAPI(string, false);
 				}
-				ApplicationUtils.restartApplication(args);
-			} catch (URISyntaxException | IOException | InterruptedException e) {
+				if (api == null) {
+					return api = new OusuAPI(string, false); 
+				}
+				if (api.getToken() == string) {
+					continue;
+				}
+				apiLast = System.currentTimeMillis();
+				return api = new OusuAPI(string, false);
+			}
+		}
+		return api;
+	}
+
+	public void onEnable() {
+		main = this;
+		getPlugin().getCommandManager().registerCommand(new BeatmapCommand());
+		getPlugin().getCommandManager().registerCommand(new BeatmapSetCommand());
+		getPlugin().getCommandManager().registerCommand(new CardCommand());
+		getPlugin().getCommandManager().registerCommand(new HelpCommand());
+		getPlugin().getCommandManager().registerCommand(new InviteCommand());
+		getPlugin().getCommandManager().registerCommand(new LanguageCommand());
+		getPlugin().getCommandManager().registerCommand(new PingCommand());
+		getPlugin().getCommandManager().registerCommand(new PrefixCommand());
+		getPlugin().getCommandManager().registerCommand(new RankingCommand());
+		getPlugin().getCommandManager().registerCommand(new RecentuserCommand());
+		getPlugin().getCommandManager().registerCommand(new RestartCommand());
+		getPlugin().getCommandManager().registerCommand(new SearchCommand());
+		getPlugin().getCommandManager().registerCommand(new SkinsCommand());
+		getPlugin().getCommandManager().registerCommand(new TopUserCommand());
+		getPlugin().getCommandManager().registerCommand(new UserCommand());
+		getPlugin().getCommandManager().registerCommand(new VersionCommand());
+		getPlugin().getCommandManager().registerCommand(new VoteCommand());
+		
+		getPlugin().getEventManager().registerListener(new UserReaction());
+		getPlugin().getEventManager().registerListener(new PageReactions());
+		getPlugin().getEventManager().registerListener(new ReactionListeners());
+		
+		File file = new File(getPlugin().getAssetsPath() + "/ousutoken.json");
+		
+		if (!file.exists()) {
+			JsonObject object = new JsonObject();
+			object.add("Api_1", JsonNull.INSTANCE);
+			object.add("Api_2", JsonNull.INSTANCE);
+			try {
+				FileWriter filew = new FileWriter(file);
+				filew.write(object.toString());
+				filew.close();
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		};
+		}
 		
 		
-		Thread thread = new Thread(runnable, "Ousu-Restart-Application");
-		thread.start();
+		OusuEmote.loadEmotes("emotes");
+		System.out.println("OusuBot carregado com sucesso.");
+		
+		getPlugin().addLanguage(new Language(new Locale("pt", "BR")));
+		getPlugin().addLanguage(new Language(new Locale("en", "US")));
+		
+		getPlugin().getShardManager().setPresence(OnlineStatus.ONLINE, Activity.listening("ou!help | [ousucore]"));
+		presenceUpdater = new PresenceUpdater(getPlugin(), Arrays.asList(
+				Activity.listening("ou!help for help."),
+				Activity.watching("{guildsize} Servidores online."),
+				Activity.watching("{usersize} Usuarios disponiveis."),
+				Activity.streaming("ou!vote on DiscordBots", "https://top.gg/bot/701825726449582192"))); 
+		
 	}
 	
-	public static User getUserById(String id) {
-		return getShardmanager().getUserById(id);
+	public static String[] getTokens() {
+		try {
+			InputStream input = new File(OusuBot.getMain().getPlugin().getAssetsPath() + "/ousutoken.json").toURI().toURL().openStream();
+			JsonObject object = new JsonParser().parse(new InputStreamReader(input)).getAsJsonObject();
+			boolean allIsNull = (object.get("Api_1").isJsonNull() && object.get("Api_2").isJsonNull()) ? true: false;
+			if (allIsNull) {
+				throw new TokenException("As keys Token da API do ousu estão nulas.", null);
+			}
+			
+			String key1 = (object.get("Api_1").isJsonNull()) ? null :  object.get("Api_1").getAsString();
+			String key2 = (object.get("Api_2").isJsonNull()) ? null :  object.get("Api_2").getAsString();
+			
+			return new String[] {key1, key2};
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
-	public static User getUserById(long id) {
-		return getShardmanager().getUserById(id);
-	}
-	
-	public static Guild getGuildById(String id) {
-		return getShardmanager().getGuildById(id);
-	}
-	
-	public static Guild getGuildById(long id) {
-		return getShardmanager().getGuildById(id);
+	public static PresenceUpdater getPresenceUpdater() {
+		return presenceUpdater;
 	}
 
 }
