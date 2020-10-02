@@ -40,50 +40,46 @@ public class LanguageCommand extends Comando {
 			reply(languages(languages));
 			return;
 		}
-		
-		if (args.length >= 1) {
-			List<Language> filtro = languages.stream()
-					.filter(l -> l.getLanguageName().equalsIgnoreCase(args[0]) 
-							|| l.getLanguageCode().equalsIgnoreCase(args[0])
-							|| l.getName().equalsIgnoreCase(args[0])
-							|| l.getCountryCode().equalsIgnoreCase(args[0])
-							|| l.getCountry().equalsIgnoreCase(args[0]))
-					.collect(Collectors.toList());
-			
-			if (languages.size() == 0) {
-				reply(languages(languages));
-				return;
-			}
-			
-			LanguageManager lang = new LanguageManager(filtro.get(0));
-			new GuildDB(channel.getGuild()).set("language", lang.getLanguage().getLanguageName());
-			
-			String[] str = lang.getStrings("Messages", "LANGUAGE_COMMAND_MESSAGE");
-			StringBuffer buffer = new StringBuffer();
-			for (String append : str) {
-				if (append != str[0]) {
-					buffer.append(":small_blue_diamond: " + append);
-				}
-			}
-			
-			EmbedBuilder var = TypeEmbed.ConfigEmbed(str[0], buffer.toString())
-					.setThumbnail("https://i.imgur.com/sxIERAT.png")
-					.setFooter("A multilanguage bot!", "https://i.imgur.com/wDczNj3.jpg")
-					.setColor(new Color(52, 107, 235));;
-					
-			reply(var.build());
+
+		List<Language> filter = languages.stream()
+				.filter(l -> l.getLanguageName().equalsIgnoreCase(args[0]) 
+						|| l.getLanguageCode().equalsIgnoreCase(args[0])
+						|| l.getName().equalsIgnoreCase(args[0])
+						|| l.getCountryCode().equalsIgnoreCase(args[0])
+						|| l.getCountry().equalsIgnoreCase(args[0]))
+				.collect(Collectors.toList());
+
+		if (filter.size() == 0) {
+			reply(languages(languages));
+			return;
 		}
+
+		LanguageManager lang = new LanguageManager(filter.get(0));
+		new GuildDB(channel.getGuild()).set("language", lang.getLanguage().getLanguageName());
+
+		String[] str = lang.getStrings("Messages", "LANGUAGE_COMMAND_MESSAGE");
+		StringBuilder buffer = new StringBuilder();
+		for (String append : str) {
+			if (!append.equals(str[0])) buffer.append(":small_blue_diamond: " + append);
+		}
+
+		EmbedBuilder var = TypeEmbed.ConfigEmbed(str[0], buffer.toString())
+				.setThumbnail("https://i.imgur.com/sxIERAT.png")
+				.setFooter("A multilanguage bot!", "https://i.imgur.com/wDczNj3.jpg")
+				.setColor(new Color(52, 107, 235));
+
+		reply(var.build());
 	}
 	
 	public MessageEmbed languages(List<Language> languages) {
 		String[] str = getLanguageManager().getStrings("Messages", "AVAILABLE_LANGUAGE_MESSAGE");
 
-		StringBuffer buffer = new StringBuffer();
-		StringBuffer bufferlang = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
+		StringBuilder bufferlang = new StringBuilder();
 		bufferlang.append("\n");
 
 		for (String append : str) {
-			if (append != str[0]) {
+			if (!append.equals(str[0])) {
 				buffer.append(append);
 			}
 		}

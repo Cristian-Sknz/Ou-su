@@ -21,6 +21,8 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 
+import static me.skiincraft.discord.core.utils.Emoji.*;
+
 public class HelpCommand extends Comando {
 
 	public HelpCommand() {
@@ -48,7 +50,6 @@ public class HelpCommand extends Comando {
 			return;
 		}
 
-		return;
 	}
 
 	public EmbedBuilder emb(String comando, Guild guild) {
@@ -59,14 +60,14 @@ public class HelpCommand extends Comando {
 			if (comando.equalsIgnoreCase(com.getCommandName())) {
 				embed.setTitle("Help <" + com.getCommandName() + ">");
 				if (com.getCommandDescription(getLanguageManager()) != null) {
-					String emoji = Emoji.SMALL_ORANGE_DIAMOND.getAsMention();;
+					String emoji = SMALL_ORANGE_DIAMOND.getAsMention();;
 					StringBuffer buffer = new StringBuffer();
 					
 					List<String> helpmessages = Arrays.asList(com.getCommandDescription(getLanguageManager()));
-					helpmessages.forEach(str ->{
+					for (String str : helpmessages) {
 						buffer.append(emoji + " " + str + "\n");
-					});
-					
+					}
+
 					embed.setDescription(buffer.toString());
 				} else {
 					embed.setDescription(lang.getString("Warnings", "NO_COMMAND_DESCRIPTION"));
@@ -77,7 +78,9 @@ public class HelpCommand extends Comando {
 					com.getAliases().toArray(alias);
 					StringBuffer buffer = new StringBuffer();
 					for (String str : alias) {
-						buffer.append(prefix + str + "\n");
+						buffer.append(prefix );
+						buffer.append(str);
+						buffer.append("\n");
 					}
 					embed.addField(":mega: Aliases", buffer.toString(), true);
 				}
@@ -90,19 +93,22 @@ public class HelpCommand extends Comando {
 
 		String[] msg = lang.getStrings("Messages", "INEXISTENT_COMMAND_HELP");
 		return TypeEmbed.SoftWarningEmbed(OusuEmote.getEmoteAsMention("thinkanime") + msg[0],
-				Emoji.SPACE_INVADER.getAsMention() + " " + StringUtils.commandMessage(msg)).setFooter(prefix + "help to help!");
+				SPACE_INVADER.getAsMention() + " " + StringUtils.commandMessage(msg)).setFooter(prefix + "help to help!");
 	}
 
 	public EmbedBuilder embed(Guild guild) {
 		EmbedBuilder embed = new EmbedBuilder();
 
-		StringBuffer a = new StringBuffer();
-		StringBuffer c = new StringBuffer();
-		StringBuffer d = new StringBuffer();
-		StringBuffer e = new StringBuffer();
+		StringBuilder a = new StringBuilder();
+		StringBuilder c = new StringBuilder();
+		StringBuilder d = new StringBuilder();
+		StringBuilder e = new StringBuilder();
 
-		for (int i = 0; i < commands.size(); i++) {
-			Comando comando = (Comando) commands.get(i);
+		for (Command command : commands) {
+			if (!(command instanceof Comando)) {
+				continue;
+			}
+			Comando comando = (Comando) command;
 			String prefix = new GuildDB(guild).get("prefix");
 			if (comando.getCategory() == CommandCategory.Osu) {
 				c.append("- " + prefix + comando.getCommandName());
@@ -137,11 +143,9 @@ public class HelpCommand extends Comando {
 
 		embed.setTitle(str[0]);
 		embed.setThumbnail(OusuBot.getMain().getShardManager().getShardById(0).getSelfUser().getAvatarUrl());
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		for (String append : str) {
-			if (append != str[0]) {
-				buffer.append(append + "\n");
-			}
+			if (append != str[0]) buffer.append(append + "\n");
 		}
 
 		embed.setDescription(buffer.toString());

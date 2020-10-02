@@ -4,6 +4,7 @@
 # Ignore Gradle build output directory
 build
 bin
+.idea
 .settings
 bin/main/bot.json
 src/main/resources/bot.json
