@@ -1,11 +1,17 @@
 package me.skiincraft.discord.ousu.utils;
 
 import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
 
@@ -15,10 +21,54 @@ import me.skiincraft.api.ousu.entity.objects.Gamemode;
 import me.skiincraft.api.ousu.entity.score.RecentScore;
 import me.skiincraft.api.ousu.entity.score.Score;
 import me.skiincraft.discord.core.utils.ImageUtils;
+import me.skiincraft.discord.core.utils.StringUtils;
 import me.skiincraft.discord.ousu.emojis.OusuEmote;
 
 
 public class OusuUtils {
+	
+	public static boolean isImage(String url) {
+		URLConnection connection;
+		try {
+			connection = new URL(url).openConnection();
+			connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+			BufferedImage img = ImageIO.read(connection.getInputStream());
+			return img != null;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
+	public static boolean containsSpecialCharacters(String str) {
+		Pattern pattern = Pattern.compile("[$&+,:;=\\\\?@#|/'<>.^*()%!-]");
+		Matcher matcher = pattern.matcher(str);
+		return matcher.matches();
+	}
+	
+	public static String[] splitString(String string, String delimiter) {
+		List<StringBuffer> buffer = new ArrayList<>();
+		int lenght = StringUtils.quantityLetters(delimiter, string) + 1;
+		for (int i = 0; i < lenght; i++) {
+			buffer.add(new StringBuffer());
+		}
+		
+		int i = 0;
+		for (char c: string.toCharArray()) {
+			if (c == delimiter.charAt(0)) {
+				i++;
+				continue;
+			}
+			buffer.get(i).append(c);
+		}
+		String[] str = new String[buffer.size()];
+		i = 0;
+		for (StringBuffer b:buffer) {
+			str[i] = b.toString();
+			i++;
+		}
+		
+		return str;
+	}
 	
 	public static Color beatmapColor(Beatmap beatmap) {
 		try {
@@ -123,38 +173,37 @@ public class OusuUtils {
 	}
 	
 	public static String getRankEmote(String score) {
-		String rank = score;
-		if (rank.equalsIgnoreCase("SS+")) {
+		if (score.equalsIgnoreCase("SS+")) {
 			return OusuEmote.getEmoteAsMentionEquals("ss_plus");
 		}
-		if (rank.equalsIgnoreCase("SS")) {
+		if (score.equalsIgnoreCase("SS")) {
 			return OusuEmote.getEmoteAsMentionEquals("ss");
 		}
-		if (rank.equalsIgnoreCase("SSH")) {
+		if (score.equalsIgnoreCase("SSH")) {
 			return OusuEmote.getEmoteAsMentionEquals("ss");
 		}
-		if (rank.equalsIgnoreCase("X")) {
+		if (score.equalsIgnoreCase("X")) {
 			return OusuEmote.getEmoteAsMentionEquals("ss");
 		}
-		if (rank.equalsIgnoreCase("S+")) {
+		if (score.equalsIgnoreCase("S+")) {
 			return OusuEmote.getEmoteAsMentionEquals("s_plus");
 		}
-		if (rank.equalsIgnoreCase("SH")) {
+		if (score.equalsIgnoreCase("SH")) {
 			return OusuEmote.getEmoteAsMentionEquals("s_");
 		}
-		if (rank.equalsIgnoreCase("S")) {
+		if (score.equalsIgnoreCase("S")) {
 			return OusuEmote.getEmoteAsMentionEquals("s_");
 		}
-		if (rank.equalsIgnoreCase("A")) {
+		if (score.equalsIgnoreCase("A")) {
 			return OusuEmote.getEmoteAsMentionEquals("a_");
 		}
-		if (rank.equalsIgnoreCase("B")) {
+		if (score.equalsIgnoreCase("B")) {
 			return OusuEmote.getEmoteAsMentionEquals("b_");
 		}
-		if (rank.equalsIgnoreCase("C")) {
+		if (score.equalsIgnoreCase("C")) {
 			return OusuEmote.getEmoteAsMentionEquals("c_");
 		}
-		if (rank.equalsIgnoreCase("F")) {
+		if (score.equalsIgnoreCase("F")) {
 			return OusuEmote.getEmoteAsMentionEquals("f_");
 		}
 		return OusuEmote.getEmoteAsMention("osulogo");
@@ -169,6 +218,7 @@ public class OusuUtils {
 		map.put(Gamemode.Catch, "catch.png");
 		map.put(Gamemode.Mania, "mania.png");
 		map.put(Gamemode.Taiko, "taiko.png");
+
 
 		if (map.containsKey(gm)) {
 			return map.get(gamemode);

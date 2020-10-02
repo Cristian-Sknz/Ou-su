@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,13 +28,11 @@ public class JSoupGetters {
 
 	public static String[] splitText(String s, int i) {
 		String[] split1 = s.split("#");
-		String[] split2 = split1[i].split(" ");
-
-		return split2;
+		return split1[i].split(" ");
 	}
 
 	public enum InputTypes {
-		Mouse, Keyboard, Table, Touchpad;
+		Mouse, Keyboard, Table, Touchpad
 	}
 	
 	public static UserStatistics inputType(User user, LanguageManager lang) throws IOException {
@@ -59,21 +58,21 @@ public class JSoupGetters {
 		//OsuUserDB sql = new OsuUserDB(user);
 		String lastpp = "";
 		String[] lpp = "232&232".split("&");//sql.get("lastpp").split("&");
-		int valor1 = Integer.valueOf(lpp[0]);
-		int valor2 = Integer.valueOf(lpp[1]);
+		int valor1 = Integer.parseInt(lpp[0]);
+		int valor2 = Integer.parseInt(lpp[1]);
 		
 		if (valor2 != user.getPP()) {
 			//sql.set("lastpp", valor2 + "&" + ((int)user.getPP()));
 			
 			lastpp += user.getPP()+ " (+" + Integer.toString(valor2-(int)user.getPP()).replace("-", "") + ")";
 		} else {
-			lastpp = (Integer.valueOf(lpp[0]) == Integer.valueOf(lpp[1])) ? lpp[0]: valor2+ " (+" + Integer.toString(valor1-valor2).replace("-", "") + ")";
+			lastpp = (Integer.parseInt(lpp[0]) == Integer.parseInt(lpp[1])) ? lpp[0]: valor2+ " (+" + Integer.toString(valor1-valor2).replace("-", "") + ")";
 		}
 		
 		String lastscore = "";
 		String[] lscore = "3132&3232".split("&");//sql.get("lastscore").split("&");
-		long val1 = Long.valueOf(lscore[0]);
-		long val2 = Long.valueOf(lscore[1]);
+		long val1 = Long.parseLong(lscore[0]);
+		long val2 = Long.parseLong(lscore[1]);
 		
 		if (val2 != user.getTotalScore()) {
 			//sql.set("lastscore", val1 + "&" + user.getTotalScore());
@@ -93,10 +92,6 @@ public class JSoupGetters {
 		return new UserStatistics(firstlogin, lastActive, input, lastpp, lastscore, user);
 	}
 	
-	public static void main(String[] args) throws IOException {
-		beatmapInfoById(1253771);
-	}
-	
 	public static BeatmapSearch beatmapInfoById(long beatmapid) throws IOException {
 		Document doc = Jsoup.connect("https://old.ppy.sh/b/" + beatmapid).get();
 		Elements e = doc.select("#songinfo > tbody > tr > td");
@@ -106,11 +101,15 @@ public class JSoupGetters {
 		
 		return new BeatmapSearch(e.get(7).text(),
 				e.get(1).text(),
-				Integer.valueOf(e.get(13).selectFirst("a").attr("href").replaceAll("\\D+", "")), e.get(13).text(),
-				Long.valueOf(doc.selectFirst("body > div.bodytopbg > div > div.mainbody2 > div.content > div.content-with-bg > div.paddingboth > div > img").attr("src").replaceAll("\\D+", "")), beatmapid,
+				Integer.parseInt(e.get(13).selectFirst("a").attr("href").replaceAll("\\D+", "")), e.get(13).text(),
+				Long.parseLong(doc.selectFirst("body > div.bodytopbg > div > div.mainbody2 > div.content > div.content-with-bg > div.paddingboth > div > img").attr("src").replaceAll("\\D+", "")), beatmapid,
 				false, e.get(17).text().split(" ")[0], new String[] { difficult.text() },
-				getPageGamemodes(new Elements(difficult)), Genre.valueOf(e.get(21).text().split(" ")[0].toUpperCase()),
-				Float.valueOf(e.get(23).text()), e.get(25).text().split(" "), null);
+				getPageGamemodes(new Elements(difficult)), getGenre(e.get(21).text().split(" ")[0].toUpperCase()),
+				Float.parseFloat(e.get(23).text()), e.get(25).text().split(" "), null);
+	}
+	
+	private static Genre getGenre(String genrestring) {
+		return Arrays.stream(Genre.values()).filter(g -> g.name().equalsIgnoreCase(genrestring)).findAny().orElse(Genre.ANY);
 	}
 
 	public static BeatmapSearch beatmapInfo(long beatmapsetid) throws IOException {
@@ -121,7 +120,7 @@ public class JSoupGetters {
 
 		Element tablist = doc.getElementById("tablist");
 		Elements tab = null;
-		
+
 		try {
 			tab = tablist.select("ul > li > a");
 		} catch (NullPointerException e) {
@@ -130,7 +129,7 @@ public class JSoupGetters {
 		
 
 		Gamemode[] gamemodes = getPageGamemodes(tab);
-		List<String> diff = new ArrayList<String>();
+		List<String> diff = new ArrayList<>();
 		Elements sl = tablist.select("ul > li > a > span");
 		for (Element dif : sl) {
 			diff.add(dif.text());
@@ -165,7 +164,7 @@ public class JSoupGetters {
 			}
 		}
 
-		float bpm = Float.valueOf(tb3.get(5).text());
+		float bpm = Float.parseFloat(tb3.get(5).text());
 
 		Elements tb4 = info.get(4).select("td"); // Tabela 4
 		String[] tags = tb4.get(1).text().split(" ");
@@ -180,14 +179,12 @@ public class JSoupGetters {
 			}
 		}
 
-		BeatmapSearch s = new BeatmapSearch(title, artist, creatorid, creator, beatmapsetid, 0, video, maplenth, difficult,
+		return new BeatmapSearch(title, artist, creatorid, creator, beatmapsetid, 0, video, maplenth, difficult,
 				gamemodes, genre, bpm, tags, approvated);
-
-		return s;
 	}
 	
 	private static Gamemode[] getPageGamemodes(Elements tab) {
-		List<Gamemode> gamemode = new ArrayList<Gamemode>();
+		List<Gamemode> gamemode = new ArrayList<>();
 		for (Element beatmaptab : tab) {
 			Elements active = beatmaptab.getElementsByClass("beatmaptab active");
 			if (!(active.size() == 0)) {
@@ -252,7 +249,7 @@ public class JSoupGetters {
 		String html = "https://osuskins.net/";
 
 		Document doc = Jsoup.connect(html).get();
-		List<OsuSkin> skinslist = new ArrayList<OsuSkin>();
+		List<OsuSkin> skinslist = new ArrayList<>();
 		Elements ele = doc.getElementsByClass("skins");
 
 		Elements skins = ele.get(0).getElementsByClass("skin-container");
@@ -279,7 +276,7 @@ public class JSoupGetters {
 			} else {
 				creator = creator.replace("Creators ", "");
 			}
-			List<Gamemode> gamemodes = new ArrayList<Gamemode>();
+			List<Gamemode> gamemodes = new ArrayList<>();
 			String[] m = doc2.getElementsByClass("skin-page-detail").get(1).text().replace("Modes ", "").split(" ");
 
 			for (String modes : m) {

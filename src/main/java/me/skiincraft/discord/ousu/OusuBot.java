@@ -24,14 +24,23 @@ import me.skiincraft.discord.ousu.commands.PrefixCommand;
 import me.skiincraft.discord.ousu.commands.RankingCommand;
 import me.skiincraft.discord.ousu.commands.RecentuserCommand;
 import me.skiincraft.discord.ousu.commands.RestartCommand;
+import me.skiincraft.discord.ousu.commands.SayCommand;
 import me.skiincraft.discord.ousu.commands.SearchCommand;
 import me.skiincraft.discord.ousu.commands.SkinsCommand;
 import me.skiincraft.discord.ousu.commands.TopUserCommand;
 import me.skiincraft.discord.ousu.commands.UserCommand;
 import me.skiincraft.discord.ousu.commands.VersionCommand;
 import me.skiincraft.discord.ousu.commands.VoteCommand;
+import me.skiincraft.discord.ousu.commands.fun.RollCommand;
+import me.skiincraft.discord.ousu.commands.owner.CharacterCommand;
+import me.skiincraft.discord.ousu.commands.owner.CharactersCommand;
+import me.skiincraft.discord.ousu.commands.owner.PermissionCommand;
 import me.skiincraft.discord.ousu.emojis.OusuEmote;
+import me.skiincraft.discord.ousu.listener.BeatmapTracking;
 import me.skiincraft.discord.ousu.listener.ReactionListeners;
+import me.skiincraft.discord.ousu.listener.RollEvent;
+import me.skiincraft.discord.ousu.object.LoadPersonagens;
+import me.skiincraft.discord.ousu.reactions.CharReaction;
 import me.skiincraft.discord.ousu.reactions.PageReactions;
 import me.skiincraft.discord.ousu.reactions.UserReaction;
 
@@ -66,7 +75,7 @@ public class OusuBot extends OusuPlugin {
 				if (api == null) {
 					return api = new OusuAPI(string, false); 
 				}
-				if (api.getToken() == string) {
+				if (api.getToken().equals(string)) {
 					continue;
 				}
 				apiLast = System.currentTimeMillis();
@@ -81,6 +90,7 @@ public class OusuBot extends OusuPlugin {
 		getPlugin().getCommandManager().registerCommand(new BeatmapCommand());
 		getPlugin().getCommandManager().registerCommand(new BeatmapSetCommand());
 		getPlugin().getCommandManager().registerCommand(new CardCommand());
+		getPlugin().getCommandManager().registerCommand(new CharacterCommand());
 		getPlugin().getCommandManager().registerCommand(new HelpCommand());
 		getPlugin().getCommandManager().registerCommand(new InviteCommand());
 		getPlugin().getCommandManager().registerCommand(new LanguageCommand());
@@ -90,15 +100,25 @@ public class OusuBot extends OusuPlugin {
 		getPlugin().getCommandManager().registerCommand(new RecentuserCommand());
 		getPlugin().getCommandManager().registerCommand(new RestartCommand());
 		getPlugin().getCommandManager().registerCommand(new SearchCommand());
+		getPlugin().getCommandManager().registerCommand(new SayCommand());
+		getPlugin().getCommandManager().registerCommand(new RollCommand());
 		getPlugin().getCommandManager().registerCommand(new SkinsCommand());
 		getPlugin().getCommandManager().registerCommand(new TopUserCommand());
 		getPlugin().getCommandManager().registerCommand(new UserCommand());
 		getPlugin().getCommandManager().registerCommand(new VersionCommand());
 		getPlugin().getCommandManager().registerCommand(new VoteCommand());
 		
+		getPlugin().getCommandManager().registerCommand(new CharactersCommand());
+		getPlugin().getCommandManager().registerCommand(new PermissionCommand());
+		
 		getPlugin().getEventManager().registerListener(new UserReaction());
 		getPlugin().getEventManager().registerListener(new PageReactions());
 		getPlugin().getEventManager().registerListener(new ReactionListeners());
+		getPlugin().getEventManager().registerListener(new RollEvent());
+		getPlugin().getEventManager().registerListener(new CharReaction());
+		getPlugin().getEventManager().registerListener(new BeatmapTracking());
+
+		
 		
 		File file = new File(getPlugin().getAssetsPath() + "/ousutoken.json");
 		
@@ -127,15 +147,15 @@ public class OusuBot extends OusuPlugin {
 				Activity.listening("ou!help for help."),
 				Activity.watching("{guildsize} Servidores online."),
 				Activity.watching("{usersize} Usuarios disponiveis."),
-				Activity.streaming("ou!vote on DiscordBots", "https://top.gg/bot/701825726449582192"))); 
-		
+				Activity.streaming("ou!vote on DiscordBots", "https://top.gg/bot/701825726449582192")));
+		LoadPersonagens.load();
 	}
 	
 	public static String[] getTokens() {
 		try {
 			InputStream input = new File(OusuBot.getMain().getPlugin().getAssetsPath() + "/ousutoken.json").toURI().toURL().openStream();
 			JsonObject object = new JsonParser().parse(new InputStreamReader(input)).getAsJsonObject();
-			boolean allIsNull = (object.get("Api_1").isJsonNull() && object.get("Api_2").isJsonNull()) ? true: false;
+			boolean allIsNull = object.get("Api_1").isJsonNull() && object.get("Api_2").isJsonNull();
 			if (allIsNull) {
 				throw new TokenException("As keys Token da API do ousu estão nulas.", null);
 			}

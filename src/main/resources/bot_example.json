@@ -1,0 +1,15 @@
+[
+  {
+    "info": "this is bot.json",
+    "BotName": "OusuBot",
+    "Main": "me.skiincraft.discord.ousu.OusuBot",
+    "Version": "2.0.1",
+    "OwnerId": "0",
+    "DiscordInfo": {
+      "Token": "",
+      "BotId": "0",
+      "Shards": 1,
+      "DefaultPrefix": "ou!"
+    }
+  }
+]
