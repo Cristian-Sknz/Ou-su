@@ -1,9 +1,19 @@
 <p align="center">
 <img src="https://i.imgur.com/5OGGeBj.png" alt="Ousu!" width="650"/>
 </p>
-
 <p align="center">
-> [![Discord Bots](https://top.gg/api/widget/status/701825726449582192.svg)](https://top.gg/bot/701825726449582192)  [![Discord Bots](https://top.gg/api/widget/owner/701825726449582192.svg)](https://top.gg/bot/701825726449582192) [![Discord Bots](https://top.gg/api/widget/servers/701825726449582192.svg)](https://top.gg/bot/701825726449582192) [![Discord Bots](https://top.gg/api/widget/upvotes/701825726449582192.svg)](https://top.gg/bot/701825726449582192) *
+ <a href= "https://top.gg/bot/701825726449582192">
+     <img src="https://top.gg/api/widget/status/701825726449582192.svg" alt="Ousu!" width="128"/>
+ </a>
+  <a href= "https://top.gg/bot/701825726449582192">
+     <img src="https://top.gg/api/widget/owner/701825726449582192.svg" alt="Ousu!" width="128"/>
+ </a>
+  <a href= "https://top.gg/bot/701825726449582192">
+     <img src="https://top.gg/api/widget/servers/701825726449582192.svg" alt="Ousu!" width="128"/>
+ </a>
+  <a href= "https://top.gg/bot/701825726449582192">
+     <img src="https://top.gg/api/widget/upvotes/701825726449582192.svg" alt="Ousu!" width="128"/>
+ </a>
 </p>
 
 ## :scroll: What is ousu?
