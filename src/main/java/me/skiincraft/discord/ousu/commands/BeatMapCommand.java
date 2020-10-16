@@ -31,32 +31,31 @@ public class BeatmapCommand extends Comando {
 			replyUsage();
 			return;
 		}
-		if (args.length >= 1) {
-			if (args[0].matches("-?\\d+(\\.\\d+)?") == false) {
-				replyUsage();
-				return;
-			}
-			try {
-			Beatmap beatmap = OusuBot.getApi().getBeatmap(Integer.valueOf(args[0])).get();
-			reply(BeatmapEmbed.beatmapEmbed(beatmap, channel.getGuild(), OusuUtils.beatmapColor(beatmap)).build(), message ->{
-				try {
-					message.getChannel().sendFile(beatmap.getBeatmapPreview(),	message.getEmbeds().get(0)
-							.getTitle()
-							.replace(Emoji.HEADPHONES.getAsMention(), "") + ".mp3")
-							.queue();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			});
-			} catch (BeatmapException e) {
-				String[] msg = getLanguageManager().getStrings("Warnings", "INEXISTENT_BEATMAPID");
 
-				MessageEmbed build = TypeEmbed.WarningEmbed(msg[0], StringUtils.commandMessage(msg)).build();
-				reply(build);
-				return;
-			}
+		if (!args[0].matches("-?\\d+(\\.\\d+)?")) {
+			replyUsage();
+			return;
 		}
-		
+		try {
+		Beatmap beatmap = OusuBot.getApi().getBeatmap(Integer.parseInt(args[0])).get();
+		reply(BeatmapEmbed.beatmapEmbed(beatmap, channel.getGuild(), OusuUtils.beatmapColor(beatmap)).build(), message -> {
+			try {
+				message.getChannel().sendFile(beatmap.getBeatmapPreview(),	message.getEmbeds()
+						.get(0)
+						.getTitle()
+						.replace(Emoji.HEADPHONES.getAsMention(), "") + ".mp3")
+						.queue();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		});
+		} catch (BeatmapException e) {
+			String[] msg = getLanguageManager().getStrings("Warnings", "INEXISTENT_BEATMAPID");
+
+			MessageEmbed build = TypeEmbed.WarningEmbed(msg[0], StringUtils.commandMessage(msg)).build();
+			reply(build);
+		}
+
 	}
 
 }

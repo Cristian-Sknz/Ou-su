@@ -4,9 +4,9 @@ import me.skiincraft.discord.core.configuration.LanguageManager;
 
 public enum CommandCategory {
 
-	Administracao("Administração"), Ajuda("Ajuda"), Osu("Osu!"), Utilidade("Utilidade"), Sobre("Sobre"), Owner("Dono");
+	Administracao("Administração"), Osu("Osu!"), Sobre("Sobre"), Owner("Dono");
 
-	private String name;
+	private final String name;
 
 	CommandCategory(String name) {
 		this.name = name;

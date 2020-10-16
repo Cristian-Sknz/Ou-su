@@ -2,6 +2,7 @@ package me.skiincraft.discord.ousu.commands;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 
 import me.skiincraft.discord.core.OusuCore;
 import me.skiincraft.discord.ousu.common.Comando;
@@ -13,7 +14,7 @@ import net.dv8tion.jda.api.entities.User;
 public class RestartCommand extends Comando {
 
 	public RestartCommand() {
-		super("restart", Arrays.asList("corerestart"), "restart");
+		super("restart", Collections.singletonList("corerestart"), "restart");
 	}
 
 	public CommandCategory getCategory() {
@@ -24,7 +25,7 @@ public class RestartCommand extends Comando {
 		if (!isOwner(user)) {
 			return;
 		}
-		reply("Ousucore será reiniciado.", m -> {
+		reply("OusuCore será reiniciado.", m -> {
 			m.addReaction("U+2705").queue();
 			try {
 				OusuCore.restart();

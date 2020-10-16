@@ -51,43 +51,40 @@ public class UserCommand extends Comando {
 			replyUsage();
 			return;
 		}
-		
-		if (args.length >= 1) {
-			List<String> l = new ArrayList<>(Arrays.asList(args));
-			Gamemode gm = Gamemode.Standard;
-			
-			StringBuffer b = new StringBuffer();
-			if (args.length >= 2) {
-				if (isGamemode(args[args.length-1])) {
-					l.remove(args.length-1);
-				}
-			}
-			
-			l.forEach(s -> b.append(s + " "));
-			l.clear();
-			
-			String nickname = b.substring(0, b.length() - 1);
 
-			Request<me.skiincraft.api.ousu.entity.user.User> request = OusuBot.getApi().getUser(nickname, gm);
-			me.skiincraft.api.ousu.entity.user.User user = request.get();
-			InputStream draw = new UserScore(user).draw(getLanguageManager().getLanguage());
-			final EmbedBuilder embedlocal = embed(user);
-			ContentMessage content = new ContentMessage(embedlocal.build(), draw, "png").setInputName("user_ousu");
-			reply(content, message ->{
-				try {
-					List<EmbedBuilder> reactions = new ArrayList<>();
-					reactions.add(embedlocal.setImage("attachment://" + content.getInputName() + content.getInputExtension()));
-					reactions.add(embed2(JSoupGetters.inputType(user, getLanguageManager()), embedlocal)
-							.setImage("attachment://" + content.getInputName() + content.getInputExtension()));
-					
-					HistoryLists.addToReaction(buser, message, new ReactionObject(reactions, 0));
-					message.addReaction("U+1F4CE").queue();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			});
-			return;
+		List<String> l = new ArrayList<>(Arrays.asList(args));
+		Gamemode gm = Gamemode.Standard;
+
+		StringBuffer b = new StringBuffer();
+		if (args.length >= 2) {
+			if (isGamemode(args[args.length-1])) {
+				l.remove(args.length-1);
+			}
 		}
+
+		l.forEach(s -> b.append(s).append(" "));
+		l.clear();
+
+		String nickname = b.substring(0, b.length() - 1);
+
+		Request<me.skiincraft.api.ousu.entity.user.User> request = OusuBot.getApi().getUser(nickname, gm);
+		me.skiincraft.api.ousu.entity.user.User user = request.get();
+		InputStream draw = new UserScore(user).draw(getLanguageManager().getLanguage());
+		final EmbedBuilder embedlocal = embed(user);
+		ContentMessage content = new ContentMessage(embedlocal.build(), draw, "png").setInputName("user_ousu");
+		reply(content, message ->{
+			try {
+				List<EmbedBuilder> reactions = new ArrayList<>();
+				reactions.add(embedlocal.setImage("attachment://" + content.getInputName() + content.getInputExtension()));
+				reactions.add(embed2(JSoupGetters.inputType(user, getLanguageManager()), embedlocal)
+						.setImage("attachment://" + content.getInputName() + content.getInputExtension()));
+
+				HistoryLists.addToReaction(buser, message, new ReactionObject(reactions, 0));
+				message.addReaction("U+1F4CE").queue();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		});
 	}
 	
 	public EmbedBuilder embed(me.skiincraft.api.ousu.entity.user.User user) {
@@ -107,10 +104,10 @@ public class UserCommand extends Comando {
 		
 		embed.setDescription(":map: " + lang.getString("Embeds", "RANKING") + ": #" + nf.format(user.getRanking()) + "\n");
 		embed.appendDescription(":clock3: " + lang.getString("Embeds", "PLAYED_TIME") + ": " + user.getPlayedHours().toString() + "\n");
-		embed.appendDescription(OusuEmote.getEmoteAsMention("cursor") + " " + lang.getString("Embeds", "TOTAL_SCORE") + ": " + user.getTotalScore());
+		embed.appendDescription(OusuEmote.getEmoteAsMention("cursor") + " " + lang.getString("Embeds", "TOTAL_SCORE") + " " + nf.format(user.getTotalScore()));
 		
 		embed.addField(lang.getString("Embeds", "PERFORMANCE"),
-				":pen_ballpoint: " + lang.getString("Embeds", "ACCURACY") + "`" + (accuracy += "%") + "`" + "\n" + pp + " " + nf.format((long) user.getPP()), true);
+				lang.getString("Embeds", "ACCURACY") + "`" + accuracy + "%" + "`" + "\n" + pp + " " + nf.format((long) user.getPP()), true);
 		
 		embed.addField(lang.getString("Embeds", "NATIONAL_RANKING"),
 				code + " #" + nf.format(user.getCountryRanking()), true);
@@ -153,7 +150,7 @@ public class UserCommand extends Comando {
 	
 	public static class UserScore extends ImageAdapter {
 
-		private me.skiincraft.api.ousu.entity.user.User user;
+		private final me.skiincraft.api.ousu.entity.user.User user;
 		
 		public UserScore(me.skiincraft.api.ousu.entity.user.User user) {
 			super(900, 250);
@@ -161,7 +158,7 @@ public class UserCommand extends Comando {
 		}
 		
 		private String getAssets() {
-			Plugin plugin = OusuBot.getMain().getPlugin();
+			Plugin plugin = OusuBot.getInstance().getPlugin();
 			return plugin.getAssetsPath().getAbsolutePath();
 		}
 		

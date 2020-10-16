@@ -13,12 +13,12 @@ import net.dv8tion.jda.api.entities.User;
 
 public class HistoryLists {
 	
-	public static List<ReactionUtil> reationsList = new ArrayList<>();
+	public static final List<ReactionUtil> reationsList = new ArrayList<>();
 	
 	public static void addToReaction(User user, Message message, ReactionObject...reactionObjects) {
 		ReactionUtil var = new ReactionUtil(user.getIdLong(),message.getIdLong(), message.getGuild().getIdLong(), reactionObjects);
 		reationsList.add(var);
-		OusuBot.getMain().getPlugin().getEventManager().callEvent(new CreatedReactionEvent(message.getTextChannel(), user, reationsList, var));
+		OusuBot.getInstance().getPlugin().getEventManager().callEvent(new CreatedReactionEvent(message.getTextChannel(), user, reationsList, var));
 	}
 	
 }

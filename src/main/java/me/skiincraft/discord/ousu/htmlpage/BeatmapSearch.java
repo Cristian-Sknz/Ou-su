@@ -11,24 +11,24 @@ import me.skiincraft.api.ousu.entity.objects.Genre;
 
 public class BeatmapSearch {
 
-	private String title;
-	private String author;
-	private int creatorid;
-	private String creator;
+	private final String title;
+	private final String author;
+	private final int creatorid;
+	private final String creator;
 	
-	private long beatmapid;
-	private long beatmapsetid;
+	private final long beatmapid;
+	private final long beatmapsetid;
 
-	private String maplength;
-	private String[] difficult;
-	private Gamemode[] gamemodes;
+	private final String maplength;
+	private final String[] difficult;
+	private final Gamemode[] gamemodes;
 
-	private Genre genre;
-	private float bpm;
-	private String tags[];
-	private Approval approvated;
+	private final Genre genre;
+	private final float bpm;
+	private final String[] tags;
+	private final Approval approvated;
 
-	private boolean video;
+	private final boolean video;
 
 	public BeatmapSearch(String title, String author, int creatorid, String creator, long beatmapsetid, long beatmapid, boolean video,
 			String maplength, String[] difficult, Gamemode[] gamemodes, Genre genre, float bpm, String[] tags,

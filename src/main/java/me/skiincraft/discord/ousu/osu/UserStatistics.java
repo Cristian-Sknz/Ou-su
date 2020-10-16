@@ -9,14 +9,14 @@ import me.skiincraft.discord.ousu.htmlpage.JSoupGetters.InputTypes;
 
 public class UserStatistics {
 	
-	private String firstlogin;
-	private String lastActive;
+	private final String firstlogin;
+	private final String lastActive;
 	
-	private Map<InputTypes, Boolean> input;
-	private String lastPpCapture;
-	private String lastScoreCapture;
+	private final Map<InputTypes, Boolean> input;
+	private final String lastPpCapture;
+	private final String lastScoreCapture;
 	
-	private User user;
+	private final User user;
 	
 	public UserStatistics(String firstlogin, String lastActive, Map<InputTypes, Boolean> input, String lastPpCapture,
 			String lastScoreCapture, User user) {
@@ -48,18 +48,18 @@ public class UserStatistics {
 		return user;
 	}
 	public String getInputEmotes() {
-		StringBuffer buffer = new StringBuffer();
-		if (input.get(InputTypes.Mouse) == true) {
-			buffer.append(Emoji.MOUSE_THREE_BUTTON.getAsMention() + " Mouse\n");
+		StringBuilder buffer = new StringBuilder();
+		if (input.get(InputTypes.Mouse)) {
+			buffer.append(Emoji.MOUSE_THREE_BUTTON.getAsMention()).append(" Mouse\n");
 		}
-		if (input.get(InputTypes.Table) == true) {
-			buffer.append(" " + OusuEmote.getEmoteAsMention("tablet") + " Tablet\n");
+		if (input.get(InputTypes.Table)) {
+			buffer.append(" ").append(OusuEmote.getEmoteAsMention("tablet")).append(" Tablet\n");
 		}
-		if (input.get(InputTypes.Keyboard) == true) {
-			buffer.append(" " + Emoji.KEYBOARD.getAsMention() + " Keyboard\n");
+		if (input.get(InputTypes.Keyboard)) {
+			buffer.append(" ").append(Emoji.KEYBOARD.getAsMention()).append(" Keyboard\n");
 		}
-		if (input.get(InputTypes.Touchpad) == true) {
-			buffer.append(" " + OusuEmote.getEmoteAsMention("touchpad") + " Touchpad\n");
+		if (input.get(InputTypes.Touchpad)) {
+			buffer.append(" ").append(OusuEmote.getEmoteAsMention("touchpad")).append(" Touchpad\n");
 		} 
 		
 		return (buffer.length() != 0) ?buffer.toString() : "Not Detected";

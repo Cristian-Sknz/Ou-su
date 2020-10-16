@@ -1,6 +1,7 @@
 package me.skiincraft.discord.ousu.commands;
 
 import java.awt.Color;
+import java.text.Normalizer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,7 +36,7 @@ public class LanguageCommand extends Comando {
 			//message
 			return;
 		}
-		List<Language> languages = OusuBot.getMain().getPlugin().getLanguages();
+		List<Language> languages = OusuBot.getInstance().getPlugin().getLanguages();
 		if (args.length == 0) {
 			reply(languages(languages));
 			return;
@@ -46,7 +47,10 @@ public class LanguageCommand extends Comando {
 						|| l.getLanguageCode().equalsIgnoreCase(args[0])
 						|| l.getName().equalsIgnoreCase(args[0])
 						|| l.getCountryCode().equalsIgnoreCase(args[0])
-						|| l.getCountry().equalsIgnoreCase(args[0]))
+						|| l.getCountry().equalsIgnoreCase(args[0])
+						|| removeAccents(l.getLanguageName()).equalsIgnoreCase(args[0])
+						|| removeAccents(l.getName()).equalsIgnoreCase(args[0])
+						|| removeAccents(l.getCountry()).equalsIgnoreCase(args[0]))
 				.collect(Collectors.toList());
 
 		if (filter.size() == 0) {
@@ -60,7 +64,7 @@ public class LanguageCommand extends Comando {
 		String[] str = lang.getStrings("Messages", "LANGUAGE_COMMAND_MESSAGE");
 		StringBuilder buffer = new StringBuilder();
 		for (String append : str) {
-			if (!append.equals(str[0])) buffer.append(":small_blue_diamond: " + append);
+			if (!append.equals(str[0])) buffer.append(":small_blue_diamond: ").append(append);
 		}
 
 		EmbedBuilder var = TypeEmbed.ConfigEmbed(str[0], buffer.toString())
@@ -85,7 +89,7 @@ public class LanguageCommand extends Comando {
 		}
 		
 		for (Language lang : languages) {
-			bufferlang.append("\n" + Emoji.SMALL_BLUE_DIAMOND.getAsMention() + upperFirstWord(lang.getName()) + " - " + lang.getCountry());
+			bufferlang.append("\n").append(Emoji.SMALL_BLUE_DIAMOND.getAsMention()).append(upperFirstWord(lang.getName())).append(" - ").append(lang.getCountry());
 		}
 
 		return TypeEmbed.ConfigEmbed(str[0], buffer.toString().replace("{LANGUAGES}", bufferlang.toString()))
@@ -96,6 +100,11 @@ public class LanguageCommand extends Comando {
 
 	public String upperFirstWord(String string) {
 		return String.valueOf(string.charAt(0)).toUpperCase() + string.substring(1);
+	}
+
+	public static String removeAccents(String text) {
+		return text == null ? null : Normalizer.normalize(text, Normalizer.Form.NFD)
+				.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
 	}
 	
 }

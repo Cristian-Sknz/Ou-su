@@ -18,7 +18,7 @@ public class HtmlRanking {
 		String s = (country == null) ? "" : "country=" + country;
 		String html = "https://osu.ppy.sh/rankings/osu/performance?" + s;
 		Document doc = Jsoup.connect(html).get();
-		List<Ranking> ranking = new ArrayList<Ranking>();
+		List<Ranking> ranking = new ArrayList<>();
 		Elements eles = doc.select("tbody > tr > td");
 
 		int i = 1;
@@ -53,9 +53,7 @@ public class HtmlRanking {
 	
 	private static String[] splitText(String s, int i) {
 		String[] split1 = s.split("#");
-		String[] split2 = split1[i].split(" ");
-
-		return split2;
+		return split1[i].split(" ");
 	}
 
 }

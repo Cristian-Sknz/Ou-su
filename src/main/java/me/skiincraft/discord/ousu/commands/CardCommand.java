@@ -44,42 +44,41 @@ public class CardCommand extends Comando {
 			replyUsage();
 			return;
 		}
-		
-		if (args.length >= 1) {
-			List<String> l = new ArrayList<>(Arrays.asList(args));
-			Gamemode gm = Gamemode.Standard;
-			
-			StringBuffer b = new StringBuffer();
-			if (args.length >= 2) {
-				if (isGamemode(args[args.length-1])) {
-					l.remove(args.length-1);
-				}
+
+		List<String> l = new ArrayList<>(Arrays.asList(args));
+		Gamemode gm = Gamemode.Standard;
+
+		StringBuffer b = new StringBuffer();
+		if (args.length >= 2) {
+			if (isGamemode(args[args.length-1])) {
+				l.remove(args.length-1);
 			}
-			
-			l.forEach(s -> b.append(s + " "));
-			l.clear();
-			try {
-				Request<User> request = OusuBot.getApi().getUser(b.substring(0, b.length()-1), gm);
-				User user = request.get();
-				InputStream input = new Card(user).draw();
-				
-				reply(new ContentMessage(buser.getAsMention(), input, ".png"));
-			} catch (UserException e) {
-				String[] str = getLanguageManager().getStrings("Warning", "INEXISTENT_USER");
-				
-				StringBuffer buffer = new StringBuffer();
-				for (String append : str) {
-					if (append != str[0]) {
-						buffer.append(OusuEmote.getEmoteAsMention("small_red_diamond") + " " + append);
-					}
-				}
-				
-				reply(TypeEmbed.WarningEmbed(str[0], buffer.toString()).build());
-			}
-			
-			
 		}
-		
+
+		l.forEach(s -> b.append(s).append(" "));
+		l.clear();
+		try {
+			Request<User> request = OusuBot.getApi().getUser(b.substring(0, b.length()-1), gm);
+			User user = request.get();
+			InputStream input = new Card(user).draw();
+
+			reply(new ContentMessage(buser.getAsMention(), input, ".png"));
+		} catch (UserException e) {
+			String[] str = getLanguageManager().getStrings("Warning", "INEXISTENT_USER");
+
+			StringBuilder builder = new StringBuilder();
+			for (String append : str) {
+				if (!append.equals(str[0])) {
+					builder.append(OusuEmote.getEmoteAsMention("small_red_diamond"))
+							.append(" ")
+							.append(append);
+				}
+			}
+
+			reply(TypeEmbed.WarningEmbed(str[0], builder.toString()).build());
+		}
+
+
 	}
 	
 	public boolean isGamemode(String arg) {
@@ -88,7 +87,7 @@ public class CardCommand extends Comando {
 	
 	public static class Card extends ImageAdapter {
 		
-		private User user;
+		private final User user;
 		
 		public Card(User user) {
 			super(340, 94);
@@ -96,14 +95,14 @@ public class CardCommand extends Comando {
 		}
 		
 		private String getAssets() {
-			Plugin plugin = OusuBot.getMain().getPlugin();
+			Plugin plugin = OusuBot.getInstance().getPlugin();
 			return plugin.getAssetsPath().getAbsolutePath();
 		}
 		
 		
 		public InputStream draw() {
-			Font aurea = font("Aurea", Font.PLAIN, 32F);
-			Font euphemia = font("Euphemia", Font.PLAIN, 11F);
+			Font aurea = font("Aurea", 32F);
+			Font euphemia = font("Euphemia", 11F);
 			setAntialising();
 			image(getAssets() + "/osu_images/Card_Overlay.png", 0, 0, size(),
 					Alignment.Bottom_left);

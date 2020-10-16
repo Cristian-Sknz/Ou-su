@@ -17,13 +17,12 @@ public class ColorThief {
 	private static final int MAX_ITERATIONS = 1000;
 	private static final double FRACT_BY_POPULATION = 0.75;
 
-	public static CMap computeMap(BufferedImage image, int maxcolors) throws IOException {
+	public static CMap computeMap(BufferedImage image, int maxcolors) {
 		List<int[]> pixels = getPixels(image);
-		CMap map = quantize(pixels, maxcolors);
-		return map;
+		return quantize(pixels, maxcolors);
 	}
 
-	public static List<int[]> compute(BufferedImage image, int maxcolors) throws IOException {
+	public static List<int[]> compute(BufferedImage image, int maxcolors) {
 		List<int[]> pixels = getPixels(image);
 		return compute(pixels, maxcolors);
 	}
@@ -36,8 +35,8 @@ public class ColorThief {
 	private static List<int[]> getPixels(BufferedImage image) {
 		int width = image.getWidth();
 		int height = image.getHeight();
-		List<int[]> res = new ArrayList<int[]>();
-		List<Integer> t = new ArrayList<Integer>();
+		List<int[]> res = new ArrayList<>();
+		List<Integer> t = new ArrayList<>();
 		for (int row = 0; row < height; row++) {
 			for (int col = 0; col < width; col++) {
 				t.add(image.getRGB(col, row));
@@ -95,7 +94,7 @@ public class ColorThief {
 		private int[] _avg;
 		private Integer _volume;
 		private Integer _count;
-		private Map<Integer, Integer> histo = new HashMap<Integer, Integer>();
+		private Map<Integer, Integer> histo;
 
 		public int getVolume(boolean recompute) {
 			if (_volume == null || recompute) {
@@ -106,8 +105,7 @@ public class ColorThief {
 
 		@Override
 		public VBox clone() {
-			VBox clone = new VBox(r1, r2, g1, g2, b1, b2, new HashMap<Integer, Integer>(histo));
-			return clone;
+			return new VBox(r1, r2, g1, g2, b1, b2, new HashMap<>(histo));
 		}
 
 		public int[] avg(boolean recompute) {
@@ -127,10 +125,10 @@ public class ColorThief {
 					}
 				}
 				if (ntot > 0) {
-					_avg = new int[] { ~~(rsum / ntot), ~~(gsum / ntot), ~~(bsum / ntot) };
+					_avg = new int[] {(rsum / ntot), (gsum / ntot), (bsum / ntot)};
 				} else {
-					_avg = new int[] { ~~(mult * (r1 + r2 + 1) / 2), ~~(mult * (g1 + g2 + 1) / 2),
-							~~(mult * (b1 + b2 + 1) / 2) };
+					_avg = new int[] {(mult * (r1 + r2 + 1) / 2), (mult * (g1 + g2 + 1) / 2),
+							(mult * (b1 + b2 + 1) / 2)};
 				}
 
 			}
@@ -243,7 +241,7 @@ public class ColorThief {
 	}
 
 	public static class CMap {
-		private ArrayList<DenormalizedVBox> vboxes = new ArrayList<DenormalizedVBox>();
+		private final ArrayList<DenormalizedVBox> vboxes = new ArrayList<>();
 
 		public void push(VBox box) {
 			vboxes.add(new DenormalizedVBox(box, box.avg(false)));
@@ -251,13 +249,11 @@ public class ColorThief {
 
 		public List<DenormalizedVBox> getBoxes() {
 			return vboxes;
-		};
+		}
 
 		public List<int[]> palette() {
-			List<int[]> r = new ArrayList<int[]>();
-			Iterator<DenormalizedVBox> it = vboxes.iterator();
-			while (it.hasNext()) {
-				DenormalizedVBox denormalizedVBox = it.next();
+			List<int[]> r = new ArrayList<>();
+			for (DenormalizedVBox denormalizedVBox : vboxes) {
 				r.add(denormalizedVBox.getColor());
 			}
 			// Collections.reverse(r);
@@ -269,9 +265,7 @@ public class ColorThief {
 		}
 
 		public int[] map(int[] color) {
-			Iterator<DenormalizedVBox> it = vboxes.iterator();
-			while (it.hasNext()) {
-				DenormalizedVBox vb = it.next();
+			for (DenormalizedVBox vb : vboxes) {
 				if (vb.vbox.contains(color)) {
 					return vb.color;
 				}
@@ -282,9 +276,7 @@ public class ColorThief {
 		public int[] nearest(int[] color) {
 			Double d1 = null, d2 = null;
 			int[] pColor = null;
-			Iterator<DenormalizedVBox> it = vboxes.iterator();
-			while (it.hasNext()) {
-				DenormalizedVBox vb = it.next();
+			for (DenormalizedVBox vb : vboxes) {
 				d2 = Math.sqrt(Math.pow(color[0] - vb.getColor()[0], 2) + Math.pow(color[1] - vb.getColor()[1], 2)
 						+ Math.pow(color[2] - vb.getColor()[2], 2));
 				if (d2 < d1 || d1 == null) {
@@ -298,11 +290,9 @@ public class ColorThief {
 
 	private static Map<Integer, Integer> getHisto(List<int[]> pixels) {
 		// int histosize = 1 << (3 * SIGBITS);
-		Map<Integer, Integer> histo = new HashMap<Integer, Integer>();
+		Map<Integer, Integer> histo = new HashMap<>();
 		int index, rval, gval, bval;
-		Iterator<int[]> it = pixels.iterator();
-		while (it.hasNext()) {
-			int[] pixel = it.next();
+		for (int[] pixel : pixels) {
 			rval = pixel[0] >> RSHIFT;
 			gval = pixel[1] >> RSHIFT;
 			bval = pixel[2] >> RSHIFT;
@@ -315,9 +305,7 @@ public class ColorThief {
 
 	private static VBox vboxFromPixels(List<int[]> pixels, Map<Integer, Integer> histo) {
 		int rmin = 1000000, rmax = 0, gmin = 1000000, gmax = 0, bmin = 1000000, bmax = 0, rval, gval, bval;
-		Iterator<int[]> it = pixels.iterator();
-		while (it.hasNext()) {
-			int[] pixel = it.next();
+		for (int[] pixel : pixels) {
 			rval = pixel[0] >> RSHIFT;
 			gval = pixel[1] >> RSHIFT;
 			bval = pixel[2] >> RSHIFT;
@@ -340,8 +328,7 @@ public class ColorThief {
 				bmax = bval;
 			}
 		}
-		VBox vbox = new VBox(rmin, rmax, gmin, gmax, bmin, bmax, histo);
-		return vbox;
+		return new VBox(rmin, rmax, gmin, gmax, bmin, bmax, histo);
 	}
 
 	private static VBox[] medianCutApply(Map<Integer, Integer> histo, VBox vbox) {
@@ -355,8 +342,8 @@ public class ColorThief {
 				maxw = Math.max(Math.max(rw, gw), bw);
 
 		int total = 0, i, j, k, sum, index;
-		Map<Integer, Integer> partialsum = new HashMap<Integer, Integer>();
-		Map<Integer, Integer> lookaheadsum = new HashMap<Integer, Integer>();
+		Map<Integer, Integer> partialsum = new HashMap<>();
+		Map<Integer, Integer> lookaheadsum = new HashMap<>();
 		if (maxw == rw) {
 			for (i = vbox.r1; i <= vbox.r2; i++) {
 				sum = 0;
@@ -398,9 +385,7 @@ public class ColorThief {
 			}
 		}
 
-		Iterator<Integer> it = partialsum.keySet().iterator();
-		while (it.hasNext()) {
-			Integer key = it.next();
+		for (Integer key : partialsum.keySet()) {
 			lookaheadsum.put(key, total - key);
 		}
 		return maxw == rw ? doCut("r", vbox, partialsum, lookaheadsum, total)
@@ -431,9 +416,9 @@ public class ColorThief {
 				left = i - dim1;
 				right = dim2 - i;
 				if (left <= right) {
-					d2 = Math.min(dim2 - 1, ~~(i + right / 2));
+					d2 = Math.min(dim2 - 1, (i + right / 2));
 				} else {
-					d2 = Math.max(dim1, ~~(i - 1 - left / 2));
+					d2 = Math.max(dim1, (i - 1 - left / 2));
 				}
 				while (partialsum.get(d2) == null) {
 					d2++;
@@ -468,7 +453,7 @@ public class ColorThief {
 		// histo.get(29628)
 		// System.out.println("histo size: " + histo.size());
 		VBox vbox = vboxFromPixels(pixels, histo);
-		List<VBox> pq = new ArrayList<VBox>();
+		List<VBox> pq = new ArrayList<>();
 		pq.add(vbox);
 		int niters = 0;
 		nColors = 1;
@@ -486,18 +471,14 @@ public class ColorThief {
 		nColors = (Integer) r[1];
 		niters = (Integer) r[2];
 
-		Collections.sort(pq, new Comparator<VBox>() {
-			@Override
-			public int compare(VBox o1, VBox o2) {
-				// return new Double(o1.count(true) * o1.getVolume(true)).compareTo(new
-				// Double(o2.count(true) * o2.getVolume(true)));
-				return new Double(o2.count(true)).compareTo(new Double(o1.count(true)));
-			}
+		pq.sort((o1, o2) -> {
+			// return new Double(o1.count(true) * o1.getVolume(true)).compareTo(new
+			// Double(o2.count(true) * o2.getVolume(true)));
+			return new Double(o2.count(true)).compareTo((double) o1.count(true));
 		});
 
 		CMap cmap = new CMap();
-		for (Iterator<VBox> iterator = pq.iterator(); iterator.hasNext();) {
-			VBox vBox2 = iterator.next();
+		for (VBox vBox2 : pq) {
 			if (vBox2.count(false) > 0) {
 				cmap.push(vBox2);
 			}
@@ -514,13 +495,8 @@ public class ColorThief {
 			// System.out.println(vbox);
 			if (vbox.count(false) == 0) {
 				lh.add(vbox);
-				Collections.sort(lh, new Comparator<VBox>() {
-					@Override
-					public int compare(VBox o1, VBox o2) {
-						return new Double(o1.count(false) * o1.getVolume(false))
-								.compareTo(new Double(o2.count(false) * o2.getVolume(false)));
-					}
-				});
+				lh.sort((o1, o2) -> new Double(o1.count(false) * o1.getVolume(false))
+						.compareTo((double) (o2.count(false) * o2.getVolume(false))));
 				niters++;
 				continue;
 			}
@@ -546,13 +522,8 @@ public class ColorThief {
 			if (niters++ > MAX_ITERATIONS) {
 				return new Object[] { lh, nColors, niters };
 			}
-			Collections.sort(lh, new Comparator<VBox>() {
-				@Override
-				public int compare(VBox o1, VBox o2) {
-					return new Double(o1.count(false) * o1.getVolume(false))
-							.compareTo(new Double(o2.count(false) * o2.getVolume(false)));
-				}
-			});
+			lh.sort((o1, o2) -> new Double(o1.count(false) * o1.getVolume(false))
+					.compareTo((double) (o2.count(false) * o2.getVolume(false))));
 		}
 		return new Object[] { lh, nColors, niters };
 	}

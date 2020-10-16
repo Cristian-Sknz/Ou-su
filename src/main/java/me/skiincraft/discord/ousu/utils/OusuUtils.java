@@ -211,8 +211,7 @@ public class OusuUtils {
 	
 
 	public static String getGamemodeString(Gamemode gamemode) {
-		Gamemode gm = gamemode;
-		Map<Gamemode, String> map = new HashMap<>();
+        Map<Gamemode, String> map = new HashMap<>();
 
 		map.put(Gamemode.Standard, "standard.png");
 		map.put(Gamemode.Catch, "catch.png");
@@ -220,7 +219,7 @@ public class OusuUtils {
 		map.put(Gamemode.Taiko, "taiko.png");
 
 
-		if (map.containsKey(gm)) {
+		if (map.containsKey(gamemode)) {
 			return map.get(gamemode);
 		}
 		return "standard";

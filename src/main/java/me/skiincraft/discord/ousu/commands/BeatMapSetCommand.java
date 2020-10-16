@@ -2,6 +2,7 @@ package me.skiincraft.discord.ousu.commands;
 
 import java.awt.Color;
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import me.skiincraft.api.ousu.Request;
 import me.skiincraft.api.ousu.entity.beatmap.Beatmap;
@@ -38,53 +39,44 @@ public class BeatmapSetCommand extends Comando {
 			replyUsage();
 			return;
 		}
-		
-		if (args.length >= 1) {
-			if (args[0].matches("-?\\d+(\\.\\d+)?") == false) {
-				replyUsage();
-				return;
-			}
-			
-			try {
-				Request<BeatmapSet> request = OusuBot.getApi().getBeatmapSet(Long.valueOf(args[0]));
-				BeatmapSet beatmapSet = request.get();
 
-				reply(TypeEmbed.LoadingEmbed().build(), message -> {
-					EmbedBuilder[] embedArray = new EmbedBuilder[beatmapSet.size()];
-					int i = 0;
-					Color cor = OusuUtils.beatmapColor(beatmapSet.get(0));
-					
-					for (Beatmap b : beatmapSet) {
-						embedArray[i] = BeatmapEmbed.beatmapEmbed(b, channel.getGuild(), cor);
-						i++;
-					}
-
-					message.editMessage(embedArray[0].build()).queue();
-
-					message.addReaction("U+25C0").queue();
-					//message.addReaction("U+25FC").queue();
-					message.addReaction("U+25B6").queue();
-					
-					HistoryLists.addToReaction(user, message, new ReactionObject(embedArray, 0));
-					try {
-						Beatmap beatmap = beatmapSet.get(0);
-						message.getChannel().sendFile(beatmap.getBeatmapPreview(),	embedArray[0].build().getTitle()
-								.replace(Emoji.HEADPHONES.getAsMention(), "") + ".mp3")
-								.queue();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				});
-				
-			} catch (BeatmapException e) {
-				String[] msg = getLanguageManager().getStrings("Warnings", "INEXISTENT_BEATMAPID");
-
-				MessageEmbed build = TypeEmbed.WarningEmbed(msg[0], StringUtils.commandMessage(msg)).build();
-				reply(build);
-				return;
-			}
+		if (!args[0].matches("-?\\d+(\\.\\d+)?")) {
+			replyUsage();
+			return;
 		}
-		
+
+		try {
+			Request<BeatmapSet> request = OusuBot.getApi().getBeatmapSet(Long.parseLong(args[0]));
+			BeatmapSet beatmapSet = request.get();
+
+			reply(TypeEmbed.LoadingEmbed().build(), message -> {
+				EmbedBuilder[] embedArray = new EmbedBuilder[beatmapSet.size()];
+				AtomicInteger integer = new AtomicInteger(0);
+				Color cor = OusuUtils.beatmapColor(beatmapSet.get(0));
+				beatmapSet.forEach(b -> embedArray[integer.getAndDecrement()] = BeatmapEmbed.beatmapEmbed(b, channel.getGuild(), cor));
+
+				message.editMessage(embedArray[0].build()).queue();
+				message.addReaction("U+25C0").queue();
+				message.addReaction("U+25B6").queue();
+
+				HistoryLists.addToReaction(user, message, new ReactionObject(embedArray, 0));
+				try {
+					Beatmap beatmap = beatmapSet.get(0);
+					message.getChannel().sendFile(beatmap.getBeatmapPreview(),	embedArray[0].build()
+							.getTitle()
+							.replace(Emoji.HEADPHONES.getAsMention(), "") + ".mp3")
+							.queue();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			});
+
+		} catch (BeatmapException e) {
+			String[] msg = getLanguageManager().getStrings("Warnings", "INEXISTENT_BEATMAPID");
+
+			MessageEmbed build = TypeEmbed.WarningEmbed(msg[0], StringUtils.commandMessage(msg)).build();
+			reply(build);
+		}
 	}
 
 }

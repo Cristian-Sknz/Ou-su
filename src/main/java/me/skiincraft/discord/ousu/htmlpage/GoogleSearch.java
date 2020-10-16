@@ -13,7 +13,7 @@ import me.skiincraft.discord.ousu.object.Search;
 
 public class GoogleSearch {
 
-	private List<Search> result = new ArrayList<>();
+	private final List<Search> result = new ArrayList<>();
 
 	public GoogleSearch(String beatmapname) {
 		String get = "https://www.googleapis.com/customsearch/v1";
@@ -50,7 +50,7 @@ public class GoogleSearch {
 
 	@Deprecated
 	public List<Integer> getBeatmapSetID() {
-		List<Integer> i = new ArrayList<Integer>();
+		List<Integer> i = new ArrayList<>();
 		for (Search s : getResults()) {
 			i.add(Integer.valueOf(s.getLink().replaceAll("\\D+", "")));
 		}
@@ -58,15 +58,14 @@ public class GoogleSearch {
 	}
 
 	public List<Integer> getBeatmapSetIDs() {
-		List<Integer> i = new ArrayList<Integer>();
+		List<Integer> i = new ArrayList<>();
 		for (Search s : getResults()) {
 			String linkv = s.getLink().replace("https://osu.ppy.sh/beatmapsets/", "")
 					.replace("http://osu.ppy.sh/beatmapsets/", "");
 			
 			if (linkv.contains("/")) {
-				int num = 0;
+				int num;
 				for (num = 0; num < 100; num++) {
-
 					if (linkv.charAt(num) == '/') {
 						break;
 					}
@@ -76,8 +75,7 @@ public class GoogleSearch {
 			}
 			try {
 				i.add(Integer.valueOf(s.getLink().replaceAll("\\D+", "")));
-			} catch (NumberFormatException e) {
-				continue;
+			} catch (NumberFormatException ignored) {
 			}
 		}
 		return i;

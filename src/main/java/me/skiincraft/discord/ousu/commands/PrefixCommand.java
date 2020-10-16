@@ -20,7 +20,7 @@ import net.dv8tion.jda.api.entities.User;
 public class PrefixCommand extends Comando {
 
 	public PrefixCommand() {
-		super("prefix", Arrays.asList("prefixo"), "prefix <prefix>");
+		super("prefix", Arrays.asList("prefixo", "startwith"), "prefix <prefix>");
 	}
 
 	public CommandCategory getCategory() {
@@ -31,25 +31,23 @@ public class PrefixCommand extends Comando {
 		if (!getMember(user).hasPermission(Permission.MANAGE_SERVER)) {
 			//TODO message
 			return;
-		};
+		}
 		
 		if (args.length == 0) {
 			replyUsage();
 			return;
 		}
-		
-		if (args.length >= 1) {
-			if (args[0].matches("[a-zA-Z0-9]*")) {
-				reply(formatMessage("PREFIX_INCORRECT_USE"));
-				return;
-			}
-			if (args[0].length() > 3) {
-				reply(formatMessage("PREFIX_INCORRECT_USE2"));
-				return;
-			}
-			
-			reply(formatSucessful(changePrefix(args[0], channel.getGuild()), args[0]));
+
+		if (args[0].matches("[a-zA-Z0-9]*")) {
+			reply(formatMessage("PREFIX_INCORRECT_USE"));
+			return;
 		}
+		if (args[0].length() > 3) {
+			reply(formatMessage("PREFIX_INCORRECT_USE2"));
+			return;
+		}
+
+		reply(formatSucessful(changePrefix(args[0], channel.getGuild()), args[0]));
 	}
 	
 	public String changePrefix(String prefix, Guild guild) {
@@ -61,8 +59,7 @@ public class PrefixCommand extends Comando {
 	
 	public MessageEmbed formatMessage(String line) {
 		String[] str = getLanguageManager().getStrings("Messages", line);
-		MessageEmbed embed = TypeEmbed.WarningEmbed(Emoji.X.getAsMention() + str[0], StringUtils.commandMessage(str)).build();
-		return embed;
+		return TypeEmbed.WarningEmbed(Emoji.X.getAsMention() + str[0], StringUtils.commandMessage(str)).build();
 	}
 	
 	public MessageEmbed formatSucessful(String oldPrefix, String newPrefix) {

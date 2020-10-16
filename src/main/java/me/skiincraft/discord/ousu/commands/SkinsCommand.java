@@ -3,6 +3,7 @@ package me.skiincraft.discord.ousu.commands;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import me.skiincraft.api.ousu.entity.objects.Gamemode;
@@ -23,7 +24,7 @@ import net.dv8tion.jda.api.entities.User;
 public class SkinsCommand extends Comando{
 
 	public SkinsCommand() {
-		super("skins", Arrays.asList("skin"), "skins <>");
+		super("skins", Collections.singletonList("skin"), "skins");
 	}
 
 	public CommandCategory getCategory() {
@@ -67,10 +68,9 @@ public class SkinsCommand extends Comando{
 		embed.addField(getLanguageManager().getString("Titles", "CREATOR"), osu.getCreator(), true);
 		embed.addField("Download", OusuEmote.getEmoteAsMention("download") + "[__Here__](" + osu.getDownloadurl() + ")",
 				true);
-		StringBuffer gamemodes = new StringBuffer();
+		StringBuilder gamemodes = new StringBuilder();
 		for (Gamemode mode : osu.getGamemodes()) {
-			gamemodes.append(
-					OusuEmote.getEmote(mode.name().toLowerCase()).getAsMention() + " " + mode.name() + "\n");
+			gamemodes.append(OusuEmote.getEmote(mode.name().toLowerCase()).getAsMention()).append(" ").append(mode.name()).append("\n");
 		}
 		embed.addField("Gamemodes", gamemodes.toString(), true);
 		embed.setDescription(Emoji.EYE.getAsMention() + " " + osu.getStatistics().getViewes() + " "

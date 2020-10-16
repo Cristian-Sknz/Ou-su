@@ -6,15 +6,15 @@ import me.skiincraft.api.ousu.entity.objects.Gamemode;
 
 public class OsuSkin {
 
-	private String skinname;
-	private String skinurl;
-	private String skinimage;
+	private final String skinname;
+	private final String skinurl;
+	private final String skinimage;
 
-	private String downloadurl;
+	private final String downloadurl;
 
-	private String creator;
-	private List<Gamemode> gamemodes;
-	private Statistics statistics;
+	private final String creator;
+	private final List<Gamemode> gamemodes;
+	private final Statistics statistics;
 
 	public OsuSkin(String skinname, String skinurl, String skinimage, String downloadurl, String creator,
 			List<Gamemode> gamemodes, Statistics statistics) {
@@ -64,9 +64,9 @@ public class OsuSkin {
 	}
 
 	public static class Statistics {
-		private String downloads;
-		private String viewes;
-		private String comments;
+		private final String downloads;
+		private final String viewes;
+		private final String comments;
 
 		public Statistics(String downloads, String viewes, String comments) {
 			super();

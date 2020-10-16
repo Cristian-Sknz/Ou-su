@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -26,7 +27,7 @@ import net.dv8tion.jda.api.entities.User;
 public class RankingCommand extends Comando {
 
 	public RankingCommand() {
-		super("ranking", Arrays.asList("leaderboard"), "ranking <country>");
+		super("leaderboard", Collections.singletonList("ranking"), "leaderboard <country>");
 	}
 
 	public CommandCategory getCategory() {
@@ -104,13 +105,13 @@ public class RankingCommand extends Comando {
 	}
 	
 	private String getRankingPlace(List<Ranking> ranking, int start) {
-		StringBuffer strings = new StringBuffer();
+		StringBuilder strings = new StringBuilder();
 		int s = start;
 		for (Ranking r: ranking) {
-			strings.append("#" + s + " :flag_" + r.getCountry()[1].toLowerCase()+ ":\n");
+			strings.append("#").append(s).append(" :flag_").append(r.getCountry()[1].toLowerCase()).append(":\n");
 			s++;
-		};
-		
+		}
+
 		return strings.toString();
 	}
 	
@@ -118,9 +119,7 @@ public class RankingCommand extends Comando {
 		StringBuffer strings = new StringBuffer();
 		
 		Stream<Ranking> stream = ranking.stream();
-		stream.forEach(v -> {
-			strings.append("[" + v.getUsername() + "](" + v.getUrl() + ")\n");
-		});
+		stream.forEach(v -> strings.append("[").append(v.getUsername()).append("](").append(v.getUrl()).append(")\n"));
 		
 		return strings.toString();
 	}
@@ -129,9 +128,7 @@ public class RankingCommand extends Comando {
 		StringBuffer strings = new StringBuffer();
 		
 		Stream<Ranking> stream = ranking.stream();
-		stream.forEach(v -> {
-			strings.append(v.getPP() + "\n");
-		});
+		stream.forEach(v -> strings.append(v.getPP()).append("\n"));
 		
 		return strings.toString();
 	}

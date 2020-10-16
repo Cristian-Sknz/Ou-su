@@ -26,6 +26,13 @@ import java.util.List;
 
 public class BeatmapTracking extends ListenerAdapter {
 
+    public String substringBeatmap(String message){
+        if (message.contains("/beatmapsets/")) {
+            return message.substring(message.indexOf("beatmapsets/"));
+        }
+        return message.substring(message.indexOf("beatmaps/"));
+    }
+
     @Override
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
         Message message = event.getMessage();
@@ -40,8 +47,8 @@ public class BeatmapTracking extends ListenerAdapter {
         }
 
         String messageraw = message.getContentRaw().split(" ")[0];
-        if (messageraw.contains("osu.ppy.sh/beatmapsets/")){
-            String geturl = messageraw.substring(messageraw.indexOf("beatmapsets/"));
+        if (messageraw.contains("osu.ppy.sh/beatmapsets/") || messageraw.contains("https://osu.ppy.sh/beatmaps/")) {
+            String geturl = substringBeatmap(messageraw);
             geturl = geturl.substring(geturl.indexOf("/")+1);
 
             String[] split = geturl.split("/");
@@ -50,24 +57,27 @@ public class BeatmapTracking extends ListenerAdapter {
                     return;
                 }
             }
+
             new Thread(() -> {
                 long beatmapset = Long.parseLong(split[0].replaceAll("\\D+", ""));
+                if (messageraw.contains("/beatmaps/")) try {
+                    BeatmapSearch search = JSoupGetters.beatmapInfoById(beatmapset);
+                    event.getChannel().sendMessage(SearchEmbed.searchEmbed(search, event.getGuild()).build()).queue();
+                    return;
+                } catch (NumberFormatException | IOException ignored) {}
+
                 if (split.length == 2) try {
                     long beatmap = Long.parseLong(split[1].replaceAll("\\D+", ""));
                     BeatmapSearch search = JSoupGetters.beatmapInfoById(beatmap);
                     event.getChannel().sendMessage(SearchEmbed.searchEmbed(search, event.getGuild()).build()).queue();
                     return;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return;
-                }
+                } catch (NumberFormatException | IOException ignored) {}
+
                 try {
                     BeatmapSearch search = JSoupGetters.beatmapInfo(beatmapset);
                     if (search == null) return;
                     event.getChannel().sendMessage(SearchEmbed.searchEmbed(search, event.getGuild()).build()).queue();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                } catch (IOException ignored) {}
             }, "tracking").start();
         }
 

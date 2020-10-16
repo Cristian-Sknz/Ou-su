@@ -25,8 +25,7 @@ public class UserReaction extends Reaction {
 			}
 			if (object.getOrdem() == 1) {
 				getContext().changeEmbedBack(object);
-				return;
-			}
+            }
 		}
 	}
 

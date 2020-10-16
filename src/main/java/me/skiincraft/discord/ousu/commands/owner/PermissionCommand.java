@@ -1,6 +1,5 @@
 package me.skiincraft.discord.ousu.commands.owner;
 
-import java.util.Arrays;
 import java.util.Collections;
 
 import me.skiincraft.discord.ousu.common.Comando;
@@ -32,46 +31,43 @@ public class PermissionCommand extends Comando{
 			return;
 		}
 
-		if (args.length >= 3) {
-			if (args[0].equalsIgnoreCase("add")) {
-				String id = args[1].replaceAll("\\D+", "");
-				if (id.length() != 18) {
-					reply("> Este UserID que você digitou está incorreto!");
-					return;
-				}
-				Member member = channel.getGuild().getMemberById(id);
-				if (member == null) {
-					reply("Este usuario solicitado não esta compartilhando o mesmo servidor.");
-					return;
-				}
-				if (!args[2].matches("-?\\d+(\\.\\d+)?")) {
-					replyUsage();
-					return;
-				}
-				new IPermission(member.getUser()).set("permission", args[2]);
-				reply("Foi adionado as permissões ao usuario solicitado.");
+		if (args[0].equalsIgnoreCase("add")) {
+			String id = args[1].replaceAll("\\D+", "");
+			if (id.length() != 18) {
+				reply("> Este UserID que você digitou está incorreto!");
+				return;
 			}
-
-			if (args[0].equalsIgnoreCase("remove")) {
-				String id = args[1].replaceAll("\\D+", "");
-				if (id.length() != 18) {
-					reply("> Este UserID que você digitou está incorreto!");
-					return;
-				}
-				Member member = channel.getGuild().getMemberById(id);
-				if (member == null) {
-					reply("Este usuario solicitado não esta compartilhando o mesmo servidor.");
-					return;
-				}
-				IPermission perm = new IPermission(member.getUser());
-				if (perm.exists()) {
-					perm.delete();
-					reply("Foi adicionado as permissões ao usuario solicitado.");
-				} else {
-					reply("Este usuario solicitado não tem nenhuma permissão.");
-				}
+			Member member = channel.getGuild().getMemberById(id);
+			if (member == null) {
+				reply("Este usuario solicitado não esta compartilhando o mesmo servidor.");
+				return;
 			}
+			if (!args[2].matches("-?\\d+(\\.\\d+)?")) {
+				replyUsage();
+				return;
+			}
+			new IPermission(member.getUser()).set("permission", args[2]);
+			reply("Foi adionado as permissões ao usuario solicitado.");
+		}
 
+		if (args[0].equalsIgnoreCase("remove")) {
+			String id = args[1].replaceAll("\\D+", "");
+			if (id.length() != 18) {
+				reply("> Este UserID que você digitou está incorreto!");
+				return;
+			}
+			Member member = channel.getGuild().getMemberById(id);
+			if (member == null) {
+				reply("Este usuario solicitado não esta compartilhando o mesmo servidor.");
+				return;
+			}
+			IPermission perm = new IPermission(member.getUser());
+			if (perm.exists()) {
+				perm.delete();
+				reply("Foi adicionado as permissões ao usuario solicitado.");
+			} else {
+				reply("Este usuario solicitado não tem nenhuma permissão.");
+			}
 		}
 
 	}

@@ -25,15 +25,15 @@ public class SearchEmbed {
 		EmbedBuilder embed = new EmbedBuilder();
 		LanguageManager lang = new LanguageManager(guild);
 
-		StringBuffer gamemodes = new StringBuffer();
-		StringBuffer versions = new StringBuffer();
+		StringBuilder gamemodes = new StringBuilder();
+		StringBuilder versions = new StringBuilder();
 
 		int i = 0;
 		for (String dif : beatmap.getDifficult()) {
 			if (dif.length() == 0) {
 				continue;
 			}
-			versions.append(OusuEmote.getEmoteAsMention("rainbowcircle") + " " + dif + "\n");
+			versions.append(OusuEmote.getEmoteAsMention("rainbowcircle")).append(" ").append(dif).append("\n");
 			if (i >= 4) {
 				versions.append("*[...]*");
 				break;
@@ -42,17 +42,16 @@ public class SearchEmbed {
 		}
 
 		for (Gamemode gm : beatmap.getGamemodes()) {
-			gamemodes.append(OusuEmote.getEmoteAsMention(gm.name().toLowerCase()) + " " + gm.getDisplayName());
+			gamemodes.append(OusuEmote.getEmoteAsMention(gm.name().toLowerCase())).append(" ").append(gm.getDisplayName());
 		}
 
 		String artist = beatmap.getAuthor();
 		// beatmap_download_link
 		String video = Emoji.WHITE_CHECK_MARK.getAsMention() + " | Video";
-		if (beatmap.hasVideo() == false) {
+		if (!beatmap.hasVideo()) {
 			video = Emoji.X.getAsMention() + " | Video";
 		}
 
-		String approvated = OusuEmote.getEmoteAsMention("arrow_pause") + " " + beatmap.getApprovated().name();
 		embed.setTitle(beatmap.getTitle(), beatmap.getURL());
 		int id = beatmap.getCreatorid();
 
@@ -63,6 +62,8 @@ public class SearchEmbed {
 		embed.addField(lang.getString("Titles", "ARTIST") , artist, true);
 		embed.addField("BPM:", OusuEmote.getEmoteAsMention("reversearrow") + beatmap.getBpm(), true);
 		embed.addField(lang.getString("Titles", "GENRE") , "" + beatmap.getGenre().getDisplayName(), true);
+
+		String approvated = ((beatmap.getApprovated() != null) ? OusuEmote.getEmoteAsMention("arrow_pause") + " " + beatmap.getApprovated().name() : "");
 		embed.addField("Link", OusuEmote.getEmoteAsMention("download") + "__[Download]" + "(" + beatmap.getURL() + ")__\n"
 				+ video + "\n" + approvated, true);
 
@@ -77,7 +78,7 @@ public class SearchEmbed {
 		// User user = OusuBot.getOusu().getJda().getUserById("247096601242238991");
 		// embed.setFooter(lang.translatedBot("FOOTER_DEFAULT"), user.getAvatarUrl());
 
-		embed.setFooter("[BeatmapSetID] " + beatmap.getBeatmapsetid(), OusuBot.getMain().getShardManager().getShardById(0).getSelfUser().getAvatarUrl());
+		embed.setFooter("[BeatmapSetID] " + beatmap.getBeatmapsetid(), OusuBot.getInstance().getShardManager().getShardById(0).getSelfUser().getAvatarUrl());
 		try {
 			embed.setColor(ImageUtils.getPredominatColor(ImageIO.read(new URL(beatmap.getBeatmapThumbnailUrl()))));
 		} catch (NullPointerException | IOException e) {
@@ -92,8 +93,8 @@ public class SearchEmbed {
 		LanguageManager lang = new LanguageManager(guild);
 		Beatmap beatmap = beat.get(0);
 
-		StringBuffer gamemodes = new StringBuffer();
-		StringBuffer versions = new StringBuffer();
+		StringBuilder gamemodes = new StringBuilder();
+		StringBuilder versions = new StringBuilder();
 		int i = 0;
 		for (Beatmap b : beat) {
 			if (i >= 5) {
@@ -101,13 +102,12 @@ public class SearchEmbed {
 				break;
 			}
 			if (!gamemodes.toString().contains(b.getGameMode().getDisplayName())) {
-				gamemodes.append(OusuEmote.getEmoteAsMention(b.getGameMode().name().toLowerCase()) + " "
-						+ b.getGameMode().getDisplayName() + "\n");
+				gamemodes.append(OusuEmote.getEmoteAsMention(b.getGameMode().name().toLowerCase())).append(" ").append(b.getGameMode().getDisplayName()).append("\n");
 			}
 			if (versions.length() == 0) {
-				versions.append(OusuEmote.getEmoteAsMention("rainbowcircle") + " " + b.getVersion());
+				versions.append(OusuEmote.getEmoteAsMention("rainbowcircle")).append(" ").append(b.getVersion());
 			} else {
-				versions.append("\n" + OusuEmote.getEmoteAsMention("rainbowcircle") + " " + b.getVersion());
+				versions.append("\n").append(OusuEmote.getEmoteAsMention("rainbowcircle")).append(" ").append(b.getVersion());
 			}
 			i++;
 		}
@@ -119,10 +119,10 @@ public class SearchEmbed {
 
 		String video = Emoji.WHITE_CHECK_MARK.getAsMention() + " | Video";
 		String storyboard = Emoji.WHITE_CHECK_MARK.getAsMention() + " | Storyboard";
-		if (beatmap.hasVideo() == false) {
+		if (!beatmap.hasVideo()) {
 			video = Emoji.X.getAsMention() + " | Video";
 		}
-		if (beatmap.hasStoryboard() == false) {
+		if (!beatmap.hasStoryboard()) {
 			storyboard = Emoji.X.getAsMention() + " | Storyboard";
 		}
 
@@ -148,7 +148,7 @@ public class SearchEmbed {
 		// User user = OusuBot.getOusu().getJda().getUserById("247096601242238991");
 		// embed.setFooter(lang.translatedBot("FOOTER_DEFAULT"), user.getAvatarUrl());
 
-		embed.setFooter("[BeatmapSetID] " + beatmap.getBeatmapSetId(), OusuBot.getMain().getShardManager().getShardById(0).getSelfUser().getAvatarUrl());
+		embed.setFooter("[BeatmapSetID] " + beatmap.getBeatmapSetId(), OusuBot.getInstance().getShardManager().getShardById(0).getSelfUser().getAvatarUrl());
 		try {
 			embed.setColor(ImageUtils.getPredominatColor(ImageIO.read(new URL(beatmap.getBeatmapThumbnailUrl()))));
 		} catch (NullPointerException | IOException e) {

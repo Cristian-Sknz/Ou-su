@@ -16,8 +16,8 @@ import me.skiincraft.discord.core.utils.ImageBuilder.Alignment;
 
 public abstract class ImageAdapter {
 	
-	private ImageBuilder imageBuilder;
-	private CustomFont customFont;
+	private final ImageBuilder imageBuilder;
+	private final CustomFont customFont;
 	public ImageAdapter(int width, int height) {
 		imageBuilder = new ImageBuilder(getClass().getSimpleName() + "-", width, height);
 		customFont = new CustomFont();
@@ -82,8 +82,8 @@ public abstract class ImageAdapter {
 		return this;
 	}
 	
-	protected Font font(String font, int style, float size) {
-		return customFont.getFont(font, style, size);
+	protected Font font(String font, float size) {
+		return customFont.getFont(font, Font.PLAIN, size);
 	}
 	
 	

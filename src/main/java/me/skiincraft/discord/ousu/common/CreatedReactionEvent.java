@@ -10,10 +10,10 @@ import net.dv8tion.jda.api.entities.User;
 
 public class CreatedReactionEvent extends Event {
 	
-	private TextChannel channel;
-	private User user;
-	private ReactionUtil reactionUtil;
-	private List<ReactionUtil> lista;
+	private final TextChannel channel;
+	private final User user;
+	private final ReactionUtil reactionUtil;
+	private final List<ReactionUtil> lista;
 	
 	public CreatedReactionEvent(TextChannel channel, User user, List<ReactionUtil> lista, ReactionUtil reactionUtil) {
 		this.channel = channel;

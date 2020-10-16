@@ -8,3 +8,4 @@ bin
 .settings
 bin/main/bot.json
 src/main/resources/bot.json
+src/test/resources/bot.json

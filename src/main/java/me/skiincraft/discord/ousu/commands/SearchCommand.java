@@ -36,57 +36,54 @@ public class SearchCommand extends Comando {
 			replyUsage();
 			return;
 		}
-		if (args.length >= 1) {
-			reply(TypeEmbed.LoadingEmbed().build(), message ->{
-				try {
-					List<Integer> bIds = new GoogleSearch(StringUtils.arrayToString2(0, args)).getBeatmapSetIDs();
-					List<EmbedBuilder> embeds = new ArrayList<>();
-					int first = 0;
-					for (int id : bIds) {
-						BeatmapSearch info = JSoupGetters.beatmapInfo(id);
-						if (info == null) {
-							continue;
-						}
-						EmbedBuilder sEmbed = SearchEmbed.searchEmbed(info, channel.getGuild());
-						if (first == 0 && sEmbed != null) {
-							message.editMessage(new EmbedBuilder(sEmbed)
-									.setFooter("Loading more beatmaps").build()).queue();
-							channel.sendFile(info.getBeatmapPreview(), info.getTitle() + ".mp3").queue();
-							first =1;
-						}
-						
-						if (sEmbed == null) {
-							continue;
-						}
-						
-						embeds.add(sEmbed);
+		reply(TypeEmbed.LoadingEmbed().build(), message ->{
+			try {
+				List<Integer> bIds = new GoogleSearch(StringUtils.arrayToString2(0, args)).getBeatmapSetIDs();
+				List<EmbedBuilder> embeds = new ArrayList<>();
+				int first = 0;
+				for (int id : bIds) {
+					BeatmapSearch info = JSoupGetters.beatmapInfo(id);
+					if (info == null) {
+						continue;
 					}
-					
-					if (embeds.size() == 0) {
-						throw new SearchException("invalid");
+					EmbedBuilder sEmbed = SearchEmbed.searchEmbed(info, channel.getGuild());
+					if (first == 0 && sEmbed != null) {
+						message.editMessage(new EmbedBuilder(sEmbed)
+								.setFooter("Loading more beatmaps").build()).queue();
+						channel.sendFile(info.getBeatmapPreview(), info.getTitle() + ".mp3").queue();
+						first =1;
 					}
-					
-					message.editMessage(embeds.get(0).build()).queue(message2 -> {
-						
-						EmbedBuilder[] bm = embeds.toArray(new EmbedBuilder[embeds.size()]);
-						
-						// message2.addReaction("U+1F3AF").queue();s
-						message2.addReaction("U+25C0").queue();
-						message2.addReaction("U+25B6").queue();
-						
-						HistoryLists.addToReaction(user, message2, new ReactionObject(bm, 0));
-					});
-				} catch (Exception e) {
-					String[] msg = getLanguageManager().getStrings("Warnings", "INEXISTENT_BEATMAPID");
 
-					MessageEmbed build = TypeEmbed.WarningEmbed(msg[0], StringUtils.commandMessage(msg)).build();
-					message.editMessage(build).queue();
-					e.printStackTrace();
-					return;
+					if (sEmbed == null) {
+						continue;
+					}
+
+					embeds.add(sEmbed);
 				}
-			});
-		}
-		
+
+				if (embeds.size() == 0) {
+					throw new SearchException("invalid");
+				}
+
+				message.editMessage(embeds.get(0).build()).queue(message2 -> {
+
+					EmbedBuilder[] bm = embeds.toArray(new EmbedBuilder[0]);
+
+					// message2.addReaction("U+1F3AF").queue();s
+					message2.addReaction("U+25C0").queue();
+					message2.addReaction("U+25B6").queue();
+
+					HistoryLists.addToReaction(user, message2, new ReactionObject(bm, 0));
+				});
+			} catch (Exception e) {
+				String[] msg = getLanguageManager().getStrings("Warnings", "INEXISTENT_BEATMAPID");
+
+				MessageEmbed build = TypeEmbed.WarningEmbed(msg[0], StringUtils.commandMessage(msg)).build();
+				message.editMessage(build).queue();
+				e.printStackTrace();
+			}
+		});
+
 	}
 
 }

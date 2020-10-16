@@ -1,23 +1,21 @@
 package me.skiincraft.discord.ousu.commands;
 
-import java.awt.Color;
-import java.text.SimpleDateFormat;
-import java.time.OffsetDateTime;
-import java.util.Arrays;
-import java.util.Date;
-
 import me.skiincraft.discord.core.utils.Emoji;
 import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.common.Comando;
 import me.skiincraft.discord.ousu.common.CommandCategory;
 import me.skiincraft.discord.ousu.emojis.OusuEmote;
-
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.SelfUser;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
+
+import java.awt.*;
+import java.text.SimpleDateFormat;
+import java.time.OffsetDateTime;
+import java.util.Arrays;
+import java.util.Date;
 
 public class VersionCommand extends Comando {
 
@@ -31,15 +29,15 @@ public class VersionCommand extends Comando {
 
 	@Override
 	public void execute(User user , String[] args, TextChannel channel) {
-		MessageEmbed embed = embed(channel.getGuild()).build();
+		MessageEmbed embed = embed().build();
 		reply(embed);
 	}
 
-	public EmbedBuilder embed(Guild guild) {
+	public EmbedBuilder embed() {
 		EmbedBuilder embed = new EmbedBuilder();
 
-		User user = OusuBot.getMain().getShardManager().getUserById("247096601242238991");
-		SelfUser self = OusuBot.getMain().getShardManager().getShardById(0).getSelfUser();
+		User user = OusuBot.getInstance().getShardManager().getUserById("247096601242238991");
+		SelfUser self = OusuBot.getInstance().getShardManager().getShardById(0).getSelfUser();
 		embed.setAuthor(self.getName() + "#" + self.getDiscriminator(), "https://github.com/skiincraft", self.getAvatarUrl());
 		OffsetDateTime data = self.getTimeCreated();
 

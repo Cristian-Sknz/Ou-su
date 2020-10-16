@@ -46,7 +46,7 @@ public class ReactionListeners implements Listener {
 		System.out.println(event.getGuild().getName() + " foi adicionado.");
 		try {
 			DiscordBotListAPI dbl = new DiscordBotListAPIImpl(getToken(), event.getSelfUser().getId());
-			dbl.setStats(OusuBot.getMain().getShardManager().getShards()
+			dbl.setStats(OusuBot.getInstance().getShardManager().getShards()
 					.stream()
 					.map(j -> Integer.valueOf(j.getGuildCache().size()+""))
 					.collect(Collectors.toList()));
@@ -55,8 +55,8 @@ public class ReactionListeners implements Listener {
 		}
 	}
 	
-	public static String getToken() throws MalformedURLException, IOException {
-		Scanner scam = new Scanner(new InputStreamReader(new File(OusuBot.getMain().getPlugin().getAssetsPath() + "/dbl-token.txt").toURI().toURL().openStream()));
+	public static String getToken() throws IOException {
+		Scanner scam = new Scanner(new InputStreamReader(new File(OusuBot.getInstance().getPlugin().getAssetsPath() + "/dbl-token.txt").toURI().toURL().openStream()));
 		String str = scam.nextLine();
 		scam.close();
 		return str;

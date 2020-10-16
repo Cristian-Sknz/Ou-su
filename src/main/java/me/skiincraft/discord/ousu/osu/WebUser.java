@@ -36,7 +36,7 @@ public class WebUser {
 		    while (s.hasNextLine()) {
 		        String line = s.nextLine();
 		        if(line.contains("userId")) { 
-		            return Integer.valueOf(line.replaceAll("\\D+", ""));
+		            return Integer.parseInt(line.replaceAll("\\D+", ""));
 		        }
 		    }
 		    return 0;

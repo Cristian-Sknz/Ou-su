@@ -18,51 +18,41 @@ import net.dv8tion.jda.api.entities.Emote;
 
 public class OusuEmote {
 	
-	public static List<Emote> emotes = new ArrayList<Emote>();
+	public static final List<Emote> emotes = new ArrayList<>();
 	
 	public static List<Emote> getEmotes() {
 		return emotes;
 	}
 	
 	public static Emote getEmoteEquals(String nameequals) {
-		for (Emote emote : getEmotes()) {
-			if (emote.getName().equalsIgnoreCase(nameequals)) {
-				return emote;
-			}
-		}
-		return getEmotes().get(0);
+		return emotes.stream()
+				.filter(emote -> emote.getName().equalsIgnoreCase(nameequals))
+				.findFirst().orElse(getEmotes().get(0));
 	}
 	
 	public static String getEmoteAsMentionEquals(String nameequals) {
-		for (Emote emote : getEmotes()) {
-			if (emote.getName().equalsIgnoreCase(nameequals)) {
-				return emote.getAsMention();
-			}
-		}
-		return getEmotes().get(0).getAsMention();
+		return emotes.stream()
+				.filter(emote -> emote.getName().equalsIgnoreCase(nameequals))
+				.map(Emote::getAsMention)
+				.findFirst().orElse(getEmotes().get(0).getAsMention());
 	}
 	
 	public static Emote getEmote(String name) {
-		for (Emote emote : getEmotes()) {
-			if (emote.getName().toLowerCase().contains(name)) {
-				return emote;
-			}
-		}
-		return getEmotes().get(0);
+		return emotes.stream()
+				.filter(emote -> emote.getName().contains(name))
+				.findFirst().orElse(getEmotes().get(0));
 	}
 
 	public static String getEmoteAsMention(String name) {
-		for (Emote emote : getEmotes()) {
-			if (emote.getName().toLowerCase().contains(name)) {
-				return emote.getAsMention();
-			}
-		}
-		return getEmotes().get(0).getAsMention();
+		return emotes.stream()
+				.filter(emote -> emote.getName().contains(name))
+				.map(Emote::getAsMention)
+				.findFirst().orElse(getEmotes().get(0).getAsMention());
 	}
 	
 	public static void loadEmotes(String filename) {
 		try {
-			FileInputStream inputStream = new FileInputStream(OusuBot.getMain().getPlugin().getPluginPath() + "/" + filename + ".json");
+			FileInputStream inputStream = new FileInputStream(OusuBot.getInstance().getPlugin().getPluginPath() + "/" + filename + ".json");
 			Reader reader = new InputStreamReader(inputStream);
 			JsonObject ob = new JsonParser().parse(reader).getAsJsonArray().get(0).getAsJsonObject();
 			JsonArray array = ob.get("Emotes").getAsJsonArray();

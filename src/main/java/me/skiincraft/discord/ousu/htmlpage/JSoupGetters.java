@@ -24,6 +24,7 @@ import me.skiincraft.discord.ousu.object.OsuSkin;
 import me.skiincraft.discord.ousu.object.OsuSkin.Statistics;
 import me.skiincraft.discord.ousu.osu.UserStatistics;
 
+
 public class JSoupGetters {
 
 	public static String[] splitText(String s, int i) {
@@ -151,7 +152,7 @@ public class JSoupGetters {
 		Elements tb2 = info.get(2).select("td"); // Tabela 2
 
 		String creator = tb2.get(1).text(); // CreatorName
-		int creatorid = Integer.valueOf(tb2.get(1).select("a").attr("href").replace("/u/", "")); // CreatorID
+		int creatorid = Integer.parseInt(tb2.get(1).select("a").attr("href").replace("/u/", "")); // CreatorID
 		String maplenth = tb2.get(5).text().split(" ")[0]; // Lenth
 
 		Elements tb3 = info.get(3).select("td"); // Tabela 3

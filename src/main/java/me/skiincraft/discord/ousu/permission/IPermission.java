@@ -12,17 +12,17 @@ import net.dv8tion.jda.api.entities.User;
 
 public class IPermission extends Table {
 	
-	private User user;
+	private final User user;
 	
 	public IPermission(User user) {
-		super("internalpermission", OusuBot.getMain().getPlugin());
+		super("internalpermission", OusuBot.getInstance().getPlugin());
 		this.user = user;
 	}
 
 	public enum InternalPermission {
 		ALL(3), WRITE_AND_VIEW(2), VIEW(1);
 		
-		private int value;
+		private final int value;
 		
 		InternalPermission(int value) {
 			this.value = value;

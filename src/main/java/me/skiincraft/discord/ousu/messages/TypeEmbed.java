@@ -13,8 +13,8 @@ public class TypeEmbed {
 		Random r = new Random();
 		int i = r.nextInt(2);
 
-		return (i == 0) ? "https://i.imgur.com/bz1MKtv.jpg" 
-				: (i == 1) ? "https://i.imgur.com/pkvpKuJ.jpg" : null;
+		return i == 0 ? "https://i.imgur.com/bz1MKtv.jpg"
+				: "https://i.imgur.com/pkvpKuJ.jpg";
 	}
 
 	public static EmbedBuilder WarningEmbed(String title, String description) {
@@ -82,7 +82,7 @@ public class TypeEmbed {
 
 	public static EmbedBuilder DefaultEmbed(String title, String description) {
 		EmbedBuilder b = new EmbedBuilder();
-		User user = OusuBot.getMain().getShardManager().getUserById("247096601242238991");
+		User user = OusuBot.getInstance().getShardManager().getUserById("247096601242238991");
 
 		b.setColor(Color.PINK);
 		b.setTitle(title);

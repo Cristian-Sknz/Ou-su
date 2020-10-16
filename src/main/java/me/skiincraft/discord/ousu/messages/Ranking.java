@@ -2,12 +2,12 @@ package me.skiincraft.discord.ousu.messages;
 
 public class Ranking {
 	
-	private String username;
-	private String userid;
-	private String url;
-	private String[] country;
+	private final String username;
+	private final String userid;
+	private final String url;
+	private final String[] country;
 
-	private String pp;
+	private final String pp;
 
 	public Ranking(String username, String userid, String url, String[] country, String pp) {
 		this.username = username;
