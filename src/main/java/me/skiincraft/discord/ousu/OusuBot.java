@@ -16,6 +16,7 @@ import me.skiincraft.discord.ousu.listener.ReactionListeners;
 import me.skiincraft.discord.ousu.reactions.PageReactions;
 import me.skiincraft.discord.ousu.reactions.UserReaction;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Emote;
 
 import java.io.*;
 import java.util.Arrays;
@@ -86,9 +87,10 @@ public class OusuBot extends OusuPlugin {
 		getPlugin().getCommandManager().registerCommand(new VersionCommand());
 		getPlugin().getCommandManager().registerCommand(new VoteCommand());
 		getPlugin().getCommandManager().registerCommand(new PermissionCommand());
+		getPlugin().getCommandManager().registerCommand(new MalCommand());
 
 		/*
-		Registrando comandos.
+		Registrando eventos.
 		(?) Pensando em colocar um ClassGetter pra fazer isso.
 		 */
 		getPlugin().getEventManager().registerListener(new UserReaction());
