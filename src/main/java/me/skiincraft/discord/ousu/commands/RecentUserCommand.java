@@ -37,6 +37,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 
+@SuppressWarnings("SameParameterValue")
 public class RecentuserCommand extends Comando {
 
 	public RecentuserCommand() {
@@ -52,55 +53,51 @@ public class RecentuserCommand extends Comando {
 			replyUsage();
 			return;
 		}
-		
-		if (args.length >= 1) {
-			List<String> l = new ArrayList<>(Arrays.asList(args));
-			Gamemode gm = Gamemode.Standard;
-			
-			StringBuffer b = new StringBuffer();
-			if (args.length >= 2) {
-				if (isGamemode(args[args.length-1])) {
-					l.remove(args.length-1);
-				}
+
+		List<String> l = new ArrayList<>(Arrays.asList(args));
+		Gamemode gm = Gamemode.Standard;
+
+		StringBuffer b = new StringBuffer();
+		if (args.length >= 2) {
+			if (isGamemode(args[args.length-1])) {
+				l.remove(args.length-1);
 			}
-			
-			l.forEach(s -> b.append(s + " "));
-			l.clear();
-			try {
-				System.out.println(b.toString());
-				Request<List<RecentScore>> request = OusuBot.getApi().getRecentUser(b.substring(0, b.length()-1), gm, 10);
-				List<RecentScore> score = request.get();
-				reply(TypeEmbed.LoadingEmbed().build(), message -> {
-					int i = 1;
-					List<EmbedBuilder> embeds = new ArrayList<>();
-					for (RecentScore r: score) {
-						BeatmapSearch be;
-						try {
-							be = JSoupGetters.beatmapInfoById(r.getBeatmapId());
-							embeds.add(embed(r, be, new int[] {i, score.size()}, WebUser.getName(b.substring(0, b.length()-1))));
-							i++;
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-						if (embeds.size() == 1) {
-							message.editMessage(embeds.get(0).build()).queue();
-						}
+		}
+
+		l.forEach(s -> b.append(s).append(" "));
+		l.clear();
+		try {
+			System.out.println(b.toString());
+			Request<List<RecentScore>> request = OusuBot.getApi().getRecentUser(b.substring(0, b.length()-1), gm, 10);
+			List<RecentScore> score = request.get();
+			reply(TypeEmbed.LoadingEmbed().build(), message -> {
+				List<EmbedBuilder> embeds = new ArrayList<>();
+				for (RecentScore r: score) {
+					BeatmapSearch be;
+					try {
+						be = JSoupGetters.beatmapInfoById(r.getBeatmapId());
+						embeds.add(embed(r, be, WebUser.getName(b.substring(0, b.length()-1))));
+					} catch (IOException e) {
+						e.printStackTrace();
 					}
-					
-					message.addReaction("U+25C0").queue();
-					//message.addReaction("U+25FC").queue();
-					message.addReaction("U+25B6").queue();
-					
-					EmbedBuilder[] emb = embeds.toArray(new EmbedBuilder[embeds.size()]);
-					HistoryLists.addToReaction(buser, message, new ReactionObject(emb, 0));
-				});
-			} catch (ScoreException e) {
-				String[] str = getLanguageManager().getStrings("Osu", "NO_HAS_HISTORY");
-				MessageEmbed embed = TypeEmbed.SoftWarningEmbed(str[0], StringUtils.commandMessage(str)).build();
-				
-				System.out.println(StringUtils.commandMessage(str));
-				reply(embed);
-			}
+					if (embeds.size() == 1) {
+						message.editMessage(embeds.get(0).build()).queue();
+					}
+				}
+
+				message.addReaction("U+25C0").queue();
+				//message.addReaction("U+25FC").queue();
+				message.addReaction("U+25B6").queue();
+
+				EmbedBuilder[] emb = embeds.toArray(new EmbedBuilder[0]);
+				HistoryLists.addToReaction(buser, message, new ReactionObject(emb, 0));
+			});
+		} catch (ScoreException e) {
+			String[] str = getLanguageManager().getStrings("Osu", "NO_HAS_HISTORY");
+			MessageEmbed embed = TypeEmbed.SoftWarningEmbed(str[0], StringUtils.commandMessage(str)).build();
+
+			System.out.println(StringUtils.commandMessage(str));
+			reply(embed);
 		}
 	}
 	
@@ -112,42 +109,37 @@ public class RecentuserCommand extends Comando {
 		return OusuEmote.getEmoteAsMention(name) + " ";
 	}
 	
-	public EmbedBuilder embed(RecentScore score, BeatmapSearch beatmap, int[] ordem, String username) {
+	public EmbedBuilder embed(RecentScore score, BeatmapSearch beatmap, String username) {
 		EmbedBuilder embed = new EmbedBuilder();
 		String emote = OusuUtils.getRankEmote(score);
-		String title = new StringBuffer()
-				.append("[" + beatmap.getTitle() + "]")
-				.append("(" + beatmap.getURL() + ")")
-				.toString();
+		StringBuilder title = new StringBuilder();
+		title.append("[").append(beatmap.getTitle()).append("]").append("(").append(beatmap.getURL()).append(")");
+
+		StringBuilder user = new StringBuilder();
+		user.append("[").append(username).append("]").append("(https://osu.ppy.sh/users/").append(score.getUserId()).append(")");
 		
-		String user = new StringBuffer()
-				.append("[" + username + "]")
-				.append("(https://osu.ppy.sh/users/" + score.getUserId() + ")")
-				.toString();
-		
-		String scores = new StringBuffer()
-				.append(emote("300", score.get300())) 
-				.append(emote("100", score.get100()))
-				.append(emote("50", score.get50()))
-				.append(emote("miss", score.getMiss()))
-				.toString();
+		StringBuilder scores = new StringBuilder();
+		scores.append(emote("300", score.get300()))
+			.append(emote("100", score.get100()))
+			.append(emote("50", score.get50()))
+			.append(emote("miss", score.getMiss()));
 		  
-		StringBuffer mods = new StringBuffer();
+		StringBuilder mods = new StringBuilder();
 		for (Mods mod : score.getEnabledMods()) {
 			for (Emote emoji : OusuEmote.getEmotes()) {
 				if (mod.name().toLowerCase().replace("_", "").contains(emoji.getName().toLowerCase())) {
-					mods.append(emoji.getAsMention() + " ");
+					mods.append(emoji.getAsMention()).append(" ");
 				}
 			}
 		}
 		
 		embed.setAuthor(username);
 		embed.setTitle(emote + " " + getLanguageManager().getString("Embeds", "USER_COMMAND_HISTORY"));
-		embed.setDescription(emote("small_green_diamond") + getLanguageManager().getString("Embeds", "MESSAGE_RECENTUSER").replace("{USERNAME}", user));
+		embed.setDescription(emote("small_green_diamond") + getLanguageManager().getString("Embeds", "MESSAGE_RECENTUSER").replace("{USERNAME}", user.toString()));
 		LanguageManager lang = getLanguageManager();
-		embed.addField("Beatmap:", Emoji.HEADPHONES.getAsMention() + title, true);
+		embed.addField("Beatmap:", Emoji.HEADPHONES.getAsMention() + title.toString(), true);
 		embed.addField(lang.getString("Embeds", "MAP_STATS"), "`" + OusuUtils.getApproval(beatmap.getApprovated()) + "`\n" + beatmap.getDifficult()[0] + "\n" + mods.toString(), true);
-		embed.addField(lang.getString("Embeds", "SCORE"), scores, true);
+		embed.addField(lang.getString("Embeds", "SCORE"), scores.toString(), true);
 		
 		embed.addField(lang.getString("Embeds", "TOTAL_SCORE"), score.getScore()+"", true);
 		SimpleDateFormat datef = new SimpleDateFormat("dd/MM/yyyy");

@@ -1,7 +1,6 @@
 package me.skiincraft.discord.ousu.commands;
 
 import java.awt.Color;
-import java.util.Arrays;
 import java.util.Collections;
 
 import me.skiincraft.discord.core.configuration.LanguageManager;
@@ -39,7 +38,7 @@ public class VoteCommand extends Comando {
 
 		embed.setImage("https://media.discordapp.net/attachments/710231271623753738/712106708087865354/voteimage.png");
 		embed.addField("Vote :3","[Here!](" + voteurl + ")", false);
-		embed.setFooter("Link: " + voteurl, OusuBot.getInstance().getShardManager().getShardById(0).getSelfUser().getAvatarUrl());
+		embed.setFooter("Link: " + voteurl);
 		embed.setColor(Color.PINK);
 		
 		reply(embed.build());

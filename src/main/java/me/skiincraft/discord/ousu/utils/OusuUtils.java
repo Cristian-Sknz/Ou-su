@@ -26,6 +26,25 @@ import me.skiincraft.discord.ousu.emojis.OusuEmote;
 
 
 public class OusuUtils {
+
+
+	public enum DCText {
+		BOLD, SPOILER, ITALIC, BOLD_ITALC
+	}
+
+	public static String dcText(String text, DCText type){
+		switch (type){
+			case BOLD:
+				return "**" + text + "**";
+			case SPOILER:
+				return "||" + text + "||";
+			case ITALIC:
+				return "*" + text + "*";
+			case BOLD_ITALC:
+				return "**" + text + "***";
+		}
+		return text;
+	}
 	
 	public static boolean isImage(String url) {
 		URLConnection connection;

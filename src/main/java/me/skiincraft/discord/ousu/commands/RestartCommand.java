@@ -1,7 +1,6 @@
 package me.skiincraft.discord.ousu.commands;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
 
 import me.skiincraft.discord.core.OusuCore;

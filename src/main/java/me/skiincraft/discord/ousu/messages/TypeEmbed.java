@@ -1,11 +1,9 @@
 package me.skiincraft.discord.ousu.messages;
 
-import java.awt.Color;
-import java.util.Random;
-
-import me.skiincraft.discord.ousu.OusuBot;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.User;
+
+import java.awt.*;
+import java.util.Random;
 
 public class TypeEmbed {
 
@@ -82,12 +80,11 @@ public class TypeEmbed {
 
 	public static EmbedBuilder DefaultEmbed(String title, String description) {
 		EmbedBuilder b = new EmbedBuilder();
-		User user = OusuBot.getInstance().getShardManager().getUserById("247096601242238991");
 
 		b.setColor(Color.PINK);
 		b.setTitle(title);
 		b.setDescription(description);
-		b.setFooter("Ou!su Bot | Created by " + user.getName() + user.getDiscriminator());
+		b.setFooter("Ou!su Bot | Created by Sknz#4260");
 		return b;
 	}
 

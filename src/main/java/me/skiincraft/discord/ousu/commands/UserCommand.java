@@ -1,21 +1,8 @@
 package me.skiincraft.discord.ousu.commands;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-
-import javax.imageio.ImageIO;
-
 import me.skiincraft.api.ousu.Request;
 import me.skiincraft.api.ousu.entity.objects.Gamemode;
+import me.skiincraft.api.ousu.exceptions.UserException;
 import me.skiincraft.discord.core.command.ContentMessage;
 import me.skiincraft.discord.core.configuration.Language;
 import me.skiincraft.discord.core.configuration.LanguageManager;
@@ -29,12 +16,24 @@ import me.skiincraft.discord.ousu.common.CommandCategory;
 import me.skiincraft.discord.ousu.emojis.OusuEmote;
 import me.skiincraft.discord.ousu.htmlpage.JSoupGetters;
 import me.skiincraft.discord.ousu.imagebuilders.ImageAdapter;
+import me.skiincraft.discord.ousu.messages.TypeEmbed;
 import me.skiincraft.discord.ousu.osu.UserStatistics;
 import me.skiincraft.discord.ousu.reactions.HistoryLists;
-
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 
 public class UserCommand extends Comando {
 
@@ -67,24 +66,37 @@ public class UserCommand extends Comando {
 
 		String nickname = b.substring(0, b.length() - 1);
 
-		Request<me.skiincraft.api.ousu.entity.user.User> request = OusuBot.getApi().getUser(nickname, gm);
-		me.skiincraft.api.ousu.entity.user.User user = request.get();
-		InputStream draw = new UserScore(user).draw(getLanguageManager().getLanguage());
-		final EmbedBuilder embedlocal = embed(user);
-		ContentMessage content = new ContentMessage(embedlocal.build(), draw, "png").setInputName("user_ousu");
-		reply(content, message ->{
-			try {
-				List<EmbedBuilder> reactions = new ArrayList<>();
-				reactions.add(embedlocal.setImage("attachment://" + content.getInputName() + content.getInputExtension()));
-				reactions.add(embed2(JSoupGetters.inputType(user, getLanguageManager()), embedlocal)
-						.setImage("attachment://" + content.getInputName() + content.getInputExtension()));
+		try {
+			Request<me.skiincraft.api.ousu.entity.user.User> request = OusuBot.getApi().getUser(nickname, gm);
+			me.skiincraft.api.ousu.entity.user.User user = request.get();
+			InputStream draw = new UserScore(user).draw(getLanguageManager().getLanguage());
+			final EmbedBuilder embedlocal = embed(user);
+			ContentMessage content = new ContentMessage(embedlocal.build(), draw, "png").setInputName("user_ousu");
+			reply(content, message -> {
+				try {
+					List<EmbedBuilder> reactions = new ArrayList<>();
+					reactions.add(embedlocal.setImage("attachment://" + content.getInputName() + content.getInputExtension()));
+					reactions.add(embed2(JSoupGetters.inputType(user, getLanguageManager()), embedlocal)
+							.setImage("attachment://" + content.getInputName() + content.getInputExtension()));
 
-				HistoryLists.addToReaction(buser, message, new ReactionObject(reactions, 0));
-				message.addReaction("U+1F4CE").queue();
-			} catch (IOException e) {
-				e.printStackTrace();
+					HistoryLists.addToReaction(buser, message, new ReactionObject(reactions, 0));
+					message.addReaction("U+1F4CE").queue();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			});
+		} catch (UserException e){
+			String[] str = getLanguageManager().getStrings("Osu", "INEXISTENT_USER");
+			StringBuilder buffer = new StringBuilder();
+			for (String append : str) {
+				if (!append.equals(str[0])) {
+					buffer.append(OusuEmote.getEmoteAsMention("small_red_diamond"))
+							.append(" ")
+							.append(append);
+				}
 			}
-		});
+			reply(TypeEmbed.WarningEmbed(str[0], buffer.toString()).build());
+		}
 	}
 	
 	public EmbedBuilder embed(me.skiincraft.api.ousu.entity.user.User user) {

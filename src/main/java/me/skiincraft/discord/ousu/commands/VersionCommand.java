@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Objects;
 
 public class VersionCommand extends Comando {
 
@@ -36,8 +37,7 @@ public class VersionCommand extends Comando {
 	public EmbedBuilder embed() {
 		EmbedBuilder embed = new EmbedBuilder();
 
-		User user = OusuBot.getInstance().getShardManager().getUserById("247096601242238991");
-		SelfUser self = OusuBot.getInstance().getShardManager().getShardById(0).getSelfUser();
+		SelfUser self = Objects.requireNonNull(OusuBot.getInstance().getShardManager().getShardById(0)).getSelfUser();
 		embed.setAuthor(self.getName() + "#" + self.getDiscriminator(), "https://github.com/skiincraft", self.getAvatarUrl());
 		OffsetDateTime data = self.getTimeCreated();
 
@@ -46,12 +46,12 @@ public class VersionCommand extends Comando {
 				+ new SimpleDateFormat("dd/MM/yyyy").format(Date.from(data.toInstant())));
 		
 		embed.addField("Versão", "2.0.1", true);
-		embed.addField("Author", "["+ user.getName() + "#" + user.getDiscriminator() + "](https://github.com/skiincraft)", true);
+		embed.addField("Author", "[Sknz#4260](https://github.com/skiincraft)", true);
 
 		embed.setThumbnail("https://i.imgur.com/WxEN1bw.jpg");
 
 		embed.setColor(Color.YELLOW);
-		embed.setFooter(getLanguageManager().getString("Default", "FOOTER_DEFAULT"), user.getAvatarUrl());
+		embed.setFooter(getLanguageManager().getString("Default", "FOOTER_DEFAULT"));
 		return embed;
 	}
 }

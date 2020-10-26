@@ -16,9 +16,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.*;
 import java.util.List;
 
 import static me.skiincraft.discord.core.utils.Emoji.SMALL_ORANGE_DIAMOND;
@@ -143,7 +141,7 @@ public class HelpCommand extends Comando {
 		String[] str = lang.getStrings("Messages", "HELP_COMMAND_MESSAGE");
 
 		embed.setTitle(str[0]);
-		embed.setThumbnail(OusuBot.getInstance().getShardManager().getShardById(0).getSelfUser().getAvatarUrl());
+		embed.setThumbnail(Objects.requireNonNull(OusuBot.getInstance().getShardManager().getShardById(0), "SelfUser null").getSelfUser().getAvatarUrl());
 		StringBuilder buffer = new StringBuilder();
 		for (String append : str) {
 			if (!append.equals(str[0])) buffer.append(append).append("\n");
@@ -157,9 +155,8 @@ public class HelpCommand extends Comando {
 		embed.addField(":bulb: **" + CommandCategory.Sobre.getCategoryName(lang) + "**",
 				"`" + stringssorted.get(2)  + "`", true);
 
-		User user = OusuBot.getInstance().getShardManager().getUserById("247096601242238991");
 		embed.setColor(new Color(226, 41, 230));
-		embed.setFooter(user.getName() + "#" + user.getDiscriminator() + " | Ou!su bot ™", user.getAvatarUrl());
+		embed.setFooter("Sknz#4260 | Ou!su bot ™");
 		return embed;
 	}
 

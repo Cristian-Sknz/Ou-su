@@ -24,7 +24,7 @@ import net.dv8tion.jda.api.entities.User;
 public class SearchCommand extends Comando {
 
 	public SearchCommand() {
-		super("search", Arrays.asList("pesquisar", "queue"), "search <queue>");
+		super("search", Arrays.asList("map", "pesquisar", "queue"), "search <queue>");
 	}
 
 	public CommandCategory getCategory() {
@@ -47,15 +47,11 @@ public class SearchCommand extends Comando {
 						continue;
 					}
 					EmbedBuilder sEmbed = SearchEmbed.searchEmbed(info, channel.getGuild());
-					if (first == 0 && sEmbed != null) {
+					if (first == 0) {
 						message.editMessage(new EmbedBuilder(sEmbed)
 								.setFooter("Loading more beatmaps").build()).queue();
 						channel.sendFile(info.getBeatmapPreview(), info.getTitle() + ".mp3").queue();
 						first =1;
-					}
-
-					if (sEmbed == null) {
-						continue;
 					}
 
 					embeds.add(sEmbed);
