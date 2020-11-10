@@ -6,22 +6,25 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
 
-import me.skiincraft.discord.core.reactions.ReactionObject;
-import me.skiincraft.discord.core.utils.ImageUtils;
+import me.skiincraft.discord.core.command.InteractChannel;
+import me.skiincraft.discord.core.common.reactions.ReactionObject;
+import me.skiincraft.discord.core.common.reactions.Reactions;
+import me.skiincraft.discord.core.common.reactions.custom.ReactionPage;
+import me.skiincraft.discord.core.configuration.LanguageManager;
 import me.skiincraft.discord.ousu.common.Comando;
 import me.skiincraft.discord.ousu.common.CommandCategory;
 import me.skiincraft.discord.ousu.htmlpage.HtmlRanking;
 import me.skiincraft.discord.ousu.messages.Ranking;
 import me.skiincraft.discord.ousu.messages.TypeEmbed;
-import me.skiincraft.discord.ousu.reactions.HistoryLists;
 
+import me.skiincraft.discord.ousu.utils.ImageUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.Member;
 
 public class RankingCommand extends Comando {
 
@@ -30,34 +33,34 @@ public class RankingCommand extends Comando {
 	}
 
 	public CommandCategory getCategory() {
-		return CommandCategory.Osu;
+		return CommandCategory.Gameplay;
 	}
 
-	public void execute(User user, String[] args, TextChannel channel) {
+	public void execute(Member user, String[] args, InteractChannel channel) {
 		if (args.length >= 2) {
-			replyUsage();
+			replyUsage(channel.getTextChannel());
 			return;
 		}
-		reply(TypeEmbed.LoadingEmbed().build(), message -> {
-				String cc = (args.length == 0)? null : (args[0].length() >= 2) ? args[0] : null;
+		try {
+			channel.reply(TypeEmbed.LoadingEmbed().build(), message -> {
+				String cc = (args.length == 0) ? null : (args[0].length() >= 2) ? args[0] : null;
 				try {
 					List<Ranking> rankinglist = HtmlRanking.get(cc);
-					List<EmbedBuilder> embeds = embed(rankinglist);
-					
+					List<EmbedBuilder> embeds = embed(rankinglist, getLanguageManager(channel.getTextChannel().getGuild()));
+					Objects.requireNonNull(Reactions.getInstance()).registerReaction(new ReactionObject(message, user.getIdLong(),
+							new String[]{"U+25C0", "U+25B6"}), new ReactionPage(embeds, true));
 					message.editMessage(embeds.get(0).build()).queue();
-					
-					message.addReaction("U+25C0").queue();
-					message.addReaction("U+25B6").queue();
-					
-					HistoryLists.addToReaction(user, message, new ReactionObject(embeds, 0));
 				} catch (IOException e) {
 					e.printStackTrace();
-					reply("Ocorreu um problema :/ \n`" + e.getMessage() + "`");
+					channel.reply("Ocorreu um problema :/ \n`" + e.getMessage() + "`");
 				}
-		});
+			});
+		} catch (Exception e){
+			channel.reply(TypeEmbed.errorMessage(e, channel.getTextChannel()).build());
+		}
 	}
 	
-	public List<EmbedBuilder> embed(List<Ranking> user) {
+	public List<EmbedBuilder> embed(List<Ranking> user, LanguageManager lang) {
 		EmbedBuilder embed = new EmbedBuilder();
 		
 		// Verificando se é regional
@@ -65,14 +68,14 @@ public class RankingCommand extends Comando {
 		boolean isCountry = countyEquals == user.size();
 		
 		if (isCountry) {
-			embed.setTitle(getLanguageManager().getString("Embeds", "NATIONAL_RANKING"));
-			embed.setDescription(getLanguageManager().getString("Message", "NATIONAL_RANKING_MESSAGE")
+			embed.setTitle(lang.getString("Embeds", "NATIONAL_RANKING"));
+			embed.setDescription(lang.getString("Message", "NATIONAL_RANKING_MESSAGE")
 					.replace("{country}", user.get(0).getCountry()[1]));
 		}
 		
 		if (!isCountry) {
-			embed.setTitle(getLanguageManager().getString("Embeds", "WORLD_RANKING"));
-			embed.setDescription(getLanguageManager().getString("Message", "GLOBAL_RANKING_MESSAGE"));
+			embed.setTitle(lang.getString("Embeds", "WORLD_RANKING"));
+			embed.setDescription(lang.getString("Message", "GLOBAL_RANKING_MESSAGE"));
 		}
 		//Pegando todos os valores
 		embed.setThumbnail("https://i.imgur.com/sxIERAT.png");

@@ -1,5 +1,6 @@
 package me.skiincraft.discord.ousu.commands;
 
+import me.skiincraft.discord.core.command.InteractChannel;
 import me.skiincraft.discord.core.configuration.LanguageManager;
 import me.skiincraft.discord.ousu.common.Comando;
 import me.skiincraft.discord.ousu.common.CommandCategory;
@@ -13,8 +14,7 @@ import me.skiincraft.mal.entity.manga.Mangaography;
 import me.skiincraft.mal.entity.objects.Genre;
 import me.skiincraft.mal.util.By;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.Member;
 
 import java.awt.*;
 import java.text.NumberFormat;
@@ -32,40 +32,41 @@ public class MalCommand extends Comando {
 
     @Override
     public CommandCategory getCategory() {
-        return CommandCategory.Owner;
+        return CommandCategory.Gameplay;
     }
 
     @Override
-    public void execute(User user, String[] args, TextChannel channel) {
+    public void execute(Member user, String[] args, InteractChannel channel) {
         if (args.length <= 1){
-            replyUsage();
+            replyUsage(channel.getTextChannel());
             return;
         }
+        LanguageManager lang = getLanguageManager(channel.getTextChannel().getGuild());
 
         if (args[0].equalsIgnoreCase("anime")) {
             Anime anime = myAnimeList.getAnime(By.search(appendArgs(1, args))).get();
             try {
                 if (anime.getCharacters() != null) {
                     List<CharacterShort> characters = anime.getCharacters().get();
-                    reply(animeEmbed(anime, characters.get(0).getCharacter().get()).build());
+                    channel.reply(animeEmbed(anime, characters.get(0).getCharacter().get(), lang).build());
                     return;
                 }
             } catch (NullPointerException e) {
-                reply(animeEmbed(anime, null).build());
+                channel.reply(animeEmbed(anime, null, lang).build());
                 return;
             }
 
-            reply(animeEmbed(anime, null).build());
+            channel.reply(animeEmbed(anime, null, lang).build());
             return;
         }
 
         if (args[0].equalsIgnoreCase("character")) {
             Character character = myAnimeList.getCharacter(By.search(appendArgs(1, args))).get();
-            reply(characterEmbed(character).build());
+            channel.reply(characterEmbed(character, lang).build());
             return;
         }
 
-        replyUsage();
+        replyUsage(channel.getTextChannel());
     }
 
     public String appendArgs(int start, String[] args){
@@ -78,9 +79,8 @@ public class MalCommand extends Comando {
     }
 
 
-    public EmbedBuilder animeEmbed(Anime anime, Character characterShort) {
+    public EmbedBuilder animeEmbed(Anime anime, Character characterShort, LanguageManager lang) {
         EmbedBuilder embed = new EmbedBuilder();
-        LanguageManager lang = getLanguageManager();
 
         String avatar = (characterShort == null) ? anime.getDefaultAvatar() : characterShort.getDefaultAvatar();
 
@@ -124,22 +124,18 @@ public class MalCommand extends Comando {
             }
         }
 
-        StringBuilder information = new StringBuilder();
-        information.append(":tv: ")
-                .append(anime.getInformation().getType().name())
-                .append("\n");
-
-        information.append(":frame_photo: ")
-                .append(anime.getInformation().getEpisodes())
-                .append(lang.getString("Embeds", "EPISODES"))
-                .append("\n");
-
-        information.append(":green_circle: ")
-                .append(anime.getInformation().getAired());
-
         embed.addField(lang.getString("Titles", "GENRE"), genres.toString(), true);
         embed.addField(lang.getString("Embeds", "PREMIERED"), anime.getInformation().getPremiered(), true);
-        embed.addField(lang.getString("Embeds", "INFORMATION"), information.toString(), true);
+        String information = ":tv: " +
+                anime.getInformation().getType().name() +
+                "\n" +
+                ":frame_photo: " +
+                anime.getInformation().getEpisodes() +
+                lang.getString("Embeds", "EPISODES") +
+                "\n" +
+                ":green_circle: " +
+                anime.getInformation().getAired();
+        embed.addField(lang.getString("Embeds", "INFORMATION"), information, true);
         embed.setColor(new Color(255, 137, 81));
 
         embed.setThumbnail(anime.getDefaultAvatar());
@@ -150,9 +146,8 @@ public class MalCommand extends Comando {
         return embed;
     }
 
-    public EmbedBuilder characterEmbed(Character character) {
+    public EmbedBuilder characterEmbed(Character character, LanguageManager lang) {
         EmbedBuilder embed = new EmbedBuilder();
-        LanguageManager lang = getLanguageManager();
         embed.setAuthor(character.getName(), character.getMALPage(), character.getDefaultAvatar());
         embed.setTitle("MyAnimeList");
         embed.setThumbnail(character.getDefaultAvatar());

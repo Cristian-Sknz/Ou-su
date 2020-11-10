@@ -1,27 +1,30 @@
 package me.skiincraft.discord.ousu.commands;
 
-import me.skiincraft.api.ousu.Request;
 import me.skiincraft.api.ousu.entity.objects.Gamemode;
+import me.skiincraft.api.ousu.entity.objects.PlayedTime;
+import me.skiincraft.api.ousu.entity.user.User;
 import me.skiincraft.api.ousu.exceptions.UserException;
+import me.skiincraft.api.ousu.requests.Request;
+import me.skiincraft.discord.core.OusuCore;
 import me.skiincraft.discord.core.command.ContentMessage;
+import me.skiincraft.discord.core.command.InteractChannel;
+import me.skiincraft.discord.core.common.CustomFont;
+import me.skiincraft.discord.core.common.reactions.ReactionObject;
+import me.skiincraft.discord.core.common.reactions.Reactions;
+import me.skiincraft.discord.core.common.reactions.custom.ReactionPage;
 import me.skiincraft.discord.core.configuration.Language;
 import me.skiincraft.discord.core.configuration.LanguageManager;
-import me.skiincraft.discord.core.plugin.Plugin;
-import me.skiincraft.discord.core.reactions.ReactionObject;
-import me.skiincraft.discord.core.textfont.CustomFont;
-import me.skiincraft.discord.core.utils.ImageUtils;
 import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.common.Comando;
 import me.skiincraft.discord.ousu.common.CommandCategory;
-import me.skiincraft.discord.ousu.emojis.OusuEmote;
+import me.skiincraft.discord.ousu.emojis.GenericsEmotes;
 import me.skiincraft.discord.ousu.htmlpage.JSoupGetters;
 import me.skiincraft.discord.ousu.imagebuilders.ImageAdapter;
 import me.skiincraft.discord.ousu.messages.TypeEmbed;
 import me.skiincraft.discord.ousu.osu.UserStatistics;
-import me.skiincraft.discord.ousu.reactions.HistoryLists;
+import me.skiincraft.discord.ousu.utils.ImageUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.Member;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -30,24 +33,23 @@ import java.io.InputStream;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
-import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class UserCommand extends Comando {
 
 	public UserCommand() {
-		super("user", Arrays.asList("usuario", "profile", "player", "jogador"), "user <name> [gamemode]");
+		super("user", Arrays.asList("usuario", "profile", "player", "jogador"), "user <username> [gamemode]");
 	}
 
 	public CommandCategory getCategory() {
-		return CommandCategory.Osu;
+		return CommandCategory.Statistics;
 	}
 
-	public void execute(User buser, String[] args, TextChannel channel) {
+	public void execute(Member member, String[] args, InteractChannel channel) {
 		if (args.length == 0) {
-			replyUsage();
+			replyUsage(channel.getTextChannel());
 			return;
 		}
 
@@ -65,67 +67,63 @@ public class UserCommand extends Comando {
 		l.clear();
 
 		String nickname = b.substring(0, b.length() - 1);
-
+		LanguageManager lang = getLanguageManager(channel.getTextChannel().getGuild());
 		try {
-			Request<me.skiincraft.api.ousu.entity.user.User> request = OusuBot.getApi().getUser(nickname, gm);
-			me.skiincraft.api.ousu.entity.user.User user = request.get();
-			InputStream draw = new UserScore(user).draw(getLanguageManager().getLanguage());
-			final EmbedBuilder embedlocal = embed(user);
+			Request<User> request = OusuBot.getApi().getUser(nickname, gm);
+			User user = request.get();
+			InputStream draw = new UserScore(user).draw(lang.getLanguage());
+			final EmbedBuilder embedlocal = embed(user, lang);
 			ContentMessage content = new ContentMessage(embedlocal.build(), draw, "png").setInputName("user_ousu");
-			reply(content, message -> {
+			channel.reply(content, message -> {
 				try {
 					List<EmbedBuilder> reactions = new ArrayList<>();
 					reactions.add(embedlocal.setImage("attachment://" + content.getInputName() + content.getInputExtension()));
-					reactions.add(embed2(JSoupGetters.inputType(user, getLanguageManager()), embedlocal)
+					reactions.add(embed2(JSoupGetters.inputType(user, lang), embedlocal, lang)
 							.setImage("attachment://" + content.getInputName() + content.getInputExtension()));
 
-					HistoryLists.addToReaction(buser, message, new ReactionObject(reactions, 0));
-					message.addReaction("U+1F4CE").queue();
+					Objects.requireNonNull(Reactions.getInstance()).registerReaction(new ReactionObject(message, member.getIdLong(),
+							new String[]{"U+1F4CE"}), new ReactionPage(reactions, true));
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			});
 		} catch (UserException e){
-			String[] str = getLanguageManager().getStrings("Osu", "INEXISTENT_USER");
-			StringBuilder buffer = new StringBuilder();
-			for (String append : str) {
-				if (!append.equals(str[0])) {
-					buffer.append(OusuEmote.getEmoteAsMention("small_red_diamond"))
-							.append(" ")
-							.append(append);
-				}
-			}
-			reply(TypeEmbed.WarningEmbed(str[0], buffer.toString()).build());
+			channel.reply(TypeEmbed.inexistentUser(nickname, getCategory(), lang).build());
+		} catch (Exception e){
+			channel.reply(TypeEmbed.errorMessage(e, channel.getTextChannel()).build());
 		}
 	}
+
+
 	
-	public EmbedBuilder embed(me.skiincraft.api.ousu.entity.user.User user) {
+	public EmbedBuilder embed(me.skiincraft.api.ousu.entity.user.User user, LanguageManager lang) {
 		EmbedBuilder embed = new EmbedBuilder();
 		NumberFormat nf = NumberFormat.getNumberInstance(new Locale("pt", "BR"));
 		DecimalFormat df = (DecimalFormat) NumberFormat.getNumberInstance(new Locale("pt", "BR"));
-		LanguageManager lang = getLanguageManager();
 		df.applyPattern("#.0");
 		
 		String accuracy = df.format(user.getAccuracy());
-		String pp = OusuEmote.getEmoteAsMentionEquals("pp");
+		String pp = GenericsEmotes.getEmoteAsMentionEquals("pp");
 		
 		String code = ":flag_" + user.getCountryCode().toLowerCase() + ": " + user.getCountryCode();
 		
 		embed.setAuthor(user.getUsername(), user.getURL(), user.getUserAvatar());
 		embed.setTitle(lang.getString("Embeds", "USER_COMMAND_PLAYERSTATS"));
 		
-		embed.setDescription(":map: " + lang.getString("Embeds", "RANKING") + ": #" + nf.format(user.getRanking()) + "\n");
-		embed.appendDescription(":clock3: " + lang.getString("Embeds", "PLAYED_TIME") + ": " + user.getPlayedHours().toString() + "\n");
-		embed.appendDescription(OusuEmote.getEmoteAsMention("cursor") + " " + lang.getString("Embeds", "TOTAL_SCORE") + " " + nf.format(user.getTotalScore()));
-		
-		embed.addField(lang.getString("Embeds", "PERFORMANCE"),
-				lang.getString("Embeds", "ACCURACY") + "`" + accuracy + "%" + "`" + "\n" + pp + " " + nf.format((long) user.getPP()), true);
-		
+		embed.setDescription(":map: " + lang.getString("Embeds", "RANKING") + ": #" + nf.format(user.getRanking()) + "º\n");
+		embed.appendDescription(":clock3: " + lang.getString("Embeds", "PLAYED_TIME") + ": " + convert(user.getPlayedHours()) + "\n");
+		embed.appendDescription(":cyclone: " + lang.getString("Embeds", "ACCURACY") + " `"  + accuracy + "%" + "`");
 		embed.addField(lang.getString("Embeds", "NATIONAL_RANKING"),
-				code + " #" + nf.format(user.getCountryRanking()), true);
+				code + " #" + nf.format(user.getCountryRanking())+ "º", true);
+
+		embed.addField(lang.getString("Embeds", "PERFORMANCE"),
+				pp + " " + nf.format((long) user.getPP()), true);
+
 		
-		embed.addField(lang.getString("Embeds", "JOIN_DATE"), user.getJoinDate(), true);
-	
+		embed.addField(lang.getString("Embeds", "TOTAL_SCORE"), nf.format(user.getTotalScore()), true);
+		embed.setFooter(lang.getString("Embeds", "JOIN_DATE"));
+		embed.setTimestamp(user.getJoinDate());
+		//
 		try {
 			embed.setColor(ImageUtils.getPredominatColor(ImageIO.read(new URL(user.getUserAvatar()))));
 			embed.setThumbnail(user.getUserAvatar());
@@ -138,8 +136,7 @@ public class UserCommand extends Comando {
 		return embed;
 	}
 	
-	public EmbedBuilder embed2(UserStatistics osuUser, EmbedBuilder embedBuilder) {
-		LanguageManager lang = getLanguageManager();
+	public EmbedBuilder embed2(UserStatistics osuUser, EmbedBuilder embedBuilder, LanguageManager lang) {
 		EmbedBuilder embed = new EmbedBuilder(embedBuilder);
 		embed.clearFields();
 		
@@ -154,6 +151,18 @@ public class UserCommand extends Comando {
 		embed.setFooter(lang.getString("Default", "FOOTER_DEFAULT"),
 				"https://osu.ppy.sh/images/flags/" + osuUser.getUser().getCountryCode() + ".png");
 		return embed;
+	}
+
+	public String convert(PlayedTime playedTime){
+		if (playedTime.getDays() == 0 && playedTime.getHours() == 0){
+			return playedTime.getMinutes() + " minute(s)";
+		}
+
+		if (playedTime.getDays() == 0){
+			return playedTime.getHours() + " hour(s)";
+		}
+
+		return TimeUnit.DAYS.toHours(playedTime.getDays()) + playedTime.getHours() + " hour(s)";
 	}
 	
 	public boolean isGamemode(String arg) {
@@ -170,13 +179,12 @@ public class UserCommand extends Comando {
 		}
 		
 		private String getAssets() {
-			Plugin plugin = OusuBot.getInstance().getPlugin();
-			return plugin.getAssetsPath().getAbsolutePath();
+			return OusuCore.getAssetsPath().toFile().getAbsolutePath();
 		}
 		
 		private void scoreCalculates(int level, int x) {
 			String l = level + "";
-			Font cf = new CustomFont().getFont("ARLRDBD", Font.PLAIN, 34F);
+			Font cf = CustomFont.getFont("ARLRDBD", Font.PLAIN, 34F);
 			// new Font("Arial", Font.PLAIN, 34)
 			if (l.length() == 5) {
 				getImageBuilder().addCentralizedString(l, x, 211, cf);

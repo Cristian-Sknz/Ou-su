@@ -1,21 +1,19 @@
 package me.skiincraft.discord.ousu.permission;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import me.skiincraft.discord.core.sqlobjects.AccessTable;
 import me.skiincraft.discord.core.sqlobjects.Table;
 import me.skiincraft.discord.core.sqlobjects.Table.Column.ColumnType;
-import me.skiincraft.discord.ousu.OusuBot;
-
+import me.skiincraft.discord.core.sqlobjects.TableReference;
 import net.dv8tion.jda.api.entities.User;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class IPermission extends Table {
 	
 	private final User user;
 	
 	public IPermission(User user) {
-		super("internalpermission", OusuBot.getInstance().getPlugin());
+		super("internalpermission");
 		this.user = user;
 	}
 
@@ -33,8 +31,10 @@ public class IPermission extends Table {
 		}
 	}
 
-	public AccessTable accessTable() {
-		return new AccessTable("userId", user.getId());
+
+	@Override
+	public TableReference reference() {
+		return new TableReference("userId", user.getId());
 	}
 
 	public List<Column> columns() {

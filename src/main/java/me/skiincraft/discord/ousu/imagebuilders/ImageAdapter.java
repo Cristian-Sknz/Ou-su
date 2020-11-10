@@ -1,5 +1,8 @@
 package me.skiincraft.discord.ousu.imagebuilders;
 
+import me.skiincraft.discord.core.common.CustomFont;
+import me.skiincraft.discord.ousu.common.ImageBuilder;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -10,17 +13,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import me.skiincraft.discord.core.textfont.CustomFont;
-import me.skiincraft.discord.core.utils.ImageBuilder;
-import me.skiincraft.discord.core.utils.ImageBuilder.Alignment;
-
 public abstract class ImageAdapter {
 	
 	private final ImageBuilder imageBuilder;
-	private final CustomFont customFont;
 	public ImageAdapter(int width, int height) {
 		imageBuilder = new ImageBuilder(getClass().getSimpleName() + "-", width, height);
-		customFont = new CustomFont();
 	}
 	
 	
@@ -39,7 +36,7 @@ public abstract class ImageAdapter {
 		return this;
 	}
 	
-	protected ImageAdapter image(BufferedImage image, int x, int y, Dimension size, Alignment align) {
+	protected ImageAdapter image(BufferedImage image, int x, int y, Dimension size, ImageBuilder.Alignment align) {
 		imageBuilder.drawImage(image, x, y, size, align);
 		return this;
 	}
@@ -49,7 +46,7 @@ public abstract class ImageAdapter {
 		return this;
 	}
 	
-	protected ImageAdapter image(String file, int x, int y, Dimension size, Alignment align) {
+	protected ImageAdapter image(String file, int x, int y, Dimension size, ImageBuilder.Alignment align) {
 		this.image(new File(file), x, y, size, align);
 		return this;
 	}
@@ -63,7 +60,7 @@ public abstract class ImageAdapter {
 		return this;
 	}
 	
-	protected ImageAdapter image(File image, int x, int y, Dimension size, Alignment align) {
+	protected ImageAdapter image(File image, int x, int y, Dimension size, ImageBuilder.Alignment align) {
 		try {
 			imageBuilder.drawImage(image, x, y, size, align);
 		} catch (IOException e) {
@@ -72,7 +69,7 @@ public abstract class ImageAdapter {
 		return this;
 	}
 	
-	protected ImageAdapter image(URL image, int x, int y, Dimension size, Alignment align) throws IOException {
+	protected ImageAdapter image(URL image, int x, int y, Dimension size, ImageBuilder.Alignment align) throws IOException {
 		imageBuilder.drawImage(image, x, y, size, align);
 		return this;
 	}
@@ -83,12 +80,7 @@ public abstract class ImageAdapter {
 	}
 	
 	protected Font font(String font, float size) {
-		return customFont.getFont(font, Font.PLAIN, size);
-	}
-	
-	
-	protected CustomFont getCustomFont() {
-		return customFont;
+		return CustomFont.getFont(font, Font.PLAIN, size);
 	}
 	
 	protected ImageBuilder getImageBuilder() {

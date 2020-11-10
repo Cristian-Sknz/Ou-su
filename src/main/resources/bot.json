@@ -1,0 +1,6 @@
+  {
+    "BotName": "OusuBot",
+    "Main": "me.skiincraft.discord.ousu.OusuBot",
+    "Prefix": "ou!",
+    "OwnerId": "247096601242238991"
+  }

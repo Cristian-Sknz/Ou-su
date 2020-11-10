@@ -2,10 +2,13 @@ package me.skiincraft.discord.ousu.emojis;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import me.skiincraft.discord.core.jda.ListenerAdaptation;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Guild;
 
+import javax.annotation.Nullable;
 import java.io.*;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -25,9 +28,14 @@ public class GenericsEmotes {
     }
 
     public static void loadEmotes(Path path) throws IOException {
+        if (!Files.exists(path)){
+            path.toFile().mkdir();
+        }
+
         emotes.clear();
         AtomicInteger loaded = new AtomicInteger();
-        Files.newDirectoryStream(path).forEach(path1 -> {
+        DirectoryStream<Path> stream = Files.newDirectoryStream(path);
+        stream.forEach(path1 -> {
             if (path1.toFile().getName().toLowerCase().contains(".emotejson")){
                 try {
                     Gson gson = new Gson();
@@ -39,6 +47,7 @@ public class GenericsEmotes {
                 }
             }
         });
+        stream.close();
         System.out.println(loaded + " emotes loaded");
     }
 
@@ -51,11 +60,44 @@ public class GenericsEmotes {
         return parseEmotes(guild.getEmotes());
     }
 
+    public static List<GenericEmote> getEmotes() {
+        return emotes;
+    }
+
+    public static GenericEmote getEmoteEquals(String nameequals) {
+        return emotes.stream()
+                .filter(emote -> emote.getName().equalsIgnoreCase(nameequals))
+                .findFirst().orElse(getEmotes().get(0));
+    }
+
+    public static String getEmoteAsMentionEquals(String nameequals) {
+        return emotes.stream()
+                .filter(emote -> emote.getName().equalsIgnoreCase(nameequals))
+                .map(GenericEmote::getAsMention)
+                .findFirst().orElse(getEmotes().get(0).getAsMention());
+    }
+
+    @Nullable
+    public static GenericEmote getEmote(String name) {
+        return emotes.stream()
+                .filter(emote -> emote.getName().contains(name))
+                .findFirst().orElse(null);
+    }
+
+    public static String getEmoteAsMention(String name) {
+        return emotes.stream()
+                .filter(emote -> emote.getName().contains(name))
+                .map(GenericEmote::getAsMention)
+                .findFirst().orElse(getEmotes().get(0).getAsMention());
+    }
+
     public static void saveEmotes(String path, List<GenericEmote> emotes){
         try {
-            File file = new File((path.endsWith("/") ? path.substring(0, path.length() - 2) : path) + "/" + emotes.get(0).getGuildId() + ".emotejson");
-            file.mkdir();
-
+            if (!Files.exists(Paths.get(path))) {
+                Paths.get(path).toFile().mkdir();
+            }
+            File file = new File(path + "/" + emotes.get(0).getGuildId() + ".emotejson");
+            file.createNewFile();
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
             FileWriter writer = new FileWriter(file);

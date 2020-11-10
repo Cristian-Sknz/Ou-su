@@ -3,8 +3,7 @@ package me.skiincraft.discord.ousu.osu;
 import java.util.Map;
 
 import me.skiincraft.api.ousu.entity.user.User;
-import me.skiincraft.discord.core.utils.Emoji;
-import me.skiincraft.discord.ousu.emojis.OusuEmote;
+import me.skiincraft.discord.ousu.emojis.GenericsEmotes;
 import me.skiincraft.discord.ousu.htmlpage.JSoupGetters.InputTypes;
 
 public class UserStatistics {
@@ -50,16 +49,16 @@ public class UserStatistics {
 	public String getInputEmotes() {
 		StringBuilder buffer = new StringBuilder();
 		if (input.get(InputTypes.Mouse)) {
-			buffer.append(Emoji.MOUSE_THREE_BUTTON.getAsMention()).append(" Mouse\n");
+			buffer.append(":mouse_three_button:").append(" Mouse\n");
 		}
 		if (input.get(InputTypes.Table)) {
-			buffer.append(" ").append(OusuEmote.getEmoteAsMention("tablet")).append(" Tablet\n");
+			buffer.append(" ").append(GenericsEmotes.getEmoteAsMention("tablet")).append(" Tablet\n");
 		}
 		if (input.get(InputTypes.Keyboard)) {
-			buffer.append(" ").append(Emoji.KEYBOARD.getAsMention()).append(" Keyboard\n");
+			buffer.append(" ").append(":keyboard:").append(" Keyboard\n");
 		}
 		if (input.get(InputTypes.Touchpad)) {
-			buffer.append(" ").append(OusuEmote.getEmoteAsMention("touchpad")).append(" Touchpad\n");
+			buffer.append(" ").append(GenericsEmotes.getEmoteAsMention("touchpad")).append(" Touchpad\n");
 		} 
 		
 		return (buffer.length() != 0) ?buffer.toString() : "Not Detected";

@@ -1,8 +1,21 @@
 package me.skiincraft.discord.ousu.commands;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
+import me.skiincraft.api.ousu.entity.objects.Gamemode;
+import me.skiincraft.api.ousu.entity.user.User;
+import me.skiincraft.api.ousu.exceptions.UserException;
+import me.skiincraft.api.ousu.requests.Request;
+import me.skiincraft.discord.core.OusuCore;
+import me.skiincraft.discord.core.command.ContentMessage;
+import me.skiincraft.discord.core.command.InteractChannel;
+import me.skiincraft.discord.ousu.OusuBot;
+import me.skiincraft.discord.ousu.common.Comando;
+import me.skiincraft.discord.ousu.common.CommandCategory;
+import me.skiincraft.discord.ousu.common.ImageBuilder;
+import me.skiincraft.discord.ousu.imagebuilders.ImageAdapter;
+import me.skiincraft.discord.ousu.messages.TypeEmbed;
+import net.dv8tion.jda.api.entities.Member;
+
+import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -13,35 +26,19 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import me.skiincraft.api.ousu.Request;
-import me.skiincraft.api.ousu.entity.objects.Gamemode;
-import me.skiincraft.api.ousu.entity.user.User;
-import me.skiincraft.api.ousu.exceptions.UserException;
-import me.skiincraft.discord.core.command.ContentMessage;
-import me.skiincraft.discord.core.plugin.Plugin;
-import me.skiincraft.discord.core.utils.ImageBuilder.Alignment;
-import me.skiincraft.discord.ousu.OusuBot;
-import me.skiincraft.discord.ousu.common.Comando;
-import me.skiincraft.discord.ousu.common.CommandCategory;
-import me.skiincraft.discord.ousu.emojis.OusuEmote;
-import me.skiincraft.discord.ousu.imagebuilders.ImageAdapter;
-import me.skiincraft.discord.ousu.messages.TypeEmbed;
-
-import net.dv8tion.jda.api.entities.TextChannel;
-
 public class CardCommand extends Comando {
 
 	public CardCommand() {
-		super("card", null, "card <user> [gamemode]");
+		super("card", null, "card <username> [gamemode]");
 	}
 
 	public CommandCategory getCategory() {
-		return CommandCategory.Osu;
+		return CommandCategory.Statistics;
 	}
 
-	public void execute(net.dv8tion.jda.api.entities.User buser, String[] args, TextChannel channel) {
+	public void execute(Member member, String[] args, InteractChannel channel) {
 		if (args.length == 0) {
-			replyUsage();
+			replyUsage(channel.getTextChannel());
 			return;
 		}
 
@@ -57,25 +54,17 @@ public class CardCommand extends Comando {
 
 		l.forEach(s -> b.append(s).append(" "));
 		l.clear();
+		String nickname = b.substring(0, b.length() - 1);
 		try {
-			Request<User> request = OusuBot.getApi().getUser(b.substring(0, b.length()-1), gm);
+			Request<User> request = OusuBot.getApi().getUser(nickname, gm);
 			User user = request.get();
 			InputStream input = new Card(user).draw();
 
-			reply(new ContentMessage(buser.getAsMention(), input, ".png"));
+			channel.reply(new ContentMessage(member.getAsMention(), input, ".png"));
 		} catch (UserException e) {
-			String[] str = getLanguageManager().getStrings("Warning", "INEXISTENT_USER");
-
-			StringBuilder builder = new StringBuilder();
-			for (String append : str) {
-				if (!append.equals(str[0])) {
-					builder.append(OusuEmote.getEmoteAsMention("small_red_diamond"))
-							.append(" ")
-							.append(append);
-				}
-			}
-
-			reply(TypeEmbed.WarningEmbed(str[0], builder.toString()).build());
+			channel.reply(TypeEmbed.inexistentUser(nickname, getCategory(), getLanguageManager(channel.getTextChannel().getGuild())).build());
+		} catch (Exception e){
+			channel.reply(TypeEmbed.errorMessage(e, channel.getTextChannel()).build());
 		}
 
 
@@ -95,8 +84,7 @@ public class CardCommand extends Comando {
 		}
 		
 		private String getAssets() {
-			Plugin plugin = OusuBot.getInstance().getPlugin();
-			return plugin.getAssetsPath().getAbsolutePath();
+			return OusuCore.getAssetsPath().toFile().getAbsolutePath();
 		}
 		
 		
@@ -105,22 +93,22 @@ public class CardCommand extends Comando {
 			Font euphemia = font("Euphemia", 11F);
 			setAntialising();
 			image(getAssets() + "/osu_images/Card_Overlay.png", 0, 0, size(),
-					Alignment.Bottom_left);
+					ImageBuilder.Alignment.Bottom_left);
 			
 			try {
-				image(new URL(user.getUserAvatar()), 48, 44, new Dimension(76, 76), Alignment.Center);
+				image(new URL(user.getUserAvatar()), 48, 44, new Dimension(76, 76), ImageBuilder.Alignment.Center);
 			} catch (IOException e) {
 				image(getAssets() + "/osu_images/nonexistentuser.png", 48, 44, new Dimension(76, 76),
-						Alignment.Center);
+						ImageBuilder.Alignment.Center);
 			}
 			
 			setColor(Color.WHITE);
 			
 			getImageBuilder().addCentralizedStringY(user.getUsername(), 91, 28, aurea);
 			try {
-				image(new URL(user.getUserFlag()), 317, 25, new Dimension(28, 19), Alignment.Center);
+				image(new URL(user.getUserFlag()), 317, 25, new Dimension(28, 19), ImageBuilder.Alignment.Center);
 				image(getAssets() + "/osu_images/modes/" + user.getGamemode().name().toLowerCase() + ".png", 
-						293, 26, new Dimension(15, 15), Alignment.Center);
+						293, 26, new Dimension(15, 15), ImageBuilder.Alignment.Center);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

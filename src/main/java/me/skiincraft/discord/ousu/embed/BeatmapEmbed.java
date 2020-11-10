@@ -1,14 +1,13 @@
 package me.skiincraft.discord.ousu.embed;
 
 import java.awt.Color;
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 
 import me.skiincraft.api.ousu.entity.beatmap.Beatmap;
 import me.skiincraft.discord.core.configuration.LanguageManager;
-import me.skiincraft.discord.core.utils.Emoji;
-import me.skiincraft.discord.core.utils.ImageUtils;
-import me.skiincraft.discord.ousu.emojis.OusuEmote;
 
+import me.skiincraft.discord.ousu.emojis.GenericsEmotes;
+import me.skiincraft.discord.ousu.utils.ImageUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 
@@ -33,30 +32,28 @@ public class BeatmapEmbed {
 			}
 		}
 
-		embed.setDescription(":microphone: "+ lang.getString("Titles", "ARTIST") + " " + artist + "\n");
-		embed.appendDescription(":tickets: "+ lang.getString("Titles", "GENRE") + " " + beatmap.getGenre().getDisplayName() + "\n");
-		embed.appendDescription(OusuEmote.getEmoteAsMention(beatmap.getGameMode().name().toLowerCase()) + " "
+		embed.setDescription(":microphone: "+ lang.getString("Titles", "ARTIST") + " " + artist + "\n")
+				.appendDescription(":tickets: "+ lang.getString("Titles", "GENRE") + " " + beatmap.getGenre().getDisplayName() + "\n")
+				.appendDescription(GenericsEmotes.getEmoteAsMention(beatmap.getGameMode().name().toLowerCase()) + " "
 				+ lang.getString("Titles", "GAMEMODE") + " " + beatmap.getGameMode().name() + "\n");
-		
-		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yy");
 
 		String app = "?";
 		if (beatmap.getApprovedDate() != null) {
-			app = format.format(beatmap.getApprovedDate());
+			app = DateTimeFormatter.ofPattern("dd/MM/yyyy").format(beatmap.getApprovedDate());
 		}
 		
-		embed.appendDescription(OusuEmote.getEmoteAsMention("arrow_pause") + beatmap.getApprovated().name());
+		embed.appendDescription(GenericsEmotes.getEmoteAsMention("arrow_pause") + beatmap.getApprovated().name());
 		
 		embed.addField(lang.getString("Titles", "DIFFICULT"), beatmap.getVersion(), true);
 		
 		embed.addField(lang.getString("Titles", "SUCCESS_RATE"),
-				Emoji.BAR_CHART.getAsMention() + " " + beatmap.getSuccessRate(), true);
+				":bar_chart: " + beatmap.getSuccessRate(), true);
 		
 		embed.addField(lang.getString("Titles", "MAX_COMBO"), beatmap.getMaxCombo() + "", true);
 		
-		embed.addField(lang.getString("Titles", "APPROVATED_IN"), Emoji.DATE.getAsMention() + " " + app, true);
+		embed.addField(lang.getString("Titles", "APPROVATED_IN"),  ":date: " + app, true);
 		
-		embed.addField("BPM:", OusuEmote.getEmoteAsMention("reversearrow") + beatmap.getBPM(), true);
+		embed.addField("BPM:", GenericsEmotes.getEmoteAsMention("reversearrow") + beatmap.getBPM(), true);
 		embed.addField(lang.getString("Titles", "STARS"), beatmap.getStarsEmoji(), true);
 		
 		embed.setThumbnail(beatmap.getBeatmapThumbnailUrl());

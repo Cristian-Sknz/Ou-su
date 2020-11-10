@@ -1,28 +1,29 @@
 package me.skiincraft.discord.ousu.commands;
 
-import java.awt.Color;
-import java.io.IOException;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import me.skiincraft.api.ousu.Request;
 import me.skiincraft.api.ousu.entity.beatmap.Beatmap;
 import me.skiincraft.api.ousu.entity.beatmap.BeatmapSet;
 import me.skiincraft.api.ousu.exceptions.BeatmapException;
-import me.skiincraft.discord.core.reactions.ReactionObject;
-import me.skiincraft.discord.core.utils.Emoji;
+import me.skiincraft.api.ousu.requests.Request;
+import me.skiincraft.discord.core.command.InteractChannel;
+import me.skiincraft.discord.core.common.reactions.ReactionObject;
+import me.skiincraft.discord.core.common.reactions.Reactions;
+import me.skiincraft.discord.core.common.reactions.custom.ReactionPage;
 import me.skiincraft.discord.core.utils.StringUtils;
 import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.common.Comando;
 import me.skiincraft.discord.ousu.common.CommandCategory;
 import me.skiincraft.discord.ousu.embed.BeatmapEmbed;
 import me.skiincraft.discord.ousu.messages.TypeEmbed;
-import me.skiincraft.discord.ousu.reactions.HistoryLists;
 import me.skiincraft.discord.ousu.utils.OusuUtils;
-
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
+
+import java.awt.*;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class BeatmapSetCommand extends Comando {
 
@@ -31,17 +32,17 @@ public class BeatmapSetCommand extends Comando {
 	}
 
 	public CommandCategory getCategory() {
-		return CommandCategory.Osu;
+		return CommandCategory.Gameplay;
 	}
 
-	public void execute(User user, String[] args, TextChannel channel) {
+	public void execute(Member user, String[] args, InteractChannel channel) {
 		if (args.length == 0) {
-			replyUsage();
+			replyUsage(channel.getTextChannel());
 			return;
 		}
 
 		if (!args[0].matches("-?\\d+(\\.\\d+)?")) {
-			replyUsage();
+			replyUsage(channel.getTextChannel());
 			return;
 		}
 
@@ -49,22 +50,22 @@ public class BeatmapSetCommand extends Comando {
 			Request<BeatmapSet> request = OusuBot.getApi().getBeatmapSet(Long.parseLong(args[0]));
 			BeatmapSet beatmapSet = request.get();
 
-			reply(TypeEmbed.LoadingEmbed().build(), message -> {
+			channel.reply(TypeEmbed.LoadingEmbed().build(), message -> {
 				EmbedBuilder[] embedArray = new EmbedBuilder[beatmapSet.size()];
 				AtomicInteger integer = new AtomicInteger(0);
 				Color cor = OusuUtils.beatmapColor(beatmapSet.get(0));
-				beatmapSet.forEach(b -> embedArray[integer.getAndDecrement()] = BeatmapEmbed.beatmapEmbed(b, channel.getGuild(), cor));
+				beatmapSet.forEach(b -> embedArray[integer.getAndIncrement()] = BeatmapEmbed.beatmapEmbed(b, channel.getTextChannel().getGuild(), cor));
+				Objects.requireNonNull(Reactions.getInstance()).registerReaction(new ReactionObject(message, user.getIdLong(),
+								new String[]{"U+25C0","U+25B6"}),
+						new ReactionPage(Arrays.asList(embedArray), true));
 
 				message.editMessage(embedArray[0].build()).queue();
-				message.addReaction("U+25C0").queue();
-				message.addReaction("U+25B6").queue();
 
-				HistoryLists.addToReaction(user, message, new ReactionObject(embedArray, 0));
 				try {
 					Beatmap beatmap = beatmapSet.get(0);
-					message.getChannel().sendFile(beatmap.getBeatmapPreview(),	embedArray[0].build()
-							.getTitle()
-							.replace(Emoji.HEADPHONES.getAsMention(), "") + ".mp3")
+					message.getChannel().sendFile(beatmap.getBeatmapPreview(),	Objects.requireNonNull(embedArray[0].build()
+							.getTitle())
+							.replace(":headphones:", "") + ".mp3")
 							.queue();
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -72,10 +73,12 @@ public class BeatmapSetCommand extends Comando {
 			});
 
 		} catch (BeatmapException e) {
-			String[] msg = getLanguageManager().getStrings("Warnings", "INEXISTENT_BEATMAPID");
+			String[] msg = getLanguageManager(channel.getTextChannel().getGuild()).getStrings("Warnings", "INEXISTENT_BEATMAPID");
 
 			MessageEmbed build = TypeEmbed.WarningEmbed(msg[0], StringUtils.commandMessage(msg)).build();
-			reply(build);
+			channel.reply(build);
+		} catch (Exception e){
+			channel.reply(TypeEmbed.errorMessage(e, channel.getTextChannel()).build());
 		}
 	}
 

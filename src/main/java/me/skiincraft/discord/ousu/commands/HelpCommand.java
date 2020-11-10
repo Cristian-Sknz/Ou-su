@@ -1,26 +1,26 @@
 package me.skiincraft.discord.ousu.commands;
 
+import me.skiincraft.discord.core.OusuCore;
 import me.skiincraft.discord.core.command.Command;
+import me.skiincraft.discord.core.command.InteractChannel;
+import me.skiincraft.discord.core.common.reactions.ReactionObject;
+import me.skiincraft.discord.core.common.reactions.Reactions;
+import me.skiincraft.discord.core.common.reactions.custom.ReactionSelector;
 import me.skiincraft.discord.core.configuration.GuildDB;
 import me.skiincraft.discord.core.configuration.LanguageManager;
 import me.skiincraft.discord.core.utils.StringUtils;
-import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.common.Comando;
 import me.skiincraft.discord.ousu.common.CommandCategory;
-import me.skiincraft.discord.ousu.emojis.OusuEmote;
+import me.skiincraft.discord.ousu.emojis.GenericEmote;
+import me.skiincraft.discord.ousu.emojis.GenericsEmotes;
 import me.skiincraft.discord.ousu.messages.TypeEmbed;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.*;
 
 import java.awt.*;
 import java.util.*;
 import java.util.List;
-
-import static me.skiincraft.discord.core.utils.Emoji.SMALL_ORANGE_DIAMOND;
-import static me.skiincraft.discord.core.utils.Emoji.SPACE_INVADER;
+import java.util.stream.Collectors;
 
 public class HelpCommand extends Comando {
 
@@ -28,39 +28,51 @@ public class HelpCommand extends Comando {
 		super("help", Collections.singletonList("ajuda"), "help <command>");
 	}
 
-	public static final List<Command> commands = OusuBot.getInstance().getPlugin().getCommandManager().getCommands();
+	public static final List<Command> commands = OusuCore.getCommandManager().getCommands();
 	
 	
 	public CommandCategory getCategory() {
-		return CommandCategory.Sobre;
+		return CommandCategory.About;
 	}
 
 	@Override
-	public void execute(User user, String[] args, TextChannel channel) {
+	public void execute(Member user, String[] args, InteractChannel channel) {
 		if (args.length == 0) {
-			MessageEmbed embed = embed(channel.getGuild()).build();
-			reply(embed);
+			EmbedBuilder embed = helpMessage(channel.getTextChannel().getGuild(), channel.getTextChannel().getJDA().getSelfUser(), null);
+			channel.reply(embed.build(), message -> {
+				List<String> emote = new ArrayList<>();
+				emote.add(GenericsEmotes.getEmoteEquals("home").getReaction());
+                emote.addAll(Arrays.stream(CommandCategory.values())
+                        .map(this::getCategoryEmote)
+                        .map(GenericEmote::getReaction).collect(Collectors.toList()));
+				emote.remove(emote.size()-1);
+
+				List<EmbedBuilder> embeds = new ArrayList<>();
+				embeds.add(embed);
+				for (int i = 0; i < emote.size() - 1; i++) {
+					embeds.add(helpMessage(channel.getTextChannel().getGuild(), channel.getTextChannel().getGuild().getJDA().getSelfUser(), CommandCategory.values()[i]));
+				}
+				Objects.requireNonNull(Reactions.getInstance()).registerReaction(new ReactionObject(message, user.getIdLong(), emote.toArray(new String[0])), new ReactionSelector(embeds, true));
+			});
 			return;
 		}
 
 		if (args.length == 1) {
-			MessageEmbed embed = emb(args[0], channel.getGuild()).build();
-			reply(embed);
+			MessageEmbed embed = emb(args[0], channel.getTextChannel().getGuild()).build();
+			channel.reply(embed);
 		}
 	}
 
 	public EmbedBuilder emb(String comando, Guild guild) {
 		EmbedBuilder embed = TypeEmbed.HelpEmbed("help title", "help description");
 		String prefix = new GuildDB(guild).get("prefix");
-		LanguageManager lang = getLanguageManager();
+		LanguageManager lang = getLanguageManager(guild);
 		for (Command com : commands) {
 			if (comando.equalsIgnoreCase(com.getCommandName())) {
 				embed.setTitle("Help <" + com.getCommandName() + ">");
-				if (com.getCommandDescription(getLanguageManager()) != null) {
-					String emoji = SMALL_ORANGE_DIAMOND.getAsMention();
-					String builder = emoji +
-							" " +
-							com.getCommandDescription(getLanguageManager()) +
+				if (com.getCommandDescription(lang) != null) {
+					String builder = ":small_orange_diamond: " +
+							com.getCommandDescription(lang) +
 							"\n";
 
 					embed.setDescription(builder);
@@ -87,80 +99,43 @@ public class HelpCommand extends Comando {
 		}
 
 		String[] msg = lang.getStrings("Messages", "INEXISTENT_COMMAND_HELP");
-		return TypeEmbed.SoftWarningEmbed(OusuEmote.getEmoteAsMention("thinkanime") + msg[0],
-				SPACE_INVADER.getAsMention() + " " + StringUtils.commandMessage(msg)).setFooter(prefix + "help to help!");
+		return TypeEmbed.SoftWarningEmbed(GenericsEmotes.getEmoteAsMention("thinkanime") + msg[0],
+				":space_invader: " + StringUtils.commandMessage(msg)).setFooter(prefix + "help to help!");
 	}
 
-	public EmbedBuilder embed(Guild guild) {
+	public EmbedBuilder helpMessage(Guild guild, SelfUser selfUser, CommandCategory category) {
 		EmbedBuilder embed = new EmbedBuilder();
-		LanguageManager lang = getLanguageManager();
+		LanguageManager lang = getLanguageManager(guild);
+		embed.setAuthor(selfUser.getName(), null, selfUser.getAvatarUrl());
 
-		List<StringBuilder> builders = new ArrayList<>();
-		for (int i = 0; i <= 3; i++) {
-			builders.add(new StringBuilder());
-		}
-
-		for (Command command : commands) {
-			if (!(command instanceof Comando)) {
-				continue;
-			}
-			Comando comando = (Comando) command;
+		if (category == null){
+			String[] message = lang.getStrings("HelpCommand", "HOME_MESSAGE");
+			embed.setTitle(message[0]);
+			embed.setDescription(StringUtils.commandMessage(message));
+			embed.setThumbnail(selfUser.getAvatarUrl());
+		} else {
+			String[] message = lang.getStrings("HelpCommand", category.name().toUpperCase() + "_MESSAGE");
+			embed.setTitle(message[0]);
+			embed.setDescription(StringUtils.commandMessage(message));
+			embed.setThumbnail(selfUser.getAvatarUrl());
+			embed.setThumbnail(getCategoryEmote(category).getEmoteUrl());
 			String prefix = new GuildDB(guild).get("prefix");
-			StringBuilder builder;
-			switch (comando.getCategory()) {
-				case Administracao:
-					builder = builders.get(0);
-					builder.append("- ")
-							.append(prefix)
-							.append(comando.getCommandName())
-							.append(",");
-					continue;
-				case Osu:
-					builder = builders.get(1);
-					builder.append("- ")
-							.append(prefix)
-							.append(comando.getCommandName())
-							.append(",");
-					continue;
-				case Sobre:
-					builder = builders.get(2);
-					builder.append("- ")
-							.append(prefix)
-							.append(comando.getCommandName())
-							.append(",");
-			}
+
+			embed.addField(lang.getString("Embeds", "COMMANDS"), String.join("\n", OusuCore.getCommandManager().getCommands()
+					.stream()
+					.filter(command -> command instanceof Comando)
+					.filter(comando -> ((Comando) comando).getCategory() == category)
+					.map(command -> prefix + command.getCommandName())
+					.sorted().toArray(String[]::new)), true);
 		}
-
-		List<String> stringssorted = new ArrayList<>();
-		for (int i = 0; i <= 3; i++){
-			String[] strings = builders.get(i).toString().split(",");
-			Arrays.sort(strings);
-			stringssorted.add(joinString(strings));
-		}
-		
-		String[] str = lang.getStrings("Messages", "HELP_COMMAND_MESSAGE");
-
-		embed.setTitle(str[0]);
-		embed.setThumbnail(Objects.requireNonNull(OusuBot.getInstance().getShardManager().getShardById(0), "SelfUser null").getSelfUser().getAvatarUrl());
-		StringBuilder buffer = new StringBuilder();
-		for (String append : str) {
-			if (!append.equals(str[0])) buffer.append(append).append("\n");
-		}
-
-		embed.setDescription(buffer.toString());
-		embed.addField(":computer: **" + CommandCategory.Administracao.getCategoryName(lang) + "**",
-				"`" + stringssorted.get(0)  + "`", true);
-		embed.addField(OusuEmote.getEmoteAsMention("osulogo") + " **" + CommandCategory.Osu.getCategoryName(lang) + "**",
-				"`" + stringssorted.get(1)  + "`", true);
-		embed.addField(":bulb: **" + CommandCategory.Sobre.getCategoryName(lang) + "**",
-				"`" + stringssorted.get(2)  + "`", true);
-
-		embed.setColor(new Color(226, 41, 230));
+		embed.setImage("https://i.imgur.com/CvE3ONU.png");
+		embed.setColor(new Color(255, 152, 119));
 		embed.setFooter("Sknz#4260 | Ou!su bot ™");
 		return embed;
 	}
 
-	public String joinString(String[] strings){
-		return String.join("\n", strings);
+	public GenericEmote getCategoryEmote(CommandCategory category){
+		return GenericsEmotes.getEmoteEquals(category.name());
 	}
+
 }

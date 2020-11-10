@@ -4,7 +4,7 @@ import me.skiincraft.discord.core.configuration.LanguageManager;
 
 public enum CommandCategory {
 
-	Administracao("Administração"), Osu("Osu!"), Sobre("Sobre"), Owner("Dono");
+	Configuration("Configuração"), Gameplay("Gameplay"), Statistics("Estatisticas"), About("Sobre"), Owner("Dono");
 
 	private final String name;
 

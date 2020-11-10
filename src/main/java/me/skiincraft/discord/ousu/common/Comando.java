@@ -3,11 +3,14 @@ package me.skiincraft.discord.ousu.common;
 import java.util.List;
 
 import me.skiincraft.discord.core.command.Command;
+import me.skiincraft.discord.core.command.InteractChannel;
 import me.skiincraft.discord.ousu.messages.Messages;
 import me.skiincraft.discord.ousu.permission.IPermission;
 import me.skiincraft.discord.ousu.permission.IPermission.InternalPermission;
 
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 
 public abstract class Comando extends Command {
@@ -18,16 +21,12 @@ public abstract class Comando extends Command {
 	
 	public abstract CommandCategory getCategory();
 	
-	public void replyUsage() {
-		reply(Messages.UsageMessage(this, getLanguageManager().getLanguage()));
+	public void replyUsage(TextChannel channel) {
+		new InteractChannel(channel).reply(Messages.usageMessage(this, channel.getGuild()));
 	}
 	
 	public boolean isOwner(User user) {
 		return user.getIdLong() == Long.parseLong("247096601242238991");
-	}
-	
-	public Member getMember(User user) {
-		return getTextChannel().getGuild().getMember(user);
 	}
 	
 	public boolean hasIPermission(User user, InternalPermission perm) {

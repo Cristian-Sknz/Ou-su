@@ -5,18 +5,19 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import me.skiincraft.api.ousu.OusuAPI;
 import me.skiincraft.api.ousu.exceptions.TokenException;
+import me.skiincraft.discord.core.CoreStarter;
+import me.skiincraft.discord.core.OusuCore;
+import me.skiincraft.discord.core.common.PresenceUpdater;
+import me.skiincraft.discord.core.common.reactions.ReactionListeners;
+import me.skiincraft.discord.core.common.reactions.Reactions;
 import me.skiincraft.discord.core.configuration.Language;
 import me.skiincraft.discord.core.plugin.OusuPlugin;
-import me.skiincraft.discord.core.utils.PresenceUpdater;
 import me.skiincraft.discord.ousu.commands.*;
 import me.skiincraft.discord.ousu.commands.owner.PermissionCommand;
-import me.skiincraft.discord.ousu.emojis.OusuEmote;
+import me.skiincraft.discord.ousu.emojis.GenericsEmotes;
 import me.skiincraft.discord.ousu.listener.BeatmapTracking;
-import me.skiincraft.discord.ousu.listener.ReactionListeners;
-import me.skiincraft.discord.ousu.reactions.PageReactions;
-import me.skiincraft.discord.ousu.reactions.UserReaction;
+import me.skiincraft.discord.ousu.listener.ReceivedListener;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.Emote;
 
 import java.io.*;
 import java.util.Arrays;
@@ -68,41 +69,42 @@ public class OusuBot extends OusuPlugin {
 		Registrando comandos.
 		(?) Pensando em colocar um ClassGetter pra fazer isso.
 		 */
-		getPlugin().getCommandManager().registerCommand(new BeatmapCommand());
-		getPlugin().getCommandManager().registerCommand(new BeatmapSetCommand());
-		getPlugin().getCommandManager().registerCommand(new CardCommand());
-		getPlugin().getCommandManager().registerCommand(new HelpCommand());
-		getPlugin().getCommandManager().registerCommand(new InviteCommand());
-		getPlugin().getCommandManager().registerCommand(new LanguageCommand());
-		getPlugin().getCommandManager().registerCommand(new PingCommand());
-		getPlugin().getCommandManager().registerCommand(new PrefixCommand());
-		getPlugin().getCommandManager().registerCommand(new RankingCommand());
-		getPlugin().getCommandManager().registerCommand(new RecentuserCommand());
-		getPlugin().getCommandManager().registerCommand(new RestartCommand());
-		getPlugin().getCommandManager().registerCommand(new SearchCommand());
-		getPlugin().getCommandManager().registerCommand(new SayCommand());
-		getPlugin().getCommandManager().registerCommand(new SkinsCommand());
-		getPlugin().getCommandManager().registerCommand(new TopUserCommand());
-		getPlugin().getCommandManager().registerCommand(new UserCommand());
-		getPlugin().getCommandManager().registerCommand(new VersionCommand());
-		getPlugin().getCommandManager().registerCommand(new VoteCommand());
-		getPlugin().getCommandManager().registerCommand(new PermissionCommand());
-		getPlugin().getCommandManager().registerCommand(new MalCommand());
+		OusuCore.registerCommand(new BeatmapCommand());
+		OusuCore.registerCommand(new BeatmapSetCommand());
+		OusuCore.registerCommand(new CardCommand());
+		OusuCore.registerCommand(new HelpCommand());
+		OusuCore.registerCommand(new InviteCommand());
+		OusuCore.registerCommand(new LanguageCommand());
+		OusuCore.registerCommand(new PingCommand());
+		OusuCore.registerCommand(new PrefixCommand());
+		OusuCore.registerCommand(new RankingCommand());
+		OusuCore.registerCommand(new RecentuserCommand());
+		OusuCore.registerCommand(new RestartCommand());
+		OusuCore.registerCommand(new SearchCommand());
+		OusuCore.registerCommand(new SayCommand());
+		OusuCore.registerCommand(new SkinsCommand());
+		OusuCore.registerCommand(new TopUserCommand());
+		OusuCore.registerCommand(new UserCommand());
+		OusuCore.registerCommand(new VoteCommand());
+		OusuCore.registerCommand(new PermissionCommand());
+		OusuCore.registerCommand(new MalCommand());
 
 		/*
 		Registrando eventos.
 		(?) Pensando em colocar um ClassGetter pra fazer isso.
 		 */
-		getPlugin().getEventManager().registerListener(new UserReaction());
-		getPlugin().getEventManager().registerListener(new PageReactions());
-		getPlugin().getEventManager().registerListener(new ReactionListeners());
-		getPlugin().getEventManager().registerListener(new BeatmapTracking());
+		ReactionListeners listeners = new ReactionListeners();
+		Reactions.of(listeners);
+		OusuCore.registerListener(listeners);
+
+		OusuCore.registerListener(new ReceivedListener());
+		OusuCore.registerListener(new BeatmapTracking());
 
 		/*
 		Criando arquivos necessarios para inicialização.
 		(?) Sem nenhum desses arquivos o bot não ira funcionar.
 		 */
-		File file = new File(getPlugin().getAssetsPath() + "/ousutoken.json");
+		File file = new File(OusuCore.getAssetsPath().toFile().getAbsolutePath() + "/ousutoken.json");
 		try {
 			if (!file.exists()) {
 				JsonObject object = new JsonObject();
@@ -119,21 +121,23 @@ public class OusuBot extends OusuPlugin {
 			e.printStackTrace();
 		}
 		
-		getPlugin().addLanguage(new Language(new Locale("pt", "BR")));
-		getPlugin().addLanguage(new Language(new Locale("en", "US")));
+		OusuCore.addLanguage(new Language(new Locale("pt", "BR")));
+		OusuCore.addLanguage(new Language(new Locale("en", "US")));
 
-		presenceUpdater = new PresenceUpdater(getPlugin(),
-				Arrays.asList(Activity.listening("ou!help for help."),
+		presenceUpdater = new PresenceUpdater(Arrays.asList(Activity.listening("ou!help for help."),
 				Activity.watching("{guildsize} Servidores online."),
 				Activity.listening("ou!vote on Discord Bots")));
 
-		OusuEmote.loadEmotes("emotes");
-		System.out.println("OusuBot carregado com sucesso.");
+		try {
+			GenericsEmotes.loadEmotes(OusuCore.getAssetsPath().toFile().getAbsolutePath() + "/emotes/");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static String[] getTokens() {
 		try {
-			InputStream input = new File(OusuBot.getInstance().getPlugin().getAssetsPath() + "/ousutoken.json").toURI().toURL().openStream();
+			InputStream input = new File(OusuCore.getAssetsPath().toFile().getAbsolutePath() + "/ousutoken.json").toURI().toURL().openStream();
 			JsonObject object = new JsonParser().parse(new InputStreamReader(input)).getAsJsonObject();
 			boolean allIsNull = object.get("Api_1").isJsonNull() && object.get("Api_2").isJsonNull();
 

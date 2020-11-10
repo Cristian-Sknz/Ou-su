@@ -20,16 +20,22 @@ import me.skiincraft.api.ousu.entity.objects.Approval;
 import me.skiincraft.api.ousu.entity.objects.Gamemode;
 import me.skiincraft.api.ousu.entity.score.RecentScore;
 import me.skiincraft.api.ousu.entity.score.Score;
-import me.skiincraft.discord.core.utils.ImageUtils;
 import me.skiincraft.discord.core.utils.StringUtils;
-import me.skiincraft.discord.ousu.emojis.OusuEmote;
+import me.skiincraft.discord.ousu.emojis.GenericsEmotes;
 
 
 public class OusuUtils {
 
-
 	public enum DCText {
 		BOLD, SPOILER, ITALIC, BOLD_ITALC
+	}
+
+	public static boolean isNumeric(String strNum) {
+		Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
+		if (strNum == null) {
+			return false;
+		}
+		return pattern.matcher(strNum).matches();
 	}
 
 	public static String dcText(String text, DCText type){
@@ -130,102 +136,102 @@ public class OusuUtils {
 	public static String getRankEmote(RecentScore score) {
 		String rank = score.getRank();
 		if (rank.equalsIgnoreCase("SS+")) {
-			return OusuEmote.getEmoteAsMentionEquals("ss_plus");
+			return GenericsEmotes.getEmoteAsMentionEquals("ss_plus");
 		}
 		if (rank.equalsIgnoreCase("SS")) {
-			return OusuEmote.getEmoteAsMentionEquals("ss");
+			return GenericsEmotes.getEmoteAsMentionEquals("ss");
 		}
 		if (rank.equalsIgnoreCase("X")) {
-			return OusuEmote.getEmoteAsMentionEquals("ss");
+			return GenericsEmotes.getEmoteAsMentionEquals("ss");
 		}
 		if (rank.equalsIgnoreCase("S+")) {
-			return OusuEmote.getEmoteAsMentionEquals("s_plus");
+			return GenericsEmotes.getEmoteAsMentionEquals("s_plus");
 		}
 		if (rank.equalsIgnoreCase("S")) {
-			return OusuEmote.getEmoteAsMentionEquals("s_");
+			return GenericsEmotes.getEmoteAsMentionEquals("s_");
 		}
 		if (rank.equalsIgnoreCase("A")) {
-			return OusuEmote.getEmoteAsMentionEquals("a_");
+			return GenericsEmotes.getEmoteAsMentionEquals("a_");
 		}
 		if (rank.equalsIgnoreCase("B")) {
-			return OusuEmote.getEmoteAsMentionEquals("b_");
+			return GenericsEmotes.getEmoteAsMentionEquals("b_");
 		}
 		if (rank.equalsIgnoreCase("C")) {
-			return OusuEmote.getEmoteAsMentionEquals("c_");
+			return GenericsEmotes.getEmoteAsMentionEquals("c_");
 		}
 		if (rank.equalsIgnoreCase("F")) {
-			return OusuEmote.getEmoteAsMentionEquals("f_");
+			return GenericsEmotes.getEmoteAsMentionEquals("f_");
 		}
-		return OusuEmote.getEmoteAsMention("osulogo");
+		return GenericsEmotes.getEmoteAsMention("osulogo");
 	}
 	
 	public static String getRankEmote(Score score) {
 		String rank = score.getRank();
 		if (rank.equalsIgnoreCase("SS+")) {
-			return OusuEmote.getEmoteAsMentionEquals("ss_plus");
+			return GenericsEmotes.getEmoteAsMentionEquals("ss_plus");
 		}
 		if (rank.equalsIgnoreCase("SS")) {
-			return OusuEmote.getEmoteAsMentionEquals("ss");
+			return GenericsEmotes.getEmoteAsMentionEquals("ss");
 		}
 		if (rank.equalsIgnoreCase("X")) {
-			return OusuEmote.getEmoteAsMentionEquals("ss");
+			return GenericsEmotes.getEmoteAsMentionEquals("ss");
 		}
 		if (rank.equalsIgnoreCase("S+")) {
-			return OusuEmote.getEmoteAsMentionEquals("s_plus");
+			return GenericsEmotes.getEmoteAsMentionEquals("s_plus");
 		}
 		if (rank.equalsIgnoreCase("S")) {
-			return OusuEmote.getEmoteAsMentionEquals("s_");
+			return GenericsEmotes.getEmoteAsMentionEquals("s_");
 		}
 		if (rank.equalsIgnoreCase("A")) {
-			return OusuEmote.getEmoteAsMentionEquals("a_");
+			return GenericsEmotes.getEmoteAsMentionEquals("a_");
 		}
 		if (rank.equalsIgnoreCase("B")) {
-			return OusuEmote.getEmoteAsMentionEquals("b_");
+			return GenericsEmotes.getEmoteAsMentionEquals("b_");
 		}
 		if (rank.equalsIgnoreCase("C")) {
-			return OusuEmote.getEmoteAsMentionEquals("c_");
+			return GenericsEmotes.getEmoteAsMentionEquals("c_");
 		}
 		if (rank.equalsIgnoreCase("F")) {
-			return OusuEmote.getEmoteAsMentionEquals("f_");
+			return GenericsEmotes.getEmoteAsMentionEquals("f_");
 		}
-		return OusuEmote.getEmoteAsMention("osulogo");
+		return GenericsEmotes.getEmoteAsMention("osulogo");
 	}
 	
 	public static String getRankEmote(String score) {
 		if (score.equalsIgnoreCase("SS+")) {
-			return OusuEmote.getEmoteAsMentionEquals("ss_plus");
+			return GenericsEmotes.getEmoteAsMentionEquals("ss_plus");
 		}
 		if (score.equalsIgnoreCase("SS")) {
-			return OusuEmote.getEmoteAsMentionEquals("ss");
+			return GenericsEmotes.getEmoteAsMentionEquals("ss");
 		}
 		if (score.equalsIgnoreCase("SSH")) {
-			return OusuEmote.getEmoteAsMentionEquals("ss");
+			return GenericsEmotes.getEmoteAsMentionEquals("ss");
 		}
 		if (score.equalsIgnoreCase("X")) {
-			return OusuEmote.getEmoteAsMentionEquals("ss");
+			return GenericsEmotes.getEmoteAsMentionEquals("ss");
 		}
 		if (score.equalsIgnoreCase("S+")) {
-			return OusuEmote.getEmoteAsMentionEquals("s_plus");
+			return GenericsEmotes.getEmoteAsMentionEquals("s_plus");
 		}
 		if (score.equalsIgnoreCase("SH")) {
-			return OusuEmote.getEmoteAsMentionEquals("s_");
+			return GenericsEmotes.getEmoteAsMentionEquals("s_");
 		}
 		if (score.equalsIgnoreCase("S")) {
-			return OusuEmote.getEmoteAsMentionEquals("s_");
+			return GenericsEmotes.getEmoteAsMentionEquals("s_");
 		}
 		if (score.equalsIgnoreCase("A")) {
-			return OusuEmote.getEmoteAsMentionEquals("a_");
+			return GenericsEmotes.getEmoteAsMentionEquals("a_");
 		}
 		if (score.equalsIgnoreCase("B")) {
-			return OusuEmote.getEmoteAsMentionEquals("b_");
+			return GenericsEmotes.getEmoteAsMentionEquals("b_");
 		}
 		if (score.equalsIgnoreCase("C")) {
-			return OusuEmote.getEmoteAsMentionEquals("c_");
+			return GenericsEmotes.getEmoteAsMentionEquals("c_");
 		}
 		if (score.equalsIgnoreCase("F")) {
-			return OusuEmote.getEmoteAsMentionEquals("f_");
+			return GenericsEmotes.getEmoteAsMentionEquals("f_");
 		}
-		return OusuEmote.getEmoteAsMention("osulogo");
+		return GenericsEmotes.getEmoteAsMention("osulogo");
 	}
 	
 

@@ -1,13 +1,14 @@
 package me.skiincraft.discord.ousu.listener;
 
 import me.skiincraft.api.ousu.entity.objects.Gamemode;
-import me.skiincraft.discord.core.utils.ImageUtils;
-import me.skiincraft.discord.core.utils.IntegerUtils;
+import me.skiincraft.discord.core.configuration.LanguageManager;
 import me.skiincraft.discord.core.utils.StringUtils;
 import me.skiincraft.discord.ousu.embed.SearchEmbed;
-import me.skiincraft.discord.ousu.emojis.OusuEmote;
+import me.skiincraft.discord.ousu.emojis.GenericsEmotes;
 import me.skiincraft.discord.ousu.htmlpage.BeatmapSearch;
 import me.skiincraft.discord.ousu.htmlpage.JSoupGetters;
+import me.skiincraft.discord.ousu.utils.ImageUtils;
+import me.skiincraft.discord.ousu.utils.OusuUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -23,6 +24,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class BeatmapTracking extends ListenerAdapter {
 
@@ -53,7 +55,7 @@ public class BeatmapTracking extends ListenerAdapter {
 
             String[] split = geturl.split("/");
             if (split.length >= 3){
-                if (IntegerUtils.isNumeric(split[2])){
+                if (OusuUtils.isNumeric(split[2])){
                     return;
                 }
             }
@@ -62,21 +64,21 @@ public class BeatmapTracking extends ListenerAdapter {
                 long beatmapset = Long.parseLong(split[0].replaceAll("\\D+", ""));
                 if (messageraw.contains("/beatmaps/")) try {
                     BeatmapSearch search = JSoupGetters.beatmapInfoById(beatmapset);
-                    event.getChannel().sendMessage(SearchEmbed.searchEmbed(search, event.getGuild()).build()).queue();
+                    event.getChannel().sendMessage(SearchEmbed.searchEmbed(search, new LanguageManager(event.getGuild())).build()).queue();
                     return;
                 } catch (NumberFormatException | IOException ignored) {}
 
                 if (split.length == 2) try {
                     long beatmap = Long.parseLong(split[1].replaceAll("\\D+", ""));
                     BeatmapSearch search = JSoupGetters.beatmapInfoById(beatmap);
-                    event.getChannel().sendMessage(SearchEmbed.searchEmbed(search, event.getGuild()).build()).queue();
+                    event.getChannel().sendMessage(SearchEmbed.searchEmbed(search, new LanguageManager(event.getGuild())).build()).queue();
                     return;
                 } catch (NumberFormatException | IOException ignored) {}
 
                 try {
                     BeatmapSearch search = JSoupGetters.beatmapInfo(beatmapset);
                     if (search == null) return;
-                    event.getChannel().sendMessage(SearchEmbed.searchEmbed(search, event.getGuild()).build()).queue();
+                    event.getChannel().sendMessage(SearchEmbed.searchEmbed(search, new LanguageManager(event.getGuild())).build()).queue();
                 } catch (IOException ignored) {}
             }, "tracking").start();
         }
@@ -113,7 +115,7 @@ public class BeatmapTracking extends ListenerAdapter {
         embed.setFooter("Skins by osuskins.net","https://osuskins.net/favicon-32x32.png");
         StringBuilder gamemode = new StringBuilder();
         for (Gamemode mode : gamemodes) {
-            gamemode.append(OusuEmote.getEmote(mode.name().toLowerCase()).getAsMention()).append(" ").append(mode.name()).append("\n");
+            gamemode.append(Objects.requireNonNull(GenericsEmotes.getEmote(mode.name().toLowerCase())).getAsMention()).append(" ").append(mode.name()).append("\n");
         }
         embed.addField("Gamemodes", gamemode.toString(), true);
 

@@ -2,20 +2,18 @@ package me.skiincraft.discord.ousu.commands;
 
 import java.util.Arrays;
 
+import me.skiincraft.discord.core.command.InteractChannel;
 import me.skiincraft.discord.core.configuration.GuildDB;
-import me.skiincraft.discord.core.utils.Emoji;
+import me.skiincraft.discord.core.configuration.LanguageManager;
 import me.skiincraft.discord.core.utils.StringUtils;
 import me.skiincraft.discord.ousu.common.Comando;
 import me.skiincraft.discord.ousu.common.CommandCategory;
-import me.skiincraft.discord.ousu.emojis.OusuEmote;
+import me.skiincraft.discord.ousu.emojis.GenericsEmotes;
 import me.skiincraft.discord.ousu.messages.TypeEmbed;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.*;
 
 public class PrefixCommand extends Comando {
 
@@ -24,53 +22,54 @@ public class PrefixCommand extends Comando {
 	}
 
 	public CommandCategory getCategory() {
-		return CommandCategory.Administracao;
+		return CommandCategory.Configuration;
 	}
 
-	public void execute(User user, String[] args, TextChannel channel) {
-		if (!getMember(user).hasPermission(Permission.MANAGE_SERVER)) {
+	public void execute(Member member, String[] args, InteractChannel channel) {
+		if (!member.hasPermission(Permission.MANAGE_SERVER)) {
 			//TODO message
 			return;
 		}
 		
 		if (args.length == 0) {
-			replyUsage();
+			replyUsage(channel.getTextChannel());
 			return;
 		}
-
+		LanguageManager lang = getLanguageManager(channel.getTextChannel().getGuild());
 		if (args[0].matches("[a-zA-Z0-9]*")) {
-			reply(formatMessage("PREFIX_INCORRECT_USE"));
+			channel.reply(formatMessage("PREFIX_INCORRECT_USE", lang));
 			return;
 		}
 		if (args[0].length() > 3) {
-			reply(formatMessage("PREFIX_INCORRECT_USE2"));
+			channel.reply(formatMessage("PREFIX_INCORRECT_USE2", lang));
 			return;
 		}
 
-		reply(formatSucessful(changePrefix(args[0], channel.getGuild()), args[0]));
+		changePrefix(args[0], channel.getTextChannel().getGuild());
+		channel.reply(formatSucessful(args[0], lang));
 	}
 	
-	public String changePrefix(String prefix, Guild guild) {
+	public void changePrefix(String prefix, Guild guild) {
 		GuildDB db = new GuildDB(guild);
-		String oldprefix = db.get("prefix");
+		//String oldprefix = db.get("prefix");
 		db.set("prefix", prefix);
-		return oldprefix;
+		//return oldprefix;
 	}
 	
-	public MessageEmbed formatMessage(String line) {
-		String[] str = getLanguageManager().getStrings("Messages", line);
-		return TypeEmbed.WarningEmbed(Emoji.X.getAsMention() + str[0], StringUtils.commandMessage(str)).build();
+	public MessageEmbed formatMessage(String line, LanguageManager lang) {
+		String[] str = lang.getStrings("Messages", line);
+		return TypeEmbed.WarningEmbed(":x:" + str[0], StringUtils.commandMessage(str)).build();
 	}
 	
-	public MessageEmbed formatSucessful(String oldPrefix, String newPrefix) {
-		String[] str = getLanguageManager().getStrings("Messages", "PREFIX_COMMAND_MESSAGE");
-		
-		EmbedBuilder defaultembed = TypeEmbed.ConfigEmbed(":gear: " + str[0], OusuEmote.getEmoteAsMention("small_green_diamond")  + str[1]);
+	public MessageEmbed formatSucessful(String newPrefix, LanguageManager lang) {
+		String[] str = lang.getStrings("Messages", "PREFIX_COMMAND_MESSAGE");
+		EmbedBuilder embed = new EmbedBuilder();
+		embed.setTitle(":gear:" + str[0]);
+		embed.setAuthor(newPrefix + lang.getString("PrefixCommand", "NEW_PREFIX"));
+		embed.setThumbnail(GenericsEmotes.getEmoteEquals(getCategory().name()).getEmoteUrl());
+		embed.addField("Prefix", newPrefix, true);
 
-		defaultembed.addField(str[2], oldPrefix, true);
-		defaultembed.addField(str[3], newPrefix, true);
-
-		return defaultembed.build();
+		return embed.build();
 	}
 
 }

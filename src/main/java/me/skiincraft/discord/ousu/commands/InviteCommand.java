@@ -3,29 +3,26 @@ package me.skiincraft.discord.ousu.commands;
 import java.awt.Color;
 import java.util.Arrays;
 
+import me.skiincraft.discord.core.command.InteractChannel;
 import me.skiincraft.discord.core.configuration.LanguageManager;
 import me.skiincraft.discord.ousu.common.Comando;
 import me.skiincraft.discord.ousu.common.CommandCategory;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.SelfUser;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.*;
 
 public class InviteCommand extends Comando{
 
 	public InviteCommand() {
-		super("invite", Arrays.asList("convite", "convide", "convidar"), "invite ");
+		super("invite", Arrays.asList("convite", "convide", "convidar"), "invite");
 	}
 
 	public CommandCategory getCategory() {
-		return CommandCategory.Sobre;
+		return CommandCategory.About;
 	}
 
-	public void execute(User user, String[] args, TextChannel channel) {
-		reply(embed(channel.getGuild()));
+	public void execute(Member user, String[] args, InteractChannel channel) {
+		channel.reply(embed(channel.getTextChannel().getGuild()));
 	}
 	
 	public MessageEmbed embed(Guild guild) {
@@ -36,7 +33,7 @@ public class InviteCommand extends Comando{
 				"https://discord.gg/VtkYdBR"};
 		
 		StringBuilder builder = new StringBuilder();
-		LanguageManager lang = getLanguageManager();
+		LanguageManager lang = getLanguageManager(guild);
 		embed.setTitle("Convide-me!");
 		embed.setAuthor(self.getName() + "#" + self.getDiscriminator(), links[0], self.getAvatarUrl());
 		embed.setColor(new Color(252, 171, 151));

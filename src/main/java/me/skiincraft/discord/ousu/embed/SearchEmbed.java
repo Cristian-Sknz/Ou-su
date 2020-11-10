@@ -1,39 +1,34 @@
 package me.skiincraft.discord.ousu.embed;
 
-import java.awt.Color;
-import java.io.IOException;
-import java.net.URL;
-import java.util.List;
-
-import javax.imageio.ImageIO;
-
-import me.skiincraft.api.ousu.entity.beatmap.Beatmap;
-import me.skiincraft.api.ousu.entity.objects.Gamemode;
 import me.skiincraft.discord.core.configuration.LanguageManager;
-import me.skiincraft.discord.core.utils.Emoji;
-import me.skiincraft.discord.core.utils.ImageUtils;
 import me.skiincraft.discord.ousu.OusuBot;
-import me.skiincraft.discord.ousu.emojis.OusuEmote;
+import me.skiincraft.discord.ousu.emojis.GenericsEmotes;
 import me.skiincraft.discord.ousu.htmlpage.BeatmapSearch;
-
+import me.skiincraft.discord.ousu.utils.ImageUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Guild;
+
+import java.awt.*;
+import java.util.Objects;
 
 public class SearchEmbed {
 
-	public synchronized static EmbedBuilder searchEmbed(BeatmapSearch beatmap, Guild guild) {
+	public static EmbedBuilder searchEmbed(BeatmapSearch beatmap, LanguageManager lang){
 		EmbedBuilder embed = new EmbedBuilder();
-		LanguageManager lang = new LanguageManager(guild);
-
 		StringBuilder gamemodes = new StringBuilder();
+		embed.setAuthor(beatmap.getCreator() + "| Search Beatmaps", "https://osu.ppy.sh/users/" + beatmap.getCreatorid(), "https://a.ppy.sh/" + beatmap.getCreatorid());
+		embed.setTitle(beatmap.getTitle());
+
+		embed.setDescription(":microphone: " + lang.getString("Titles", "ARTIST") + " " + beatmap.getAuthor().concat("\n"))
+				.appendDescription(":tickets: " + lang.getString("Titles", "GENRE") + " " + beatmap.getGenre().getDisplayName().concat("\n"))
+				.appendDescription(GenericsEmotes.getEmoteAsMention(beatmap.getGamemodes()[0].name().toLowerCase()).concat(" ") + lang.getString("Titles", "GAMEMODE") + " " + beatmap.getGamemodes()[0].getDisplayName().concat("\n"))
+				.appendDescription(":compass: " + beatmap.getApprovated().name());
+
 		StringBuilder versions = new StringBuilder();
 
 		int i = 0;
 		for (String dif : beatmap.getDifficult()) {
-			if (dif.length() == 0) {
-				continue;
-			}
-			versions.append(OusuEmote.getEmoteAsMention("rainbowcircle")).append(" ").append(dif).append("\n");
+			if (dif.length() == 0) continue;
+			versions.append(GenericsEmotes.getEmoteAsMention("rainbowcircle")).append(" ").append(dif).append("\n");
 			if (i >= 4) {
 				versions.append("*[...]*");
 				break;
@@ -41,120 +36,15 @@ public class SearchEmbed {
 			i++;
 		}
 
-		for (Gamemode gm : beatmap.getGamemodes()) {
-			gamemodes.append(OusuEmote.getEmoteAsMention(gm.name().toLowerCase())).append(" ").append(gm.getDisplayName());
-		}
-
-		String artist = beatmap.getAuthor();
-		// beatmap_download_link
-		String video = Emoji.WHITE_CHECK_MARK.getAsMention() + " | Video";
-		if (!beatmap.hasVideo()) {
-			video = Emoji.X.getAsMention() + " | Video";
-		}
-
-		embed.setTitle(beatmap.getTitle(), beatmap.getURL());
-		int id = beatmap.getCreatorid();
-
-		embed.setThumbnail("https://i.imgur.com/v8iU2Js.jpg");
-		embed.setAuthor(lang.getString("Titles", "SEARCH") + " | " + beatmap.getCreator(),
-				"https://osu.ppy.sh/users/" + id, "https://a.ppy.sh/" + id);
-
-		embed.addField(lang.getString("Titles", "ARTIST") , artist, true);
-		embed.addField("BPM:", OusuEmote.getEmoteAsMention("reversearrow") + beatmap.getBpm(), true);
-		embed.addField(lang.getString("Titles", "GENRE") , "" + beatmap.getGenre().getDisplayName(), true);
-
-		String approvated = ((beatmap.getApprovated() != null) ? OusuEmote.getEmoteAsMention("arrow_pause") + " " + beatmap.getApprovated().name() : "");
-		embed.addField("Link", OusuEmote.getEmoteAsMention("download") + "__[Download]" + "(" + beatmap.getURL() + ")__\n"
-				+ video + "\n" + approvated, true);
-
-		embed.addField(lang.getString("Titles", "GAMEMODE"), gamemodes.toString(), true);
-		embed.addField(lang.getString("Titles", "DIFFICULT") , versions.toString(), true);
-
-		String url = beatmap.getBeatmapCoverUrl();
-		embed.setImage((ImageUtils.existsImage(url))
-				? url
-				: "https://i.imgur.com/LfF0VBR.gif");
-
-		// User user = OusuBot.getOusu().getJda().getUserById("247096601242238991");
-		// embed.setFooter(lang.translatedBot("FOOTER_DEFAULT"), user.getAvatarUrl());
-
-		embed.setFooter("[BeatmapSetID] " + beatmap.getBeatmapsetid(), OusuBot.getInstance().getShardManager().getShardById(0).getSelfUser().getAvatarUrl());
-		try {
-			embed.setColor(ImageUtils.getPredominatColor(ImageIO.read(new URL(beatmap.getBeatmapThumbnailUrl()))));
-		} catch (NullPointerException | IOException e) {
-			embed.setColor(Color.BLUE);
-		}
-		return embed;
-	}
-
-	@Deprecated
-	public synchronized static EmbedBuilder beatmapEmbed(List<Beatmap> beat, Guild guild) {
-		EmbedBuilder embed = new EmbedBuilder();
-		LanguageManager lang = new LanguageManager(guild);
-		Beatmap beatmap = beat.get(0);
-
-		StringBuilder gamemodes = new StringBuilder();
-		StringBuilder versions = new StringBuilder();
-		int i = 0;
-		for (Beatmap b : beat) {
-			if (i >= 5) {
-				versions.append("*[...]*");
-				break;
-			}
-			if (!gamemodes.toString().contains(b.getGameMode().getDisplayName())) {
-				gamemodes.append(OusuEmote.getEmoteAsMention(b.getGameMode().name().toLowerCase())).append(" ").append(b.getGameMode().getDisplayName()).append("\n");
-			}
-			if (versions.length() == 0) {
-				versions.append(OusuEmote.getEmoteAsMention("rainbowcircle")).append(" ").append(b.getVersion());
-			} else {
-				versions.append("\n").append(OusuEmote.getEmoteAsMention("rainbowcircle")).append(" ").append(b.getVersion());
-			}
-			i++;
-		}
-
-		String artist = beatmap.getArtist();
-		if (!beatmap.getArtistUnicode().equalsIgnoreCase(beatmap.getArtist())) {
-			artist = beatmap.getArtistUnicode() + " \n(" + beatmap.getArtist() + ")";
-		}
-
-		String video = Emoji.WHITE_CHECK_MARK.getAsMention() + " | Video";
-		String storyboard = Emoji.WHITE_CHECK_MARK.getAsMention() + " | Storyboard";
-		if (!beatmap.hasVideo()) {
-			video = Emoji.X.getAsMention() + " | Video";
-		}
-		if (!beatmap.hasStoryboard()) {
-			storyboard = Emoji.X.getAsMention() + " | Storyboard";
-		}
-
-		String approvated = OusuEmote.getEmoteAsMention("arrow_pause") + " " + beatmap.getApprovated().name();
-		embed.setTitle(beatmap.getTitle(), beatmap.getURL());
-		long id = beatmap.getCreatorId();
-
-		embed.setThumbnail("https://i.imgur.com/v8iU2Js.jpg");
-		embed.setAuthor(lang.getString("Titles", "SEARCH") + " | " + beatmap.getCreator(),
-				"https://osu.ppy.sh/users/" + id, "https://a.ppy.sh/" + id);
-
-		embed.addField(lang.getString("Titles", "ARTIST") , artist, true);
-		embed.addField("BPM:", OusuEmote.getEmoteAsMention("reversearrow") + beatmap.getBPM(), true);
-		embed.addField(lang.getString("Titles", "GENRE") , "" + beatmap.getGenre().getDisplayName(), true);
-		embed.addField("Link", OusuEmote.getEmoteAsMention("download") + "__[Download]" + "(" + beatmap.getURL()
-				+ ")__\n\n" + storyboard + "\n" + video + "\n" + approvated, true);
-
-		embed.addField(lang.getString("Titles", "GAMEMODE") , gamemodes.toString(), true);
 		embed.addField(lang.getString("Titles", "DIFFICULT"), versions.toString(), true);
+		embed.addField("Link:", GenericsEmotes.getEmoteAsMention("download") + "[Download](" + beatmap.getURL().concat(")"), true);
 
-		embed.setImage(beatmap.getBeatmapCoverUrl());
-
-		// User user = OusuBot.getOusu().getJda().getUserById("247096601242238991");
-		// embed.setFooter(lang.translatedBot("FOOTER_DEFAULT"), user.getAvatarUrl());
-
-		embed.setFooter("[BeatmapSetID] " + beatmap.getBeatmapSetId(), OusuBot.getInstance().getShardManager().getShardById(0).getSelfUser().getAvatarUrl());
-		try {
-			embed.setColor(ImageUtils.getPredominatColor(ImageIO.read(new URL(beatmap.getBeatmapThumbnailUrl()))));
-		} catch (NullPointerException | IOException e) {
-			embed.setColor(Color.BLUE);
-		}
+		embed.setColor(new Color(255, 128, 87));
+		embed.setThumbnail("https://cdn.discordapp.com/emojis/770368513726087179.png?v=1");
+		embed.setImage((ImageUtils.existsImage(beatmap.getBeatmapCoverUrl()))
+				? beatmap.getBeatmapCoverUrl()
+				: "https://i.imgur.com/LfF0VBR.gif");
+		embed.setFooter("[BeatmapSetID] " + beatmap.getBeatmapsetid(), Objects.requireNonNull(OusuBot.getInstance().getShardManager().getShardById(0)).getSelfUser().getAvatarUrl());
 		return embed;
 	}
-
 }

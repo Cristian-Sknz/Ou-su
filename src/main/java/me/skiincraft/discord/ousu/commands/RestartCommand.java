@@ -1,14 +1,12 @@
 package me.skiincraft.discord.ousu.commands;
 
-import java.io.IOException;
-import java.util.Collections;
-
 import me.skiincraft.discord.core.OusuCore;
+import me.skiincraft.discord.core.command.InteractChannel;
 import me.skiincraft.discord.ousu.common.Comando;
 import me.skiincraft.discord.ousu.common.CommandCategory;
+import net.dv8tion.jda.api.entities.Member;
 
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
+import java.util.Collections;
 
 public class RestartCommand extends Comando {
 
@@ -20,17 +18,13 @@ public class RestartCommand extends Comando {
 		return CommandCategory.Owner;
 	}
 
-	public void execute(User user, String[] args, TextChannel channel) {
-		if (!isOwner(user)) {
+	public void execute(Member user, String[] args, InteractChannel channel) {
+		if (!isOwner(user.getUser())) {
 			return;
 		}
-		reply("OusuCore será reiniciado.", m -> {
+		channel.reply("OusuCore será reiniciado.", m -> {
 			m.addReaction("U+2705").queue();
-			try {
-				OusuCore.restart();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			OusuCore.shutdown();
 		});
 	}
 

@@ -1,18 +1,16 @@
 package me.skiincraft.discord.ousu.commands;
 
-import java.awt.Color;
-import java.util.Collections;
-
+import me.skiincraft.discord.core.command.InteractChannel;
 import me.skiincraft.discord.core.configuration.LanguageManager;
 import me.skiincraft.discord.core.utils.StringUtils;
-import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.common.Comando;
 import me.skiincraft.discord.ousu.common.CommandCategory;
-import me.skiincraft.discord.ousu.emojis.OusuEmote;
-
+import me.skiincraft.discord.ousu.emojis.GenericsEmotes;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.Member;
+
+import java.awt.*;
+import java.util.Collections;
 
 public class VoteCommand extends Comando {
 
@@ -21,27 +19,27 @@ public class VoteCommand extends Comando {
 	}
 	
 	public CommandCategory getCategory() {
-		return CommandCategory.Sobre;
+		return CommandCategory.About;
 	}
 
 	@Override
-	public void execute(User user, String[] args, TextChannel channel) {
+	public void execute(Member user, String[] args, InteractChannel channel) {
 		EmbedBuilder embed = new EmbedBuilder();
-		LanguageManager lang = getLanguageManager();
+		LanguageManager lang = getLanguageManager(channel.getTextChannel().getGuild());
 		String[] str = lang.getStrings("Messages", "VOTE_COMMAND_MESSAGE");
 		String voteurl = "https://top.gg/bot/701825726449582192/vote";
-		embed.setTitle(OusuEmote.getEmoteAsMention("pippi") + str[0], voteurl);
+		embed.setTitle(GenericsEmotes.getEmoteAsMention("pippi") + str[0], voteurl);
 		embed.setThumbnail("https://cdn.discordapp.com/attachments/710231271623753738/712095645397418004/Pippi_Cartooni.png");
 		// :small_orange_diamond:
 		embed.setDescription(StringUtils.commandMessage(str).replace("{user}", user.getAsMention()).replace("{logo}",
-				OusuEmote.getEmoteAsMention("osulogo")));
+				GenericsEmotes.getEmoteAsMention("osulogo")));
 
 		embed.setImage("https://media.discordapp.net/attachments/710231271623753738/712106708087865354/voteimage.png");
 		embed.addField("Vote :3","[Here!](" + voteurl + ")", false);
 		embed.setFooter("Link: " + voteurl);
 		embed.setColor(Color.PINK);
 		
-		reply(embed.build());
+		channel.reply(embed.build());
 
 	}
 

@@ -1,9 +1,11 @@
 package me.skiincraft.discord.ousu.commands;
 
 import java.io.IOException;
+import java.util.Objects;
+
 import me.skiincraft.api.ousu.entity.beatmap.Beatmap;
 import me.skiincraft.api.ousu.exceptions.BeatmapException;
-import me.skiincraft.discord.core.utils.Emoji;
+import me.skiincraft.discord.core.command.InteractChannel;
 import me.skiincraft.discord.core.utils.StringUtils;
 import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.common.Comando;
@@ -12,50 +14,50 @@ import me.skiincraft.discord.ousu.embed.BeatmapEmbed;
 import me.skiincraft.discord.ousu.messages.TypeEmbed;
 import me.skiincraft.discord.ousu.utils.OusuUtils;
 
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
 
 public class BeatmapCommand extends Comando {
 
 	public BeatmapCommand() {
-		super("beatmap", null, "beatmap <beatmapid>");
+		super("beatmap", null, "beatmap <beatmapId>");
 	}
 
 	public CommandCategory getCategory() {
-		return CommandCategory.Osu;
+		return CommandCategory.Gameplay;
 	}
 
-	public void execute(User user, String[] args, TextChannel channel) {
+	public void execute(Member member, String[] args, InteractChannel channel) {
 		if (args.length == 0) {
-			replyUsage();
+			replyUsage(channel.getTextChannel());
 			return;
 		}
 
 		if (!args[0].matches("-?\\d+(\\.\\d+)?")) {
-			replyUsage();
+			replyUsage(channel.getTextChannel());
 			return;
 		}
 		try {
 		Beatmap beatmap = OusuBot.getApi().getBeatmap(Integer.parseInt(args[0])).get();
-		reply(BeatmapEmbed.beatmapEmbed(beatmap, channel.getGuild(), OusuUtils.beatmapColor(beatmap)).build(), message -> {
+		channel.reply(BeatmapEmbed.beatmapEmbed(beatmap, channel.getTextChannel().getGuild(), OusuUtils.beatmapColor(beatmap)).build(), message -> {
 			try {
-				message.getChannel().sendFile(beatmap.getBeatmapPreview(),	message.getEmbeds()
+				message.getChannel().sendFile(beatmap.getBeatmapPreview(),	Objects.requireNonNull(message.getEmbeds()
 						.get(0)
-						.getTitle()
-						.replace(Emoji.HEADPHONES.getAsMention(), "") + ".mp3")
+						.getTitle())
+						.replace(":headphones:", "") + ".mp3")
 						.queue();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		});
 		} catch (BeatmapException e) {
-			String[] msg = getLanguageManager().getStrings("Warnings", "INEXISTENT_BEATMAPID");
+			String[] msg = getLanguageManager(channel.getTextChannel().getGuild()).getStrings("Warnings", "INEXISTENT_BEATMAPID");
 
 			MessageEmbed build = TypeEmbed.WarningEmbed(msg[0], StringUtils.commandMessage(msg)).build();
-			reply(build);
+			channel.reply(build);
+		} catch (Exception e){
+			channel.reply(TypeEmbed.errorMessage(e, channel.getTextChannel()).build());
 		}
-
 	}
 
 }

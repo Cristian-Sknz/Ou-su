@@ -2,7 +2,7 @@ package me.skiincraft.discord.ousu.emojis;
 
 public class GenericEmote {
 
-    String ICON_URL = "https://cdn.discordapp.com/emojis/%s.%s";
+    String ICON_URL = "https://cdn.discordapp.com/emojis/";
 
     private String name;
     private long id;
@@ -25,7 +25,7 @@ public class GenericEmote {
     }
 
     public String getEmoteUrl(){
-        return String.format(ICON_URL, id, (animated) ? ".gif" : ".png");
+        return ICON_URL + id + ((animated) ? ".gif" : ".png");
     }
 
     public boolean isAnimated(){
@@ -34,5 +34,13 @@ public class GenericEmote {
 
     public long getId() {
         return id;
+    }
+
+    public String getReaction(){
+        return getName() + ":" + getId();
+    }
+
+    public String getAsMention() {
+        return "<:" + getName() + ":" +getId() + ">";
     }
 }
