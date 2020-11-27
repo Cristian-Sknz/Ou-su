@@ -7,7 +7,6 @@ import java.util.Scanner;
 import java.util.stream.Collectors;
 
 import me.skiincraft.discord.core.OusuCore;
-import me.skiincraft.discord.core.events.member.PreCommandEvent;
 import me.skiincraft.discord.ousu.emojis.GenericsEmotes;
 import org.discordbots.api.client.DiscordBotListAPI;
 import org.discordbots.api.client.impl.DiscordBotListAPIImpl;
@@ -50,14 +49,6 @@ public class ReceivedListener implements Listener {
 		} catch (Exception e) {
 			System.out.println("Não foi possivel atualizar o DiscordBotList");
 		}
-	}
-
-	@EventTarget
-	public void onPreCommand(PreCommandEvent event){
-		if (event.getGuild().getName().contains("Support")){
-			event.setCancelled(true);
-		}
-		System.out.println("Um evento foi cancelado");
 	}
 	
 	public static String getToken() throws IOException {
