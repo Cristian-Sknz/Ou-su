@@ -58,16 +58,13 @@ public class CardCommand extends Comando {
 		try {
 			Request<User> request = OusuBot.getApi().getUser(nickname, gm);
 			User user = request.get();
-			InputStream input = new Card(user).draw();
 
-			channel.reply(new ContentMessage(member.getAsMention(), input, ".png"));
+			channel.reply(new ContentMessage(member.getAsMention(), new Card(user).draw(), ".png"));
 		} catch (UserException e) {
 			channel.reply(TypeEmbed.inexistentUser(nickname, getCategory(), getLanguageManager(channel.getTextChannel().getGuild())).build());
 		} catch (Exception e){
 			channel.reply(TypeEmbed.errorMessage(e, channel.getTextChannel()).build());
 		}
-
-
 	}
 	
 	public boolean isGamemode(String arg) {
@@ -86,7 +83,6 @@ public class CardCommand extends Comando {
 		private String getAssets() {
 			return OusuCore.getAssetsPath().toFile().getAbsolutePath();
 		}
-		
 		
 		public InputStream draw() {
 			Font aurea = font("Aurea", 32F);

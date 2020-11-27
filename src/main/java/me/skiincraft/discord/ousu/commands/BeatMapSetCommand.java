@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 public class BeatmapSetCommand extends Comando {
 
@@ -35,7 +36,7 @@ public class BeatmapSetCommand extends Comando {
 		return CommandCategory.Gameplay;
 	}
 
-	public void execute(Member user, String[] args, InteractChannel channel) {
+	public void execute(Member member, String[] args, InteractChannel channel) {
 		if (args.length == 0) {
 			replyUsage(channel.getTextChannel());
 			return;
@@ -49,13 +50,13 @@ public class BeatmapSetCommand extends Comando {
 		try {
 			Request<BeatmapSet> request = OusuBot.getApi().getBeatmapSet(Long.parseLong(args[0]));
 			BeatmapSet beatmapSet = request.get();
+			AtomicInteger integer = new AtomicInteger(0);
+			Color cor = OusuUtils.beatmapColor(beatmapSet.get(0));
 
 			channel.reply(TypeEmbed.LoadingEmbed().build(), message -> {
 				EmbedBuilder[] embedArray = new EmbedBuilder[beatmapSet.size()];
-				AtomicInteger integer = new AtomicInteger(0);
-				Color cor = OusuUtils.beatmapColor(beatmapSet.get(0));
 				beatmapSet.forEach(b -> embedArray[integer.getAndIncrement()] = BeatmapEmbed.beatmapEmbed(b, channel.getTextChannel().getGuild(), cor));
-				Objects.requireNonNull(Reactions.getInstance()).registerReaction(new ReactionObject(message, user.getIdLong(),
+				Objects.requireNonNull(Reactions.getInstance()).registerReaction(new ReactionObject(message, member.getIdLong(),
 								new String[]{"U+25C0","U+25B6"}),
 						new ReactionPage(Arrays.asList(embedArray), true));
 
@@ -75,7 +76,7 @@ public class BeatmapSetCommand extends Comando {
 		} catch (BeatmapException e) {
 			String[] msg = getLanguageManager(channel.getTextChannel().getGuild()).getStrings("Warnings", "INEXISTENT_BEATMAPID");
 
-			MessageEmbed build = TypeEmbed.WarningEmbed(msg[0], StringUtils.commandMessage(msg)).build();
+			MessageEmbed build = TypeEmbed.WarningEmbed(msg[0], Arrays.stream(msg).skip(1).collect(Collectors.joining("\n"))).build();
 			channel.reply(build);
 		} catch (Exception e){
 			channel.reply(TypeEmbed.errorMessage(e, channel.getTextChannel()).build());
