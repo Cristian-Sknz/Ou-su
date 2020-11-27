@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://i.imgur.com/5OGGeBj.png" alt="Ousu!" width="650"/>
+<img src="https://i.imgur.com/ugWuqRl.png" alt="Ousu!" width="1000"/>
 </p>
 <p align="center">
  <a href= "https://top.gg/bot/701825726449582192">
@@ -44,4 +44,8 @@ If you want something more detailed, take a look at build.gradle
 
 **YourKit** supports open source projects with innovative and intelligent tools for monitoring and profiling **Java** and **.NET** applications.**YourKit** is the creator of [YourKit Java Profiler](https://www.yourkit.com/java/profiler/), [YourKit .NET Profiler](https://www.yourkit.com/.net/profiler/) and [YourKit YouMonitor](https://www.yourkit.com/youmonitor/). 
 > Thank you very much for granting open source licenses that help us a lot to keep Ousu getting stronger and more and more being known by new users. :heart:
+
+</p>
+<p align="center">
+<img src="https://i.imgur.com/f71LNDe.png" alt="Sleep!" width="600"/>
 </p>
