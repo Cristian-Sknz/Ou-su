@@ -56,7 +56,7 @@ public class CardCommand extends Comando {
 		l.clear();
 		String nickname = b.substring(0, b.length() - 1);
 		try {
-			Request<User> request = OusuBot.getApi().getUser(nickname, gm);
+			Request<User> request = OusuBot.getAPI().getUser(nickname, gm);
 			User user = request.get();
 
 			channel.reply(new ContentMessage(member.getAsMention(), new Card(user).draw(), ".png"));

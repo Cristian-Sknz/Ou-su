@@ -69,7 +69,7 @@ public class UserCommand extends Comando {
 		String nickname = b.substring(0, b.length() - 1);
 		LanguageManager lang = getLanguageManager(channel.getTextChannel().getGuild());
 		try {
-			Request<User> request = OusuBot.getApi().getUser(nickname, gm);
+			Request<User> request = OusuBot.getAPI().getUser(nickname, gm);
 			User user = request.get();
 			InputStream draw = new UserScore(user).draw(lang.getLanguage());
 			final EmbedBuilder embedlocal = embed(user, lang);

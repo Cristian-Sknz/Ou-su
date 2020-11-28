@@ -64,7 +64,7 @@ public class TopUserCommand extends Comando {
 		l.forEach(s -> b.append(s).append(" "));
 		l.clear();
 		try {
-			Request<List<Score>> request = OusuBot.getApi().getTopUser(b.substring(0, b.length()-1), gm, 10);
+			Request<List<Score>> request = OusuBot.getAPI().getTopUser(b.substring(0, b.length()-1), gm, 10);
 			List<Score> scores = request.get();
 			List<EmbedBuilder> embeds = new ArrayList<>();
 
