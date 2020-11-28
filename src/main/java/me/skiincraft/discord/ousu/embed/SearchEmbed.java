@@ -21,7 +21,7 @@ public class SearchEmbed {
 		embed.setDescription(":microphone: " + lang.getString("Titles", "ARTIST") + " " + beatmap.getAuthor().concat("\n"))
 				.appendDescription(":tickets: " + lang.getString("Titles", "GENRE") + " " + beatmap.getGenre().getDisplayName().concat("\n"))
 				.appendDescription(GenericsEmotes.getEmoteAsMention(beatmap.getGamemodes()[0].name().toLowerCase()).concat(" ") + lang.getString("Titles", "GAMEMODE") + " " + beatmap.getGamemodes()[0].getDisplayName().concat("\n"))
-				.appendDescription(":compass: " + ((Objects.isNull(beatmap.getApprovated())) ? Objects.requireNonNull(beatmap.getApprovated()).name() : "?"));
+				.appendDescription(":compass: " + ((Objects.isNull(beatmap.getApprovated())) ? "?" : beatmap.getApprovated().name()));
 
 		StringBuilder versions = new StringBuilder();
 
