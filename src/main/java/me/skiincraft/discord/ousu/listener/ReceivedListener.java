@@ -20,22 +20,6 @@ import me.skiincraft.discord.ousu.OusuBot;
 import net.dv8tion.jda.api.entities.User;
 
 public class ReceivedListener implements Listener {
-
-	@EventTarget
-	public void onReceivedMessage(BotReceivedMessage e) {
-		User autor = e.getMessage().getAuthor();
-		if (e.getMessage().getContentRaw().split(" ")[0].contains("getemotes")) {
-			GenericsEmotes.saveEmotes(OusuCore.getAssetsPath().toFile().getAbsolutePath() + "/emotes", GenericsEmotes.parseEmotes(e.getMessage().getGuild()));
-			try {
-				GenericsEmotes.loadEmotes(OusuCore.getAssetsPath().toFile().getAbsolutePath() + "/emotes/");
-			} catch (IOException ioException) {
-				ioException.printStackTrace();
-			}
-			e.getMessage().addReaction("U+2705").queue();
-		}
-
-		System.out.println(">" + autor.getName() + "#" +autor.getDiscriminator() +" Digitou o comando: " + e.getMessage().getContentRaw());
-	}
 	
 	@EventTarget
 	public void onJoinServer(BotJoinEvent event) {
