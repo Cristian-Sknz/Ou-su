@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import me.skiincraft.api.ousu.OusuAPI;
 import me.skiincraft.api.ousu.exceptions.TokenException;
-import me.skiincraft.discord.core.CoreStarter;
 import me.skiincraft.discord.core.OusuCore;
 import me.skiincraft.discord.core.common.PresenceUpdater;
 import me.skiincraft.discord.core.common.reactions.ReactionListeners;
@@ -22,12 +21,17 @@ import net.dv8tion.jda.api.entities.Activity;
 import java.io.*;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 public class OusuBot extends OusuPlugin {
 
 	private static OusuAPI api;
 	private static OusuBot instance;
 	private static PresenceUpdater presenceUpdater;
+
+	private boolean restart;
 
 	public static OusuBot getInstance() {
 		return instance;
@@ -39,7 +43,7 @@ public class OusuBot extends OusuPlugin {
 	 * Utilizado para pegar API
 	 * Como tenho 2 codigos, isso revesa o uso deles.
 	 */
-	public static OusuAPI getApi() {
+	public static OusuAPI getAPI() {
 		boolean nulls = Arrays.asList(getTokens()).contains(null) || Arrays.asList(getTokens()).size() == 1;
 		if (System.currentTimeMillis() - apiLast >= 2000) {
 			for (String string : getTokens()) {
@@ -60,6 +64,19 @@ public class OusuBot extends OusuPlugin {
 			}
 		}
 		return api;
+	}
+
+	private void shutdownAfter(){
+		if (!restart) {
+			Timer timer = new Timer("Restart");
+			timer.schedule(new TimerTask() {
+				@Override
+				public void run() {
+					OusuCore.shutdown();
+				}
+			}, TimeUnit.HOURS.toMillis(1));
+			restart = true;
+		}
 	}
 
 	public void onEnable() {
@@ -133,6 +150,7 @@ public class OusuBot extends OusuPlugin {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		shutdownAfter();
 	}
 	
 	public static String[] getTokens() {
