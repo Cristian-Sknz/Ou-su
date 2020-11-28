@@ -68,7 +68,7 @@ public class RecentuserCommand extends Comando {
 		LanguageManager lang = getLanguageManager(channel.getTextChannel().getGuild());
 		try {
 			System.out.println(b.toString());
-			Request<List<RecentScore>> request = OusuBot.getApi().getRecentUser(b.substring(0, b.length()-1), gm, 10);
+			Request<List<RecentScore>> request = OusuBot.getAPI().getRecentUser(b.substring(0, b.length()-1), gm, 10);
 			List<RecentScore> score = request.get();
 			channel.reply(TypeEmbed.LoadingEmbed().build(), message -> {
 				List<EmbedBuilder> embeds = new ArrayList<>();
