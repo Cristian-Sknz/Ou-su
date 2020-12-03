@@ -1,4 +1,4 @@
-package me.skiincraft.discord.ousu.imagebuilders;
+package me.skiincraft.discord.ousu.utils;
 
 import me.skiincraft.discord.core.common.CustomFont;
 import me.skiincraft.discord.ousu.common.ImageBuilder;

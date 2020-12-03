@@ -1,4 +1,4 @@
-package me.skiincraft.discord.ousu.htmlpage;
+package me.skiincraft.discord.ousu.crawler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,15 +46,6 @@ public class GoogleSearch {
 
 	public List<Search> getResults() {
 		return result;
-	}
-
-	@Deprecated
-	public List<Integer> getBeatmapSetID() {
-		List<Integer> i = new ArrayList<>();
-		for (Search s : getResults()) {
-			i.add(Integer.valueOf(s.getLink().replaceAll("\\D+", "")));
-		}
-		return i;
 	}
 
 	public List<Integer> getBeatmapSetIDs() {

@@ -1,4 +1,4 @@
-package me.skiincraft.discord.ousu.htmlpage;
+package me.skiincraft.discord.ousu.crawler;
 
 import java.io.IOException;
 import java.util.ArrayList;
