@@ -18,7 +18,7 @@ import me.skiincraft.discord.core.common.reactions.custom.ReactionPage;
 import me.skiincraft.discord.core.configuration.LanguageManager;
 import me.skiincraft.discord.ousu.common.Comando;
 import me.skiincraft.discord.ousu.common.CommandCategory;
-import me.skiincraft.discord.ousu.htmlpage.HtmlRanking;
+import me.skiincraft.discord.ousu.crawler.HtmlRanking;
 import me.skiincraft.discord.ousu.messages.Ranking;
 import me.skiincraft.discord.ousu.messages.TypeEmbed;
 

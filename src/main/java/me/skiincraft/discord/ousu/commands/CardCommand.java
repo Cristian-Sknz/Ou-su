@@ -11,7 +11,7 @@ import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.common.Comando;
 import me.skiincraft.discord.ousu.common.CommandCategory;
 import me.skiincraft.discord.ousu.common.ImageBuilder;
-import me.skiincraft.discord.ousu.imagebuilders.ImageAdapter;
+import me.skiincraft.discord.ousu.utils.ImageAdapter;
 import me.skiincraft.discord.ousu.messages.TypeEmbed;
 import net.dv8tion.jda.api.entities.Member;
 

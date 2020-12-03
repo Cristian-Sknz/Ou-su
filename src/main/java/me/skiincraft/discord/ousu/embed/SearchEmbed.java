@@ -3,7 +3,7 @@ package me.skiincraft.discord.ousu.embed;
 import me.skiincraft.discord.core.configuration.LanguageManager;
 import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.emojis.GenericsEmotes;
-import me.skiincraft.discord.ousu.htmlpage.BeatmapSearch;
+import me.skiincraft.discord.ousu.crawler.BeatmapSearch;
 import me.skiincraft.discord.ousu.utils.ImageUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 

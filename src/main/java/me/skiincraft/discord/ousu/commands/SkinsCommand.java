@@ -15,7 +15,7 @@ import me.skiincraft.discord.core.configuration.LanguageManager;
 import me.skiincraft.discord.ousu.common.Comando;
 import me.skiincraft.discord.ousu.common.CommandCategory;
 import me.skiincraft.discord.ousu.emojis.GenericsEmotes;
-import me.skiincraft.discord.ousu.htmlpage.JSoupGetters;
+import me.skiincraft.discord.ousu.crawler.JSoupGetters;
 import me.skiincraft.discord.ousu.messages.TypeEmbed;
 import me.skiincraft.discord.ousu.object.OsuSkin;
 

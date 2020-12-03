@@ -4,7 +4,7 @@ import java.util.Map;
 
 import me.skiincraft.api.ousu.entity.user.User;
 import me.skiincraft.discord.ousu.emojis.GenericsEmotes;
-import me.skiincraft.discord.ousu.htmlpage.JSoupGetters.InputTypes;
+import me.skiincraft.discord.ousu.crawler.JSoupGetters.InputTypes;
 
 public class UserStatistics {
 	

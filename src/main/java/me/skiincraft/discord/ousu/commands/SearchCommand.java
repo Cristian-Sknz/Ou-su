@@ -15,9 +15,9 @@ import me.skiincraft.discord.ousu.common.Comando;
 import me.skiincraft.discord.ousu.common.CommandCategory;
 import me.skiincraft.discord.ousu.embed.SearchEmbed;
 import me.skiincraft.discord.ousu.exceptions.SearchException;
-import me.skiincraft.discord.ousu.htmlpage.BeatmapSearch;
-import me.skiincraft.discord.ousu.htmlpage.GoogleSearch;
-import me.skiincraft.discord.ousu.htmlpage.JSoupGetters;
+import me.skiincraft.discord.ousu.crawler.BeatmapSearch;
+import me.skiincraft.discord.ousu.crawler.GoogleSearch;
+import me.skiincraft.discord.ousu.crawler.JSoupGetters;
 import me.skiincraft.discord.ousu.messages.TypeEmbed;
 
 import net.dv8tion.jda.api.EmbedBuilder;
