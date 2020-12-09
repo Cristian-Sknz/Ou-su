@@ -17,8 +17,8 @@ import me.skiincraft.discord.core.configuration.LanguageManager;
 import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.common.Comando;
 import me.skiincraft.discord.ousu.common.CommandCategory;
+import me.skiincraft.discord.ousu.crawler.WebCrawler;
 import me.skiincraft.discord.ousu.emojis.GenericsEmotes;
-import me.skiincraft.discord.ousu.crawler.JSoupGetters;
 import me.skiincraft.discord.ousu.utils.ImageAdapter;
 import me.skiincraft.discord.ousu.messages.TypeEmbed;
 import me.skiincraft.discord.ousu.osu.UserStatistics;
@@ -78,12 +78,12 @@ public class UserCommand extends Comando {
 				try {
 					List<EmbedBuilder> reactions = new ArrayList<>();
 					reactions.add(embedlocal.setImage("attachment://" + content.getInputName() + content.getInputExtension()));
-					reactions.add(embed2(JSoupGetters.inputType(user, lang), embedlocal, lang)
+					reactions.add(embed2(user, Objects.requireNonNull(WebCrawler.getOtherStatistics(null, lang.getLanguage(), user.getUserId())), embedlocal, lang)
 							.setImage("attachment://" + content.getInputName() + content.getInputExtension()));
 
 					Objects.requireNonNull(Reactions.getInstance()).registerReaction(new ReactionObject(message, member.getIdLong(),
 							new String[]{"U+1F4CE"}), new ReactionPage(reactions, true));
-				} catch (IOException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			});
@@ -136,20 +136,20 @@ public class UserCommand extends Comando {
 		return embed;
 	}
 	
-	public EmbedBuilder embed2(UserStatistics osuUser, EmbedBuilder embedBuilder, LanguageManager lang) {
+	public EmbedBuilder embed2(User user, UserStatistics osuUser, EmbedBuilder embedBuilder, LanguageManager lang) {
 		EmbedBuilder embed = new EmbedBuilder(embedBuilder);
 		embed.clearFields();
 		
-		embed.setDescription(":map: " + lang.getString("Embeds", "USERID") + ": " + osuUser.getUser().getUserId() + "\n");
+		embed.setDescription(":map: " + lang.getString("Embeds", "USERID") + ": " + user.getUserId() + "\n");
 		embed.appendDescription(":calendar: " + lang.getString("Embeds", "JOINED") + ": " + osuUser.getFirstlogin() + "\n");
 		embed.appendDescription(":clock3: " + lang.getString("Embeds", "LASTACTIVE") + ": " + osuUser.getLastActive());
 
 		embed.addField(lang.getString("Embeds", "INPUTS"), osuUser.getInputEmotes(), true);
-		embed.addField("Level", osuUser.getUser().getLevel() + "", true);
+		embed.addField("Level", user.getLevel() + "", true);
 		//embed.addField(lang.getString("Embeds", "LASTPP"), osuUser.getLastPpCapture() + "", true);
 
 		embed.setFooter(lang.getString("Default", "FOOTER_DEFAULT"),
-				"https://osu.ppy.sh/images/flags/" + osuUser.getUser().getCountryCode() + ".png");
+				"https://osu.ppy.sh/images/flags/" + user.getCountryCode() + ".png");
 		return embed;
 	}
 

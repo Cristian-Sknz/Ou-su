@@ -14,10 +14,10 @@ import me.skiincraft.discord.core.utils.StringUtils;
 import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.common.Comando;
 import me.skiincraft.discord.ousu.common.CommandCategory;
+import me.skiincraft.discord.ousu.osu.BeatmapSearch;
+import me.skiincraft.discord.ousu.crawler.WebCrawler;
 import me.skiincraft.discord.ousu.emojis.GenericEmote;
 import me.skiincraft.discord.ousu.emojis.GenericsEmotes;
-import me.skiincraft.discord.ousu.crawler.BeatmapSearch;
-import me.skiincraft.discord.ousu.crawler.JSoupGetters;
 import me.skiincraft.discord.ousu.messages.TypeEmbed;
 import me.skiincraft.discord.ousu.osu.WebUser;
 import me.skiincraft.discord.ousu.utils.ImageUtils;
@@ -31,8 +31,8 @@ import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 public class TopUserCommand extends Comando {
 
@@ -64,23 +64,20 @@ public class TopUserCommand extends Comando {
 		l.forEach(s -> b.append(s).append(" "));
 		l.clear();
 		try {
-			Request<List<Score>> request = OusuBot.getAPI().getTopUser(b.substring(0, b.length()-1), gm, 10);
+			Request<List<Score>> request = OusuBot.getAPI().getTopUser(b.substring(0, b.length() - 1), gm, 10);
 			List<Score> scores = request.get();
 			List<EmbedBuilder> embeds = new ArrayList<>();
 
-			String name = WebUser.getName(b.substring(0, b.length()-1));
-			long id = WebUser.getId(b.substring(0, b.length()-1));
+			String name = WebUser.getName(b.substring(0, b.length() - 1));
+			long id = WebUser.getId(b.substring(0, b.length() - 1));
 
 			channel.reply(TypeEmbed.LoadingEmbed().build(), message -> {
-				int i= 1;
+				int i = 1;
 				for (Score score : scores) {
-					try {
-						BeatmapSearch bs = JSoupGetters.beatmapInfoById(score.getBeatmapId());
-						embeds.add(embeds(lang, score, bs, name, id, new int[] {i, scores.size()}));
-						i++;
-					} catch (IOException e) {
-						continue;
-					}
+					BeatmapSearch bs = WebCrawler.getBeatmapInfo(score.getBeatmapId());
+					if (bs == null) continue;
+					embeds.add(embeds(lang, score, bs, name, id, new int[]{i, scores.size()}));
+					i++;
 
 					if (embeds.size() == 1) {
 						message.editMessage(embeds.get(0).build()).queue();
@@ -96,7 +93,7 @@ public class TopUserCommand extends Comando {
 
 			System.out.println(StringUtils.commandMessage(str));
 			channel.reply(embed);
-		} catch (Exception e){
+		} catch (Exception e) {
 			channel.reply(TypeEmbed.errorMessage(e, channel.getTextChannel()).build());
 		}
 	}
@@ -142,7 +139,7 @@ public class TopUserCommand extends Comando {
 		embed.setThumbnail("http://s.ppy.sh/a/" + userId + ".png");
 		embed.setImage(beatmap.getBeatmapCoverUrl());
 		String author = beatmap.getCreator();
-		embed.setFooter("[" + beatmap.getBeatmapid() + "] " + beatmap.getTitle() + " por " + beatmap.getAuthor() + " | "
+		embed.setFooter("[" + beatmap.getBeatmapId() + "] " + beatmap.getTitle() + " por " + beatmap.getAuthor() + " | "
 				+ lang.getString("Embeds", "MAP_CREATED_BY") + author);
 
 		try {

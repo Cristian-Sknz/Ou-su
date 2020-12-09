@@ -18,7 +18,7 @@ import me.skiincraft.discord.core.common.reactions.custom.ReactionPage;
 import me.skiincraft.discord.core.configuration.LanguageManager;
 import me.skiincraft.discord.ousu.common.Comando;
 import me.skiincraft.discord.ousu.common.CommandCategory;
-import me.skiincraft.discord.ousu.crawler.HtmlRanking;
+import me.skiincraft.discord.ousu.crawler.WebCrawler;
 import me.skiincraft.discord.ousu.messages.Ranking;
 import me.skiincraft.discord.ousu.messages.TypeEmbed;
 
@@ -45,14 +45,13 @@ public class RankingCommand extends Comando {
 			channel.reply(TypeEmbed.LoadingEmbed().build(), message -> {
 				String cc = (args.length == 0) ? null : (args[0].length() >= 2) ? args[0] : null;
 				try {
-					List<Ranking> rankinglist = HtmlRanking.get(cc);
+					List<Ranking> rankinglist = WebCrawler.getRanking(cc);
 					List<EmbedBuilder> embeds = embed(rankinglist, getLanguageManager(channel.getTextChannel().getGuild()));
 					Objects.requireNonNull(Reactions.getInstance()).registerReaction(new ReactionObject(message, user.getIdLong(),
 							new String[]{"U+25C0", "U+25B6"}), new ReactionPage(embeds, true));
 					message.editMessage(embeds.get(0).build()).queue();
 				} catch (IOException e) {
-					e.printStackTrace();
-					channel.reply("Ocorreu um problema :/ \n`" + e.getMessage() + "`");
+					channel.reply(TypeEmbed.errorMessage(e, channel.getTextChannel()).build());
 				}
 			});
 		} catch (Exception e){

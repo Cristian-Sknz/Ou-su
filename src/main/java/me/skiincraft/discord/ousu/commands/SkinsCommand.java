@@ -14,10 +14,10 @@ import me.skiincraft.discord.core.common.reactions.custom.ReactionPage;
 import me.skiincraft.discord.core.configuration.LanguageManager;
 import me.skiincraft.discord.ousu.common.Comando;
 import me.skiincraft.discord.ousu.common.CommandCategory;
+import me.skiincraft.discord.ousu.crawler.WebCrawler;
 import me.skiincraft.discord.ousu.emojis.GenericsEmotes;
-import me.skiincraft.discord.ousu.crawler.JSoupGetters;
 import me.skiincraft.discord.ousu.messages.TypeEmbed;
-import me.skiincraft.discord.ousu.object.OsuSkin;
+import me.skiincraft.discord.ousu.osu.OsuSkin;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
@@ -35,7 +35,7 @@ public class SkinsCommand extends Comando{
 	public void execute(Member user, String[] args, InteractChannel channel) {
 		channel.reply(TypeEmbed.LoadingEmbed().build(), message ->{
 			try {
-				List<OsuSkin> skins = JSoupGetters.pageskins();
+				List<OsuSkin> skins = WebCrawler.getHomePageSkins();
 				List<EmbedBuilder> embeds = new ArrayList<>();
 				int first = 0; 
 				for (OsuSkin skin : skins) {
@@ -59,11 +59,11 @@ public class SkinsCommand extends Comando{
 	
 	public EmbedBuilder embed(LanguageManager lang, OsuSkin osu) {
 		EmbedBuilder embed = new EmbedBuilder();
-		embed.setTitle(osu.getSkinname());
-		embed.setImage(osu.getSkinimage());
-		embed.addField("Skin", osu.getSkinname(), true);
+		embed.setTitle(osu.getSkinName());
+		embed.setImage(osu.getSkinImage());
+		embed.addField("Skin", osu.getSkinName(), true);
 		embed.addField(lang.getString("Titles", "CREATOR"), osu.getCreator(), true);
-		embed.addField("Download", GenericsEmotes.getEmoteAsMention("download") + "[__Here__](" + osu.getDownloadurl() + ")",
+		embed.addField("Download", GenericsEmotes.getEmoteAsMention("download") + "[__Here__](" + osu.getDownloadURL() + ")",
 				true);
 		StringBuilder gamemodes = new StringBuilder();
 		for (Gamemode mode : osu.getGamemodes()) {

@@ -3,10 +3,10 @@ package me.skiincraft.discord.ousu.listener;
 import me.skiincraft.api.ousu.entity.objects.Gamemode;
 import me.skiincraft.discord.core.configuration.LanguageManager;
 import me.skiincraft.discord.core.utils.StringUtils;
+import me.skiincraft.discord.ousu.crawler.WebCrawler;
 import me.skiincraft.discord.ousu.embed.SearchEmbed;
 import me.skiincraft.discord.ousu.emojis.GenericsEmotes;
-import me.skiincraft.discord.ousu.crawler.BeatmapSearch;
-import me.skiincraft.discord.ousu.crawler.JSoupGetters;
+import me.skiincraft.discord.ousu.osu.BeatmapSearch;
 import me.skiincraft.discord.ousu.utils.ImageUtils;
 import me.skiincraft.discord.ousu.utils.OusuUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -52,35 +52,51 @@ public class BeatmapTracking extends ListenerAdapter {
         if (messageraw.contains("osu.ppy.sh/beatmapsets/") || messageraw.contains("https://osu.ppy.sh/beatmaps/")) {
             String geturl = substringBeatmap(messageraw);
             geturl = geturl.substring(geturl.indexOf("/")+1);
-
             String[] split = geturl.split("/");
+
+            boolean isBeatmapset = messageraw.toLowerCase().contains("beatmapsets");
             if (split.length >= 3){
                 if (OusuUtils.isNumeric(split[2])){
                     return;
                 }
             }
 
-            new Thread(() -> {
-                long beatmapset = Long.parseLong(split[0].replaceAll("\\D+", ""));
-                if (messageraw.contains("/beatmaps/")) try {
-                    BeatmapSearch search = JSoupGetters.beatmapInfoById(beatmapset);
-                    event.getChannel().sendMessage(SearchEmbed.searchEmbed(search, new LanguageManager(event.getGuild())).build()).queue();
-                    return;
-                } catch (NumberFormatException | IOException ignored) {}
-
-                if (split.length == 2) try {
-                    long beatmap = Long.parseLong(split[1].replaceAll("\\D+", ""));
-                    BeatmapSearch search = JSoupGetters.beatmapInfoById(beatmap);
-                    event.getChannel().sendMessage(SearchEmbed.searchEmbed(search, new LanguageManager(event.getGuild())).build()).queue();
-                    return;
-                } catch (NumberFormatException | IOException ignored) {}
-
+            if (split.length >= 2) {
                 try {
-                    BeatmapSearch search = JSoupGetters.beatmapInfo(beatmapset);
-                    if (search == null) return;
-                    event.getChannel().sendMessage(SearchEmbed.searchEmbed(search, new LanguageManager(event.getGuild())).build()).queue();
-                } catch (IOException ignored) {}
-            }, "tracking").start();
+                    BeatmapSearch search = WebCrawler.getBeatmapInfoBySetID(Long.parseLong(split[0].replaceAll("\\D+", "")));
+                    if (search == null){
+                        search = WebCrawler.getBeatmapInfo(Long.parseLong(split[1].replaceAll("\\D+", "")));
+                        if (search == null) {
+                            return;
+                        }
+                    }
+                    EmbedBuilder embed = SearchEmbed.searchEmbed(search, new LanguageManager(event.getGuild()));
+                    event.getChannel().sendMessage(embed.build()).queue();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return;
+            }
+            try {
+                if (isBeatmapset) {
+                    BeatmapSearch search = WebCrawler.getBeatmapInfoBySetID(Long.parseLong(split[0].replaceAll("\\D+", "")));
+                    if (search == null) {
+                        return;
+                    }
+                    EmbedBuilder embed = SearchEmbed.searchEmbed(search, new LanguageManager(event.getGuild()));
+                    event.getChannel().sendMessage(embed.build()).queue();
+
+                } else {
+                    BeatmapSearch search = WebCrawler.getBeatmapInfo(Long.parseLong(split[0].replaceAll("\\D+", "")));
+                    if (search == null) {
+                        return;
+                    }
+                    EmbedBuilder embed = SearchEmbed.searchEmbed(search, new LanguageManager(event.getGuild()));
+                    event.getChannel().sendMessage(embed.build()).queue();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         if (messageraw.contains("osuskins.net/skin/")){

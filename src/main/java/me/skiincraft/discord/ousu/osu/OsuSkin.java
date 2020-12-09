@@ -1,4 +1,4 @@
-package me.skiincraft.discord.ousu.object;
+package me.skiincraft.discord.ousu.osu;
 
 import java.util.List;
 
@@ -6,42 +6,42 @@ import me.skiincraft.api.ousu.entity.objects.Gamemode;
 
 public class OsuSkin {
 
-	private final String skinname;
-	private final String skinurl;
-	private final String skinimage;
+	private final String skinName;
+	private final String skinURL;
+	private final String skinImage;
 
-	private final String downloadurl;
+	private final String downloadURL;
 
 	private final String creator;
 	private final List<Gamemode> gamemodes;
 	private final Statistics statistics;
 
-	public OsuSkin(String skinname, String skinurl, String skinimage, String downloadurl, String creator,
-			List<Gamemode> gamemodes, Statistics statistics) {
+	public OsuSkin(String skinName, String skinURL, String skinImage, String downloadurl, String creator,
+				   List<Gamemode> gamemodes, Statistics statistics) {
 		super();
-		this.skinname = skinname;
-		this.skinurl = skinurl;
-		this.skinimage = skinimage;
-		this.downloadurl = downloadurl;
+		this.skinName = skinName;
+		this.skinURL = skinURL;
+		this.skinImage = skinImage;
+		this.downloadURL = downloadurl;
 		this.creator = creator;
 		this.gamemodes = gamemodes;
 		this.statistics = statistics;
 	}
 
-	public String getSkinname() {
-		return skinname;
+	public String getSkinName() {
+		return skinName;
 	}
 
-	public String getSkinurl() {
-		return skinurl;
+	public String getSkinURL() {
+		return skinURL;
 	}
 
-	public String getSkinimage() {
-		return skinimage;
+	public String getSkinImage() {
+		return skinImage;
 	}
 
-	public String getDownloadurl() {
-		return downloadurl;
+	public String getDownloadURL() {
+		return downloadURL;
 	}
 
 	public String getCreator() {
@@ -58,8 +58,8 @@ public class OsuSkin {
 
 	@Override
 	public String toString() {
-		return "OsuSkin [skinname=" + skinname + ", skinurl=" + skinurl + ", skinimage=" + skinimage + ", downloadurl="
-				+ downloadurl + ", creator=" + creator + ", gamemodes=" + gamemodes + ", statistics=" + statistics
+		return "OsuSkin [skinname=" + skinName + ", skinurl=" + skinURL + ", skinimage=" + skinImage + ", downloadurl="
+				+ downloadURL + ", creator=" + creator + ", gamemodes=" + gamemodes + ", statistics=" + statistics
 				+ "]";
 	}
 

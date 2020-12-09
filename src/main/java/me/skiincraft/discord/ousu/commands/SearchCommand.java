@@ -13,11 +13,11 @@ import me.skiincraft.discord.core.configuration.LanguageManager;
 import me.skiincraft.discord.core.utils.StringUtils;
 import me.skiincraft.discord.ousu.common.Comando;
 import me.skiincraft.discord.ousu.common.CommandCategory;
+import me.skiincraft.discord.ousu.crawler.WebCrawler;
 import me.skiincraft.discord.ousu.embed.SearchEmbed;
 import me.skiincraft.discord.ousu.exceptions.SearchException;
-import me.skiincraft.discord.ousu.crawler.BeatmapSearch;
+import me.skiincraft.discord.ousu.osu.BeatmapSearch;
 import me.skiincraft.discord.ousu.crawler.GoogleSearch;
-import me.skiincraft.discord.ousu.crawler.JSoupGetters;
 import me.skiincraft.discord.ousu.messages.TypeEmbed;
 
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -46,11 +46,12 @@ public class SearchCommand extends Comando {
 				List<EmbedBuilder> embeds = new ArrayList<>();
 				int first = 0;
 				for (int id : bIds) {
-					BeatmapSearch info = JSoupGetters.beatmapInfo(id);
+					BeatmapSearch info = WebCrawler.getBeatmapInfoBySetID(id);
 					if (info == null) {
 						continue;
 					}
 					EmbedBuilder sEmbed = SearchEmbed.searchEmbed(info, lang);
+					System.out.println(info.getBeatmapSetId());
 					if (first == 0) {
 						message.editMessage(new EmbedBuilder(sEmbed)
 								.setFooter("Loading more beatmaps").build()).queue();

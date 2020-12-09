@@ -10,8 +10,12 @@ import me.skiincraft.mal.entity.anime.Anime;
 import me.skiincraft.mal.entity.anime.Animeography;
 import me.skiincraft.mal.entity.characters.Character;
 import me.skiincraft.mal.entity.characters.CharacterShort;
+import me.skiincraft.mal.entity.list.AnimeItem;
+import me.skiincraft.mal.entity.list.AnimeList;
+import me.skiincraft.mal.entity.list.ListStatus;
 import me.skiincraft.mal.entity.manga.Mangaography;
 import me.skiincraft.mal.entity.objects.Genre;
+import me.skiincraft.mal.entity.people.Profile;
 import me.skiincraft.mal.util.By;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
@@ -65,6 +69,18 @@ public class MalCommand extends Comando {
             channel.reply(characterEmbed(character, lang).build());
             return;
         }
+        
+        if (args[0].equalsIgnoreCase("list")){
+            try {
+                AnimeList animeList = myAnimeList.getAnimeList(appendArgs(1, args), ListStatus.Watching).get();
+                Profile profile = animeList.getUser().get();
+
+
+            } catch (Exception e) {
+                channel.reply("Não foi possivel encontrar esse usuário.");
+                return;
+            }
+        }
 
         replyUsage(channel.getTextChannel());
     }
@@ -76,6 +92,23 @@ public class MalCommand extends Comando {
                     .append(" ");
         }
         return builder.substring(0, builder.length()-1);
+    }
+    
+    public EmbedBuilder watchingListEmbed(AnimeList animeList, Profile profile){
+        EmbedBuilder embed = new EmbedBuilder();
+        embed.setTitle(profile.getName() + " - Animelist", profile.getUrl());
+        embed.setThumbnail(profile.getDefaultAvatar());
+        embed.setColor(new Color(88, 118, 66));
+
+        StringBuilder title = new StringBuilder();
+        StringBuilder ep = new StringBuilder();
+        List<AnimeItem> animeitens = animeList.getAnimelist();
+        for (int i = 0; i < animeitens.size(); i++){
+            title.append(animeitens.get(i).getTitle());
+            if (i >= 10) break;
+        }
+
+        return embed;
     }
 
 

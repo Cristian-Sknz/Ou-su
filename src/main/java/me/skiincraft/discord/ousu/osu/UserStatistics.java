@@ -1,67 +1,50 @@
 package me.skiincraft.discord.ousu.osu;
 
-import java.util.Map;
+import java.util.List;
 
-import me.skiincraft.api.ousu.entity.user.User;
+import me.skiincraft.discord.ousu.crawler.InputType;
 import me.skiincraft.discord.ousu.emojis.GenericsEmotes;
-import me.skiincraft.discord.ousu.crawler.JSoupGetters.InputTypes;
 
 public class UserStatistics {
 	
 	private final String firstlogin;
 	private final String lastActive;
-	
-	private final Map<InputTypes, Boolean> input;
-	private final String lastPpCapture;
-	private final String lastScoreCapture;
-	
-	private final User user;
-	
-	public UserStatistics(String firstlogin, String lastActive, Map<InputTypes, Boolean> input, String lastPpCapture,
-			String lastScoreCapture, User user) {
-		super();
+
+	private final List<InputType> inputTypes;
+
+	public UserStatistics(String firstlogin, String lastActive, List<InputType> inputTypes) {
 		this.firstlogin = firstlogin;
 		this.lastActive = lastActive;
-		this.input = input;
-		this.lastPpCapture = lastPpCapture;
-		this.lastScoreCapture = lastScoreCapture;
-		this.user = user;
+		this.inputTypes = inputTypes;
 	}
-	
+
 	public String getFirstlogin() {
 		return firstlogin;
 	}
+
 	public String getLastActive() {
 		return lastActive;
 	}
-	public Map<InputTypes, Boolean> getInput() {
-		return input;
-	}
-	public String getLastPpCapture() {
-		return lastPpCapture;
-	}
-	public String getLastScoreCapture() {
-		return lastScoreCapture;
-	}
-	public User getUser() {
-		return user;
-	}
+
 	public String getInputEmotes() {
-		StringBuilder buffer = new StringBuilder();
-		if (input.get(InputTypes.Mouse)) {
-			buffer.append(":mouse_three_button:").append(" Mouse\n");
+		if (inputTypes.size() == 0) {
+			return "Not Detected";
 		}
-		if (input.get(InputTypes.Table)) {
-			buffer.append(" ").append(GenericsEmotes.getEmoteAsMention("tablet")).append(" Tablet\n");
+		StringBuilder builder = new StringBuilder();
+		if (inputTypes.contains(InputType.Mouse)){
+			builder.append(":mouse_three_button:").append(" Mouse\n");
 		}
-		if (input.get(InputTypes.Keyboard)) {
-			buffer.append(" ").append(":keyboard:").append(" Keyboard\n");
+		if (inputTypes.contains(InputType.Tablet)){
+			builder.append(GenericsEmotes.getEmoteAsMention("tablet")).append(" Tablet\n");
 		}
-		if (input.get(InputTypes.Touchpad)) {
-			buffer.append(" ").append(GenericsEmotes.getEmoteAsMention("touchpad")).append(" Touchpad\n");
-		} 
+		if (inputTypes.contains(InputType.Touch)){
+			builder.append(GenericsEmotes.getEmoteAsMention("touchpad")).append(" Touchpad\n");
+		}
+		if (inputTypes.contains(InputType.Keyboard)){
+			builder.append(":keyboard:").append(" Keyboard\n");
+		}
 		
-		return (buffer.length() != 0) ?buffer.toString() : "Not Detected";
+		return builder.toString();
 	}
 	
 	

@@ -3,7 +3,7 @@ package me.skiincraft.discord.ousu.embed;
 import me.skiincraft.discord.core.configuration.LanguageManager;
 import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.emojis.GenericsEmotes;
-import me.skiincraft.discord.ousu.crawler.BeatmapSearch;
+import me.skiincraft.discord.ousu.osu.BeatmapSearch;
 import me.skiincraft.discord.ousu.utils.ImageUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 
@@ -15,7 +15,7 @@ public class SearchEmbed {
 	public static EmbedBuilder searchEmbed(BeatmapSearch beatmap, LanguageManager lang){
 		EmbedBuilder embed = new EmbedBuilder();
 		StringBuilder gamemodes = new StringBuilder();
-		embed.setAuthor(beatmap.getCreator() + "| Search Beatmaps", "https://osu.ppy.sh/users/" + beatmap.getCreatorid(), "https://a.ppy.sh/" + beatmap.getCreatorid());
+		embed.setAuthor(beatmap.getCreator() + "| Search Beatmaps", "https://osu.ppy.sh/users/" + beatmap.getCreatorId(), "https://a.ppy.sh/" + beatmap.getCreatorId());
 		embed.setTitle(beatmap.getTitle());
 
 		embed.setDescription(":microphone: " + lang.getString("Titles", "ARTIST") + " " + beatmap.getAuthor().concat("\n"))
@@ -44,7 +44,7 @@ public class SearchEmbed {
 		embed.setImage((ImageUtils.existsImage(beatmap.getBeatmapCoverUrl()))
 				? beatmap.getBeatmapCoverUrl()
 				: "https://i.imgur.com/LfF0VBR.gif");
-		embed.setFooter("[BeatmapSetID] " + beatmap.getBeatmapsetid(), Objects.requireNonNull(OusuBot.getInstance().getShardManager().getShardById(0)).getSelfUser().getAvatarUrl());
+		embed.setFooter("[BeatmapSetID] " + beatmap.getBeatmapSetId(), Objects.requireNonNull(OusuBot.getInstance().getShardManager().getShardById(0)).getSelfUser().getAvatarUrl());
 		return embed;
 	}
 }

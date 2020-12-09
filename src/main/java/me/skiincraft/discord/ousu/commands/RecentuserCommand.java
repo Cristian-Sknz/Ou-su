@@ -14,10 +14,10 @@ import me.skiincraft.discord.core.utils.StringUtils;
 import me.skiincraft.discord.ousu.OusuBot;
 import me.skiincraft.discord.ousu.common.Comando;
 import me.skiincraft.discord.ousu.common.CommandCategory;
+import me.skiincraft.discord.ousu.crawler.WebCrawler;
 import me.skiincraft.discord.ousu.emojis.GenericEmote;
 import me.skiincraft.discord.ousu.emojis.GenericsEmotes;
-import me.skiincraft.discord.ousu.crawler.BeatmapSearch;
-import me.skiincraft.discord.ousu.crawler.JSoupGetters;
+import me.skiincraft.discord.ousu.osu.BeatmapSearch;
 import me.skiincraft.discord.ousu.messages.TypeEmbed;
 import me.skiincraft.discord.ousu.osu.WebUser;
 import me.skiincraft.discord.ousu.utils.ImageUtils;
@@ -74,12 +74,8 @@ public class RecentuserCommand extends Comando {
 				List<EmbedBuilder> embeds = new ArrayList<>();
 				for (RecentScore r: score) {
 					BeatmapSearch be;
-					try {
-						be = JSoupGetters.beatmapInfoById(r.getBeatmapId());
-						embeds.add(embed(lang, r, be, WebUser.getName(b.substring(0, b.length()-1))));
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+					be = WebCrawler.getBeatmapInfo(r.getBeatmapId());
+					embeds.add(embed(lang, r, be, WebUser.getName(b.substring(0, b.length()-1))));
 					if (embeds.size() == 1) {
 						message.editMessage(embeds.get(0).build()).queue();
 					}
@@ -137,7 +133,7 @@ public class RecentuserCommand extends Comando {
 		embed.setThumbnail(beatmap.getBeatmapThumbnailUrl());
 		
 		String author = beatmap.getCreator();
-		embed.setFooter("[" + beatmap.getBeatmapid() + "] " + beatmap.getTitle() + " por " + beatmap.getAuthor() + " | "
+		embed.setFooter("[" + beatmap.getBeatmapId() + "] " + beatmap.getTitle() + " por " + beatmap.getAuthor() + " | "
 				+ lang.getString("Embeds","MAP_CREATED_BY") + author);
 		try {
 			embed.setColor(ImageUtils.getPredominatColor(ImageIO.read(new URL(beatmap.getBeatmapThumbnailUrl()))));

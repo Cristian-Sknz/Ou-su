@@ -1,4 +1,4 @@
-package me.skiincraft.discord.ousu.crawler;
+package me.skiincraft.discord.ousu.osu;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,13 +13,13 @@ public class BeatmapSearch {
 
 	private final String title;
 	private final String author;
-	private final int creatorid;
 	private final String creator;
-	
-	private final long beatmapid;
-	private final long beatmapsetid;
 
-	private final String maplength;
+	private final long creatorId;
+	private final long beatmapId;
+	private final long beatmapSetId;
+
+	private final String mapLength;
 	private final String[] difficult;
 	private final Gamemode[] gamemodes;
 
@@ -30,17 +30,17 @@ public class BeatmapSearch {
 
 	private final boolean video;
 
-	public BeatmapSearch(String title, String author, int creatorid, String creator, long beatmapsetid, long beatmapid, boolean video,
-			String maplength, String[] difficult, Gamemode[] gamemodes, Genre genre, float bpm, String[] tags,
-			Approval approvated) {
-		this.beatmapid = beatmapid;
-		this.beatmapsetid = beatmapsetid;
+	public BeatmapSearch(String title, String author, long creatorId, String creator, long beatmapSetId, long beatmapId, boolean video,
+						 String mapLength, String[] difficult, Gamemode[] gamemodes, Genre genre, float bpm, String[] tags,
+						 Approval approvated) {
+		this.beatmapId = beatmapId;
+		this.beatmapSetId = beatmapSetId;
 		this.title = title;
 		this.author = author;
-		this.creatorid = creatorid;
+		this.creatorId = creatorId;
 		this.creator = creator;
 		this.video = video;
-		this.maplength = maplength;
+		this.mapLength = mapLength;
 		this.difficult = difficult;
 		this.genre = genre;
 		this.bpm = bpm;
@@ -49,8 +49,8 @@ public class BeatmapSearch {
 		this.gamemodes = gamemodes;
 	}
 	
-	public long getBeatmapsetid() {
-		return beatmapsetid;
+	public long getBeatmapSetId() {
+		return beatmapSetId;
 	}
 
 	public String getTitle() {
@@ -61,16 +61,16 @@ public class BeatmapSearch {
 		return author;
 	}
 
-	public int getCreatorid() {
-		return creatorid;
+	public long getCreatorId() {
+		return creatorId;
 	}
 
 	public String getCreator() {
 		return creator;
 	}
 
-	public String getMaplength() {
-		return maplength;
+	public String getMapLength() {
+		return mapLength;
 	}
 
 	public Genre getGenre() {
@@ -81,8 +81,8 @@ public class BeatmapSearch {
 		return bpm;
 	}
 	
-	public long getBeatmapid() {
-		return beatmapid;
+	public long getBeatmapId() {
+		return beatmapId;
 	}
 
 	public String[] getTags() {
@@ -98,20 +98,20 @@ public class BeatmapSearch {
 	}
 
 	public InputStream getBeatmapPreview() throws IOException {
-		URLConnection conn = new URL("http://b.ppy.sh/preview/" + beatmapsetid + ".mp3").openConnection();
+		URLConnection conn = new URL("http://b.ppy.sh/preview/" + beatmapSetId + ".mp3").openConnection();
 		return conn.getInputStream();
 	}
 
 	public String getBeatmapCoverUrl() {
-		return "https://assets.ppy.sh/beatmaps/" + beatmapsetid + "/covers/cover.jpg";
+		return "https://assets.ppy.sh/beatmaps/" + beatmapSetId + "/covers/cover.jpg";
 	}
 
 	public String getBeatmapThumbnailUrl() {
-		return "https://b.ppy.sh/thumb/" + beatmapsetid + "l.jpg";
+		return "https://b.ppy.sh/thumb/" + beatmapSetId + "l.jpg";
 	}
 
 	public String getURL() {
-		return "https://osu.ppy.sh/beatmapsets/" + beatmapsetid;
+		return "https://osu.ppy.sh/beatmapsets/" + beatmapSetId;
 	}
 
 	public Gamemode[] getGamemodes() {
