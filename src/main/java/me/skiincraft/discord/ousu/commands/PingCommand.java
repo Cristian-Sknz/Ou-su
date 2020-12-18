@@ -1,15 +1,14 @@
 package me.skiincraft.discord.ousu.commands;
 
 import me.skiincraft.discord.core.command.InteractChannel;
-import me.skiincraft.discord.ousu.common.Comando;
-import me.skiincraft.discord.ousu.common.CommandCategory;
+import me.skiincraft.discord.ousu.common.OusuCommand;
 
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 
-public class PingCommand extends Comando {
+public class PingCommand extends OusuCommand {
 
 	public PingCommand() {
 		super("ping", null, "ping");

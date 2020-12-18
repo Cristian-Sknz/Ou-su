@@ -4,15 +4,12 @@ import java.util.Arrays;
 
 import me.skiincraft.discord.core.command.InteractChannel;
 import me.skiincraft.discord.core.utils.StringUtils;
-import me.skiincraft.discord.ousu.common.Comando;
-import me.skiincraft.discord.ousu.common.CommandCategory;
+import me.skiincraft.discord.ousu.common.OusuCommand;
 
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
 
-public class SayCommand extends Comando{
+public class SayCommand extends OusuCommand {
 
 	public SayCommand() {
 		super("say", Arrays.asList("falar", "fala"), "say <args>");

@@ -12,8 +12,7 @@ import me.skiincraft.discord.core.common.reactions.custom.ReactionPage;
 import me.skiincraft.discord.core.configuration.LanguageManager;
 import me.skiincraft.discord.core.utils.StringUtils;
 import me.skiincraft.discord.ousu.OusuBot;
-import me.skiincraft.discord.ousu.common.Comando;
-import me.skiincraft.discord.ousu.common.CommandCategory;
+import me.skiincraft.discord.ousu.common.OusuCommand;
 import me.skiincraft.discord.ousu.crawler.WebCrawler;
 import me.skiincraft.discord.ousu.emojis.GenericEmote;
 import me.skiincraft.discord.ousu.emojis.GenericsEmotes;
@@ -37,7 +36,7 @@ import java.util.List;
 import java.util.Objects;
 
 @SuppressWarnings("SameParameterValue")
-public class RecentuserCommand extends Comando {
+public class RecentuserCommand extends OusuCommand {
 
 	public RecentuserCommand() {
 		super("recentuser", Arrays.asList("recent", "recente"), "recentuser <username>");

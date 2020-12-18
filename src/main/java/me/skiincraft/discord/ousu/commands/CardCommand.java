@@ -8,8 +8,7 @@ import me.skiincraft.discord.core.OusuCore;
 import me.skiincraft.discord.core.command.ContentMessage;
 import me.skiincraft.discord.core.command.InteractChannel;
 import me.skiincraft.discord.ousu.OusuBot;
-import me.skiincraft.discord.ousu.common.Comando;
-import me.skiincraft.discord.ousu.common.CommandCategory;
+import me.skiincraft.discord.ousu.common.OusuCommand;
 import me.skiincraft.discord.ousu.common.ImageBuilder;
 import me.skiincraft.discord.ousu.utils.ImageAdapter;
 import me.skiincraft.discord.ousu.messages.TypeEmbed;
@@ -26,7 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-public class CardCommand extends Comando {
+public class CardCommand extends OusuCommand {
 
 	public CardCommand() {
 		super("card", null, "card <username> [gamemode]");

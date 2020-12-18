@@ -3,8 +3,7 @@ package me.skiincraft.discord.ousu.commands;
 import me.skiincraft.discord.core.command.InteractChannel;
 import me.skiincraft.discord.core.configuration.LanguageManager;
 import me.skiincraft.discord.core.utils.StringUtils;
-import me.skiincraft.discord.ousu.common.Comando;
-import me.skiincraft.discord.ousu.common.CommandCategory;
+import me.skiincraft.discord.ousu.common.OusuCommand;
 import me.skiincraft.discord.ousu.emojis.GenericsEmotes;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
@@ -12,7 +11,7 @@ import net.dv8tion.jda.api.entities.Member;
 import java.awt.*;
 import java.util.Collections;
 
-public class VoteCommand extends Comando {
+public class VoteCommand extends OusuCommand {
 
 	public VoteCommand() {
 		super("vote", Collections.singletonList("votar"), "vote");

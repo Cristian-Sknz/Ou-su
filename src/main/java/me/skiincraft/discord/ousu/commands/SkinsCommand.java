@@ -12,8 +12,7 @@ import me.skiincraft.discord.core.common.reactions.ReactionObject;
 import me.skiincraft.discord.core.common.reactions.Reactions;
 import me.skiincraft.discord.core.common.reactions.custom.ReactionPage;
 import me.skiincraft.discord.core.configuration.LanguageManager;
-import me.skiincraft.discord.ousu.common.Comando;
-import me.skiincraft.discord.ousu.common.CommandCategory;
+import me.skiincraft.discord.ousu.common.OusuCommand;
 import me.skiincraft.discord.ousu.crawler.WebCrawler;
 import me.skiincraft.discord.ousu.emojis.GenericsEmotes;
 import me.skiincraft.discord.ousu.messages.TypeEmbed;
@@ -22,7 +21,7 @@ import me.skiincraft.discord.ousu.osu.OsuSkin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 
-public class SkinsCommand extends Comando{
+public class SkinsCommand extends OusuCommand {
 
 	public SkinsCommand() {
 		super("skins", Collections.singletonList("skin"), "skins");

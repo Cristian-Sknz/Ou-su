@@ -15,8 +15,7 @@ import me.skiincraft.discord.core.common.reactions.custom.ReactionPage;
 import me.skiincraft.discord.core.configuration.Language;
 import me.skiincraft.discord.core.configuration.LanguageManager;
 import me.skiincraft.discord.ousu.OusuBot;
-import me.skiincraft.discord.ousu.common.Comando;
-import me.skiincraft.discord.ousu.common.CommandCategory;
+import me.skiincraft.discord.ousu.common.OusuCommand;
 import me.skiincraft.discord.ousu.crawler.WebCrawler;
 import me.skiincraft.discord.ousu.emojis.GenericsEmotes;
 import me.skiincraft.discord.ousu.utils.ImageAdapter;
@@ -37,7 +36,7 @@ import java.util.*;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class UserCommand extends Comando {
+public class UserCommand extends OusuCommand {
 
 	public UserCommand() {
 		super("user", Arrays.asList("usuario", "profile", "player", "jogador"), "user <username> [gamemode]");

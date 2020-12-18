@@ -9,8 +9,7 @@ import me.skiincraft.discord.core.common.reactions.ReactionObject;
 import me.skiincraft.discord.core.common.reactions.Reactions;
 import me.skiincraft.discord.core.common.reactions.custom.ReactionPage;
 import me.skiincraft.discord.ousu.OusuBot;
-import me.skiincraft.discord.ousu.common.Comando;
-import me.skiincraft.discord.ousu.common.CommandCategory;
+import me.skiincraft.discord.ousu.common.OusuCommand;
 import me.skiincraft.discord.ousu.embed.BeatmapEmbed;
 import me.skiincraft.discord.ousu.messages.TypeEmbed;
 import me.skiincraft.discord.ousu.utils.OusuUtils;
@@ -25,7 +24,7 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-public class BeatmapSetCommand extends Comando {
+public class BeatmapSetCommand extends OusuCommand {
 
 	public BeatmapSetCommand() {
 		super("beatmapset", null, "beatmapset <beatmapsetId>");

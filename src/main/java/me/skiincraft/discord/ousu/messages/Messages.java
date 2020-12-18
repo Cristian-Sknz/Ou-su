@@ -3,8 +3,7 @@ package me.skiincraft.discord.ousu.messages;
 import me.skiincraft.discord.core.configuration.GuildDB;
 import me.skiincraft.discord.core.configuration.LanguageManager;
 import me.skiincraft.discord.ousu.OusuBot;
-import me.skiincraft.discord.ousu.common.Comando;
-import me.skiincraft.discord.ousu.common.CommandCategory;
+import me.skiincraft.discord.ousu.common.OusuCommand;
 import me.skiincraft.discord.ousu.emojis.GenericEmote;
 import me.skiincraft.discord.ousu.emojis.GenericsEmotes;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -17,7 +16,7 @@ import java.awt.*;
 
 public class Messages {
 
-	public static MessageEmbed usageMessage(Comando command, Guild guild) {
+	public static MessageEmbed usageMessage(OusuCommand command, Guild guild) {
 		EmbedBuilder embed = new EmbedBuilder();
 		LanguageManager lang = new LanguageManager(guild);
 		String prefix = new GuildDB(guild).get("prefix");
@@ -41,7 +40,7 @@ public class Messages {
 		return embed.build();
 	}
 
-	private static GenericEmote getCategoryEmote(CommandCategory category){
+	private static GenericEmote getCategoryEmote(OusuCommand.CommandCategory category){
 		return GenericsEmotes.getEmoteEquals(category.name());
 	}
 

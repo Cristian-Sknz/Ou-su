@@ -6,8 +6,7 @@ import me.skiincraft.discord.core.command.InteractChannel;
 import me.skiincraft.discord.core.configuration.GuildDB;
 import me.skiincraft.discord.core.configuration.LanguageManager;
 import me.skiincraft.discord.core.utils.StringUtils;
-import me.skiincraft.discord.ousu.common.Comando;
-import me.skiincraft.discord.ousu.common.CommandCategory;
+import me.skiincraft.discord.ousu.common.OusuCommand;
 import me.skiincraft.discord.ousu.emojis.GenericsEmotes;
 import me.skiincraft.discord.ousu.messages.TypeEmbed;
 
@@ -15,7 +14,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 
-public class PrefixCommand extends Comando {
+public class PrefixCommand extends OusuCommand {
 
 	public PrefixCommand() {
 		super("prefix", Arrays.asList("prefixo", "startwith"), "prefix <prefix>");

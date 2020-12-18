@@ -4,8 +4,7 @@ import me.skiincraft.api.ousu.entity.beatmap.Beatmap;
 import me.skiincraft.api.ousu.exceptions.BeatmapException;
 import me.skiincraft.discord.core.command.InteractChannel;
 import me.skiincraft.discord.ousu.OusuBot;
-import me.skiincraft.discord.ousu.common.Comando;
-import me.skiincraft.discord.ousu.common.CommandCategory;
+import me.skiincraft.discord.ousu.common.OusuCommand;
 import me.skiincraft.discord.ousu.embed.BeatmapEmbed;
 import me.skiincraft.discord.ousu.messages.TypeEmbed;
 import me.skiincraft.discord.ousu.utils.OusuUtils;
@@ -17,7 +16,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class BeatmapCommand extends Comando {
+public class BeatmapCommand extends OusuCommand {
 
 	public BeatmapCommand() {
 		super("beatmap", null, "beatmap <beatmapId>");

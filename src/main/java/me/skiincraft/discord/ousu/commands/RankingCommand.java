@@ -16,8 +16,7 @@ import me.skiincraft.discord.core.common.reactions.ReactionObject;
 import me.skiincraft.discord.core.common.reactions.Reactions;
 import me.skiincraft.discord.core.common.reactions.custom.ReactionPage;
 import me.skiincraft.discord.core.configuration.LanguageManager;
-import me.skiincraft.discord.ousu.common.Comando;
-import me.skiincraft.discord.ousu.common.CommandCategory;
+import me.skiincraft.discord.ousu.common.OusuCommand;
 import me.skiincraft.discord.ousu.crawler.WebCrawler;
 import me.skiincraft.discord.ousu.messages.Ranking;
 import me.skiincraft.discord.ousu.messages.TypeEmbed;
@@ -26,7 +25,7 @@ import me.skiincraft.discord.ousu.utils.ImageUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 
-public class RankingCommand extends Comando {
+public class RankingCommand extends OusuCommand {
 
 	public RankingCommand() {
 		super("leaderboard", Collections.singletonList("ranking"), "leaderboard <country>");

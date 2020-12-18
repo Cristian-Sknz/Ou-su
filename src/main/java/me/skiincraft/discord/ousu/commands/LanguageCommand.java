@@ -11,15 +11,14 @@ import me.skiincraft.discord.core.command.InteractChannel;
 import me.skiincraft.discord.core.configuration.GuildDB;
 import me.skiincraft.discord.core.configuration.Language;
 import me.skiincraft.discord.core.configuration.LanguageManager;
-import me.skiincraft.discord.ousu.common.Comando;
-import me.skiincraft.discord.ousu.common.CommandCategory;
+import me.skiincraft.discord.ousu.common.OusuCommand;
 import me.skiincraft.discord.ousu.messages.TypeEmbed;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 
-public class LanguageCommand extends Comando {
+public class LanguageCommand extends OusuCommand {
 
 	public LanguageCommand() {
 		super("language", Arrays.asList("idioma", "lang", "linguagem"), "language <availablelanguage>");

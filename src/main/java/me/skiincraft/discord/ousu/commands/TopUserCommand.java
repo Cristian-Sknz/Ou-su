@@ -12,8 +12,7 @@ import me.skiincraft.discord.core.common.reactions.custom.ReactionPage;
 import me.skiincraft.discord.core.configuration.LanguageManager;
 import me.skiincraft.discord.core.utils.StringUtils;
 import me.skiincraft.discord.ousu.OusuBot;
-import me.skiincraft.discord.ousu.common.Comando;
-import me.skiincraft.discord.ousu.common.CommandCategory;
+import me.skiincraft.discord.ousu.common.OusuCommand;
 import me.skiincraft.discord.ousu.osu.BeatmapSearch;
 import me.skiincraft.discord.ousu.crawler.WebCrawler;
 import me.skiincraft.discord.ousu.emojis.GenericEmote;
@@ -34,7 +33,7 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.*;
 
-public class TopUserCommand extends Comando {
+public class TopUserCommand extends OusuCommand {
 
 	public TopUserCommand() {
 		super("top", Collections.singletonList("topuser"), "top <username>");

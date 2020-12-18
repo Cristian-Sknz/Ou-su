@@ -5,13 +5,12 @@ import java.util.Arrays;
 
 import me.skiincraft.discord.core.command.InteractChannel;
 import me.skiincraft.discord.core.configuration.LanguageManager;
-import me.skiincraft.discord.ousu.common.Comando;
-import me.skiincraft.discord.ousu.common.CommandCategory;
+import me.skiincraft.discord.ousu.common.OusuCommand;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 
-public class InviteCommand extends Comando{
+public class InviteCommand extends OusuCommand {
 
 	public InviteCommand() {
 		super("invite", Arrays.asList("convite", "convide", "convidar"), "invite");

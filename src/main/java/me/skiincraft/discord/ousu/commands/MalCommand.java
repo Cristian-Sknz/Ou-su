@@ -2,8 +2,7 @@ package me.skiincraft.discord.ousu.commands;
 
 import me.skiincraft.discord.core.command.InteractChannel;
 import me.skiincraft.discord.core.configuration.LanguageManager;
-import me.skiincraft.discord.ousu.common.Comando;
-import me.skiincraft.discord.ousu.common.CommandCategory;
+import me.skiincraft.discord.ousu.common.OusuCommand;
 import me.skiincraft.discord.ousu.utils.OusuUtils;
 import me.skiincraft.mal.MyAnimeList;
 import me.skiincraft.mal.entity.anime.Anime;
@@ -25,7 +24,7 @@ import java.text.NumberFormat;
 import java.util.Collections;
 import java.util.List;
 
-public class MalCommand extends Comando {
+public class MalCommand extends OusuCommand {
 
     private static MyAnimeList myAnimeList;
 

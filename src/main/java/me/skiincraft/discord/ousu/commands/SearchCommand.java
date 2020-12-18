@@ -11,8 +11,7 @@ import me.skiincraft.discord.core.common.reactions.Reactions;
 import me.skiincraft.discord.core.common.reactions.custom.ReactionPage;
 import me.skiincraft.discord.core.configuration.LanguageManager;
 import me.skiincraft.discord.core.utils.StringUtils;
-import me.skiincraft.discord.ousu.common.Comando;
-import me.skiincraft.discord.ousu.common.CommandCategory;
+import me.skiincraft.discord.ousu.common.OusuCommand;
 import me.skiincraft.discord.ousu.crawler.WebCrawler;
 import me.skiincraft.discord.ousu.embed.SearchEmbed;
 import me.skiincraft.discord.ousu.exceptions.SearchException;
@@ -24,7 +23,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
-public class SearchCommand extends Comando {
+public class SearchCommand extends OusuCommand {
 
 	public SearchCommand() {
 		super("search", Arrays.asList("map", "pesquisar", "queue"), "search <name>");

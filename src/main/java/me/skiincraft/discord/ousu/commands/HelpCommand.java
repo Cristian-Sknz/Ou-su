@@ -9,8 +9,7 @@ import me.skiincraft.discord.core.common.reactions.custom.ReactionSelector;
 import me.skiincraft.discord.core.configuration.GuildDB;
 import me.skiincraft.discord.core.configuration.LanguageManager;
 import me.skiincraft.discord.core.utils.StringUtils;
-import me.skiincraft.discord.ousu.common.Comando;
-import me.skiincraft.discord.ousu.common.CommandCategory;
+import me.skiincraft.discord.ousu.common.OusuCommand;
 import me.skiincraft.discord.ousu.emojis.GenericEmote;
 import me.skiincraft.discord.ousu.emojis.GenericsEmotes;
 import me.skiincraft.discord.ousu.messages.TypeEmbed;
@@ -22,7 +21,7 @@ import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class HelpCommand extends Comando {
+public class HelpCommand extends OusuCommand {
 
 	public HelpCommand() {
 		super("help", Collections.singletonList("ajuda"), "help <command>");
@@ -123,8 +122,8 @@ public class HelpCommand extends Comando {
 
 			embed.addField(lang.getString("Embeds", "COMMANDS"), String.join("\n", OusuCore.getCommandManager().getCommands()
 					.stream()
-					.filter(command -> command instanceof Comando)
-					.filter(comando -> ((Comando) comando).getCategory() == category)
+					.filter(command -> command instanceof OusuCommand)
+					.filter(comando -> ((OusuCommand) comando).getCategory() == category)
 					.map(command -> prefix + command.getCommandName())
 					.sorted().toArray(String[]::new)), true);
 		}

@@ -2,7 +2,7 @@ package me.skiincraft.discord.ousu.messages;
 
 import me.skiincraft.discord.core.configuration.LanguageManager;
 import me.skiincraft.discord.core.utils.StringUtils;
-import me.skiincraft.discord.ousu.common.CommandCategory;
+import me.skiincraft.discord.ousu.common.OusuCommand;
 import me.skiincraft.discord.ousu.emojis.GenericsEmotes;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -73,7 +73,7 @@ public class TypeEmbed {
 		return builder.toString();
 	}
 
-	public static EmbedBuilder inexistentUser(String user, CommandCategory category, LanguageManager lang){
+	public static EmbedBuilder inexistentUser(String user, OusuCommand.CommandCategory category, LanguageManager lang){
 		String[] str = lang.getStrings("Osu", "INEXISTENT_USER");
 		EmbedBuilder embed = new EmbedBuilder();
 		embed.setAuthor(user);
