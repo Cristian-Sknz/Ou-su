@@ -23,8 +23,12 @@ public class GenericsEmotes {
 
     private static List<GenericEmote> emotes = new ArrayList<>();
 
-    public static void loadEmotes(String path) throws IOException {
-        loadEmotes(Paths.get(path));
+    public static void loadEmotes(String path) {
+        try {
+            loadEmotes(Paths.get(path));
+        } catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     public static void loadEmotes(Path path) throws IOException {
