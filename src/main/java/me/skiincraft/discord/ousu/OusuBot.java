@@ -14,16 +14,15 @@ import me.skiincraft.discord.ousu.listener.BeatmapTracking;
 import me.skiincraft.discord.ousu.listener.ReceivedListener;
 import net.dv8tion.jda.api.entities.Activity;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class OusuBot extends OusuPlugin {
 
 	private static OusuBot instance;
 	private static PresenceUpdater presenceUpdater;
-	private boolean restart;
 
 	public static OusuBot getInstance() {
 		return instance;
@@ -32,9 +31,12 @@ public class OusuBot extends OusuPlugin {
 		instance = this;
 	}
 
-
-
 	public void onEnable() {
+		if (!OsuAPIAdapter.existsTokens()){
+			System.out.println("Não foi possivel encontrar Tokens para ativação da API, desligando.");
+			OusuCore.shutdown();
+			return;
+		}
 		OusuCore.addLanguage(new Language(new Locale("pt", "BR")));
 		OusuCore.addLanguage(new Language(new Locale("en", "US")));
 		OusuCore.registerCommand(new BeatmapCommand());
@@ -64,13 +66,9 @@ public class OusuBot extends OusuPlugin {
 		presenceUpdater = new PresenceUpdater(Arrays.asList(Activity.listening("ou!help for help."),
 				Activity.watching("{guildsize} Servidores online."),
 				Activity.listening("ou!vote on Discord Bots")));
-
-		try {
-			GenericsEmotes.loadEmotes(OusuCore.getAssetsPath().toAbsolutePath() + "/emotes/");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		shutdownAfter();
+		GenericsEmotes.loadEmotes(OusuCore.getAssetsPath().toAbsolutePath() + "/emotes/");
+		Executors.newSingleThreadScheduledExecutor()
+				.scheduleAtFixedRate(OusuCore::shutdown, 1,1, TimeUnit.HOURS);
 	}
 	
 	public static PresenceUpdater getPresenceUpdater() {
@@ -81,12 +79,4 @@ public class OusuBot extends OusuPlugin {
 		return OsuAPIAdapter.getOusuAPI();
 	}
 
-	private void shutdownAfter(){
-		if (!restart) {
-			getShardManager().getShards().get(0)
-					.getRateLimitPool()
-					.scheduleAtFixedRate(this::shutdownAfter, 1, 1, TimeUnit.HOURS);
-			restart = true;
-		}
-	}
 }
