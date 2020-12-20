@@ -43,21 +43,19 @@ public class SearchCommand extends OusuCommand {
 			try {
 				List<Integer> bIds = new GoogleSearch(StringUtils.arrayToString2(0, args)).getBeatmapSetIDs();
 				List<EmbedBuilder> embeds = new ArrayList<>();
-				int first = 0;
+				boolean find = false;
 				for (int id : bIds) {
 					BeatmapSearch info = WebCrawler.getBeatmapInfoBySetID(id);
 					if (info == null) {
 						continue;
 					}
 					EmbedBuilder sEmbed = SearchEmbed.searchEmbed(info, lang);
-					System.out.println(info.getBeatmapSetId());
-					if (first == 0) {
+					if (!find) {
 						message.editMessage(new EmbedBuilder(sEmbed)
 								.setFooter("Loading more beatmaps").build()).queue();
 						channel.getTextChannel().sendFile(info.getBeatmapPreview(), info.getTitle() + ".mp3").queue();
-						first =1;
+						find = true;
 					}
-
 					embeds.add(sEmbed);
 				}
 
