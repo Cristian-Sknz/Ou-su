@@ -95,7 +95,7 @@ public class UserCommand extends OusuCommand {
 
 
 	
-	public EmbedBuilder embed(me.skiincraft.api.ousu.entity.user.User user, LanguageManager lang) {
+	public EmbedBuilder embed(User user, LanguageManager lang) {
 		EmbedBuilder embed = new EmbedBuilder();
 		NumberFormat nf = NumberFormat.getNumberInstance(new Locale("pt", "BR"));
 		DecimalFormat df = (DecimalFormat) NumberFormat.getNumberInstance(new Locale("pt", "BR"));
