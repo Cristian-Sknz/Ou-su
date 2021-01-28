@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @Component
 public class GenericsEmotes {
 
-    private List<GenericEmote> emotes = new ArrayList<>();
+    private final List<GenericEmote> emotes = new ArrayList<>();
 
     public void loadEmotes(String path) {
         try {
@@ -56,12 +56,12 @@ public class GenericsEmotes {
         System.out.println(loaded + " Emote Pack carregados com sucesso.");
     }
 
-    public static List<GenericEmote> parseEmotes(List<Emote> emotes) {
+    public List<GenericEmote> parseEmotes(List<Emote> emotes) {
         return emotes.stream().map(emote -> new GenericEmote(emote.getName(), emote.getIdLong(), Objects.requireNonNull(emote.getGuild(), "Guild is null").getIdLong(), emote.isAnimated()))
                 .collect(Collectors.toList());
     }
 
-    public static List<GenericEmote> parseEmotes(Guild guild) {
+    public List<GenericEmote> parseEmotes(Guild guild) {
         return parseEmotes(guild.getEmotes());
     }
 
@@ -96,14 +96,16 @@ public class GenericsEmotes {
                 .findFirst().orElse(getEmotes().get(0).getAsMention());
     }
 
-    public static void saveEmotes(String path, List<GenericEmote> emotes){
+    public void saveEmotes(String path, List<GenericEmote> emotes){
         try {
             Path locale = Paths.get(path);
             if (!Files.exists(locale)) {
                 Files.createDirectories(locale);
             }
             File file = new File(locale + "/" + emotes.get(0).getGuildId() + ".emotejson");
-            Files.createFile(Paths.get(file.getAbsolutePath()));
+            if (!file.exists()) {
+                Files.createFile(Paths.get(file.getAbsolutePath()));
+            }
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
             FileWriter writer = new FileWriter(file);
@@ -113,5 +115,4 @@ public class GenericsEmotes {
             e.printStackTrace();
         }
     }
-
 }
