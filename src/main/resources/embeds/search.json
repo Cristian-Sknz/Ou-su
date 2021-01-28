@@ -3,7 +3,7 @@
   "embeds": [
     {
       "title": "#{beatmapAdapter.title} - Beatmap",
-      "description": ":microphone: ${messages.words.artist} #{beatmapAdapter.artist}\n:tickets: ${messages.words.genre} #{beatmapAdapter.genre}\n#{beatmapAdapter.modeEmote} #{beatmapAdapter.mode}\n@{arrow_pause} #{beatmapAdapter.approval}",
+      "description": ":microphone: ${messages.words.artist} #{beatmapAdapter.artist}\n:tickets: ${messages.words.genre} #{beatmapAdapter.genre}\n#{beatmapAdapter.modeEmote} #{beatmapAdapter.mode}\n:compass:  #{beatmapAdapter.approval}",
       "url": "https://osu.ppy.sh/beatmaps/#{beatmapAdapter.beatmapId}",
       "color": "255,128,87",
       "fields": [
