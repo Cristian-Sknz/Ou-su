@@ -1,0 +1,29 @@
+{
+  "content": null,
+  "embeds": [
+    {
+      "title": ":earth_americas: ${messages.words.national_ranking}",
+      "color": 5814783,
+      "fields": [
+        {
+          "name": "Username",
+          "value": "#{usernames}",
+          "inline": true
+        },
+        {
+          "name": "Performance Points",
+          "value": "#{performancepoints}",
+          "inline": true
+        }
+      ],
+      "author": {
+        "name": "Performance",
+        "icon_url": "https://i.imgur.com/BEtLkqr.png"
+      },
+      "footer": {
+        "text": "[#{order}/5] - ${command.messages.ranking.embed_footer}",
+        "icon_url": "https://i.imgur.com/eANHySU.png"
+      }
+    }
+  ]
+}

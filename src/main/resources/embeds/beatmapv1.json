@@ -1,0 +1,54 @@
+{
+  "content": null,
+  "embeds": [
+    {
+      "title": "#{beatmapAdapter.title} - Beatmap",
+      "description": ":microphone: ${messages.words.artist} #{beatmapAdapter.artist}\n:tickets: ${messages.words.genre} #{beatmapAdapter.genre}\n#{beatmapAdapter.modeEmote} #{beatmapAdapter.mode}\n@{arrow_pause} #{beatmapAdapter.approval}",
+      "url": "https://osu.ppy.sh/beatmaps/#{beatmapAdapter.beatmapId}",
+      "color": null,
+      "fields": [
+        {
+          "name": "${messages.words.difficult}",
+          "value": "#{beatmapAdapter.version}",
+          "inline": true
+        },
+        {
+          "name": "${messages.words.successrate}",
+          "value": "#{beatmapAdapter.successrate}%",
+          "inline": true
+        },
+        {
+          "name": "${messages.words.max_combo}",
+          "value": "#{beatmapAdapter.maxcombo}",
+          "inline": true
+        },
+        {
+          "name": "${messages.words.approvaldate}",
+          "value": ":date: #{beatmapAdapter.approvaldate}",
+          "inline": true
+        },
+        {
+          "name": "BPM",
+          "value": "@{reversearrow} #{beatmapAdapter.bpm}",
+          "inline": true
+        },
+        {
+          "name": "${messages.words.stars}",
+          "value": "#{beatmapAdapter.stars}",
+          "inline": true
+        }
+      ],
+      "author": {
+        "name": "#{beatmapAdapter.creator}",
+        "url": "https://osu.ppy.sh/users/#{beatmapAdapter.creatorid}",
+        "icon_url": "https://a.ppy.sh/#{beatmapAdapter.creatorid}"
+      },
+      "image": {
+        "url": "https://assets.ppy.sh/beatmaps/#{beatmapAdapter.beatmapsetid}/covers/cover@2x.jpg"
+      },
+      "thumbnail": {
+        "url": "https://assets.ppy.sh/beatmaps/#{beatmapAdapter.beatmapsetid}/covers/list@2x.jpg"
+      }
+    }
+  ]
+}

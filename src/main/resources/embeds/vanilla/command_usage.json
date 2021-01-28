@@ -1,0 +1,27 @@
+{
+  "content": null,
+  "embeds": [
+    {
+      "title": "${messages.usage.see_the_use}",
+      "description": "**`#{prefix}#{command.getCommandName()}`**\n#{description}",
+      "color": "255,128,87",
+      "fields": [
+        {
+          "name": "${messages.usage.how_to_use[0]}",
+          "value": "${messages.usage.how_to_use[1]} ** `#{prefix}#{command.getUsage()}`**",
+          "inline": false
+        }
+      ],
+      "author": {
+        "name": "${messages.usage.want_help}",
+        "icon_url": "#{selfuser.getAvatarUrl()}"
+      },
+      "thumbnail": {
+        "url": "#{category}"
+      },
+      "footer": {
+        "text": "${messages.usage.help}"
+      }
+    }
+  ]
+}

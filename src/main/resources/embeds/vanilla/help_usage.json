@@ -1,0 +1,30 @@
+{
+  "content": null,
+  "embeds": [
+    {
+      "title": "Help <#{command.getName()}>",
+      "description": ":tickets: #{description}",
+      "color": "255,128,87",
+      "fields": [
+        {
+          "name": "${messages.words.commands}",
+          "value": "#{commands}",
+          "inline": true
+        }
+      ],
+      "author": {
+        "name": "Ou!su",
+        "url": "#{selfuser.getAvataUrl()}"
+      },
+      "image": {
+        "url": "https://i.imgur.com/CvE3ONU.png"
+      },
+      "thumbnail": {
+        "url": "#{categoryicon}"
+      },
+	  "footer": {
+	    "text": "Sknz#4260 | Ou!su bot ™"
+	  }
+    }
+  ]
+}
