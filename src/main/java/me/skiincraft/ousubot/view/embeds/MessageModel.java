@@ -29,7 +29,7 @@ public class MessageModel {
         this.addProperty("emotes", OusuCore.getInjector().getInstanceOf(GenericsEmotes.class));
     }
 
-    private MessageModel setLanguage(Language language) {
+    public MessageModel setLanguage(Language language) {
         this.language = language;
         return this;
     }
