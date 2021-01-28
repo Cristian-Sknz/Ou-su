@@ -37,7 +37,7 @@ public class TokenCommand extends AbstractCommand {
     @Override
     public void execute(Member member, String[] args, InteractChannel channel) {
         if (!isOwner(member.getUser())) {
-            channel.reply("> Somente o Developer pode utilizar este comando.");
+            channel.reply("You are not allowed to perform this command");
             return;
         }
 
