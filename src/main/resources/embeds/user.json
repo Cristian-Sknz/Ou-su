@@ -28,6 +28,9 @@
         "url": "https://osu.ppy.sh/users/#{userAdapter.userId}",
         "icon_url": "https://a.ppy.sh/#{userAdapter.userId}?.jpeg"
       },
+      "image": {
+        "url": "attachment://user_ousu.png"
+      },
       "thumbnail": {
         "url": "https://a.ppy.sh/#{userAdapter.userId}?.jpeg"
       }

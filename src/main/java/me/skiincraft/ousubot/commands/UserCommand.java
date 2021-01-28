@@ -11,6 +11,9 @@ import me.skiincraft.discord.core.OusuCore;
 import me.skiincraft.discord.core.command.ContentMessage;
 import me.skiincraft.discord.core.command.InteractChannel;
 import me.skiincraft.discord.core.common.CustomFont;
+import me.skiincraft.discord.core.common.reactions.ReactionObject;
+import me.skiincraft.discord.core.common.reactions.Reactions;
+import me.skiincraft.discord.core.common.reactions.custom.ReactionPage;
 import me.skiincraft.discord.core.language.Language;
 import me.skiincraft.ousubot.api.AbstractCommand;
 import me.skiincraft.ousubot.api.OusuAPI;
@@ -32,9 +35,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Objects;
+import java.util.*;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 @CommandMap
@@ -63,10 +65,22 @@ public class UserCommand extends AbstractCommand {
             Endpoint endpoint = api.getAvailableTokens().getEndpoint();
             Object[] parameters = getParameters(args);
             User user = endpoint.getUser(getUserId(endpoint, String.valueOf(parameters[0])), (GameMode) parameters[1]).get().getUser();
+
             MessageModel model = new MessageModel("embeds/user", language);
-            ContentMessage content = new ContentMessage(getModelEmbed(model, user).build(), userImage(user, language), "png")
+            UserAdapter adapter = new UserAdapter(user, model.getEmotes());
+            List<EmbedBuilder> embeds = new ArrayList<>(Collections.singletonList(getModelEmbed(model, user, adapter)));
+
+            ContentMessage content = new ContentMessage(embeds.get(0).build(),
+                    userImage(user, language),
+                    "png")
                     .setInputName("user_ousu");
-            channel.reply(content);
+
+            channel.reply(content, message -> {
+                MessageModel otherModel = new MessageModel("embeds/user2", language);
+                embeds.add(getModelEmbed(otherModel, user, adapter));
+                Reactions.getInstance().registerReaction(new ReactionObject(message, user.getId(), new String[]{"U+1F4CE"}),
+                                new ReactionPage(embeds, true));
+            });
         } catch (ResourceNotFoundException e){
             channel.reply(Messages.getWarning("command.messages.user.inexistent_user", channel.getTextChannel().getGuild()));
         } catch (Exception e) {
@@ -96,14 +110,14 @@ public class UserCommand extends AbstractCommand {
         return endpoint.getUserId(string).get();
     }
 
-    public EmbedBuilder getModelEmbed(MessageModel model , User user){
+    public EmbedBuilder getModelEmbed(MessageModel model , User user, UserAdapter adapter){
         AtomicReference<Color> color = new AtomicReference<>(Color.ORANGE);
         try {
             color.set(ColorThief.getPredominatColor(ImageIO.read(new URL(user.getAvatarURL())), false));
         } catch (IOException e){
             e.printStackTrace();
         }
-        model.addProperty("userAdapter", new UserAdapter(user));
+        model.addProperty("userAdapter", adapter);
         return model.getEmbedBuilder();
     }
 
