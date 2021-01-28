@@ -1,0 +1,146 @@
+package me.skiincraft.ousubot.api;
+
+import com.google.common.collect.Iterables;
+import me.skiincraft.api.osu.OsuAPI;
+import me.skiincraft.api.osu.exceptions.TokenException;
+import me.skiincraft.api.osu.object.OAuthApplication;
+import me.skiincraft.api.osu.requests.Token;
+import me.skiincraft.beans.annotation.Inject;
+import me.skiincraft.ousubot.OusuBot;
+import me.skiincraft.ousubot.models.APIKey;
+import me.skiincraft.ousubot.repositories.APIKeyRepository;
+import org.jetbrains.annotations.NotNull;
+
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.util.*;
+
+public class OusuAPI {
+
+    @Inject
+    private APIKeyRepository apiKeyRepository;
+    private final OsuAPI api;
+    private Iterator<Token> availableTokens;
+    private int activeTokens;
+
+    public OusuAPI() {
+        this.api = OsuAPI.newAPIV2(PropertiesOAuthApllication.newOAuthApplication());
+    }
+
+    public void createToken(String token){
+        apiKeyRepository.save(new APIKey(api.createToken(token).get()));
+    }
+
+    public Token getToken(APIKey apiKey){
+        Token token = api.getTokens().stream()
+                .filter(tkn -> tkn.getToken().equalsIgnoreCase(apiKey.getToken()))
+                .findFirst().orElse(null);
+
+        if (Objects.isNull(token)){
+            return null;
+        }
+        return token;
+    }
+
+    public void refreshToken(String refreshToken){
+        apiKeyRepository.getAll()
+                .stream()
+                .filter(apiKey -> apiKey.getRefreshToken().equalsIgnoreCase(refreshToken))
+                .forEach(apiKey -> apiKeyRepository.removeObject(apiKey));
+
+        apiKeyRepository.save(new APIKey(api.refreshToken(refreshToken).get()));
+    }
+
+    public void remove(String identification){
+        APIKey key = apiKeyRepository.getById(identification).orElse(null);
+        if (Objects.isNull(key)) {
+            return;
+        }
+        apiKeyRepository.removeObject(key);
+        OsuAPI api = this.api;
+        Token token = api.getTokens().stream()
+                .filter(tkn -> tkn.getToken().equalsIgnoreCase(key.getToken()))
+                .findFirst().orElse(null);
+
+        if (Objects.isNull(token))
+            return;
+
+        api.getTokens().remove(token);
+    }
+
+    public OsuAPI getAPI(){
+        return api;
+    }
+
+    public Token getAvailableTokens(){
+        if (availableTokens == null || activeTokens < getAPI().getTokens().size()){
+            availableTokens = Iterables.cycle(getAPI().getTokens().toArray(new Token[0])).iterator();
+            activeTokens = getAPI().getTokens().size();
+        }
+
+        return checkIfExpired(availableTokens.next());
+    }
+
+    private Token checkIfExpired(Token token) {
+        if (Objects.isNull(token)){
+            return null;
+        }
+        // Checar se existe
+        Optional<APIKey> apiToken = apiKeyRepository.getById(token.getToken().substring(0, 12));
+        if (!apiToken.isPresent()){
+            throw new TokenException("Um token não registrado foi identificado e não pode ser registrado.\n" + token.getToken());
+        }
+
+        APIKey key = apiToken.get();
+        if (key.getExpiresIn() != null && key.getExpiresIn().isBefore(LocalDateTime.now(Clock.systemUTC()))) {
+            api.getTokens().remove(token);
+            Token refreshToken = api.refreshToken(key.getRefreshToken()).get();
+            availableTokens = Iterables.cycle(getAPI().getTokens().toArray(new Token[0])).iterator();
+            return refreshToken;
+        }
+        return token;
+    }
+
+    private void generateTokens() throws TokenException {
+        List<APIKey> tokens = apiKeyRepository.getAll();
+        if (tokens.size() == 0) {
+            throw new TokenException("Não existe nenhum token no repositório.");
+        }
+
+        for (APIKey apiKey : tokens) {
+            if (apiKey.getExpiresIn() != null && apiKey.getExpiresIn().isBefore(LocalDateTime.now(Clock.systemUTC()))) {
+                apiKeyRepository.removeObject(apiKey);
+                apiKeyRepository.save(new APIKey(api.refreshToken(apiKey.getRefreshToken()).get()));
+                continue;
+            }
+            api.resumeToken(apiKey.getToken());
+        }
+    }
+
+
+    public void setup(){
+        try {
+            generateTokens();
+        } catch (TokenException e){
+            e.printStackTrace();
+        }
+    }
+
+    public static class PropertiesOAuthApllication extends OAuthApplication {
+
+        private PropertiesOAuthApllication(long clientId, @NotNull String clientSecret, @NotNull String redirectUri) {
+            super(clientId, clientSecret, redirectUri);
+        }
+
+        public static PropertiesOAuthApllication newOAuthApplication(){
+            try {
+                Properties properties = new Properties();
+                properties.load(OusuBot.class.getResourceAsStream("/OAuthCredentials.properties"));
+                return new PropertiesOAuthApllication(Long.parseLong(properties.getProperty("clientId")), properties.getProperty("client_secret"), properties.getProperty("redirect_uri"));
+            } catch (Exception e){
+                e.printStackTrace();
+                return null;
+            }
+        }
+    }
+}

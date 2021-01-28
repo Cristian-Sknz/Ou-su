@@ -1,0 +1,34 @@
+{
+  "content": null,
+  "embeds": [
+    {
+      "title": "${messages.words.user_info}",
+      "description": ":id: ${messages.words.userid}: `#{userAdapter.userId}`\n@{pippi} ${messages.words.useraccount}:\n#{userAdapter.useraccount}",
+      "url": "https://osu.ppy.sh/users/#{userAdapter.userId}",
+      "color": null,
+      "fields": [
+        {
+          "name": "${messages.words.input}",
+          "value": "#{userAdapter.inputs}",
+          "inline": true
+        },
+        {
+          "name": "${messages.words.previousnames}",
+          "value": "#{userAdapter.previousNames}",
+          "inline": true
+        }
+      ],
+      "author": {
+        "name": "#{userAdapter.username}",
+        "url": "https://osu.ppy.sh/users/#{userAdapter.userId}",
+        "icon_url": "https://a.ppy.sh/#{userAdapter.userId}?.jpeg"
+      },
+      "image": {
+        "url": "attachment://user_ousu.png"
+      },
+      "thumbnail": {
+        "url": "https://a.ppy.sh/#{userAdapter.userId}?.jpeg"
+      }
+    }
+  ]
+}

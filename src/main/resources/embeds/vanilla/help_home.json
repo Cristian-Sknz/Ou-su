@@ -1,0 +1,23 @@
+{
+  "content": null,
+  "embeds": [
+    {
+      "title": "${command.category.home}",
+      "description": "#{description}",
+      "color": "255,128,87",
+      "author": {
+        "name": "Ou!su",
+        "url": "#{selfuser.getAvatarUrl()}"
+      },
+      "image": {
+        "url": "https://i.imgur.com/CvE3ONU.png"
+      },
+      "thumbnail": {
+        "url": "#{selfuser.getAvatarUrl()}"
+      },
+      "footer":{
+        "text": "Sknz#4260 | Ou!su bot ™"
+      }
+    }
+  ]
+}

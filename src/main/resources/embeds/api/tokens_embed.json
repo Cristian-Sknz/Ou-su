@@ -1,0 +1,30 @@
+{
+  "content": null,
+  "embeds": [
+    {
+      "title": ":tickets: Chaves Disponíveis:",
+      "description": "Contém #{size} chave(s) disponível(is) no banco de dados.",
+      "color": "88,185,255",
+      "fields": [
+        {
+          "name": "Identificação:",
+          "value": "#{identify}",
+          "inline": true
+        },
+        {
+          "name": "RefreshToken:",
+          "value": "#{refresh}",
+          "inline": true
+        },
+        {
+          "name": "Data de expiração:",
+          "value": "#{expires}",
+          "inline": true
+        }
+      ],
+      "footer": {
+        "text": "[?] Os tokens são utilizados nas APIs."
+      }
+    }
+  ]
+}

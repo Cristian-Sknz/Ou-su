@@ -1,0 +1,21 @@
+{
+  "content": null,
+  "embeds": [
+    {
+      "title": "${messages.words.inviteme}",
+      "description": "${command.messages.invite}",
+      "color": "255,128,87",
+      "author": {
+        "name": "#{selfuser.getName()} # #{selfuser.getDiscriminator()}",
+        "icon_url": "#{selfuser.getAvatarUrl()}",
+        "url": "#{inviteurl}"
+      },
+      "thumbnail": {
+        "url": "https://i.imgur.com/f7Qc9nA.png"
+      },
+      "footer":{
+        "text": "Sknz#4260 | Ou!su bot ™"
+      }
+    }
+  ]
+}

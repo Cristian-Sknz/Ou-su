@@ -1,0 +1,39 @@
+{
+  "content": null,
+  "embeds": [
+    {
+      "title": "${messages.words.user_info}",
+      "description": "#{userAdapter.status}\n :map: Ranking: ##{userAdapter.pprank}º\n :clock3: ${messages.words.played_time}: #{userAdapter.playedTime} ${messages.words.hours}\n:cyclone: ${messages.words.accuracy} #{userAdapter.accuracy}%",
+      "url": "https://osu.ppy.sh/users/#{userAdapter.userId}",
+      "color": null,
+      "fields": [
+        {
+          "name": "${messages.words.national_ranking}",
+          "value": ":flag_#{userAdapter.countryCode.toLowerCase()}: #{userAdapter.countryCode} ##{userAdapter.countryRank}º",
+          "inline": true
+        },
+        {
+          "name": "${messages.words.performance}",
+          "value": "@{pp} #{userAdapter.pp}",
+          "inline": true
+        },
+        {
+          "name": "${messages.words.total_score}",
+          "value": "#{userAdapter.totalScore}",
+          "inline": true
+        }
+      ],
+      "author": {
+        "name": "#{userAdapter.username}",
+        "url": "https://osu.ppy.sh/users/#{userAdapter.userId}",
+        "icon_url": "https://a.ppy.sh/#{userAdapter.userId}?.jpeg"
+      },
+      "image": {
+        "url": "attachment://user_ousu.png"
+      },
+      "thumbnail": {
+        "url": "https://a.ppy.sh/#{userAdapter.userId}?.jpeg"
+      }
+    }
+  ]
+}
