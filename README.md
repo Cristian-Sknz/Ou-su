@@ -26,11 +26,14 @@ Another way to access the bot is by self-hosting, I get jealous when talking abo
 
 ## :jigsaw: Dependencies
  Ousu uses some of these dependencies below:
-*  <img src="https://i.imgur.com/79812DA.png" alt="JDA!" width="13"/> [**JDA** | **DV8FromTheWorld**](https://github.com/DV8FromTheWorld/JDA)
-*  <img src="https://top.gg/images/dblnew.png" alt="DiscordBotList!" width="13"/> [**Discord Bots List API**](https://github.com/DiscordBotList)
-*  <img src="https://i.imgur.com/voP16Za.png" alt="SQLite" width="13"/> [**SQLite JDBC**](https://bitbucket.org/xerial/sqlite-jdbc/downloads/sqlite-jdbc-3.20.1.jar)
-*  <img src="https://i.imgur.com/mggNmXu.png" alt="JSoup" width="13"/> [**Jsoup**](https://github.com/jhy/jsoup)
-*  <img src="https://i.imgur.com/nl7UCz7.png" alt="Osu!" width="13"/> [**OsuAPI**](https://github.com/ppy/osu-api) [[Wrapper](https://github.com/Cristian-Sknz/Ousu-Api)]
+
+<img src="https://i.imgur.com/79812DA.png" alt="JDA!" width="13"/> [**JDA** | **DV8FromTheWorld**](https://github.com/DV8FromTheWorld/JDA)
+
+<img src="https://i.imgur.com/nl7UCz7.png" alt="Osu!" width="13"/> [**OsuAPI**](https://osu.ppy.sh/docs/index.html#introduction) [[Wrapper](https://github.com/Cristian-Sknz/OusuAPI-v2)]
+
+<img src="https://top.gg/images/dblnew.png" alt="DiscordBotList!" width="13"/> [**Discord Bots List API**](https://github.com/DiscordBotList)
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/2/29/Postgresql_elephant.svg" alt="SQLite" width="13"/> [**PostgreSQL**](https://www.postgresql.org)
 
 If you want something more detailed, take a look at build.gradle
 
