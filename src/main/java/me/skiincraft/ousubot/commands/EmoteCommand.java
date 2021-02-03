@@ -3,7 +3,7 @@ package me.skiincraft.ousubot.commands;
 import me.skiincraft.beans.annotation.Inject;
 import me.skiincraft.beans.stereotypes.CommandMap;
 import me.skiincraft.ousucore.OusuCore;
-import me.skiincraft.ousubot.api.AbstractCommand;
+import me.skiincraft.ousubot.core.commands.AbstractCommand;
 import me.skiincraft.ousubot.view.emotes.GenericEmote;
 import me.skiincraft.ousubot.view.emotes.GenericsEmotes;
 import me.skiincraft.ousucore.command.utils.CommandTools;

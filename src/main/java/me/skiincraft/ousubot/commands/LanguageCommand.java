@@ -6,7 +6,7 @@ import me.skiincraft.ousucore.command.utils.CommandTools;
 import me.skiincraft.ousucore.language.Language;
 import me.skiincraft.ousucore.repository.GuildRepository;
 import me.skiincraft.ousucore.repository.OusuGuild;
-import me.skiincraft.ousubot.api.AbstractCommand;
+import me.skiincraft.ousubot.core.commands.AbstractCommand;
 import me.skiincraft.ousubot.view.Messages;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;

@@ -2,8 +2,8 @@ package me.skiincraft.ousubot.commands;
 
 import me.skiincraft.beans.annotation.Inject;
 import me.skiincraft.beans.stereotypes.CommandMap;
-import me.skiincraft.ousubot.api.AbstractCommand;
-import me.skiincraft.ousubot.api.OusuAPI;
+import me.skiincraft.ousubot.core.commands.AbstractCommand;
+import me.skiincraft.ousubot.core.OusuAPI;
 import me.skiincraft.ousubot.models.APIKey;
 import me.skiincraft.ousubot.repositories.APIKeyRepository;
 import me.skiincraft.ousubot.view.Messages;

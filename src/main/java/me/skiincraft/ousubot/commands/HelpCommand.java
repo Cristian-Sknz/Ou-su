@@ -8,7 +8,7 @@ import me.skiincraft.ousucore.common.reactions.Reactions;
 import me.skiincraft.ousucore.common.reactions.custom.ReactionSelector;
 import me.skiincraft.ousucore.language.Language;
 import me.skiincraft.ousucore.repository.OusuGuild;
-import me.skiincraft.ousubot.api.AbstractCommand;
+import me.skiincraft.ousubot.core.commands.AbstractCommand;
 import me.skiincraft.ousubot.view.embeds.MessageModel;
 import me.skiincraft.ousubot.view.emotes.GenericEmote;
 import me.skiincraft.ousubot.view.emotes.GenericsEmotes;

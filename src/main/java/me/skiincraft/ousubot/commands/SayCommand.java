@@ -3,7 +3,7 @@ package me.skiincraft.ousubot.commands;
 import me.skiincraft.beans.stereotypes.CommandMap;
 import me.skiincraft.ousucore.command.utils.CommandTools;
 import me.skiincraft.ousucore.language.Language;
-import me.skiincraft.ousubot.api.AbstractCommand;
+import me.skiincraft.ousubot.core.commands.AbstractCommand;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.Permission;
 

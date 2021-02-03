@@ -1,4 +1,4 @@
-package me.skiincraft.ousubot.api;
+package me.skiincraft.ousubot.core.commands;
 
 import me.skiincraft.ousubot.view.Messages;
 import me.skiincraft.ousucore.command.CommandExecutor;
@@ -16,16 +16,16 @@ public abstract class AbstractCommand extends CommandExecutor {
 
     public abstract CommandType getCategory();
 
+    public String getCommandDescription(Language language){
+        return language.getString("command.description." + getName());
+    }
+
     public boolean isOwner(User user) {
         return user.getIdLong() == Long.parseLong("247096601242238991");
     }
 
     public void replyUsage(TextChannel textChannel) {
         textChannel.sendMessage(Messages.getUsage(this, textChannel.getGuild())).queue();
-    }
-
-    public String getCommandDescription(Language language){
-        return language.getString("command.description." + getName());
     }
 
     public enum CommandType {

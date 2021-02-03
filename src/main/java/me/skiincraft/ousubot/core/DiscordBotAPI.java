@@ -1,4 +1,4 @@
-package me.skiincraft.ousubot.api;
+package me.skiincraft.ousubot.core;
 
 import com.google.gson.JsonParser;
 import me.skiincraft.ousucore.OusuCore;

@@ -8,7 +8,7 @@ import me.skiincraft.beans.stereotypes.EventMap;
 import me.skiincraft.ousucore.common.EventListener;
 import me.skiincraft.ousucore.language.Language;
 import me.skiincraft.ousubot.OusuBot;
-import me.skiincraft.ousubot.api.OusuAPI;
+import me.skiincraft.ousubot.core.OusuAPI;
 import me.skiincraft.ousubot.models.ChannelTracking;
 import me.skiincraft.ousubot.view.embeds.MessageModel;
 import me.skiincraft.ousubot.view.models.BeatmapSimple;
