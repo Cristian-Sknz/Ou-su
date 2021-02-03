@@ -2,12 +2,11 @@ package me.skiincraft.ousubot.commands;
 
 import me.skiincraft.beans.annotation.Inject;
 import me.skiincraft.beans.stereotypes.CommandMap;
-import me.skiincraft.discord.core.OusuCore;
-import me.skiincraft.discord.core.command.InteractChannel;
+import me.skiincraft.ousucore.OusuCore;
 import me.skiincraft.ousubot.api.AbstractCommand;
 import me.skiincraft.ousubot.view.emotes.GenericEmote;
 import me.skiincraft.ousubot.view.emotes.GenericsEmotes;
-import net.dv8tion.jda.api.entities.Member;
+import me.skiincraft.ousucore.command.utils.CommandTools;
 
 import java.util.List;
 
@@ -27,17 +26,17 @@ public class EmoteCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(Member user, String[] args, InteractChannel channel) {
-        if (!isOwner(user.getUser())) {
+    public void execute(String label, String[] args, CommandTools channel) {
+        if (!isOwner(channel.getMember().getUser())) {
             channel.reply("You are not allowed to perform this command");
             return;
         }
-        if (args.length == 0){
-            replyUsage(channel.getTextChannel());
+        if (args.length == 0) {
+            replyUsage(channel.getChannel());
             return;
         }
-        if (args[0].equalsIgnoreCase("add")){
-            List<GenericEmote> emote = emotes.parseEmotes(channel.getTextChannel().getGuild());
+        if (args[0].equalsIgnoreCase("add")) {
+            List<GenericEmote> emote = emotes.parseEmotes(channel.getChannel().getGuild());
             emotes.saveEmotes(OusuCore.getAssetsPath().toAbsolutePath() + "/emotes/", emote);
             channel.reply("Emotes salvos com sucesso.");
         }

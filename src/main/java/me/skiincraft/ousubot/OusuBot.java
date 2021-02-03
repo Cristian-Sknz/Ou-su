@@ -2,14 +2,16 @@ package me.skiincraft.ousubot;
 
 import me.skiincraft.beans.Injector;
 import me.skiincraft.beans.annotation.Inject;
-import me.skiincraft.discord.core.OusuCore;
-import me.skiincraft.discord.core.common.PresenceUpdater;
-import me.skiincraft.discord.core.common.reactions.ReactionListeners;
-import me.skiincraft.discord.core.common.reactions.Reactions;
-import me.skiincraft.discord.core.language.Language;
-import me.skiincraft.discord.core.plugin.OusuPlugin;
+import me.skiincraft.ousucore.OusuCore;
+import me.skiincraft.ousucore.common.PresenceUpdater;
+import me.skiincraft.ousucore.common.reactions.ReactionListeners;
+import me.skiincraft.ousucore.common.reactions.Reactions;
+import me.skiincraft.ousucore.language.Language;
+import me.skiincraft.ousucore.plugin.OusuPlugin;
 import me.skiincraft.ousubot.api.DiscordBotAPI;
 import me.skiincraft.ousubot.api.OusuAPI;
+import me.skiincraft.ousubot.repositories.ChannelTrackingRepository;
+import me.skiincraft.ousubot.repositories.UserRepository;
 import me.skiincraft.ousubot.view.emotes.GenericsEmotes;
 import net.dv8tion.jda.api.Region;
 import net.dv8tion.jda.api.entities.Activity;
@@ -21,9 +23,25 @@ import java.util.concurrent.TimeUnit;
 
 public class OusuBot extends OusuPlugin {
 
+    private static PresenceUpdater presenceUpdater;
+    @Inject
+    private static ChannelTrackingRepository trackingRepository;
+    @Inject
+    private static UserRepository userRepository;
     @Inject
     private GenericsEmotes emotes;
-    private static PresenceUpdater presenceUpdater;
+
+    public static PresenceUpdater getPresenceUpdater() {
+        return presenceUpdater;
+    }
+
+    public static ChannelTrackingRepository getTrackingRepository() {
+        return trackingRepository;
+    }
+
+    public static UserRepository getUserRepository() {
+        return userRepository;
+    }
 
     @Override
     public void onEnable() {
@@ -41,14 +59,10 @@ public class OusuBot extends OusuPlugin {
                 Activity.listening("Ousubot has been improved and is better!")));
 
         Executors.newSingleThreadScheduledExecutor()
-                .scheduleAtFixedRate(OusuCore::shutdown, 1,1, TimeUnit.HOURS);
+                .scheduleAtFixedRate(OusuCore::shutdown, 1, 1, TimeUnit.HOURS);
     }
 
-    public static PresenceUpdater getPresenceUpdater() {
-        return presenceUpdater;
-    }
-
-    private void injectAPI(OusuAPI api, DiscordBotAPI discordBotAPI){
+    private void injectAPI(OusuAPI api, DiscordBotAPI discordBotAPI) {
         Injector injector = OusuCore.getInjector();
         injector.inject(api);
         injector.map(api);

@@ -3,7 +3,7 @@
   "embeds": [
     {
       "title": "#{scoreAdapter.scoreEmote} ${messages.words.player_score}",
-      "description": ":headphones: Beatmap: [#{scoreAdapter.beatmapName}](#{scoreAdapter.beatmapSetUrl})\n@{reversearrow} ${messages.words.difficult} [#{scoreAdapter.version}](#{scoreAdapter.beatmapUrl})\n@{pp} ${messages.words.pp}: #{scoreAdapter.pp}pp\n:small_blue_diamond: ${messages.words.max_combo}: #{scoreAdapter.combo}",
+      "description": ":headphones: Beatmap: [#{scoreAdapter.beatmapName}](#{scoreAdapter.beatmapSetUrl})\n@{reversearrow} ${messages.words.difficult} [#{scoreAdapter.version}](#{scoreAdapter.beatmapUrl})\n@{pp} ${messages.words.pp}: #{scoreAdapter.pp}pp\n@{empty} - ${messages.words.accuracy}: #{scoreAdapter.accuracy}%#{scoreAdapter.mods}\n:small_blue_diamond: ${messages.words.max_combo}: #{scoreAdapter.combo}",
       "url": "#{scoreAdapter.scoreUrl}",
       "color": null,
       "fields": [

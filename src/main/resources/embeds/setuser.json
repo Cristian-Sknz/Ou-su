@@ -1,0 +1,16 @@
+{
+  "content": null,
+  "embeds": [
+    {
+      "title": "${command.messages.setuser.setuser}",
+      "description": "${messages.words.nickname} [[**#{userAdapter.username}**](https://osu.ppy.sh/users/#{userAdapter.userId})]\n${messages.words.country}: [**:flag_#{countryCode.code.toLowerCase()}: #{countryCode.name}**]\n${messages.words.userid}: [`#{userAdapter.userId}`]",
+      "color": "88,185,255",
+      "author": {
+        "name": "${command.messages.setuser.finduser}"
+      },
+      "thumbnail": {
+        "url": "https://a.ppy.sh/#{userAdapter.userId}?.jpeg"
+      }
+    }
+  ]
+}

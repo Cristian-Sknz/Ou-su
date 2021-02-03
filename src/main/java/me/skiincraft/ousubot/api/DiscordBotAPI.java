@@ -1,7 +1,7 @@
 package me.skiincraft.ousubot.api;
 
 import com.google.gson.JsonParser;
-import me.skiincraft.discord.core.OusuCore;
+import me.skiincraft.ousucore.OusuCore;
 import me.skiincraft.ousubot.OusuBot;
 import net.dv8tion.jda.api.sharding.ShardManager;
 import org.discordbots.api.client.DiscordBotListAPI;
@@ -12,13 +12,13 @@ import java.util.stream.Collectors;
 
 public class DiscordBotAPI {
 
-    private DiscordBotListAPI api;
+    private final DiscordBotListAPI api;
 
-    public DiscordBotAPI(){
+    public DiscordBotAPI() {
         this.api = new DiscordBotListAPIImpl(getToken(), OusuCore.getShardManager().getShards().get(0).getSelfUser().getId());
     }
 
-    public void updateStats(){
+    public void updateStats() {
         api.setStats(OusuCore.getShardManager().getShards()
                 .stream()
                 .map(jda -> Integer.parseInt("" + jda.getGuildCache().size()))

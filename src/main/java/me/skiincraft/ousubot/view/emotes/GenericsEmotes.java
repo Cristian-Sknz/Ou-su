@@ -27,13 +27,13 @@ public class GenericsEmotes {
     public void loadEmotes(String path) {
         try {
             loadEmotes(Paths.get(path));
-        } catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void loadEmotes(Path path) throws IOException {
-        if (!Files.exists(path)){
+        if (!Files.exists(path)) {
             path.toFile().mkdir();
         }
 
@@ -41,7 +41,7 @@ public class GenericsEmotes {
         AtomicInteger loaded = new AtomicInteger();
         DirectoryStream<Path> stream = Files.newDirectoryStream(path);
         stream.forEach(path1 -> {
-            if (path1.toFile().getName().toLowerCase().contains(".emotejson")){
+            if (path1.toFile().getName().toLowerCase().contains(".emotejson")) {
                 try {
                     Gson gson = new Gson();
                     GenericEmote[] genericEmotes = gson.fromJson(new FileReader(path1.toFile()), GenericEmote[].class);
@@ -65,7 +65,7 @@ public class GenericsEmotes {
         return parseEmotes(guild.getEmotes());
     }
 
-    public  List<GenericEmote> getEmotes() {
+    public List<GenericEmote> getEmotes() {
         return emotes;
     }
 
@@ -96,7 +96,7 @@ public class GenericsEmotes {
                 .findFirst().orElse(getEmotes().get(0).getAsMention());
     }
 
-    public void saveEmotes(String path, List<GenericEmote> emotes){
+    public void saveEmotes(String path, List<GenericEmote> emotes) {
         try {
             Path locale = Paths.get(path);
             if (!Files.exists(locale)) {
@@ -111,7 +111,7 @@ public class GenericsEmotes {
             FileWriter writer = new FileWriter(file);
             writer.write(gson.toJson(emotes));
             writer.close();
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

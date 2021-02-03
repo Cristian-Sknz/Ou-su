@@ -44,27 +44,27 @@ public class ClassToken<T> {
         return parents;
     }
 
-    public boolean hasFirstParent(){
+    public boolean hasFirstParent() {
         return firstParent != null;
     }
 
-    public boolean isArray(){
+    public boolean isArray() {
         return item.getClass().isArray();
     }
 
     public String get(String[] properties) throws InvocationTargetException, IllegalAccessException {
-        if (properties.length == 0){
+        if (properties.length == 0) {
             return item.toString();
         }
-        if (properties.length == 1){
+        if (properties.length == 1) {
             return get(properties[0]);
         }
         String propertyName = properties[0];
         int isArray = findArray(propertyName);
-        if (propertyName.contains("()")){
+        if (propertyName.contains("()")) {
             Method method = Arrays.stream(methods)
                     .filter(streamMethod -> {
-                        if (streamMethod.getParameterCount() != 0){
+                        if (streamMethod.getParameterCount() != 0) {
                             return false;
                         }
                         return streamMethod.getName().equalsIgnoreCase(propertyName
@@ -73,15 +73,15 @@ public class ClassToken<T> {
                     }).findFirst()
                     .orElse(null);
 
-            if (method == null || method.getParameterCount() != 0|| method.getReturnType() == Void.class){
+            if (method == null || method.getParameterCount() != 0 || method.getReturnType() == Void.class) {
                 return String.format("#{%s.%s}", getItem().getClass().getSimpleName(), propertyName);
             }
             method.setAccessible(true);
             Object invoke = method.invoke(item);
-            if (invoke == null){
+            if (invoke == null) {
                 return "null";
             }
-            if (isArray != -1){
+            if (isArray != -1) {
                 Object[] value = (Object[]) invoke;
                 ClassToken<Object> classToken = new ClassToken<>(value[isArray], this);
                 parents.add(classToken);
@@ -99,15 +99,15 @@ public class ClassToken<T> {
                 .findFirst()
                 .orElse(null);
 
-        if (field == null){
+        if (field == null) {
             return String.format("#{%s.%s}", getItem().getClass().getSimpleName(), propertyName);
         }
         field.setAccessible(true);
         Object get = field.get(item);
-        if (get == null){
+        if (get == null) {
             return "null";
         }
-        if (isArray != -1){
+        if (isArray != -1) {
             Object[] value = (Object[]) get;
             ClassToken<Object> classToken = new ClassToken<>(value[isArray], this);
             parents.add(classToken);
@@ -129,36 +129,36 @@ public class ClassToken<T> {
     }
 
     public String get(String propertyName) throws IllegalAccessException, InvocationTargetException {
-        if (propertyName == null || propertyName.length() == 0){
+        if (propertyName == null || propertyName.length() == 0) {
             return item.toString();
         }
 
-        if (propertyName.contains(".")){
+        if (propertyName.contains(".")) {
             return get(propertyName.split("\\."));
         }
         int isArray = findArray(propertyName);
-        if (propertyName.contains("()")){
+        if (propertyName.contains("()")) {
             Method method = Arrays.stream(methods)
                     .filter(streamMethod -> {
-                        if (streamMethod.getParameterCount() != 0){
+                        if (streamMethod.getParameterCount() != 0) {
                             return false;
                         }
                         return streamMethod.getName().equalsIgnoreCase(propertyName
-                            .replace("()", "")
-                            .replace("[" + isArray + "]", ""));
+                                .replace("()", "")
+                                .replace("[" + isArray + "]", ""));
                     })
                     .findFirst()
                     .orElse(null);
 
-            if (method == null || method.getReturnType() == Void.class){
+            if (method == null || method.getReturnType() == Void.class) {
                 return String.format("#{%s.%s}", getItem().getClass().getSimpleName(), propertyName);
             }
             method.setAccessible(true);
             Object invoke = method.invoke(item);
-            if (invoke == null){
+            if (invoke == null) {
                 return "null";
             }
-            if (isArray != -1){
+            if (isArray != -1) {
                 Object[] value = (Object[]) invoke;
                 return value[isArray].toString();
             }
@@ -171,15 +171,15 @@ public class ClassToken<T> {
                 .findFirst()
                 .orElse(null);
 
-        if (field == null){
+        if (field == null) {
             return String.format("#{%s.%s}", getItem().getClass().getSimpleName(), propertyName);
         }
         field.setAccessible(true);
         Object get = field.get(item);
-        if (get == null){
+        if (get == null) {
             return "null";
         }
-        if (isArray != -1){
+        if (isArray != -1) {
             Object[] value = (Object[]) get;
             return value[isArray].toString();
         }

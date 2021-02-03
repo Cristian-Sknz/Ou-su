@@ -37,7 +37,7 @@ public class ColorThief {
 
     public static CMap computeMap(BufferedImage image, int maxcolors) {
         List<int[]> pixels = getPixels(image);
-		return quantize(pixels, maxcolors);
+        return quantize(pixels, maxcolors);
     }
 
     public static List<int[]> compute(BufferedImage image, int maxcolors) {
@@ -81,43 +81,43 @@ public class ColorThief {
         // int histosize = 1 << (3 * SIGBITS);
         Map<Integer, Integer> histo = new HashMap<>();
         int index, rval, gval, bval;
-		for (int[] pixel : pixels) {
-			rval = pixel[0] >> RSHIFT;
-			gval = pixel[1] >> RSHIFT;
-			bval = pixel[2] >> RSHIFT;
-			index = getColorIndex(rval, gval, bval);
-			Integer cur = histo.get(index);
-			histo.put(index, (cur == null ? 0 : cur) + 1);
-		}
+        for (int[] pixel : pixels) {
+            rval = pixel[0] >> RSHIFT;
+            gval = pixel[1] >> RSHIFT;
+            bval = pixel[2] >> RSHIFT;
+            index = getColorIndex(rval, gval, bval);
+            Integer cur = histo.get(index);
+            histo.put(index, (cur == null ? 0 : cur) + 1);
+        }
         return histo;
     }
 
     private static VBox vboxFromPixels(List<int[]> pixels, Map<Integer, Integer> histo) {
         int rmin = 1000000, rmax = 0, gmin = 1000000, gmax = 0, bmin = 1000000, bmax = 0, rval, gval, bval;
-		for (int[] pixel : pixels) {
-			rval = pixel[0] >> RSHIFT;
-			gval = pixel[1] >> RSHIFT;
-			bval = pixel[2] >> RSHIFT;
-			/*
-			 * rval = pixel[0]; gval = pixel[1]; bval = pixel[2];
-			 */
-			if (rval < rmin) {
-				rmin = rval;
-			} else if (rval > rmax) {
-				rmax = rval;
-			}
-			if (gval < gmin) {
-				gmin = gval;
-			} else if (gval > gmax) {
-				gmax = gval;
-			}
-			if (bval < bmin) {
-				bmin = bval;
-			} else if (bval > bmax) {
-				bmax = bval;
-			}
-		}
-		return new VBox(rmin, rmax, gmin, gmax, bmin, bmax, histo);
+        for (int[] pixel : pixels) {
+            rval = pixel[0] >> RSHIFT;
+            gval = pixel[1] >> RSHIFT;
+            bval = pixel[2] >> RSHIFT;
+            /*
+             * rval = pixel[0]; gval = pixel[1]; bval = pixel[2];
+             */
+            if (rval < rmin) {
+                rmin = rval;
+            } else if (rval > rmax) {
+                rmax = rval;
+            }
+            if (gval < gmin) {
+                gmin = gval;
+            } else if (gval > gmax) {
+                gmax = gval;
+            }
+            if (bval < bmin) {
+                bmin = bval;
+            } else if (bval > bmax) {
+                bmax = bval;
+            }
+        }
+        return new VBox(rmin, rmax, gmin, gmax, bmin, bmax, histo);
     }
 
     private static VBox[] medianCutApply(Map<Integer, Integer> histo, VBox vbox) {
@@ -174,9 +174,9 @@ public class ColorThief {
             }
         }
 
-		for (Integer key : partialsum.keySet()) {
-			lookaheadsum.put(key, total - key);
-		}
+        for (Integer key : partialsum.keySet()) {
+            lookaheadsum.put(key, total - key);
+        }
         return maxw == rw ? doCut("r", vbox, partialsum, lookaheadsum, total)
                 : maxw == gw ? doCut("g", vbox, partialsum, lookaheadsum, total)
                 : doCut("b", vbox, partialsum, lookaheadsum, total);
@@ -251,23 +251,23 @@ public class ColorThief {
         Object[] r = iter(pq, FRACT_BY_POPULATION * maxcolors, histo, nColors, niters);
         pq = (List<VBox>) r[0];
 
-		nColors = 1;
+        nColors = 1;
         niters = 0;
         r = iter(pq, maxcolors - pq.size(), histo, nColors, niters);
         pq = (List<VBox>) r[0];
 
-		pq.sort((o1, o2) -> {
-			// return new Double(o1.count(true) * o1.getVolume(true)).compareTo(new
-			// Double(o2.count(true) * o2.getVolume(true)));
-			return Double.compare(o2.count(true), o1.count(true));
-		});
+        pq.sort((o1, o2) -> {
+            // return new Double(o1.count(true) * o1.getVolume(true)).compareTo(new
+            // Double(o2.count(true) * o2.getVolume(true)));
+            return Double.compare(o2.count(true), o1.count(true));
+        });
 
         CMap cmap = new CMap();
-		for (VBox vBox2 : pq) {
-			if (vBox2.count(false) > 0) {
-				cmap.push(vBox2);
-			}
-		}
+        for (VBox vBox2 : pq) {
+            if (vBox2.count(false) > 0) {
+                cmap.push(vBox2);
+            }
+        }
         return cmap;
     }
 
@@ -303,8 +303,8 @@ public class ColorThief {
             if (nColors >= target) {
                 return new Object[]{lh, nColors, niters};
             }
-			niters++;
-			lh.sort(Comparator.comparingDouble(o -> o.count(false) * o.getVolume(false)));
+            niters++;
+            lh.sort(Comparator.comparingDouble(o -> o.count(false) * o.getVolume(false)));
         }
         return new Object[]{lh, nColors, niters};
     }
@@ -320,6 +320,7 @@ public class ColorThief {
         private Integer _volume;
         private Integer _count;
         private Map<Integer, Integer> histo;
+
         // r1: 0 / r2: 18 / g1: 0 / g2: 31 / b1: 0 / b2: 31
         public VBox(int r1, int r2, int g1, int g2, int b1, int b2, Map<Integer, Integer> histo) {
             super();
@@ -352,7 +353,7 @@ public class ColorThief {
         }
 
         public VBox newVBox() {
-			return new VBox(r1, r2, g1, g2, b1, b2, new HashMap<>(histo));
+            return new VBox(r1, r2, g1, g2, b1, b2, new HashMap<>(histo));
         }
 
         public int[] avg(boolean recompute) {
@@ -375,7 +376,7 @@ public class ColorThief {
                     _avg = new int[]{(rsum / ntot), (gsum / ntot), (bsum / ntot)};
                 } else {
                     _avg = new int[]{(mult * (r1 + r2 + 1) / 2), (mult * (g1 + g2 + 1) / 2),
-							(mult * (b1 + b2 + 1) / 2)};
+                            (mult * (b1 + b2 + 1) / 2)};
                 }
 
             }
@@ -498,11 +499,11 @@ public class ColorThief {
             return vboxes;
         }
 
-		public List<int[]> palette() {
+        public List<int[]> palette() {
             List<int[]> r = new ArrayList<>();
-			for (DenormalizedVBox denormalizedVBox : vboxes) {
-				r.add(denormalizedVBox.getColor());
-			}
+            for (DenormalizedVBox denormalizedVBox : vboxes) {
+                r.add(denormalizedVBox.getColor());
+            }
             // Collections.reverse(r);
             return r;
         }
@@ -512,25 +513,25 @@ public class ColorThief {
         }
 
         public int[] map(int[] color) {
-			for (DenormalizedVBox vb : vboxes) {
-				if (vb.vbox.contains(color)) {
-					return vb.color;
-				}
-			}
+            for (DenormalizedVBox vb : vboxes) {
+                if (vb.vbox.contains(color)) {
+                    return vb.color;
+                }
+            }
             return nearest(color);
         }
 
         public int[] nearest(int[] color) {
             Double d1 = null, d2;
             int[] pColor = null;
-			for (DenormalizedVBox vb : vboxes) {
-				d2 = Math.sqrt(Math.pow(color[0] - vb.getColor()[0], 2) + Math.pow(color[1] - vb.getColor()[1], 2)
-						+ Math.pow(color[2] - vb.getColor()[2], 2));
-				if (d1 == null || d2 < d1 ) {
-					d1 = d2;
-					pColor = vb.getColor();
-				}
-			}
+            for (DenormalizedVBox vb : vboxes) {
+                d2 = Math.sqrt(Math.pow(color[0] - vb.getColor()[0], 2) + Math.pow(color[1] - vb.getColor()[1], 2)
+                        + Math.pow(color[2] - vb.getColor()[2], 2));
+                if (d1 == null || d2 < d1) {
+                    d1 = d2;
+                    pColor = vb.getColor();
+                }
+            }
             return pColor;
         }
     }

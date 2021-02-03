@@ -1,5 +1,6 @@
 package me.skiincraft.ousubot.view.models;
 
+import me.skiincraft.api.osu.entity.user.SimpleUser;
 import me.skiincraft.api.osu.entity.user.User;
 import me.skiincraft.api.osu.object.user.PlayStyle;
 import me.skiincraft.ousubot.view.emotes.GenericsEmotes;
@@ -49,30 +50,47 @@ public class UserAdapter {
         this.inputs = inputs(user);
     }
 
-    private String isSupporter(User user, GenericsEmotes emotes){
+    public UserAdapter(SimpleUser user) {
+        this.status = null;
+        this.pprank = "0";
+        this.playedTime = "0";
+        this.accuracy = "0";
+        this.userId = user.getId();
+        this.username = user.getUsername();
+        this.countryCode = user.getCountryCode();
+        this.countryRank = "0";
+        this.pp = "0";
+        this.totalScore = "0";
+        this.userAccount = null;
+        this.previousNames = null;
+        this.inputs = null;
+    }
+
+    private String isSupporter(User user, GenericsEmotes emotes) {
         return (user.isSupporter()) ? emotes.getEmoteAsMentionEquals("empty") + " Supporter " + emotes.getEmoteAsMentionEquals("osusupporter") : "";
     }
-    private String isActive(User user, GenericsEmotes emotes){
-        return emotes.getEmoteAsMentionEquals("empty") + " Status:" + ((user.isActive()) ? "Active": "Inative");
+
+    private String isActive(User user, GenericsEmotes emotes) {
+        return emotes.getEmoteAsMentionEquals("empty") + " Status:" + ((user.isActive()) ? "Active" : "Inative");
     }
 
-    private String containsBadges(User user, GenericsEmotes emotes){
-        return (user.getBadges().size() != 0) ? emotes.getEmoteAsMentionEquals("empty")+ " " +user.getBadges().size() + " Badges" : "";
+    private String containsBadges(User user, GenericsEmotes emotes) {
+        return (user.getBadges().size() != 0) ? emotes.getEmoteAsMentionEquals("empty") + " " + user.getBadges().size() + " Badges" : "";
     }
 
-    private String previousNames(User user){
+    private String previousNames(User user) {
         return "`" + ((user.getPreviousUsernames() != null && user.getPreviousUsernames().length != 0) ? String.join("\n", user.getPreviousUsernames()) : user.getUsername()) + "`";
     }
 
-    private String inputs(User user){
-        if (user.getPlayStyles() == null || user.getPlayStyles().length == 0){
+    private String inputs(User user) {
+        if (user.getPlayStyles() == null || user.getPlayStyles().length == 0) {
             return "N/A";
         }
         return Arrays.stream(user.getPlayStyles()).map(pl -> playstyleEmote(pl) + " " + pl.name()).collect(Collectors.joining("\n"));
     }
 
-    private String playstyleEmote(PlayStyle style){
-        switch (style){
+    private String playstyleEmote(PlayStyle style) {
+        switch (style) {
             case Keyboard:
                 return ":keyboard:";
             case Tablet:

@@ -1,10 +1,12 @@
 package me.skiincraft.ousubot.view.models;
 
 import me.skiincraft.api.osu.entity.score.Score;
+import me.skiincraft.api.osu.object.beatmap.Mods;
 import me.skiincraft.api.osu.object.score.ScoreRank;
 import me.skiincraft.api.osu.object.score.ScoreStatistics;
 import me.skiincraft.ousubot.view.emotes.GenericsEmotes;
 
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -30,6 +32,9 @@ public class ScoreAdapter {
     private final String creator;
     private final long creatorId;
 
+    private final String accuracy;
+    private final String mods;
+
 
     public ScoreAdapter(Score score, GenericsEmotes emotes) {
         this.scoreEmote = getRankEmote(score.getScoreRank(), emotes);
@@ -54,9 +59,16 @@ public class ScoreAdapter {
         this.beatmapSetId = score.getBeatmapSetId();
         this.creator = score.getBeatmapSet().getCreator();
         this.creatorId = score.getBeatmapSet().getUserId();
+        DecimalFormat df = new DecimalFormat("#.00");
+        this.accuracy = df.format((score.getAccuracy() * 100));
+        this.mods = (score.getMods().length != 0) ? "\n" + emotes.getEmoteAsMentionEquals("empty") + " - " + getMods(score.getMods(), emotes) : "";
     }
 
-    public String getRankEmote(ScoreRank rank, GenericsEmotes emote){
+    public String getMods(Mods[] mods, GenericsEmotes emotes) {
+        return Arrays.stream(mods).map(mod -> emotes.getEmoteAsMentionEquals(mod.name().replace("_", ""))).collect(Collectors.joining(" "));
+    }
+
+    public String getRankEmote(ScoreRank rank, GenericsEmotes emote) {
         switch (rank) {
             case SSh:
                 return emote.getEmoteAsMentionEquals("SS_Plus");

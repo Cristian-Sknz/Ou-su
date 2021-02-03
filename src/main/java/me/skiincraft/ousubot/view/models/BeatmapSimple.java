@@ -17,24 +17,19 @@ public class BeatmapSimple {
     private final long beatmapSetId;
 
     private final String title;
-    private String artist;
-
     private final String creator;
     private final long creatorId;
-
     private final String genre;
     private final String modeEmote;
-
     private final String mode;
     private final String approval;
-
     private final String version;
-
     private final String successRate;
     private final int maxCombo;
-    private String approvalDate;
     private final float bpm;
     private final String stars;
+    private String artist;
+    private String approvalDate;
 
     public BeatmapSimple(Beatmap beatmap, GenericsEmotes emotes) {
         this.beatmapId = beatmap.getBeatmapId();
@@ -42,7 +37,7 @@ public class BeatmapSimple {
         this.title = beatmap.getBeatmapSet().getTitle();
         this.artist = beatmap.getBeatmapSet().getArtist();
         if (beatmap.getBeatmapSet().getArtistUnicode() != null && !beatmap.getBeatmapSet().getArtistUnicode().equalsIgnoreCase(artist)) {
-                this.artist = "`"+ beatmap.getBeatmapSet().getArtistUnicode() + "`  (" + beatmap.getBeatmapSet().getArtist() + ")";
+            this.artist = "`" + beatmap.getBeatmapSet().getArtistUnicode() + "`  (" + beatmap.getBeatmapSet().getArtist() + ")";
         }
         this.creator = beatmap.getBeatmapSet().getCreator();
         this.creatorId = beatmap.getBeatmapSet().getUserId();
@@ -51,8 +46,8 @@ public class BeatmapSimple {
         this.modeEmote = emotes.getEmoteAsMentionEquals(modeName(beatmap.getGameMode()));
         this.approval = beatmap.getBeatmapSet().getStatus().name();
         this.version = beatmap.getVersion();
-        DecimalFormat df = new DecimalFormat("#.0");
-        this.successRate = df.format((beatmap.getPassCount()*100)/beatmap.getPlayCount());
+        DecimalFormat df = new DecimalFormat("#.00");
+        this.successRate = df.format((beatmap.getPassCount() * 100) / beatmap.getPlayCount());
         this.maxCombo = beatmap.getSliders() + beatmap.getCircles() + beatmap.getSpinners();
         this.approvalDate = "?";
         if (beatmap.getBeatmapSet().getRankedDate() != null) {
@@ -84,7 +79,7 @@ public class BeatmapSimple {
         this.stars = "?";
     }
 
-    private String modeName(GameMode mode){
+    private String modeName(GameMode mode) {
         switch (mode) {
             case Osu:
                 return "Standard";

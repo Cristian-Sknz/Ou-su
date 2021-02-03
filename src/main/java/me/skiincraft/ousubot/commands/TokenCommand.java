@@ -2,15 +2,15 @@ package me.skiincraft.ousubot.commands;
 
 import me.skiincraft.beans.annotation.Inject;
 import me.skiincraft.beans.stereotypes.CommandMap;
-import me.skiincraft.discord.core.command.InteractChannel;
-import me.skiincraft.discord.core.language.Language;
 import me.skiincraft.ousubot.api.AbstractCommand;
 import me.skiincraft.ousubot.api.OusuAPI;
 import me.skiincraft.ousubot.models.APIKey;
 import me.skiincraft.ousubot.repositories.APIKeyRepository;
 import me.skiincraft.ousubot.view.Messages;
 import me.skiincraft.ousubot.view.embeds.MessageModel;
-import net.dv8tion.jda.api.entities.Member;
+import me.skiincraft.ousucore.command.objecs.Command;
+import me.skiincraft.ousucore.command.utils.CommandTools;
+import me.skiincraft.ousucore.language.Language;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,16 +35,16 @@ public class TokenCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(Member member, String[] args, InteractChannel channel) {
-        if (!isOwner(member.getUser())) {
+    public void execute(String label, String[] args, CommandTools channel) {
+        if (!isOwner(channel.getMember().getUser())) {
             channel.reply("You are not allowed to perform this command");
             return;
         }
 
-        Language language = Language.getGuildLanguage(channel.getTextChannel().getGuild());
-        if (args.length == 0){
+        Language language = Language.getGuildLanguage(channel.getChannel().getGuild());
+        if (args.length == 0) {
             List<APIKey> keys = apiKeyRepository.getAll();
-            if (keys.size() == 0){
+            if (keys.size() == 0) {
                 channel.reply("Não existe nenhuma key disponível!");
                 return;
             }
@@ -53,34 +53,34 @@ public class TokenCommand extends AbstractCommand {
                     .toArray(String[]::new);
 
             model.addProperty("size", keysArray.length);
-            for (int i = 0; i < 3; i++){
+            for (int i = 0; i < 3; i++) {
                 List<String> values = new ArrayList<>();
-                for (String string : keysArray){
+                for (String string : keysArray) {
                     String[] keysSplit = string.split(",");
                     values.add(keysSplit[i]);
                 }
-                model.addProperty((i == 0) ? "identify": (i == 1) ? "refresh" : "expires", String.join("\n", values));
+                model.addProperty((i == 0) ? "identify" : (i == 1) ? "refresh" : "expires", String.join("\n", values));
             }
 
             channel.reply(model.getEmbedBuilder().build());
         }
 
-        if (args.length <= 1){
+        if (args.length <= 1) {
             return;
         }
 
-        if (args[0].equalsIgnoreCase("add")){
+        if (args[0].equalsIgnoreCase("add")) {
             try {
                 api.createToken(args[1]);
                 channel.reply("Um token foi criado com sucesso!");
-            } catch (Exception e){
-                channel.reply(Messages.getError(e, channel.getTextChannel().getGuild()).build());
+            } catch (Exception e) {
+                channel.reply(Messages.getError(e, channel.getChannel().getGuild()).build());
             }
             return;
         }
 
-        if (args[0].equalsIgnoreCase("remove")){
-            if (args[1].length() != 12 || !apiKeyRepository.getById(args[1]).isPresent()){
+        if (args[0].equalsIgnoreCase("remove")) {
+            if (args[1].length() != 12 || !apiKeyRepository.getById(args[1]).isPresent()) {
                 channel.reply("Não existe nenhum token com esta identificação.");
                 return;
             }
@@ -89,36 +89,38 @@ public class TokenCommand extends AbstractCommand {
             return;
         }
 
-        if (args[0].equalsIgnoreCase("refresh")){
+        if (args[0].equalsIgnoreCase("refresh")) {
             if (args[1].length() <= 12) {
                 APIKey apiKey = apiKeyRepository.getById(args[1]).orElse(null);
-                if (Objects.isNull(apiKey)){
+                if (Objects.isNull(apiKey)) {
                     channel.reply("Não existe nenhum token com esta identificação.");
                     return;
                 }
-                try {
-                    api.refreshToken(apiKey.getRefreshToken());
-                    channel.reply("Refresh Token feito com sucesso!");
-                } catch (Exception e){
-                    channel.reply(Messages.getError(e, channel.getTextChannel().getGuild()).build());
-                }
+                api.refreshToken(apiKey.getRefreshToken());
+                channel.reply("Refresh Token feito com sucesso!");
                 return;
             }
-            try {
-                api.refreshToken(args[1]);
-                channel.reply("Refresh Token feito com sucesso!");
-            } catch (Exception e) {
-                channel.reply(Messages.getError(e, channel.getTextChannel().getGuild()).build());
-            }
+            api.refreshToken(args[1]);
+            channel.reply("Refresh Token feito com sucesso!");
+        }
+
+        if (args[0].equalsIgnoreCase("v1")) {
+            api.createTokenV1(args[1]);
+            channel.reply("Essa API v1 foi adicionada ao banco de dados.");
         }
     }
 
 
-    private Function<? super APIKey, ? extends String> organizeAll(){
+    private Function<? super APIKey, ? extends String> organizeAll() {
         return (Function<APIKey, String>) apiKey -> {
             String expireDate = apiKey.getExpireInString();
             return String.format("`%s`,`%s`,(`%s`)", apiKey.getIdentification(), (apiKey.getRefreshToken() == null) ? "none" : apiKey.getRefreshToken().substring(0, 12), (expireDate == null) ? "Nunca" : expireDate);
         };
     }
 
+    @Override
+    public void onFailure(Exception exception, Command command) {
+        CommandTools tools = new CommandTools(command.getMessage());
+        tools.reply(Messages.getError(exception, tools.getGuild()).build());
+    }
 }

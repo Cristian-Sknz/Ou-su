@@ -1,6 +1,6 @@
 package me.skiincraft.ousubot.view.embeds;
 
-import me.skiincraft.discord.core.language.Language;
+import me.skiincraft.ousucore.language.Language;
 import me.skiincraft.ousubot.view.emotes.GenericsEmotes;
 import me.skiincraft.ousubot.view.token.ClassToken;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -38,9 +38,9 @@ public class Embed {
         this.thumbnail = thumbnail;
     }
 
-    private Color convertColor(){
+    private Color convertColor() {
         String[] rgb = color.split(",");
-        if (rgb.length < 3){
+        if (rgb.length < 3) {
             return Color.CYAN;
         }
         Integer[] rgbInt = Arrays.stream(rgb).map(Integer::parseInt).toArray(Integer[]::new);
@@ -55,13 +55,14 @@ public class Embed {
                 try {
                     string = string.replace("#{" + element + "}", tokens.get(parameters[0].toLowerCase())
                             .get(Arrays.copyOfRange(parameters, 1, parameters.length)));
-                } catch (Exception ignored){}
+                } catch (Exception ignored) {
+                }
             }
         }
         return string;
     }
 
-    private String replaceEmote(String string, Language language,Map<String, ClassToken<?>> tokens){
+    private String replaceEmote(String string, Language language, Map<String, ClassToken<?>> tokens) {
         List<String> emotesElements = language.findElements(string, "@{", "}");
         GenericsEmotes emotes = (GenericsEmotes) tokens.get("emotes").getItem();
         for (String element : Objects.requireNonNull(emotesElements)) {
@@ -84,7 +85,7 @@ public class Embed {
         return str;
     }
 
-    public EmbedBuilder toMessageEmbed(@Nonnull Language language, Map<String, ClassToken<?>> tokens){
+    public EmbedBuilder toMessageEmbed(@Nonnull Language language, Map<String, ClassToken<?>> tokens) {
         EmbedBuilder builder = new EmbedBuilder();
         builder.setTitle(replace(title, language, tokens));
         builder.setDescription(replace(description, language, tokens));
@@ -94,9 +95,9 @@ public class Embed {
         if (color != null) {
             builder.setColor(convertColor());
         }
-        if (tokens.containsKey("color")){
+        if (tokens.containsKey("color")) {
             ClassToken<?> color = tokens.get("color");
-            if (color.getItem() instanceof Color){
+            if (color.getItem() instanceof Color) {
                 builder.setColor((Color) color.getItem());
             }
         }
@@ -146,6 +147,7 @@ public class Embed {
         }
 
     }
+
     public static class Field {
         private final String name;
         private final String value;
@@ -170,6 +172,7 @@ public class Embed {
         }
 
     }
+
     public static class Footer {
         private final String text;
         private final String icon_url;
@@ -204,8 +207,10 @@ public class Embed {
             return this;
         }
     }
+
     public static class Thumbnail {
         private String url;
+
         public Thumbnail(String url) {
             this.url = url;
         }

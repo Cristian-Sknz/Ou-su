@@ -3,6 +3,7 @@ package me.skiincraft.ousubot.api;
 import com.google.common.collect.Iterables;
 import me.skiincraft.api.osu.OsuAPI;
 import me.skiincraft.api.osu.exceptions.TokenException;
+import me.skiincraft.api.osu.impl.v1.OsuAPIV1;
 import me.skiincraft.api.osu.object.OAuthApplication;
 import me.skiincraft.api.osu.requests.Token;
 import me.skiincraft.beans.annotation.Inject;
@@ -17,32 +18,38 @@ import java.util.*;
 
 public class OusuAPI {
 
+    private final OsuAPI api;
+    private final OsuAPIV1 apiv1;
     @Inject
     private APIKeyRepository apiKeyRepository;
-    private final OsuAPI api;
     private Iterator<Token> availableTokens;
     private int activeTokens;
 
     public OusuAPI() {
         this.api = OsuAPI.newAPIV2(PropertiesOAuthApllication.newOAuthApplication());
+        this.apiv1 = (OsuAPIV1) OsuAPI.newAPIV1();
     }
 
-    public void createToken(String token){
+    public void createToken(String token) {
         apiKeyRepository.save(new APIKey(api.createToken(token).get()));
     }
 
-    public Token getToken(APIKey apiKey){
+    public void createTokenV1(String token) {
+        apiKeyRepository.save(new APIKey(apiv1.createToken(token).get()));
+    }
+
+    public Token getToken(APIKey apiKey) {
         Token token = api.getTokens().stream()
                 .filter(tkn -> tkn.getToken().equalsIgnoreCase(apiKey.getToken()))
                 .findFirst().orElse(null);
 
-        if (Objects.isNull(token)){
+        if (Objects.isNull(token)) {
             return null;
         }
         return token;
     }
 
-    public void refreshToken(String refreshToken){
+    public void refreshToken(String refreshToken) {
         apiKeyRepository.getAll()
                 .stream()
                 .filter(apiKey -> apiKey.getRefreshToken().equalsIgnoreCase(refreshToken))
@@ -51,7 +58,7 @@ public class OusuAPI {
         apiKeyRepository.save(new APIKey(api.refreshToken(refreshToken).get()));
     }
 
-    public void remove(String identification){
+    public void remove(String identification) {
         APIKey key = apiKeyRepository.getById(identification).orElse(null);
         if (Objects.isNull(key)) {
             return;
@@ -68,12 +75,16 @@ public class OusuAPI {
         api.getTokens().remove(token);
     }
 
-    public OsuAPI getAPI(){
+    public OsuAPI getAPI() {
         return api;
     }
 
-    public Token getAvailableTokens(){
-        if (availableTokens == null || activeTokens < getAPI().getTokens().size()){
+    public OsuAPIV1 getAPIV1() {
+        return apiv1;
+    }
+
+    public Token getAvailableTokens() {
+        if (availableTokens == null || activeTokens < getAPI().getTokens().size()) {
             availableTokens = Iterables.cycle(getAPI().getTokens().toArray(new Token[0])).iterator();
             activeTokens = getAPI().getTokens().size();
         }
@@ -82,12 +93,12 @@ public class OusuAPI {
     }
 
     private Token checkIfExpired(Token token) {
-        if (Objects.isNull(token)){
+        if (Objects.isNull(token)) {
             return null;
         }
         // Checar se existe
         Optional<APIKey> apiToken = apiKeyRepository.getById(token.getToken().substring(0, 12));
-        if (!apiToken.isPresent()){
+        if (!apiToken.isPresent()) {
             throw new TokenException("Um token não registrado foi identificado e não pode ser registrado.\n" + token.getToken());
         }
 
@@ -108,20 +119,24 @@ public class OusuAPI {
         }
 
         for (APIKey apiKey : tokens) {
+            if (apiKey.isV1()) {
+                apiv1.createToken(apiKey.getToken()).get();
+                continue;
+            }
             if (apiKey.getExpiresIn() != null && apiKey.getExpiresIn().isBefore(LocalDateTime.now(Clock.systemUTC()))) {
                 apiKeyRepository.removeObject(apiKey);
                 apiKeyRepository.save(new APIKey(api.refreshToken(apiKey.getRefreshToken()).get()));
                 continue;
             }
-            api.resumeToken(apiKey.getToken());
+            api.resumeToken(apiKey.getToken()).get();
         }
     }
 
 
-    public void setup(){
+    public void setup() {
         try {
             generateTokens();
-        } catch (TokenException e){
+        } catch (TokenException e) {
             e.printStackTrace();
         }
     }
@@ -132,12 +147,12 @@ public class OusuAPI {
             super(clientId, clientSecret, redirectUri);
         }
 
-        public static PropertiesOAuthApllication newOAuthApplication(){
+        public static PropertiesOAuthApllication newOAuthApplication() {
             try {
                 Properties properties = new Properties();
                 properties.load(OusuBot.class.getResourceAsStream("/OAuthCredentials.properties"));
                 return new PropertiesOAuthApllication(Long.parseLong(properties.getProperty("clientId")), properties.getProperty("client_secret"), properties.getProperty("redirect_uri"));
-            } catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
                 return null;
             }

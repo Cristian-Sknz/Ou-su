@@ -18,23 +18,22 @@ public class CountryCodes {
         COUNTRY_CODES = new Gson().fromJson(new InputStreamReader(OusuBot.class.getResourceAsStream("/country_codes.json"), StandardCharsets.UTF_8), CountryCode[].class);
     }
 
-    public static boolean isCountryCode(String countryCode){
+    public static boolean isCountryCode(String countryCode) {
         inicialize();
-        if (countryCode.length() <= 1){
+        if (countryCode.length() <= 1) {
             return false;
         }
         return Arrays.stream(COUNTRY_CODES)
                 .anyMatch(cc -> cc.getCode().equalsIgnoreCase(countryCode.substring(0, 2)));
     }
 
-    public static CountryCode getCountryCode(String countryCode){
+    public static CountryCode getCountryCode(String countryCode) {
         inicialize();
         return Arrays.stream(COUNTRY_CODES)
                 .filter(cc -> cc.getCode().equalsIgnoreCase(countryCode.substring(0, 2)))
                 .findFirst()
                 .orElse(null);
     }
-
 
 
     public static class CountryCode {
@@ -57,7 +56,7 @@ public class CountryCodes {
             return code;
         }
 
-        public char[] getCodeChars(){
+        public char[] getCodeChars() {
             return code.toCharArray();
         }
     }

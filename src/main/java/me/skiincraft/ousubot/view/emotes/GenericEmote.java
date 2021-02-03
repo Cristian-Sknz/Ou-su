@@ -2,12 +2,11 @@ package me.skiincraft.ousubot.view.emotes;
 
 public class GenericEmote {
 
-    String ICON_URL = "https://cdn.discordapp.com/emojis/";
-
     private final String name;
     private final long id;
     private final boolean animated;
     private final long guildId;
+    String ICON_URL = "https://cdn.discordapp.com/emojis/";
 
     public GenericEmote(String name, long id, long guildId, boolean animated) {
         this.name = name;
@@ -20,15 +19,15 @@ public class GenericEmote {
         return name;
     }
 
-    public long getGuildId(){
+    public long getGuildId() {
         return guildId;
     }
 
-    public String getEmoteUrl(){
+    public String getEmoteUrl() {
         return ICON_URL + id + ((animated) ? ".gif" : ".png");
     }
 
-    public boolean isAnimated(){
+    public boolean isAnimated() {
         return animated;
     }
 
@@ -36,11 +35,11 @@ public class GenericEmote {
         return id;
     }
 
-    public String getReaction(){
+    public String getReaction() {
         return getName() + ":" + getId();
     }
 
     public String getAsMention() {
-        return "<:" + getName() + ":" +getId() + ">";
+        return "<:" + getName() + ":" + getId() + ">";
     }
 }

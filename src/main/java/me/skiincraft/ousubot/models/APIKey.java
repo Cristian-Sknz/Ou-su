@@ -27,6 +27,11 @@ public class APIKey {
     public APIKey(Token token) {
         this.identification = token.getToken().substring(0, 12);
         this.token = token.getToken();
+        if (token.isV1()) {
+            this.refreshToken = null;
+            this.expiresIn = null;
+            return;
+        }
         this.refreshToken = token.getRefreshToken();
         this.expiresIn = LocalDateTime.now(Clock.systemUTC()).plusSeconds(token.getExpiresIn());
     }
@@ -47,12 +52,16 @@ public class APIKey {
         return expiresIn;
     }
 
-    public String getExpireInString(){
-        if (expiresIn == null){
+    public String getExpireInString() {
+        if (expiresIn == null) {
             return null;
         }
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         Timestamp timestamp = Timestamp.valueOf(expiresIn);
         return timestamp.toString();
+    }
+
+    public boolean isV1() {
+        return expiresIn == null;
     }
 }
