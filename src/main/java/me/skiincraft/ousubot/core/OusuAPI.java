@@ -10,6 +10,7 @@ import me.skiincraft.beans.annotation.Inject;
 import me.skiincraft.ousubot.OusuBot;
 import me.skiincraft.ousubot.models.APIKey;
 import me.skiincraft.ousubot.repositories.APIKeyRepository;
+import me.skiincraft.ousucore.OusuCore;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Clock;
@@ -28,6 +29,7 @@ public class OusuAPI {
     public OusuAPI() {
         this.api = OsuAPI.newAPIV2(PropertiesOAuthApllication.newOAuthApplication());
         this.apiv1 = (OsuAPIV1) OsuAPI.newAPIV1();
+        api.setClient(OusuCore.getShardManager().getShards().get(0).getHttpClient());
     }
 
     public void createToken(String token) {
@@ -41,7 +43,7 @@ public class OusuAPI {
     public Token getToken(APIKey apiKey) {
         Token token = api.getTokens().stream()
                 .filter(tkn -> tkn.getToken().equalsIgnoreCase(apiKey.getToken()))
-                .findFirst().orElse(null);
+                .findFirst().orElse(apiv1.getTokens().stream().filter(tkn -> tkn.getToken().equalsIgnoreCase(apiKey.getToken())).findFirst().orElse(null));
 
         if (Objects.isNull(token)) {
             return null;
@@ -51,7 +53,7 @@ public class OusuAPI {
 
     public void refreshToken(String refreshToken) {
         apiKeyRepository.getAll()
-                .stream()
+                .stream().filter(tkn -> !tkn.isV1())
                 .filter(apiKey -> apiKey.getRefreshToken().equalsIgnoreCase(refreshToken))
                 .forEach(apiKey -> apiKeyRepository.removeObject(apiKey));
 
@@ -84,12 +86,16 @@ public class OusuAPI {
     }
 
     public Token getAvailableTokens() {
-        if (availableTokens == null || activeTokens < getAPI().getTokens().size()) {
-            availableTokens = Iterables.cycle(getAPI().getTokens().toArray(new Token[0])).iterator();
-            activeTokens = getAPI().getTokens().size();
-        }
+        try {
+            if (availableTokens == null || activeTokens < getAPI().getTokens().size()) {
+                availableTokens = Iterables.cycle(getAPI().getTokens().toArray(new Token[0])).iterator();
+                activeTokens = getAPI().getTokens().size();
+            }
 
-        return checkIfExpired(availableTokens.next());
+            return checkIfExpired(availableTokens.next());
+        } catch (NoSuchElementException e){
+            throw new TokenException(e);
+        }
     }
 
     private Token checkIfExpired(Token token) {
