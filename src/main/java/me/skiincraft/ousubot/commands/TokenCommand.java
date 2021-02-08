@@ -2,8 +2,8 @@ package me.skiincraft.ousubot.commands;
 
 import me.skiincraft.beans.annotation.Inject;
 import me.skiincraft.beans.stereotypes.CommandMap;
-import me.skiincraft.ousubot.core.commands.AbstractCommand;
 import me.skiincraft.ousubot.core.OusuAPI;
+import me.skiincraft.ousubot.core.commands.AbstractCommand;
 import me.skiincraft.ousubot.models.APIKey;
 import me.skiincraft.ousubot.repositories.APIKeyRepository;
 import me.skiincraft.ousubot.view.Messages;
@@ -69,13 +69,19 @@ public class TokenCommand extends AbstractCommand {
             return;
         }
 
-        if (args[0].equalsIgnoreCase("add")) {
-            try {
-                api.createToken(args[1]);
-                channel.reply("Um token foi criado com sucesso!");
-            } catch (Exception e) {
-                channel.reply(Messages.getError(e, channel.getChannel().getGuild()).build());
+        if (args[0].equalsIgnoreCase("get")) {
+            APIKey token = apiKeyRepository.getById(args[1]).orElse(null);
+            if (token == null) {
+                channel.reply("Não existe nenhum token com esta identificação");
+                return;
             }
+            channel.reply(String.format("O token que você solicitou é este:%n ||%s||", token.getToken()));
+            return;
+        }
+
+        if (args[0].equalsIgnoreCase("add")) {
+            api.createToken(args[1]);
+            channel.reply("Um token foi criado com sucesso!");
             return;
         }
 

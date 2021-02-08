@@ -9,6 +9,7 @@ import me.skiincraft.ousubot.view.emotes.GenericsEmotes;
 import me.skiincraft.ousubot.view.token.ClassToken;
 import net.dv8tion.jda.api.EmbedBuilder;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -23,10 +24,14 @@ public class MessageModel {
 
     public MessageModel(String name, Language language) {
         this.language = language;
-        this.embed = new Gson().fromJson(new JsonParser().parse(reader(OusuBot.class.getResourceAsStream("/" + name + ".json")))
+        InputStreamReader reader = reader(OusuBot.class.getResourceAsStream("/" + name + ".json"));
+        this.embed = new Gson().fromJson(new JsonParser().parse(reader)
                 .getAsJsonObject()
                 .get("embeds").getAsJsonArray().get(0), Embed.class);
         this.addProperty("emotes", OusuCore.getInjector().getInstanceOf(GenericsEmotes.class));
+        try {
+            reader.close();
+        } catch (IOException ignored) {}
     }
 
     public Embed getEmbed() {

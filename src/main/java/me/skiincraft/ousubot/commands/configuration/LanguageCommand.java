@@ -1,13 +1,13 @@
-package me.skiincraft.ousubot.commands;
+package me.skiincraft.ousubot.commands.configuration;
 
 import me.skiincraft.beans.stereotypes.CommandMap;
+import me.skiincraft.ousubot.core.commands.AbstractCommand;
+import me.skiincraft.ousubot.view.Messages;
 import me.skiincraft.ousucore.OusuCore;
 import me.skiincraft.ousucore.command.utils.CommandTools;
 import me.skiincraft.ousucore.language.Language;
 import me.skiincraft.ousucore.repository.GuildRepository;
 import me.skiincraft.ousucore.repository.OusuGuild;
-import me.skiincraft.ousubot.core.commands.AbstractCommand;
-import me.skiincraft.ousubot.view.Messages;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class LanguageCommand extends AbstractCommand {
 
     public LanguageCommand() {
-        super("language", Arrays.asList("idioma", "lang", "linguagem"), "language <availablelanguage>");
+        super("language", Arrays.asList("idioma", "lang"), "language <language>");
     }
 
     public static String removeAccents(String text) {
@@ -33,7 +33,7 @@ public class LanguageCommand extends AbstractCommand {
         return CommandType.Configuration;
     }
 
-public void execute(String label, String[] args, CommandTools channel) {
+    public void execute(String label, String[] args, CommandTools channel) {
         Language guildLang = Language.getGuildLanguage(channel.getChannel().getGuild());
         if (!channel.getMember().hasPermission(Permission.MANAGE_SERVER)) {
             channel.reply(channel.getMember().getAsMention() + " " + guildLang.getString("command.messages.permission")

@@ -1,7 +1,8 @@
-package me.skiincraft.ousubot.commands;
+package me.skiincraft.ousubot.commands.gameplay;
 
 import me.skiincraft.api.osu.entity.beatmap.BeatmapSet;
 import me.skiincraft.api.osu.exceptions.ResourceNotFoundException;
+import me.skiincraft.api.osu.exceptions.TokenException;
 import me.skiincraft.api.osu.requests.Endpoint;
 import me.skiincraft.beans.annotation.Inject;
 import me.skiincraft.beans.stereotypes.CommandMap;
@@ -48,7 +49,7 @@ public class BeatmapSetCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(String label, String[] args, CommandTools channel) {
+    public void execute(String label, String[] args, CommandTools channel) throws Exception {
         if (args.length == 0) {
             replyUsage(channel.getChannel());
             return;
@@ -88,7 +89,11 @@ public class BeatmapSetCommand extends AbstractCommand {
             tools.reply(Messages.getWarning("command.messages.beatmap.inexistent_id", tools.getChannel().getGuild()));
             return;
         }
-        tools.reply(Messages.getError(exception, tools.getChannel().getGuild()).build());
+        if (exception instanceof TokenException){
+            tools.reply(Messages.getWarning("messages.error.token", tools.getGuild()));
+            return;
+        }
+        tools.reply(Messages.getError(exception, tools.getGuild()).build());
     }
 
     public EmbedBuilder[] getModelEmbedBuilders(MessageModel model, BeatmapSet beatmapSet) {

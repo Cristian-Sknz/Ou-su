@@ -1,5 +1,6 @@
 package me.skiincraft.ousubot.view.models;
 
+import me.skiincraft.api.osu.entity.beatmap.BeatmapSet;
 import me.skiincraft.api.osu.entity.score.Score;
 import me.skiincraft.api.osu.object.beatmap.Mods;
 import me.skiincraft.api.osu.object.score.ScoreRank;
@@ -59,6 +60,34 @@ public class ScoreAdapter {
         this.beatmapSetId = score.getBeatmapSetId();
         this.creator = score.getBeatmapSet().getCreator();
         this.creatorId = score.getBeatmapSet().getUserId();
+        DecimalFormat df = new DecimalFormat("#.00");
+        this.accuracy = df.format((score.getAccuracy() * 100));
+        this.mods = (score.getMods().length != 0) ? "\n" + emotes.getEmoteAsMentionEquals("empty") + " - " + getMods(score.getMods(), emotes) : "";
+    }
+
+    public ScoreAdapter(Score score, BeatmapSet beatmapSet, GenericsEmotes emotes) {
+        this.scoreEmote = getRankEmote(score.getScoreRank(), emotes);
+        this.beatmapName = beatmapSet.getTitle();
+        this.beatmapSetUrl = beatmapSet.getURL();
+        this.version = Objects.requireNonNull(score.getBeatmap(), "version").getVersion();
+        this.beatmapUrl = score.getBeatmap().getURL();
+        this.pp = (score.getPP() == 0) ? "?" : String.valueOf((int) score.getPP());
+        this.combo = score.getMaxCombo();
+        this.scoreUrl = score.getScoreUrl();
+        this.totalScore = score.getScore();
+        String[] scoreTypes = new String[]{emotes.getEmoteAsMentionEquals("300"),
+                emotes.getEmoteAsMentionEquals("100"),
+                emotes.getEmoteAsMentionEquals("50"),
+                emotes.getEmoteAsMentionEquals("miss")};
+        ScoreStatistics statistics = score.getStatistics();
+        int[] scores = new int[]{statistics.get300(), statistics.get100(), statistics.get50(), statistics.getMiss()};
+        AtomicInteger i = new AtomicInteger(0);
+        this.score = Arrays.stream(scoreTypes).map(t -> t + ": " + scores[i.getAndIncrement()]).collect(Collectors.joining(" | "));
+        this.userName = score.getUser().getUsername();
+        this.userId = score.getUserId();
+        this.beatmapSetId = score.getBeatmapSetId();
+        this.creator = beatmapSet.getCreator();
+        this.creatorId = beatmapSet.getUserId();
         DecimalFormat df = new DecimalFormat("#.00");
         this.accuracy = df.format((score.getAccuracy() * 100));
         this.mods = (score.getMods().length != 0) ? "\n" + emotes.getEmoteAsMentionEquals("empty") + " - " + getMods(score.getMods(), emotes) : "";

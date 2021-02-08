@@ -1,6 +1,8 @@
-package me.skiincraft.ousubot.commands;
+package me.skiincraft.ousubot.commands.about;
 
 import me.skiincraft.beans.stereotypes.CommandMap;
+import me.skiincraft.ousubot.core.commands.OptionCommand;
+import me.skiincraft.ousubot.core.commands.options.CommandOption;
 import me.skiincraft.ousucore.OusuCore;
 import me.skiincraft.ousucore.command.utils.CommandTools;
 import me.skiincraft.ousucore.common.reactions.ReactionObject;
@@ -71,10 +73,12 @@ public class HelpCommand extends AbstractCommand {
         if (args.length == 1) {
             AbstractCommand command = findCommand(args[0]);
             if (Objects.isNull(command)) {
-                //
+                channel.reply(language.getString("messages.helpcommand.nonexists"));
                 return;
             }
-            channel.reply(helpCommand(command, channel.getChannel().getGuild()).build());
+            channel.reply(helpCommand(command, channel.getChannel().getGuild()).build(), msg -> {
+
+            });
         }
     }
 
@@ -111,10 +115,13 @@ public class HelpCommand extends AbstractCommand {
         embed.setDescription(String.format("%s %s %n", ":small_orange_diamond:", command.getCommandDescription(language)));
         embed.setColor(new Color(246, 246, 11));
         if (Objects.nonNull(command.getAliases()) && command.getAliases().size() != 0) {
-            embed.addField(":mega:", command.getAliases().stream()
+            embed.addField(":mega: Aliases", command.getAliases().stream()
                     .map(aliase -> prefix + aliase).collect(Collectors.joining("\n")), true);
         }
         embed.addField("Usage:", prefix + command.getUsage(), true);
+        if (command instanceof OptionCommand){
+            embed.addField("Options:", Arrays.stream(((OptionCommand) command).getCommandOptions()).map(CommandOption::getName).map(str -> "-" + str).collect(Collectors.joining(", ")), false);
+        }
         embed.setFooter(prefix + "help to Help!");
         return embed;
     }

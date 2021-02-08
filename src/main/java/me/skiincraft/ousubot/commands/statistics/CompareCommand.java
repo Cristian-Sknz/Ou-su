@@ -1,7 +1,8 @@
-package me.skiincraft.ousubot.commands;
+package me.skiincraft.ousubot.commands.statistics;
 
 import me.skiincraft.api.osu.entity.score.Score;
 import me.skiincraft.api.osu.exceptions.ResourceNotFoundException;
+import me.skiincraft.api.osu.exceptions.TokenException;
 import me.skiincraft.api.osu.object.game.GameMode;
 import me.skiincraft.api.osu.requests.Token;
 import me.skiincraft.beans.annotation.Inject;
@@ -93,6 +94,10 @@ public class CompareCommand extends AbstractCommand {
         CommandTools tools = new CommandTools(command.getMessage());
         if (exception instanceof ResourceNotFoundException) {
             tools.reply(Messages.getWarning("command.messages.score.inexistent_user", tools.getGuild()));
+            return;
+        }
+        if (exception instanceof TokenException){
+            tools.reply(Messages.getWarning("messages.error.token", tools.getGuild()));
             return;
         }
         tools.reply(Messages.getError(exception, tools.getGuild()).build());

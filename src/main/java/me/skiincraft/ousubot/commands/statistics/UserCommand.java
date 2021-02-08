@@ -1,14 +1,20 @@
-package me.skiincraft.ousubot.commands;
+package me.skiincraft.ousubot.commands.statistics;
 
 import me.skiincraft.api.osu.entity.user.User;
 import me.skiincraft.api.osu.exceptions.ResourceNotFoundException;
+import me.skiincraft.api.osu.exceptions.TokenException;
 import me.skiincraft.api.osu.object.game.GameMode;
 import me.skiincraft.api.osu.object.user.Grade;
 import me.skiincraft.api.osu.requests.Endpoint;
 import me.skiincraft.beans.annotation.Inject;
 import me.skiincraft.beans.stereotypes.CommandMap;
-import me.skiincraft.ousubot.core.commands.AbstractCommand;
+import me.skiincraft.ousubot.OusuBot;
 import me.skiincraft.ousubot.core.OusuAPI;
+import me.skiincraft.ousubot.core.commands.OptionCommand;
+import me.skiincraft.ousubot.core.commands.options.CommandOption;
+import me.skiincraft.ousubot.core.commands.options.GamemodeOption;
+import me.skiincraft.ousubot.core.commands.options.Options;
+import me.skiincraft.ousubot.models.OusuUser;
 import me.skiincraft.ousubot.view.Messages;
 import me.skiincraft.ousubot.view.embeds.MessageModel;
 import me.skiincraft.ousubot.view.models.UserAdapter;
@@ -29,6 +35,7 @@ import me.skiincraft.ousucore.common.reactions.Reactions;
 import me.skiincraft.ousucore.common.reactions.custom.ReactionPage;
 import me.skiincraft.ousucore.language.Language;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Member;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -40,13 +47,13 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 @CommandMap
-public class UserCommand extends AbstractCommand {
+public class UserCommand extends OptionCommand {
 
     @Inject
     private OusuAPI api;
-
+    private final CommandOption[] options = GamemodeOption.getAllGameOptions();
     public UserCommand() {
-        super("user", Arrays.asList("profile", "player", "u"), "user <username> [gamemode]");
+        super("user", Arrays.asList("profile", "player", "u"), "user <username> [-gamemode]");
     }
 
     @Override
@@ -55,15 +62,18 @@ public class UserCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(String label, String[] args, CommandTools channel) throws Exception {
+    public void executeWithOptions(String label, String[] args, Options options, CommandTools channel) throws Exception {
         if (args.length == 0) {
-            replyUsage(channel.getChannel());
-            return;
+            long userId = getOsuId(channel.getMember());
+            if (userId == 0) {
+                replyUsage(channel.getChannel());
+                return;
+            }
+            args = new String[]{String.valueOf(userId)};
         }
         Language language = Language.getGuildLanguage(channel.getChannel().getGuild());
         Endpoint endpoint = api.getAvailableTokens().getEndpoint();
-        Object[] parameters = getParameters(args);
-        User user = endpoint.getUser(getUserId(endpoint, String.valueOf(parameters[0])), (GameMode) parameters[1]).get().getUser();
+        User user = endpoint.getUser(getUserId(endpoint, String.join(" ", args)), getGamemode(options)).get().getUser();
 
         MessageModel model = new MessageModel("embeds/user", language);
         UserAdapter adapter = new UserAdapter(user, model.getEmotes());
@@ -82,11 +92,25 @@ public class UserCommand extends AbstractCommand {
         });
     }
 
+    private GameMode getGamemode(Options options) {
+        return Arrays.stream(options.getOptionArguments()).filter(op -> op.getOption() instanceof GamemodeOption)
+                .findFirst().map(op -> ((GamemodeOption) op.getOption()).getGameMode()).orElse(GameMode.Osu);
+    }
+
+    @Override
+    public CommandOption[] getCommandOptions() {
+        return options;
+    }
+
     @Override
     public void onFailure(Exception exception, Command command) {
         CommandTools tools = new CommandTools(command.getMessage());
         if (exception instanceof ResourceNotFoundException) {
             tools.reply(Messages.getWarning("command.messages.user.inexistent_user", tools.getGuild()));
+            return;
+        }
+        if (exception instanceof TokenException){
+            tools.reply(Messages.getWarning("messages.error.token", tools.getGuild()));
             return;
         }
         tools.reply(Messages.getError(exception, tools.getGuild()).build());
@@ -112,6 +136,14 @@ public class UserCommand extends AbstractCommand {
             return Long.parseLong(string);
         }
         return endpoint.getUserId(string).get();
+    }
+
+    private long getOsuId(Member member) {
+        OusuUser user = OusuBot.getUserRepository().getById(member.getIdLong()).orElse(null);
+        if (user == null) {
+            return 0;
+        }
+        return user.getOsuId();
     }
 
     public EmbedBuilder getModelEmbed(MessageModel model, User user, UserAdapter adapter) {

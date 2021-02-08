@@ -1,7 +1,8 @@
-package me.skiincraft.ousubot.commands;
+package me.skiincraft.ousubot.commands.gameplay;
 
 import me.skiincraft.api.osu.entity.beatmap.Beatmap;
 import me.skiincraft.api.osu.exceptions.ResourceNotFoundException;
+import me.skiincraft.api.osu.exceptions.TokenException;
 import me.skiincraft.api.osu.requests.Endpoint;
 import me.skiincraft.api.osu.requests.Token;
 import me.skiincraft.beans.annotation.Inject;
@@ -36,9 +37,8 @@ public class BeatmapCommand extends AbstractCommand {
 
     @Inject
     private OusuAPI api;
-
     public BeatmapCommand() {
-        super("beatmap", Arrays.asList("beatmapid", "map", "m"), "beatmap <beatmapId>");
+        super("beatmap", Arrays.asList("beatmapid", "map", "m"), "beatmap <beatmapId> [-options]");
     }
 
     @Override
@@ -47,7 +47,7 @@ public class BeatmapCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(String label, String[] args, CommandTools channel) {
+    public void execute(String label, String[] args, CommandTools channel) throws Exception {
         if (args.length == 0) {
             Optional<ChannelTracking> tracking = ChannelTracking.getFromRepository(channel.getChannel());
             if (!tracking.isPresent() || tracking.get().getBeatmapId() == 0) {
@@ -106,6 +106,10 @@ public class BeatmapCommand extends AbstractCommand {
             exception.printStackTrace();
             return;
         }
-        tools.reply(Messages.getError(exception, tools.getChannel().getGuild()).build());
+        if (exception instanceof TokenException){
+            tools.reply(Messages.getWarning("messages.error.token", tools.getGuild()));
+            return;
+        }
+        tools.reply(Messages.getError(exception, tools.getGuild()).build());
     }
 }

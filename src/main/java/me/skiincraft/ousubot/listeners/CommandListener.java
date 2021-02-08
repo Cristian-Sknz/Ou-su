@@ -14,12 +14,13 @@ import java.util.Objects;
 public class CommandListener implements EventListener {
 
     @SubscribeEvent
-    public void onCommandExecute(CommandExecuteEvent event){
+    public void showCommandInConsole(CommandExecuteEvent event){
         User member = Objects.requireNonNull(event.getCommand().getMessage().getMember(), "user").getUser();
-        OusuCore.getLogger().log(Level.getLevel("Command"), String.format("%s digitou o comando: %s. [%s %s]",
-                member.getName(), event.getCommand().getName(),
+        OusuCore.getLogger().log(Level.getLevel("COMMAND"), String.format("%s digitou o comando: %s. [%s %s]",
+                member.getName() + "#" + member.getDiscriminator(), event.getCommand().getName(),
                 event.getCommand().getName(),
                 String.join(" ", event.getCommand().getArgs())));
+        event.getCommand().getMessage().getChannel().sendTyping().queue();
     }
 
 }

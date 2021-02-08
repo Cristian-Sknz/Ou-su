@@ -1,7 +1,7 @@
 package me.skiincraft.ousubot.core.commands;
 
-import me.skiincraft.ousubot.core.commands.objects.CommandOption;
-import me.skiincraft.ousubot.core.commands.objects.OptionArguments;
+import me.skiincraft.ousubot.core.commands.options.CommandOption;
+import me.skiincraft.ousubot.core.commands.options.Options;
 import me.skiincraft.ousucore.command.utils.CommandTools;
 
 import java.util.List;
@@ -13,24 +13,28 @@ public abstract class OptionCommand extends AbstractCommand {
         super(name, aliases, usage);
     }
 
-    public abstract void executeWithOptions(String label, String[] args, OptionArguments[] options, CommandTools channel) throws Exception;
+    public abstract void executeWithOptions(String label, String[] args, Options options, CommandTools channel) throws Exception;
     public abstract CommandOption[] getCommandOptions();
 
     @Override
     public final void execute(String label, String[] args, CommandTools channel) throws Exception {
-        OptionArguments[] options = OptionArguments.of(args, getCommandOptions());
+        Options options = Options.OptionArguments.of(args, getCommandOptions());
         executeWithOptions(label, replaceArguments(args, options), options, channel);
     }
 
-    private String[] replaceArguments(String[] strings, OptionArguments[] arguments){
+    private String[] replaceArguments(String[] strings, Options arguments){
+        if (strings.length == 0) {
+            return strings;
+        }
         String str = String.join(" ", strings);
-        for (OptionArguments option : arguments){
-            if (option.containsArgs()){
-                str = str.replaceAll("(?i)" + Pattern.quote("-" + option.getName()), "");
+        for (Options.OptionArguments option : arguments){
+            if (option.containsArgs()) {
+                str = str.replaceAll("(?i)" + Pattern.quote(option.getLabel()), "");
                 continue;
             }
-            str = str.replaceAll("(?i)" + Pattern.quote("-" + option.getName() + " " + String.join(" ", option.getArgs())), "");
+
+            str = str.replaceAll("(?i)" + Pattern.quote(option.getLabel() + ((option.getArgs().length == 0) ? "" : " " + String.join(" ", option.getArgs()))), "");
         }
-        return str.split(" ");
+        return (str.trim().isEmpty()) ? new String[0] : str.split(" ");
     }
 }

@@ -1,4 +1,4 @@
-package me.skiincraft.ousubot.commands;
+package me.skiincraft.ousubot.commands.about;
 
 import me.skiincraft.beans.stereotypes.CommandMap;
 import me.skiincraft.ousucore.command.utils.CommandTools;
@@ -17,7 +17,7 @@ public class SayCommand extends AbstractCommand {
     }
 
     public CommandType getCategory() {
-        return CommandType.Owner;
+        return CommandType.About;
     }
 
     public void execute(String label, String[] args, CommandTools channel) {

@@ -1,16 +1,19 @@
-package me.skiincraft.ousubot.commands;
+package me.skiincraft.ousubot.commands.gameplay;
 
 import me.skiincraft.api.osu.entity.beatmap.BeatmapSearch;
 import me.skiincraft.api.osu.entity.beatmap.BeatmapSet;
 import me.skiincraft.api.osu.exceptions.ResourceNotFoundException;
+import me.skiincraft.api.osu.exceptions.TokenException;
 import me.skiincraft.api.osu.object.beatmap.Approval;
+import me.skiincraft.api.osu.object.beatmap.Language;
 import me.skiincraft.api.osu.object.beatmap.SearchOption;
 import me.skiincraft.api.osu.object.game.GameMode;
 import me.skiincraft.api.osu.requests.Endpoint;
 import me.skiincraft.beans.annotation.Inject;
 import me.skiincraft.beans.stereotypes.CommandMap;
-import me.skiincraft.ousubot.core.commands.AbstractCommand;
 import me.skiincraft.ousubot.core.OusuAPI;
+import me.skiincraft.ousubot.core.commands.OptionCommand;
+import me.skiincraft.ousubot.core.commands.options.*;
 import me.skiincraft.ousubot.view.Messages;
 import me.skiincraft.ousubot.view.embeds.MessageModel;
 import me.skiincraft.ousubot.view.models.BeatmapSimple;
@@ -20,23 +23,22 @@ import me.skiincraft.ousucore.command.utils.CommandTools;
 import me.skiincraft.ousucore.common.reactions.ReactionObject;
 import me.skiincraft.ousucore.common.reactions.Reactions;
 import me.skiincraft.ousucore.common.reactions.custom.ReactionPage;
-import me.skiincraft.ousucore.language.Language;
 import me.skiincraft.ousucore.utils.ThrowableConsumer;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 @CommandMap
-public class SearchCommand extends AbstractCommand {
+public class SearchCommand extends OptionCommand {
 
     @Inject
     private OusuAPI api;
+    private final CommandOption[] options = getSearchOptions();
 
     public SearchCommand() {
-        super("search", Arrays.asList("pesquisar", "s"), "search <name>");
+        super("search", Arrays.asList("pesquisar", "s"), "search <name> [-options]");
     }
 
     @Override
@@ -45,16 +47,15 @@ public class SearchCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(String label, String[] args, CommandTools channel) {
+    public void executeWithOptions(String label, String[] args, Options options, CommandTools channel) {
         if (args.length == 0) {
             replyUsage(channel.getChannel());
             return;
         }
 
         Endpoint endpoint = api.getAvailableTokens().getEndpoint();
-        List<Object> filter = searchFilterBuilder(args);
-        BeatmapSearch beatmaps = endpoint.searchBeatmaps(filter.get(0).toString(), (SearchOption) filter.get(1)).get();
-        MessageModel model = new MessageModel("embeds/search", Language.getGuildLanguage(channel.getChannel().getGuild()));
+        BeatmapSearch beatmaps = endpoint.searchBeatmaps(String.join(" ", args), buildSearchOption(options)).get();
+        MessageModel model = new MessageModel("embeds/search", me.skiincraft.ousucore.language.Language.getGuildLanguage(channel.getChannel().getGuild()));
         channel.reply(Messages.getLoading(), (message) -> {
             EmbedBuilder[] embedArray = getModelEmbedBuilders(model, beatmaps);
             Reactions.getInstance().registerReaction(new ReactionObject(message.getMessage(), channel.getMember().getIdLong(),
@@ -65,10 +66,19 @@ public class SearchCommand extends AbstractCommand {
     }
 
     @Override
+    public CommandOption[] getCommandOptions() {
+        return options;
+    }
+
+    @Override
     public void onFailure(Exception exception, Command command) {
         CommandTools tools = new CommandTools(command.getMessage());
         if (exception instanceof ResourceNotFoundException){
             tools.reply(Messages.getWarning("command.messages.search.notfound", tools.getGuild()));
+            return;
+        }
+        if (exception instanceof TokenException){
+            tools.reply(Messages.getWarning("messages.error.token", tools.getGuild()));
             return;
         }
         tools.reply(Messages.getError(exception, tools.getGuild()).build());
@@ -87,35 +97,38 @@ public class SearchCommand extends AbstractCommand {
         }).toArray(EmbedBuilder[]::new);
     }
 
-    public List<Object> searchFilterBuilder(String[] args) {
-        List<Object> objects = new ArrayList<>();
-        List<String> arg = new ArrayList<>(Arrays.asList(args));
-        SearchOption sf = new SearchOption();
-        if (args.length >= 2) {
-            String[] newArgs = Arrays.copyOfRange(args, 1, args.length);
-            for (String word : newArgs) {
-                GameMode gamemode = GameMode.byName(word);
-                if (Objects.nonNull(gamemode)) {
-                    sf.setGameMode(gamemode);
-                    arg.remove(word);
-                    continue;
-                }
-                Approval approval = getApprovalByName(word);
-                if (Objects.nonNull(approval)) {
-                    sf.setCategory(approval);
-                    arg.remove(word);
-                }
-            }
-        }
-        objects.add(String.join(" ", arg));
-        objects.add(sf);
-        return objects;
+    public SearchOption buildSearchOption(Options options){
+        return new SearchOption().setCategory(getApproval(options))
+                .setGameMode(getGamemode(options))
+                .setVideo(options.contains("video"))
+                .setStoryboard(options.contains("storyboard"))
+                .setLanguage(getLanguage(options));
     }
 
-    public Approval getApprovalByName(String name) {
-        return Arrays.stream(Approval.values())
-                .filter(approval -> approval.name().equalsIgnoreCase(name))
+    private Approval getApproval(Options options){
+        return Arrays.stream(options.getOptionArguments()).filter(op -> op.getOption() instanceof ApprovalOption).map(op -> ((ApprovalOption) op.getOption()).getApproval())
                 .findFirst()
-                .orElse(null);
+                .orElse(Approval.ANY);
+    }
+
+    private GameMode getGamemode(Options options){
+        return Arrays.stream(options.getOptionArguments()).filter(op -> op.getOption() instanceof GamemodeOption).map(op -> ((GamemodeOption) op.getOption()).getGameMode())
+                .findFirst()
+                .orElse(GameMode.Osu);
+    }
+
+    private Language getLanguage(Options options){
+        return Arrays.stream(options.getOptionArguments()).filter(op -> op.getOption() instanceof LanguageOption).map(op -> ((LanguageOption) op.getOption()).getLanguage())
+                .findFirst()
+                .orElse(me.skiincraft.api.osu.object.beatmap.Language.Any);
+    }
+
+    private static CommandOption[] getSearchOptions(){
+        List<CommandOption> options = new ArrayList<>(Arrays.asList(GamemodeOption.getAllGameOptions()));
+        options.addAll(Arrays.asList(ApprovalOption.getScoreableOptions()));
+        options.addAll(Arrays.asList(LanguageOption.getAllOptions()));
+        options.add(new CommandOption("video", new String[]{"vídeo", "v"}, "video"));
+        options.add(new CommandOption("storyboard", new String[]{"v"}, "storyboard"));
+        return options.toArray(new CommandOption[0]);
     }
 }

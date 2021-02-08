@@ -15,7 +15,7 @@ tasks.withType(JavaCompile) {
 
 dependencies {
     compileOnly(group: 'com.github.Cristian-Sknz', name: 'OusuCore', version: '2021.0203.0')
-    api(group: 'com.github.Cristian-Sknz', name: 'OusuAPI-v2', version: '2021.0130.0')
+    api(group: 'com.github.Cristian-Sknz', name: 'OusuAPI-v2', version: '7553ef3b11')
     implementation(group: 'org.discordbots', name: 'DBL-Java-Library', version: '2.0.1')
     compileOnly(group: 'com.github.Cristian-Sknz', name: 'OusuCanvas', version: '09504b4867')
     compileOnly(group: 'net.dv8tion', name: 'JDA', version: '4.2.0_168')

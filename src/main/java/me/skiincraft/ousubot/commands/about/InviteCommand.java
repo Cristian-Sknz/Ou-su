@@ -1,4 +1,4 @@
-package me.skiincraft.ousubot.commands;
+package me.skiincraft.ousubot.commands.about;
 
 import me.skiincraft.beans.stereotypes.CommandMap;
 import me.skiincraft.ousucore.command.utils.CommandTools;

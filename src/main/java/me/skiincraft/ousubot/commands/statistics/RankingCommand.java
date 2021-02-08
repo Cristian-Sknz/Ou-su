@@ -1,7 +1,8 @@
-package me.skiincraft.ousubot.commands;
+package me.skiincraft.ousubot.commands.statistics;
 
 import com.google.common.collect.Lists;
 import me.skiincraft.api.osu.entity.ranking.Ranking;
+import me.skiincraft.api.osu.exceptions.TokenException;
 import me.skiincraft.api.osu.object.game.GameMode;
 import me.skiincraft.api.osu.object.ranking.RankingOption;
 import me.skiincraft.api.osu.object.ranking.RankingType;
@@ -14,6 +15,7 @@ import me.skiincraft.ousubot.core.OusuAPI;
 import me.skiincraft.ousubot.view.Messages;
 import me.skiincraft.ousubot.view.embeds.MessageModel;
 import me.skiincraft.ousubot.view.utils.CountryCodes;
+import me.skiincraft.ousucore.command.objecs.Command;
 import me.skiincraft.ousucore.command.utils.CommandTools;
 import me.skiincraft.ousucore.common.reactions.ReactionObject;
 import me.skiincraft.ousucore.common.reactions.Reactions;
@@ -76,6 +78,16 @@ public class RankingCommand extends AbstractCommand {
                 message.editMessage(Messages.getError(e, channel.getChannel().getGuild()).build());
             }
         });
+    }
+
+    @Override
+    public void onFailure(Exception exception, Command command) {
+        CommandTools tools = new CommandTools(command.getMessage());
+        if (exception instanceof TokenException){
+            tools.reply(Messages.getWarning("messages.error.token", tools.getGuild()));
+            return;
+        }
+        tools.reply(Messages.getError(exception, tools.getGuild()).build());
     }
 
     private List<EmbedBuilder> buildEmbeds(MessageModel model, List<List<UserStatistics>> itens) {
