@@ -88,10 +88,11 @@ public class Messages {
         StringBuilder builder = new StringBuilder();
         List<StackTraceElement> allElements = new ArrayList<>(Arrays.asList(e.getStackTrace()));
         List<StackTraceElement> traceElements = allElements.stream()
-                .filter(trace -> trace.toString().contains("me.skiincraft.discord"))
+                .filter(trace -> trace.toString().toLowerCase().contains("me.skiincraft"))
                 .collect(Collectors.toList());
-        builder.append(e.getLocalizedMessage()).append("\n");
 
+        builder.append(e.getCause()).append("\n");
+        int count = 0;
         if (traceElements.size() == 0) {
             for (StackTraceElement element : allElements) {
                 if (allElements.get(allElements.size() - 1) == element) {
@@ -99,17 +100,19 @@ public class Messages {
                     break;
                 }
                 builder.append("   at ").append(element.toString()).append("\n");
+                if (count >= 4) break;
+                count++;
             }
+            builder.setLength(1000);
+            return builder.toString();
         }
 
-        if (traceElements.size() != 0) {
-            for (StackTraceElement element : allElements) {
-                if (traceElements.get(traceElements.size() - 1) == element) {
-                    builder.append("     in ").append(element.toString()).append("\n");
-                    break;
-                }
-                builder.append("   at ").append(element.toString()).append("\n");
+        for (StackTraceElement element : traceElements) {
+            if (traceElements.get(traceElements.size() - 1) == element) {
+                builder.append("     in ").append(element.toString()).append("\n");
+                break;
             }
+            builder.append("   at ").append(element.toString()).append("\n");
         }
         builder.setLength(1000);
         return builder.toString();
